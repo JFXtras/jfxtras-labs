@@ -475,10 +475,13 @@ public class ICalendarAgenda extends Agenda
                     {
                         Appointment appointment = change.getAddedSubList().get(0);
                         ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
+                        // remove drawn appointment - it was replaced by one made when the newVComponent was added
+                        appointments().remove(appointment);
                         switch (button)
                         {
                         case CANCEL_CLOSE:
-                            return;
+                            refresh();
+                            break;
                         case OK_DONE: // Create VComponent
                             {
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
@@ -497,8 +500,6 @@ public class ICalendarAgenda extends Agenda
                         default:
                             throw new RuntimeException("unknown button type:" + button);
                         }
-                        // remove drawn appointment - it was replaced by one made when the newVComponent was added
-                        appointments().remove(appointment);
                     } else
                     {
                         throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");

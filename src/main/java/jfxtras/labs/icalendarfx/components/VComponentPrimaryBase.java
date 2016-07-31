@@ -1,14 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.Temporal;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Components with the following properties:
@@ -84,18 +81,5 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
     public VComponentPrimaryBase(VComponentPrimaryBase<T> source)
     {
         super(source);
-    }
-    
-    @Override
-    public int compareTo(VComponent v2)
-    {
-        if ((getDateTimeStart() != null) && (((VComponentPrimaryBase<T>) v2).getDateTimeStart() != null))
-        {
-            Temporal t1 = getDateTimeStart().getValue();
-            Temporal t2 = ((VComponentPrimaryBase<VFreeBusy>) v2).getDateTimeStart().getValue();
-            int dtstartCompare = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t1, t2);
-            if (dtstartCompare != 0) return dtstartCompare;
-        }
-        return super.compareTo(v2);
     }
 }

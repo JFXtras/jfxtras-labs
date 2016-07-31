@@ -12,6 +12,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.deleters.DeleterVEvent;
@@ -63,7 +64,7 @@ public class RecurrenceIDComponentEditTest
         reviser.revise();
 
         assertEquals(2, vComponents.size());
-        FXCollections.sort(vComponents);
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
         VEvent myComponentFuture = vComponents.get(1);
         VEvent myComponentOriginal = vComponents.get(0);
         
@@ -121,7 +122,7 @@ public class RecurrenceIDComponentEditTest
         reviser.revise();
 
         assertEquals(3, vComponents.size());
-        FXCollections.sort(vComponents);
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
         VEvent myComponentOriginal = vComponents.get(0);
         VEvent myComponentFuture = vComponents.get(1);
         VEvent myComponentRecurrence = vComponents.get(2);
@@ -230,7 +231,7 @@ public class RecurrenceIDComponentEditTest
         reviser.revise();
 
         assertEquals(2, vComponents.size());
-        FXCollections.sort(vComponents);
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
         VEvent myComponent1 = vComponents.get(0);
         VEvent myComponentRecurrence = vComponents.get(1);
         

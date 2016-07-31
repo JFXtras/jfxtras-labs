@@ -48,14 +48,17 @@ public final class ICalendarStaticComponents
     }
     
     /** FREQ=MONTHLY;BYDAY=3MO */
-    protected static VEvent getMonthly7()
+    public static VEvent getMonthly7()
     {
         return new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 16, 11, 0))
+                .withUniqueIdentifier("20150110T080000-002@jfxtras.org")
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3))));
-    }    
+    }
     
     /** FREQ=WEEKLY, Basic weekly stream */
     protected static VEvent getWeekly1()
@@ -81,9 +84,22 @@ public final class ICalendarStaticComponents
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
     }
+    
+    /** FREQ=WEEKLY;BYDAY=MO */
+    public static VEvent getWeekly3()
+    {
+        return new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
+                .withUniqueIdentifier("20150110T080000-002@jfxtras.org")
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.MONDAY)));
+    }
 
     /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
-    protected static VEvent getWeekly4()
+    protected static VEvent getWeekly5()
     {
         VEvent vEvent = getWeekly2();
         vEvent.getRecurrenceRule().getValue().setCount(11);

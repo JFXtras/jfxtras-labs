@@ -5,10 +5,10 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class EqualsTest extends ICalendarTestAbstract2
+public class EqualsTest extends ICalendarTestAbstract
 {
     @Test
     public void equalsTest1()

@@ -161,18 +161,4 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     {
         return super.toString() + System.lineSeparator() + toContent();
     }
-    
-    @Override
-    public int compareTo(VComponent v2)
-    {
-        return toContent().compareTo(v2.toContent());
-    }
-
-//    @Deprecated // may not use - delete if that is the case
-//    final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
-//    {
-//        int endIndex = PropertyType.DATE_TIME_START.toString().length();
-//        String myString = p1.substring(0, endIndex);
-//        return (myString.equals(PropertyType.DATE_TIME_START.toString())) ? -1 : 1;
-//    };
 }

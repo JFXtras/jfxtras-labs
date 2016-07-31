@@ -72,7 +72,7 @@ public class AgendaStringConverstionTest
     @Test
     public void canMakeRRuleSummaryString7()
     {
-        VEvent v = ICalendarStaticComponents.getWeekly4();
+        VEvent v = ICalendarStaticComponents.getWeekly5();
         String summaryString = EditRecurrenceRuleVEventVBox.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Every 2 weeks on Monday, Wednesday, Friday, 11 times";
         assertEquals(expectedString, summaryString);

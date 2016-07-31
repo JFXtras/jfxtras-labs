@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -36,7 +36,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * @author David Bal
  *
  */
-public class VEventTest extends ICalendarTestAbstract2
+public class VEventTest extends ICalendarTestAbstract
 {
     @Test
     public void canBuildVEvent()

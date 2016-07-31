@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class ICalendarParseVEventTest extends ICalendarTestAbstract2
+public class ICalendarParseVEventTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */
     @Test

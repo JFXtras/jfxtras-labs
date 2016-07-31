@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 
 public class VTimeZoneTest
@@ -95,7 +95,7 @@ public class VTimeZoneTest
             "END:STANDARD" + System.lineSeparator() +
             "END:VTIMEZONE";
         VTimeZone component = VTimeZone.parse(expectedContent);
-        VTimeZone builtComponent = ICalendarTestAbstract2.getTimeZone1();
+        VTimeZone builtComponent = ICalendarTestAbstract.getTimeZone1();
         component.equals(builtComponent);
         assertEquals(component, builtComponent);
         assertEquals(expectedContent, component.toContent());

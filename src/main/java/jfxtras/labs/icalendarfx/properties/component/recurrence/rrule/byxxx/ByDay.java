@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -88,14 +87,14 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
         super(source);
     }
 
-    /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
+    /** Constructor that uses {@link DayofWeek} values without a preceding integer.  All days of the 
      * provided types are included within the specified frequency */
     public ByDay(DayOfWeek... daysOfWeek)
     {
         this(Arrays.asList(daysOfWeek));
     }
 
-    /** Constructor that uses DayOfWeek Collection.  No ordinals are allowed. */
+    /** Constructor that uses {@link DayofWeek} Collection.  No ordinals are allowed. */
     public ByDay(Collection<DayOfWeek> daysOfWeek)
     {
         this();
@@ -117,7 +116,11 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
                 .isPresent();
     }
     
-    /** add individual DayofWeek, without ordinal value, to BYDAY rule */
+    /** add individual {@link DayofWeek}, without ordinal value, to BYDAY rule
+     * 
+     * @param dayOfWeek {@link DayofWeek} to add, without ordinal
+     * @return true if added, false if DayOfWeek already present
+     */
     public boolean addDayOfWeek(DayOfWeek dayOfWeek)
     {
         boolean isPresent = getValue()
@@ -134,18 +137,47 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
         return false;
     }
 
-    /** remove individual DayofWeek from BYDAY rule */
+    /** remove individual DayofWeek from BYDAY rule
+     * 
+     * @param dayOfWeek {@link DayofWeek} to remove
+     * @return true if removed, false if not present
+     */
     public boolean removeDayOfWeek(DayOfWeek dayOfWeek)
     {
-        Optional<ByDayPair> optional = getValue().stream()
+        ByDayPair p = getValue().stream()
                 .filter(v -> v.dayOfWeek == dayOfWeek)
-                .findAny();
-        boolean isFound = optional.isPresent();
-        if (isFound)
+                .findAny()
+                .orElse(null);
+        if (p != null)
         {
-            getValue().remove(optional.get());
+            getValue().remove(p);
+            return true;
         }
-        return isFound;        
+        return false;
+    }
+    
+    /** Replace individual {@link DayofWeek} in BYDAY rule
+     * If {@link ByDayPair} contains a non-zero ordinal, the replacement contains the same ordinal value
+     * Note: a zero ordinal means include all matching {@link DayofWeek} values
+     * 
+     * @param original {@link DayofWeek} to remove
+     * @param replacement {@link DayofWeek} to add
+     * @return true if replaced, false if original is not present
+     */
+    public boolean replaceDayOfWeek(DayOfWeek originalDayOfWeek, DayOfWeek replacemenDayOfWeekt)
+    {
+        ByDayPair p = getValue().stream()
+                .filter(v -> v.dayOfWeek == originalDayOfWeek)
+                .findAny()
+                .orElse(null);
+        if (p != null)
+        {
+            int ordinal = p.getOrdinal();
+            getValue().remove(p);
+            getValue().add(new ByDayPair(replacemenDayOfWeekt, ordinal));
+            return true;
+        }
+        return false;
     }
     
     /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */

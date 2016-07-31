@@ -50,7 +50,6 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
-//        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
@@ -68,6 +67,77 @@ public class ReviseComponentTest
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 30), myComponent.getDateTimeEnd().getValue());        
         assertEquals("Edited summary", myComponent.getSummary().getValue());
     }
+    
+    @Test
+    public void canEditWeeklyAll() // shift day of weekly
+    {
+        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
+        
+        VEvent vComponentEdited = ICalendarStaticComponents.getWeekly3();
+        vComponents.add(vComponentEdited);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 17, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 17, 10, 30);
+
+        ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.ALL)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponents(vComponents)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
+
+        assertEquals(1, vComponents.size());
+        VEvent myComponent = vComponents.get(0);
+        VEvent expectedVComponent = ICalendarStaticComponents.getWeekly3();
+        expectedVComponent.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 9, 0));
+        expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 10, 10, 30));
+        expectedVComponent.setRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.TUESDAY)));
+        expectedVComponent.setSequence(1);
+        assertEquals(expectedVComponent, myComponent);
+    }
+    
+    @Test
+    public void canEditMonthlyAll2() // shift day of weekly with ordinal
+    {
+        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
+        
+        VEvent vComponentEdited = ICalendarStaticComponents.getMonthly7();
+        vComponents.add(vComponentEdited);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 17, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 17, 10, 30);
+
+        ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.ALL)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponents(vComponents)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
+
+        assertEquals(1, vComponents.size());
+        VEvent myComponent = vComponents.get(0);
+        VEvent expectedVComponent = ICalendarStaticComponents.getWeekly3();
+        expectedVComponent.setDateTimeStart(LocalDateTime.of(2015, 11, 17, 9, 0));
+        expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 17, 10, 30));
+        expectedVComponent.setRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.MONTHLY)
+                        .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.TUESDAY, 3))));
+        expectedVComponent.setSequence(1);
+        assertEquals(expectedVComponent, myComponent);
+    }
+       
     
     @Test
     public void canEditOne()

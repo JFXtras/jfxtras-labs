@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -21,6 +22,7 @@ import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -268,6 +270,22 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
         TemporalAmount amountToStart = DateTimeUtilities.temporalAmountBetween(vComponentEditedCopy.getDateTimeStart().getValue(), getStartRecurrence());
         Temporal newStart = getStartRecurrence().minus(amountToStart).plus(shiftAmount);
+        // handle WEEKLY day of week change
+        if (vComponentEditedCopy.getRecurrenceRule() != null)
+        {
+            ByDay byDay = (ByDay) vComponentEditedCopy.getRecurrenceRule().getValue().lookupByRule(ByDay.class);
+            if (byDay != null)
+            {
+                DayOfWeek originalDayOfWeek = DayOfWeek.from(vComponentEditedCopy.getDateTimeStart().getValue());
+                DayOfWeek replacemenDayOfWeekt = DayOfWeek.from(newStart);
+                if (originalDayOfWeek != replacemenDayOfWeekt)
+                { // day shift occurred - change ByDay rule
+                    byDay.replaceDayOfWeek(originalDayOfWeek, replacemenDayOfWeekt);
+//                    byDay.removeDayOfWeek(originalDayOfWeek);
+//                    byDay.addDayOfWeek(replacemenDayOfWeekt);
+                }
+            }
+        }
         vComponentEditedCopy.setDateTimeStart(new DateTimeStart(newStart));
     }
     

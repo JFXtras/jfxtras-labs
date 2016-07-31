@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
-public class CopyComponentTest extends ICalendarTestAbstract2
+public class CopyComponentTest extends ICalendarTestAbstract
 {
     @Test
     public void canCopyVEvent1()

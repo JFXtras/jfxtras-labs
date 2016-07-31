@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
+public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract
 {
     @Test
     public void canHandleRecurrenceID1()

@@ -8,7 +8,7 @@ import jfxtras.labs.icalendarfx.VParent;
  * 
  * @author David Bal
  */
-public interface VComponent extends VParent, VChild, Comparable<VComponent>
+public interface VComponent extends VParent, VChild
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
