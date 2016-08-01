@@ -32,6 +32,9 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
  */
 public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> implements PropertyDateTime<T>
 {
+    // reference to property value if T is not instance of Collection, or an element if T is a Collection
+    private Object anElement;
+    
     /**
      * TZID
      * Time Zone Identifier
@@ -57,7 +60,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
-        if ((getValue() == null) || (getValue() instanceof ZonedDateTime))
+        if ((anElement == null) || (anElement instanceof ZonedDateTime))
         {
             timeZoneIdentifierProperty().set(timeZoneIdentifier);
         } else
@@ -110,36 +113,35 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     public void setValue(T value)
     {
         super.setValue(value);
-        final Object element;
         if (value instanceof Collection)
         {
             Collection<?> collection = (Collection<?>) value;
-            element = (collection.isEmpty()) ? null : collection.iterator().next();
+            anElement = (collection.isEmpty()) ? null : collection.iterator().next();
         } else if (value instanceof Temporal)
         {
-            element = value;
+            anElement = value;
         } else
         {
             throw new DateTimeException("Unsupported type:" + value.getClass().getSimpleName());            
         }
 
-        if (element != null)
+        if (anElement != null)
         {
-            if (element instanceof ZonedDateTime)
+            if (anElement instanceof ZonedDateTime)
             {
-                ZoneId zone = ((ZonedDateTime) element).getZone();
+                ZoneId zone = ((ZonedDateTime) anElement).getZone();
                 if (! zone.equals(ZoneId.of("Z")))
                 {
                     if (getValueType() != null && getValueType().getValue() == ValueType.DATE) setValueType((ValueParameter) null); // reset value type if previously set to DATE
                     setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
                 }
-            } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
+            } else if ((anElement instanceof LocalDateTime) || (anElement instanceof LocalDate))
             {
                 if (getTimeZoneIdentifier() != null)
                 {
-                    throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier (" + element.getClass().getSimpleName() + ")");                            
+                    throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier (" + anElement.getClass().getSimpleName() + ")");                            
                 }
-                if (element instanceof LocalDate)
+                if (anElement instanceof LocalDate)
                 {
                     setValueType(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
                 } else
