@@ -372,6 +372,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         if (vComponentEditedCopy.isWholeDay())
         {
             untilNew = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
+            System.out.println("iswholeday:" + untilNew);
         } else
         {
             Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
@@ -385,8 +386,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             {
                 throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
             }
-            vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         }
+        System.out.println("until:" + vComponentOriginalCopy.getRecurrenceRule().getValue());
+        vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         
         // Adjust start and end - set recurrence temporal as start
         adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);

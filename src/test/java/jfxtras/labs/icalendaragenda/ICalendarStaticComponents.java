@@ -214,6 +214,19 @@ public final class ICalendarStaticComponents
                         LocalDateTime.of(2015, 11, 15, 10, 0)));
     }
     
+    /* FREQ=DAILY */
+    public static VEvent getWholeDayDaily1()
+    {
+        return new VEvent()
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.DAILY))
+                .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 9));
+    }
+    
     /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
     public static VEvent getWholeDayDaily3()
     {

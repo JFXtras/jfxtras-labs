@@ -71,6 +71,57 @@ public final class VCalendarUtilities
         }  
     }
     
+    /**
+     * Parse iCalendar ics and add its properties to vCalendar parameter
+     * 
+     * @param icsFilePath - URI of ics file
+     * @param vCalendar - vCalendar obj2ect with callbacks set for making components (e.g. makeVEventCallback)
+     */
+    @Deprecated
+    public static VCalendar parseICalendarFile(Path icsFilePath)
+    {
+        VCalendar vCalendar = new VCalendar();
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        List<Callable<Object>> tasks = new ArrayList<>();
+        try
+        {
+            BufferedReader br = Files.newBufferedReader(icsFilePath);
+            Iterator<String> lineIterator = br.lines().iterator();
+            while (lineIterator.hasNext())
+            {
+                String line = lineIterator.next();
+                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
+                String propertyName = p.getKey();
+                Arrays.stream(VCalendarComponent.values())
+                        .forEach(property -> 
+                        {
+                            boolean matchOneLineProperty = propertyName.equals(property.toString());
+                            if (matchOneLineProperty)
+                            {
+                                property.parseAndSetProperty(vCalendar, p.getValue());
+                            } else if (line.equals(property.startDelimiter()))
+                            {// multi-line property
+                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
+                                boolean matchEnd = false;
+                                do
+                                {
+                                    String propertyLine = lineIterator.next();
+                                    matchEnd = propertyLine.equals(property.endDelimiter());
+                                    propertyValue.append(propertyLine + System.lineSeparator());
+                                } while (! matchEnd);
+                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
+                                tasks.add(Executors.callable(multiLinePropertyRunnable));
+                            } // otherwise, unknown property should be ignored
+                        });
+            }
+                service.invokeAll(tasks);
+        } catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        return vCalendar;
+    }
+    
 //    public static boolean isEqualTo(VComponent obj1, VComponent obj2)
 //    {
 //        if (obj2 == obj1) return true;

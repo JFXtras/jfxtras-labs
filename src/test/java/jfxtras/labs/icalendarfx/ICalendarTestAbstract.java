@@ -36,7 +36,7 @@ public abstract class ICalendarTestAbstract
         {
             Temporal t1 = v1.getDateTimeStart().getValue();
             Temporal t2 = v2.getDateTimeStart().getValue();
-            int dtstartCompare = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t1, t2);
+            int dtstartCompare = DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(t1, t2);
             if (dtstartCompare != 0) return dtstartCompare;
         }
         return v1.toContent().compareTo(v2.toContent());

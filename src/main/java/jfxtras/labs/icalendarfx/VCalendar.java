@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -14,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -27,6 +32,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
 
 /**
  * iCalendar Object
@@ -663,6 +669,51 @@ public class VCalendar extends VParentBase
                 }
             }
         }
+    }
+    
+    public static VCalendar parseICalendarFile(Iterator<String> lineIterator)
+    {
+        VCalendar vCalendar = new VCalendar();
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        List<Callable<Object>> tasks = new ArrayList<>();
+        try
+        {
+//            BufferedReader br = Files.newBufferedReader(icsFilePath);
+//            Iterator<String> lineIterator = br.lines().iterator();
+            while (lineIterator.hasNext())
+            {
+                String line = ICalendarUtilities.unfoldLines(lineIterator);
+//                String line = lineIterator.next();
+                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
+                String propertyName = p.getKey();
+                Arrays.stream(VCalendarComponent.values())
+                        .forEach(property -> 
+                        {
+                            boolean matchOneLineProperty = propertyName.equals(property.toString());
+                            if (matchOneLineProperty)
+                            {
+                                property.parseAndSetProperty(vCalendar, p.getValue());
+                            } else if (line.equals(property.startDelimiter()))
+                            {// multi-line property
+                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
+                                boolean matchEnd = false;
+                                do
+                                {
+                                    String propertyLine = lineIterator.next();
+                                    matchEnd = propertyLine.equals(property.endDelimiter());
+                                    propertyValue.append(propertyLine + System.lineSeparator());
+                                } while (! matchEnd);
+                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
+                                tasks.add(Executors.callable(multiLinePropertyRunnable));
+                            } // otherwise, unknown property should be ignored
+                        });
+            }
+                service.invokeAll(tasks);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        return vCalendar;
     }
 
     public static VCalendar parse(String contentLines)

@@ -7,11 +7,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
+import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -128,6 +130,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
                 if (! zone.equals(ZoneId.of("Z")))
                 {
                     setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
+                    if (getValueType() != null && getValueType().getValue() == ValueType.DATE) setValueType((ValueParameter) null); // reset value type if previously set to DATE
                 }
             } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
             {
@@ -138,6 +141,9 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
                 if (element instanceof LocalDate)
                 {
                     setValueType(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
+                } else
+                {
+                    if (getValueType() != null && getValueType().getValue() == ValueType.DATE) setValueType((ValueParameter) null); // reset value type if previously set to DATE
                 }
             } else
             {
@@ -146,4 +152,30 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         }
         super.setValue(value);
     }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = super.errors();
+        if (getValue() != null && getValueType() != null)
+        {
+            if (getValue() instanceof LocalDate)
+            {
+                if (getValueType().getValue() != ValueType.DATE)
+                {
+                    errors.add(getPropertyName() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
+                            + ").  For that value, the required value type is " + ValueType.DATE);
+                }
+            } else if (getValue() instanceof LocalDateTime || getValue() instanceof ZonedDateTime)
+            {
+                if (getValueType().getValue() != ValueType.DATE_TIME)
+                {
+                    errors.add(getPropertyName() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
+                            + ").  For that value, the required value type is " + ValueType.DATE_TIME);
+                }                
+            }
+        }
+        return errors;
+    }
+
 }

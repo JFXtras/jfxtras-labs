@@ -19,14 +19,17 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
 /**
  * Tests editing and deleting components.  Uses a stub for the dialog callback to designate
@@ -390,7 +393,7 @@ public class ReviseComponentTest
     }
     
     @Test
-    public void canChangeWholeDayOne()
+    public void canChangOneWholeDayToTimeBased()
     {
         VCalendar vCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
@@ -423,6 +426,54 @@ public class ReviseComponentTest
         assertEquals("Edited summary", individualComponent.getSummary().getValue());
         assertEquals(repeatComponent, vComponentOriginalCopy);
         assertNull(individualComponent.getRecurrenceRule());
+    }
+    
+    @Test
+    public void canChangeWholeDayToTimeBasedThisAndFuture()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
+        vComponentOriginal.setSummary("Edited summary");
+
+        Temporal startOriginalRecurrence = LocalDate.of(2016, 5, 16);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentOriginal))
+                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponents(vComponents)
+                .withVComponentEdited(vComponentOriginal)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        reviser.revise();
+
+        assertEquals(2, vComponents.size());
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
+        VEvent newVComponentOriginal = vComponents.get(0);
+        VEvent newVComponentFuture = vComponents.get(1);
+
+        VEvent expectedVComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
+        RecurrenceRule2 rrule = expectedVComponentOriginal.getRecurrenceRule().getValue();
+        rrule.setUntil(LocalDate.of(2016, 5, 15));
+        
+        assertEquals(expectedVComponentOriginal, newVComponentOriginal);
+
+        VEvent expectedVComponentFuture = ICalendarStaticComponents.getWholeDayDaily1();
+        expectedVComponentFuture.setDateTimeStart(LocalDateTime.of(2016, 5, 16, 9, 0));
+        expectedVComponentFuture.setDateTimeEnd(LocalDateTime.of(2016, 5, 16, 10, 0));
+        expectedVComponentFuture.setUniqueIdentifier(new UniqueIdentifier(newVComponentFuture.getUniqueIdentifier()));
+        expectedVComponentFuture.setDateTimeStamp(new DateTimeStamp(newVComponentFuture.getDateTimeStamp()));
+        expectedVComponentFuture.setSummary("Edited summary");
+        expectedVComponentFuture.withRelatedTo(vComponentOriginal.getUniqueIdentifier().getValue());
+        expectedVComponentFuture.setSequence(1);
+                
+        assertEquals(expectedVComponentFuture, newVComponentFuture);
     }
     
     @Test

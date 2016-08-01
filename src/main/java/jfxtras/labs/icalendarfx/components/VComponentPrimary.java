@@ -81,7 +81,6 @@ public interface VComponentPrimary<T> extends VComponentCommon<T>
         }
     }
     default void setDateTimeStart(DateTimeStart dtStart) { dateTimeStartProperty().set(dtStart); }
-//    default void setDateTimeStart(Temporal temporal) { setDateTimeStart(new DateTimeStart(temporal)); }
     default void setDateTimeStart(Temporal temporal)
     {
         if (getDateTimeStart() == null)

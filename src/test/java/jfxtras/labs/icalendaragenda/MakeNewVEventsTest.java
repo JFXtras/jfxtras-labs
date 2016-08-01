@@ -168,38 +168,4 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
                 ;
         assertEquals(expectedVEvent, vEvent);
     }
-    
-//    @Test
-//    public void dragWholeDayToBody()
-//    {
-//        
-//        TestUtil.runThenWaitForPaintPulse( () -> {
-//            agenda.appointments().add( new Agenda.AppointmentImplLocal()
-//                .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2014-01-01T00:00"))
-//                .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2014-01-01T12:00"))
-//                .withWholeDay(true)
-//                .withAppointmentGroup(appointmentGroupMap.get("group01"))
-//            );
-//        });
-//        
-//        // make sure the two nodes exist 
-//        assertFind("#AppointmentWholedayBodyPane2014-01-01/0");
-//        assertFind("#AppointmentWholedayHeaderPane2014-01-01/0");
-//        
-//        // drag from header to body
-//        move("#AppointmentWholedayHeaderPane2014-01-01/0"); 
-//        press(MouseButton.PRIMARY);
-//        move("#hourLine10");
-//        release(MouseButton.PRIMARY);
-//        Assert.assertEquals(1, appointmentChangedCallbackList.size());
-//        Assert.assertTrue(appointmentChangedCallbackList.contains(agenda.appointments().get(0)));
-//
-//        // now there should be a regular appointment
-//        System.out.println(agenda.appointments());
-//        assertFind("#AppointmentRegularBodyPane2014-01-01/0");
-//        Assert.assertEquals(1, agenda.appointments().size() );
-//        Assert.assertEquals("2014-01-01T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
-//        Assert.assertEquals("2014-01-01T11:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
-//        //TestUtil.sleep(3000);
-//    }
 }

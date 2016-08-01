@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
@@ -118,7 +119,17 @@ public class DateTimeStartTest
         DateTimeStart dateTimeStart2 = new DateTimeStart(dateTimeStart1);
         assertEquals(dateTimeStart1, dateTimeStart2);
         assertTrue(dateTimeStart1 != dateTimeStart2);
-//        assertTrue(dateTimeStart1.getValue() != dateTimeStart2.getValue());
+    }
+    
+    @Test
+    public void canChangeLocalDateToLocalDateTime()
+    {
+        VEvent vEvent = new VEvent()
+                .withDateTimeStart(LocalDate.of(2016, 3, 6));
+        vEvent.setDateTimeStart(LocalDateTime.of(2016, 3, 6, 4, 30));
+        System.out.println(vEvent.getDateTimeStart().errors());
+        System.out.println(vEvent.getDateTimeStart());
+        
     }
     
     @Test (expected=ClassCastException.class)

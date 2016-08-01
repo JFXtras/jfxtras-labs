@@ -3,9 +3,7 @@ package jfxtras.labs.icalendarfx.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,11 +70,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     @Override
     public void setValue(T value)
     {
-//        // preserve sort order
-//        if (value != null)
-//        {
-//            this.getParent().
-//        }
         this.value.set(value);
     }
     public U withValue(T value) { setValue(value); return (U) this; } // in constructor
@@ -115,10 +108,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     @Override
     public String getPropertyName()
     {
-//        if (propertyName == null)
-//        {
-//            return propertyType().toString();
-//        }
         return propertyName.get();
     }
     public ObjectProperty<String> propertyNameProperty() { return propertyName; }
@@ -191,7 +180,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     @Override
     public void setValueType(ValueParameter valueType)
     {
-        if (isValueTypeValid(valueType.getValue()))
+        if (valueType == null || isValueTypeValid(valueType.getValue()))
         {
             valueTypeProperty().set(valueType);
         } else
@@ -206,12 +195,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     // Synch value with type produced by string converter
     private final ChangeListener<? super ValueParameter> valueParameterChangeListener = (observable, oldValue, newValue) ->
     {
-        // replace converter if using default converter
         if (! isCustomConverter())
         {
-//                System.out.println("set converter:" + newValue.getValue() + " " + valueClass + " " + getValue());
-            setConverter(newValue.getValue().getConverter());
-
             // Convert property value string, if present
             if (getPropertyValueString() != null)
             {
@@ -221,7 +206,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         }
         
         // verify value class is allowed
-        if (getValueClass() != null) // && ! newValue.getValue().allowedClasses().contains(getValueClass()))
+        if (newValue != null && getValueClass() != null) // && ! newValue.getValue().allowedClasses().contains(getValueClass()))
         {
             boolean isMatch = newValue.getValue().allowedClasses()
                     .stream()
@@ -282,31 +267,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         }
         return (U) this;
     }
-
-
-    /**
-     * List of all child parameters.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of elements
-     * @deprecated  not needed due to addition of Orderer, may be deleted
-     */
-    @Deprecated
-    public List<ParameterType> parameterEnums()
-    {
-        List<ParameterType> populatedParameters = new ArrayList<>();
-        Iterator<ParameterType> i = propertyType().allowedParameters().stream().iterator();
-        while (i.hasNext())
-        {
-            ParameterType parameterType = i.next();
-            Object parameter = parameterType.getParameter(this);
-            if (parameter != null)
-            {
-                populatedParameters.add(parameterType);
-            }
-        }
-        return Collections.unmodifiableList(populatedParameters);
-    }
     
     @Override
     public Callback<VChild, Void> copyChildCallback()
@@ -335,14 +295,21 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
      */ 
     @Override
-    public StringConverter<T> getConverter() { return converter; }
+    public StringConverter<T> getConverter()
+    {
+        if (converter == null)
+        {
+            ValueType valueType = (getValueType() == null) ? propertyType.allowedValueTypes().get(0) : getValueType().getValue();
+            return valueType.getConverter(); // use default converter assigned to value type if no customer converter assigned
+        }
+        return converter;
+    }
     private StringConverter<T> converter;
     @Override
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
-    private StringConverter<T> defaultConverter;
     private boolean isCustomConverter()
     {
-        return ! getConverter().equals(defaultConverter);
+        return converter != null;
     }
     
     /*
@@ -355,9 +322,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         propertyType = PropertyType.enumFromClass(getClass());
         setPropertyName(propertyType.toString());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
-        ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
-        defaultConverter = defaultValueType.getConverter();
-        setConverter(defaultConverter);
         valueTypeProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
         setContentLineGenerator(new SingleLineContent(
                 orderer(),
@@ -529,7 +493,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
         boolean isUnknownType = value.equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyType.NON_STANDARD) || propertyType().equals(PropertyType.IANA_PROPERTY);
-//        System.out.println("parameter valid:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
 

@@ -159,33 +159,6 @@ public class Frequency extends RRuleElementBase<FrequencyType, Frequency>
     {
         this();
         setValue(frequencyType);
-//        chronoUnit = frequencyType.getChronoUnit();
-//        setChronoUnit(frequencyType.getChronoUnit());
-        
-//        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
-//        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
-//        {
-//            while (change.next())
-//            {
-//                if (change.wasAdded())
-//                {
-//                    change.getAddedSubList().stream().forEach(c ->
-//                    {
-//                        ByRule newByRule = c;
-//                        long alreadyPresent = byRules()
-//                                .stream()
-//                                .map(r -> r.byRuleType())
-//                                .filter(p -> p.equals(c.byRuleType()))
-//                                .count();
-//                        if (alreadyPresent > 1)
-//                        {
-//                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
-//                        }
-//                    });
-//                    Collections.sort(byRules()); // sort additions
-//                }
-//            }
-//        });
     }
     
 //    // Copy constructor
@@ -221,80 +194,6 @@ public class Frequency extends RRuleElementBase<FrequencyType, Frequency>
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(interval, getValue().getChronoUnit());
         return Stream.iterate(start, a -> a.with(adjuster));
     }
-//        setChronoUnit(getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
-//        return Stream.iterate(start, a -> a.with(adjuster()));
-////        Iterator<ByRule> rulesIterator = byRules()
-////                .stream()
-////                .sorted()
-////                .iterator();
-////        while (rulesIterator.hasNext())
-////        {
-////            ByRule rule = rulesIterator.next();
-////            stream = rule.stream(stream, chronoUnitProperty(), start);
-////        }
-////        return stream;
-//    }
-    
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
-//        Frequency testObj = (Frequency) obj;
-//        
-//        boolean intervalEquals = getInterval().equals(testObj.getInterval());
-//        System.out.println("getInterval " + getInterval() + " " + testObj.getInterval());
-//        boolean rulesEquals = byRules().equals(testObj.byRules());
-//        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
-//        return intervalEquals && rulesEquals;
-//    }
-//    
-//    @Override
-//    public int hashCode()
-//    {
-//        int hash = 7;
-//        hash = (31 * hash) + getInterval().hashCode();
-//        hash = (31 * hash) + byRules().hashCode();
-//        return hash;
-//    }
-    
-//    @Override
-//    public String toString()
-//    {
-//        return super.toString() + ", " + toContent(); 
-////        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
-////        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
-////        return builder.toString();
-//    }
-    
-//    @Override
-//    public int hashCode()
-//    {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
-//        return result;
-//    }
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Frequency2 other = (Frequency2) obj;
-//        if (getValue() == null)
-//        {
-//            if (other.getValue() != null)
-//                return false;
-//        } else if (!getValue().equals(other.getValue()))
-//            return false;
-//        return true;
-//    }
 
     @Override
     public void parseContent(String content)

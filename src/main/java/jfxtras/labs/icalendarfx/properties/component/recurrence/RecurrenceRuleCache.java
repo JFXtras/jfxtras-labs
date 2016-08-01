@@ -176,14 +176,11 @@ public class RecurrenceRuleCache
                 temporalCache[cacheStart] = dateTimeStart;
                 match = dateTimeStart;
             }
-//            earliestCacheValue = temporalCache[cacheStart];
         } else
         { // no previous cache.  initialize new array with dateTimeStart as first value.
             temporalCache = new Temporal[CACHE_RANGE];
             temporalCache[cacheStart] = dateTimeStart;
             match = dateTimeStart;
-//            earliestCacheValue = dateTimeStart;
-//            latestCacheValue = dateTimeStart;
         }
         return match;
     }
@@ -225,12 +222,8 @@ public class RecurrenceRuleCache
                         // check if start or end needs to wrap
                         if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
                         if (cacheStart == CACHE_RANGE) cacheStart = 0;
-//                        System.out.println("makeCache:" + cacheStart + " " + cacheEnd);
                     }
                 });
-
-        //                .filter(t -> ! DateTimeUtilities.isBefore(t, start)); // remove too early events;
-
         return outStream;
     }
 

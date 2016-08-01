@@ -111,6 +111,15 @@ public final class DateTimeUtilities
 //        return ld1.compareTo(ld2);
     };
     
+    /** Compares two temporals of the LocalDate, LocalDateTime and ZonedDateTime
+     * Makes LocalDate at start of day.  Add system default ZoneId to LocalDate and LocalDateTime */
+    public final static Comparator<Temporal> TEMPORAL_COMPARATOR2 = (t1, t2) -> 
+    {
+        ZonedDateTime z1 = (ZonedDateTime) DateTimeType.DATE_WITH_UTC_TIME.from(t1);
+        ZonedDateTime z2 = (ZonedDateTime) DateTimeType.DATE_WITH_UTC_TIME.from(t2);
+        return z1.compareTo(z2);
+    };
+    
     /** Returns correct comparator based on Temporal parameter */
     public final static Comparator<Temporal> getTemporalComparator(Temporal t) 
     {

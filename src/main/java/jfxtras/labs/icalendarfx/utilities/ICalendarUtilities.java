@@ -348,6 +348,46 @@ public final class ICalendarUtilities
         return propertyLines;
     }
     
+    public static String unfoldLines(Iterator<String> lineIterator)
+    {
+        String storedLine = "";
+        while (lineIterator.hasNext())
+        {
+            // unwrap lines by storing previous line, adding to it if next is a continuation
+            // when no more continuation lines are found loop back and start with last storedLine
+            String startLine;
+            if (storedLine.isEmpty())
+            {
+                startLine = lineIterator.next();
+            } else
+            {
+                startLine = storedLine;
+                storedLine = "";
+            }
+            StringBuilder builder = new StringBuilder(startLine);
+            while (lineIterator.hasNext())
+            {
+                String anotherLine = lineIterator.next();
+                if (anotherLine.isEmpty()) continue; // ignore blank lines
+                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                { // unwrap anotherLine into line
+                    builder.append(anotherLine.substring(1, anotherLine.length()));
+                } else
+                {
+                    storedLine = anotherLine; // save for next iteration
+                    break;  // no continuation line, exit while loop
+                }
+            }
+            Spliterator<String> spliterator = Spliterators.spliteratorUnknownSize(lineIterator, Spliterator.ORDERED);
+            Stream<String> remainingLineIterator = StreamSupport.stream(spliterator, false);
+            Stream<String> storedElement = Stream.of(storedLine);
+            Iterator<String> newLineIterator = Stream.concat(storedElement, remainingLineIterator).iterator();
+            
+            return builder.toString();
+        }
+        return null;
+    }
+    
     /**
      * Folds lines at character 75 into multiple lines.  Follows rules in
      * RFC 5545, 3.1 Content Lines, page 9.
