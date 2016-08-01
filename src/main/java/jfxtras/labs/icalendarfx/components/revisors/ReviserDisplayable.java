@@ -2,7 +2,9 @@ package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -230,8 +232,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 .stream()
                 .forEach(v ->
                 {
-                    TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-                    Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(shiftAmount);
+                    Period dayShift = Period.between(LocalDate.from(startOriginalRecurrence), (LocalDate.from(v.getRecurrenceId().getValue())));
+                    Temporal newRecurreneId = startRecurrence.plus(dayShift);
                     v.setRecurrenceId(newRecurreneId);
                 });
     }
@@ -310,7 +312,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 {
                     Object p1 = t.getProperty(vComponentEditedCopy);
                     Object p2 = t.getProperty(vComponentOriginalCopy);
-//                    System.out.println("ppp:" + p1 + " " + p2);
                     if (! p1.equals(p2))
                     {
                         changedProperties.add(t);
@@ -372,7 +373,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         if (vComponentEditedCopy.isWholeDay())
         {
             untilNew = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
-            System.out.println("iswholeday:" + untilNew);
         } else
         {
             Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
@@ -387,7 +387,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
             }
         }
-        System.out.println("until:" + vComponentOriginalCopy.getRecurrenceRule().getValue());
         vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         
         // Adjust start and end - set recurrence temporal as start
@@ -493,18 +492,12 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             recurrenceChildren.stream().forEach(c -> 
             {
                 Temporal t = c.getRecurrenceId().getValue();
-                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
-                if (result > 0)
+                boolean isAfterStartRecurrence = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence()) > 0;
+                if (isAfterStartRecurrence)
                 { // change UID to match vComponentEditedCopy
-//                    System.out.println("start:" + getVComponents().size());
                     getVComponents().remove(c);
-//                    System.out.println("removed:" + getVComponents().size());
-//                    System.out.println("removed:" + c);
                     String uniqueIdentifier = vComponentEditedCopy.getUniqueIdentifier().getValue();
-                    System.out.println("uniqueIdentifier:" + uniqueIdentifier);
                     c.setUniqueIdentifier(uniqueIdentifier);
-                    // TODO - SHIFT TIME
-//                    System.out.println(c.recurrenceChildren().size());
                     revisedVComponents.add((U) c);
                 }
            });

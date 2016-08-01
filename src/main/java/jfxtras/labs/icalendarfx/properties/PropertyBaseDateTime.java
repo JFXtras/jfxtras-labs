@@ -109,6 +109,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     @Override
     public void setValue(T value)
     {
+        super.setValue(value);
         final Object element;
         if (value instanceof Collection)
         {
@@ -129,8 +130,8 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
                 ZoneId zone = ((ZonedDateTime) element).getZone();
                 if (! zone.equals(ZoneId.of("Z")))
                 {
-                    setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
                     if (getValueType() != null && getValueType().getValue() == ValueType.DATE) setValueType((ValueParameter) null); // reset value type if previously set to DATE
+                    setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
                 }
             } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
             {
@@ -150,7 +151,6 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
                 throw new DateTimeException("Unsupported Temporal type:" + value.getClass().getSimpleName());            
             }
         }
-        super.setValue(value);
     }
     
     @Override

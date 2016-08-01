@@ -509,11 +509,10 @@ public abstract class EditRecurrenceRuleVBox<T extends VComponentDisplayable<T>>
         checkBoxDayOfWeekMap.entrySet().stream().forEach(entry -> entry.getKey().addListener(dayOfWeekCheckBoxListener));
         
         // Setup frequencyComboBox items
-        
         FrequencyType[] supportedFrequencyProperties = new FrequencyType[] { FrequencyType.DAILY,
-                                                                                     FrequencyType.WEEKLY,
-                                                                                     FrequencyType.MONTHLY,
-                                                                                     FrequencyType.YEARLY };
+                                                                             FrequencyType.WEEKLY,
+                                                                             FrequencyType.MONTHLY,
+                                                                             FrequencyType.YEARLY };
         frequencyComboBox.setItems(FXCollections.observableArrayList(supportedFrequencyProperties));
         frequencyComboBox.setConverter(new StringConverter<FrequencyType>()
         {

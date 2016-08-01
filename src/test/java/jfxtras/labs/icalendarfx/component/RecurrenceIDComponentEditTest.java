@@ -3,8 +3,10 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
 import org.junit.Test;
@@ -150,6 +152,74 @@ public class RecurrenceIDComponentEditTest
         expectedvComponentRecurrence.setSummary("recurrence summary");
         expectedvComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
         expectedvComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        expectedvComponentRecurrence.setUniqueIdentifier(new UniqueIdentifier(expectedComponentFuture.getUniqueIdentifier()));
+        assertEquals(expectedvComponentRecurrence, myComponentRecurrence);
+    }
+    
+    @Test // with a recurrence in between new date range, from whole-day to time-based - special recurrence stays unmodified.
+    public void canEditWholeDayToTimeBasedThisAndFutureAllIgnoreRecurrence()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        
+        VEvent vComponentEdited = ICalendarStaticComponents.getWholeDayDaily1();
+        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+        vComponents.add(vComponentEdited);
+        // make recurrence
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getWholeDayDaily1();
+        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+        vComponentRecurrence.setRecurrenceId(LocalDate.of(2016, 5, 17));
+        vComponentRecurrence.setSummary("recurrence summary");
+        vComponentRecurrence.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 8, 30), ZoneId.of("Europe/London")));
+        vComponentRecurrence.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 30), ZoneId.of("Europe/London")));
+        vComponents.add(vComponentRecurrence);
+
+        // make changes
+        vComponentEdited.setSummary("Edited summary");
+
+        Temporal startOriginalRecurrence = LocalDate.of(2016, 5, 15);
+        Temporal startRecurrence = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 9, 0), ZoneId.of("Europe/London"));
+        Temporal endRecurrence = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 30), ZoneId.of("Europe/London"));
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE_IGNORE_RECURRENCES)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponents(vComponents)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        reviser.revise();
+
+        assertEquals(3, vComponents.size());
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
+        VEvent myComponentOriginal = vComponents.get(0);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentRecurrence = vComponents.get(2);
+        
+        VEvent expectedOriginalEdited = ICalendarStaticComponents.getWholeDayDaily1();
+        expectedOriginalEdited.getRecurrenceRule().getValue()
+            .setUntil(LocalDate.of(2016, 5, 14));
+        assertTrue(vComponentOriginalCopy == myComponentOriginal);
+        assertEquals(expectedOriginalEdited, myComponentOriginal);
+
+        VEvent expectedComponentFuture = ICalendarStaticComponents.getWholeDayDaily1();
+        expectedComponentFuture.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 9, 0), ZoneId.of("Europe/London")));
+        expectedComponentFuture.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 30), ZoneId.of("Europe/London")));
+        expectedComponentFuture.setSummary("Edited summary");
+        RelatedTo relatedTo = RelatedTo.parse(vComponentEdited.getUniqueIdentifier().getValue());
+        expectedComponentFuture.setRelatedTo(FXCollections.observableArrayList(relatedTo));
+        expectedComponentFuture.setSequence(1);
+        expectedComponentFuture.setUniqueIdentifier(new UniqueIdentifier(myComponentFuture.getUniqueIdentifier()));
+        expectedComponentFuture.setDateTimeStamp(new DateTimeStamp(myComponentFuture.getDateTimeStamp()));
+        assertEquals(expectedComponentFuture, myComponentFuture);
+
+        VEvent expectedvComponentRecurrence = ICalendarStaticComponents.getWholeDayDaily1();
+        expectedvComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+        expectedvComponentRecurrence.setRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 0), ZoneId.of("Europe/London")));
+        expectedvComponentRecurrence.setSummary("recurrence summary");
+        expectedvComponentRecurrence.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 8, 30), ZoneId.of("Europe/London")));
+        expectedvComponentRecurrence.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 30), ZoneId.of("Europe/London")));
         expectedvComponentRecurrence.setUniqueIdentifier(new UniqueIdentifier(expectedComponentFuture.getUniqueIdentifier()));
         assertEquals(expectedvComponentRecurrence, myComponentRecurrence);
     }
