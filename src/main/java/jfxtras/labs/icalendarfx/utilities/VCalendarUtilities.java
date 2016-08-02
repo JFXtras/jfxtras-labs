@@ -18,6 +18,7 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 
 // TODO - COMBINE ICalendarUtilities and VCalendarUtilities
+@Deprecated
 public final class VCalendarUtilities
 {
     private VCalendarUtilities() { }
@@ -77,7 +78,6 @@ public final class VCalendarUtilities
      * @param icsFilePath - URI of ics file
      * @param vCalendar - vCalendar obj2ect with callbacks set for making components (e.g. makeVEventCallback)
      */
-    @Deprecated
     public static VCalendar parseICalendarFile(Path icsFilePath)
     {
         VCalendar vCalendar = new VCalendar();

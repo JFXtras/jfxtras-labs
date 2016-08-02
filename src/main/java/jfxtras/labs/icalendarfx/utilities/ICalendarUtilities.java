@@ -1,5 +1,9 @@
 package jfxtras.labs.icalendarfx.utilities;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -17,6 +24,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
 
 /**
  * Static utility methods used throughout iCalendar
@@ -348,7 +357,44 @@ public final class ICalendarUtilities
         return propertyLines;
     }
     
-    public static String unfoldLines(Iterator<String> lineIterator)
+    public static List<String> unfoldLines(Iterator<String> lineIterator)
+    {
+        List<String> propertyLines = new ArrayList<>();
+        String storedLine = "";
+        while (lineIterator.hasNext())
+        {
+            // unwrap lines by storing previous line, adding to it if next is a continuation
+            // when no more continuation lines are found loop back and start with last storedLine
+            String startLine;
+            if (storedLine.isEmpty())
+            {
+                startLine = lineIterator.next();
+            } else
+            {
+                startLine = storedLine;
+                storedLine = "";
+            }
+            StringBuilder builder = new StringBuilder(startLine);
+            while (lineIterator.hasNext())
+            {
+                String anotherLine = lineIterator.next();
+                if (anotherLine.isEmpty()) continue; // ignore blank lines
+                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                { // unwrap anotherLine into line
+                    builder.append(anotherLine.substring(1, anotherLine.length()));
+                } else
+                {
+                    storedLine = anotherLine; // save for next iteration
+                    break;  // no continuation line, exit while loop
+                }
+            }
+            String line = builder.toString();
+            propertyLines.add(line);
+        }
+        return propertyLines;
+    }
+    
+    public static String unfoldLines2(Iterator<String> lineIterator)
     {
         String storedLine = "";
         while (lineIterator.hasNext())
@@ -382,6 +428,7 @@ public final class ICalendarUtilities
             Stream<String> remainingLineIterator = StreamSupport.stream(spliterator, false);
             Stream<String> storedElement = Stream.of(storedLine);
             Iterator<String> newLineIterator = Stream.concat(storedElement, remainingLineIterator).iterator();
+            // TODO - how do I return new iterator?
             
             return builder.toString();
         }
@@ -658,54 +705,60 @@ public final class ICalendarUtilities
         return new Pair<String,String>(propertyName, value);
     }
     
-//    public static getPropertyName(String line)
-//    {
-//        String line = lines.get(index);
-//        List<Integer> indices = new ArrayList<>();
-//        indices.add(line.indexOf(':'));
-//        indices.add(line.indexOf(';'));
-//        int nameEndIndex = indices
-//              .stream()
-//              .filter(v -> v > 0)
-//              .min(Comparator.naturalOrder())
-//              .get();
-//        return line.substring(0, nameEndIndex);
-//    }
-    
-    /*
-     * MAKE STRING METHODS
+    /**
+     * Parse iCalendar ics and add its properties to vCalendar parameter
+     * 
+     * @param icsFilePath - URI of ics file
+     * @param vCalendar - vCalendar obj2ect with callbacks set for making components (e.g. makeVEventCallback)
      */
-    
-//    /**
-//     * Options available when editing or deleting a repeatable appointment.
-//     * Sometimes all options are not available.  For example, a one-part repeating
-//     * event doesn't have the SEGMENT option.
-//     */
-//    @Deprecated
-//    public enum ChangeDialogOption
-//    {
-//        ONE                  // individual instance
-//      , ALL                  // entire series
-//      , THIS_AND_FUTURE      // selected instance and all in the future
-//      , CANCEL;              // do nothing
-//        
-//        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
-//        {
-//            Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
-//            choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));
-//            Temporal end = vComponent.lastRecurrence();
-//            if (! vComponent.isIndividual())
-//            {
-//                if (! vComponent.isLastRecurrence(startInstance))
-//                {
-//                    Temporal start = (startInstance == null) ? vComponent.getDateTimeStart() : startInstance; // set initial start
-//                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, new StartEndRange(start, end));
-//                }
-//                choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart(), end));
-//            }
-//            return choices;
-//        }        
-//    }
+    public static VCalendar parseICalendarFile(Path icsFilePath)
+    {
+        VCalendar vCalendar = new VCalendar();
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        List<Callable<Object>> tasks = new ArrayList<>();
+        try
+        {
+            BufferedReader br = Files.newBufferedReader(icsFilePath);
+            Iterator<String> lineIterator = br.lines().iterator();
+            while (lineIterator.hasNext())
+            {
+                String line = lineIterator.next();
+                // SEARCH FOR BEGIN OF COMPONENT - LIKE PARSE IN VCALENDAR
+                // GET LINES UNTIL END
+                // MAKE TASK TO PARSE COMPONENT
+                // WHAT ABOUT CALENDAR PROPERTIES?
+                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
+                String propertyName = p.getKey();
+                Arrays.stream(VCalendarComponent.values())
+                        .forEach(property -> 
+                        {
+                            boolean matchOneLineProperty = propertyName.equals(property.toString());
+                            if (matchOneLineProperty)
+                            {
+                                property.parseAndSetProperty(vCalendar, p.getValue());
+                            } else if (line.equals(property.startDelimiter()))
+                            {// multi-line property
+                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
+                                boolean matchEnd = false;
+                                do
+                                {
+                                    String propertyLine = lineIterator.next();
+                                    matchEnd = propertyLine.equals(property.endDelimiter());
+                                    propertyValue.append(propertyLine + System.lineSeparator());
+                                } while (! matchEnd);
+                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
+                                tasks.add(Executors.callable(multiLinePropertyRunnable));
+                            } // otherwise, unknown property should be ignored
+                        });
+            }
+                service.invokeAll(tasks);
+        } catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        return vCalendar;
+    }
+
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     // will be obsolete with Java 9

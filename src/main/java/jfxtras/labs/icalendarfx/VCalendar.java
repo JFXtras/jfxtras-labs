@@ -18,7 +18,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -32,7 +31,6 @@ import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
-import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
 
 /**
  * iCalendar Object
@@ -671,50 +669,167 @@ public class VCalendar extends VParentBase
         }
     }
     
-    public static VCalendar parseICalendarFile(Iterator<String> lineIterator)
+    // single threaded
+    /** Parse content lines into calendar object */
+    public void parseContent(Iterator<String> lineIterator)
     {
-        VCalendar vCalendar = new VCalendar();
-        ExecutorService service = Executors.newSingleThreadExecutor();
+        String firstLine = lineIterator.next();
+        if (! firstLine.equals("BEGIN:VCALENDAR"))
+        {
+            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
+        }
+        while (lineIterator.hasNext())
+        {
+            String line = lineIterator.next();
+            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
+            String propertyName = line.substring(0, nameEndIndex);
+            
+            // Parse component
+            if (propertyName.equals("BEGIN"))
+            {
+                String componentName = line.substring(nameEndIndex+1);
+                List<String> myLines = new ArrayList<>(20);
+                myLines.add(line);
+                final String endLine = "END:" + componentName;
+                while (lineIterator.hasNext())
+                {
+                    String myLine = lineIterator.next();
+                    myLines.add(myLine);
+                    if (myLine.equals(endLine))
+                    {
+                        CalendarElementType elementType = CalendarElementType.valueOf(componentName);
+                        elementType.parse(this, myLines);
+                        break;
+                    }
+                }                
+            // parse calendar properties (ignores unknown properties)
+            } else
+            {
+                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
+                if (elementType != null)
+                {
+                    elementType.parse(this, Arrays.asList(line));
+                }
+            }
+        }
+    }
+    
+    // mulri threaded
+    /** Parse content lines into calendar object */
+    // TODO - TEST THIS - MAY NOT MAINTAIN ORDER
+    public void parseContentM(Iterator<String> lineIterator)
+    {
+        // Callables to generate components
+        ExecutorService service = Executors.newWorkStealingPool();
+//        Map<Integer, Callable<Object>> taskMap = new LinkedHashMap<>();
+        Integer order = 0;
         List<Callable<Object>> tasks = new ArrayList<>();
+        
+        String firstLine = lineIterator.next();
+        if (! firstLine.equals("BEGIN:VCALENDAR"))
+        {
+            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
+        }
+        while (lineIterator.hasNext())
+        {
+            String line = lineIterator.next();
+            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
+            String propertyName = line.substring(0, nameEndIndex);
+            
+            // Parse component
+            if (propertyName.equals("BEGIN"))
+            {
+                String componentName = line.substring(nameEndIndex+1);
+                List<String> myLines = new ArrayList<>(20);
+                myLines.add(line);
+                final String endLine = "END:" + componentName;
+                while (lineIterator.hasNext())
+                {
+                    String myLine = lineIterator.next();
+                    myLines.add(myLine);
+                    if (myLine.equals(endLine))
+                    {
+                        Integer myOrder = order;
+                        order += 100;
+                        Runnable vComponentRunnable = () -> 
+                        {
+                            CalendarElementType elementType = CalendarElementType.valueOf(componentName);
+                            VElement component = elementType.parse(this, myLines);
+                            orderer().elementSortOrderMap().put((VChild) component, myOrder);
+                        };
+//                        taskMap.put(order, Executors.callable(vComponentRunnable));
+                        tasks.add(Executors.callable(vComponentRunnable));
+                        break;
+                    }
+                }
+                
+            // parse calendar properties (ignores unknown properties)
+            } else
+            {
+                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
+                if (elementType != null)
+                {
+                    VElement property = elementType.parse(this, Arrays.asList(line));
+                    orderer().elementSortOrderMap().put((VChild) property, order);
+                    order += 100;
+                }
+            }
+        }
+        
         try
         {
-//            BufferedReader br = Files.newBufferedReader(icsFilePath);
-//            Iterator<String> lineIterator = br.lines().iterator();
-            while (lineIterator.hasNext())
-            {
-                String line = ICalendarUtilities.unfoldLines(lineIterator);
-//                String line = lineIterator.next();
-                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
-                String propertyName = p.getKey();
-                Arrays.stream(VCalendarComponent.values())
-                        .forEach(property -> 
-                        {
-                            boolean matchOneLineProperty = propertyName.equals(property.toString());
-                            if (matchOneLineProperty)
-                            {
-                                property.parseAndSetProperty(vCalendar, p.getValue());
-                            } else if (line.equals(property.startDelimiter()))
-                            {// multi-line property
-                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
-                                boolean matchEnd = false;
-                                do
-                                {
-                                    String propertyLine = lineIterator.next();
-                                    matchEnd = propertyLine.equals(property.endDelimiter());
-                                    propertyValue.append(propertyLine + System.lineSeparator());
-                                } while (! matchEnd);
-                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
-                                tasks.add(Executors.callable(multiLinePropertyRunnable));
-                            } // otherwise, unknown property should be ignored
-                        });
-            }
-                service.invokeAll(tasks);
+//            List<Callable<Object>> tasks = taskMap.entrySet().stream().map(e -> e.getValue()).collect(Collectors.toList());
+            service.invokeAll(tasks);
         } catch (InterruptedException e)
         {
             e.printStackTrace();
         }
-        return vCalendar;
     }
+    
+//    public static VCalendar parseICalendarFile(Iterator<String> lineIterator)
+//    {
+//        VCalendar vCalendar = new VCalendar();
+//        ExecutorService service = Executors.newSingleThreadExecutor();
+//        List<Callable<Object>> tasks = new ArrayList<>();
+//        try
+//        {
+////            BufferedReader br = Files.newBufferedReader(icsFilePath);
+////            Iterator<String> lineIterator = br.lines().iterator();
+//            while (lineIterator.hasNext())
+//            {
+//                String line = ICalendarUtilities.unfoldLines(lineIterator);
+////                String line = lineIterator.next();
+//                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
+//                String propertyName = p.getKey();
+//                Arrays.stream(VCalendarComponent.values())
+//                        .forEach(property -> 
+//                        {
+//                            boolean matchOneLineProperty = propertyName.equals(property.toString());
+//                            if (matchOneLineProperty)
+//                            {
+//                                property.parseAndSetProperty(vCalendar, p.getValue());
+//                            } else if (line.equals(property.startDelimiter()))
+//                            {// multi-line property
+//                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
+//                                boolean matchEnd = false;
+//                                do
+//                                {
+//                                    String propertyLine = lineIterator.next();
+//                                    matchEnd = propertyLine.equals(property.endDelimiter());
+//                                    propertyValue.append(propertyLine + System.lineSeparator());
+//                                } while (! matchEnd);
+//                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
+//                                tasks.add(Executors.callable(multiLinePropertyRunnable));
+//                            } // otherwise, unknown property should be ignored
+//                        });
+//            }
+//                service.invokeAll(tasks);
+//        } catch (InterruptedException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return vCalendar;
+//    }
 
     public static VCalendar parse(String contentLines)
     {
