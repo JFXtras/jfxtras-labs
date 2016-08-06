@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
@@ -57,6 +58,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  * <p>
  * When a {@link VComponent} has a {@link DateTimeStart }as a date only (no time) and changes to date/time the
  * control uses {@link ZonedDateTime} date/time with {@link DEFAULT_ZONE_ID} time zone.
+ * <p>The {@link ICalendarAgenda} control has a number of features, including:
  * 
  * @author David Bal
  * 
@@ -74,7 +76,6 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<T>> ex
     protected final static LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default time
 
     @FXML Label endLabel;
-    
     @FXML private CheckBox wholeDayCheckBox;
     @FXML TextField summaryTextField;
     @FXML TextArea descriptionTextArea;

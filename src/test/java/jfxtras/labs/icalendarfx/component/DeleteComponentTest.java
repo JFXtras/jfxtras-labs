@@ -13,9 +13,9 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.deleters.DeleterVEvent;
-import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
-import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.editors.deleters.DeleterVEvent;
+import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 
 public class DeleteComponentTest
 {

@@ -14,7 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
-import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.test.AssertNode;
 import jfxtras.test.JFXtrasGuiTest;
 import jfxtras.test.TestUtil;
