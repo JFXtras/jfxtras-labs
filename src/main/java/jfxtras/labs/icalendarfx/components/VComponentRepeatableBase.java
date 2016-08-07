@@ -86,7 +86,7 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         super(contentLines);
     }    
     
-    public VComponentRepeatableBase(StandardOrDaylightBase<T> source)
+    public VComponentRepeatableBase(StandardOrDaylight<T> source)
     {
         super(source);
     }
