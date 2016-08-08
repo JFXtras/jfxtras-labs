@@ -28,7 +28,7 @@ public class VFreeBusyTest
                 "FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M" + System.lineSeparator() +
                 "END:" + componentName;
         
-        VFreeBusy madeComponent = new VFreeBusy(content);
+        VFreeBusy madeComponent = VFreeBusy.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
         

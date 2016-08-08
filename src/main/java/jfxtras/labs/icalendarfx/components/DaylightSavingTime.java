@@ -59,24 +59,24 @@ public class DaylightSavingTime extends StandardOrDaylight<DaylightSavingTime>
      */
     
     /**
-     * Creates a default DaylightSavingTime component with no set properties
+     * Creates a default DaylightSavingTime calendar component with no properties
      */
     public DaylightSavingTime()
     {
         super();
     }
-    
-    public DaylightSavingTime(String contentLines)
-    {
-        super(contentLines);
-    }
 
+    /**
+     * Creates a deep copy of a DaylightSavingTime calendar component
+     */
     public DaylightSavingTime(DaylightSavingTime source)
     {
         super(source);
     }
 
-    /** Parse content lines into calendar component object */
+    /**
+     *  Creates a new DaylightSavingTime calendar component by parsing a String of iCalendar content lines
+     */
     public static DaylightSavingTime parse(String contentLines)
     {
         DaylightSavingTime component = new DaylightSavingTime();

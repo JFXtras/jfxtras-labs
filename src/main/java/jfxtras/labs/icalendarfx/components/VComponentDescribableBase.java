@@ -80,10 +80,10 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
      */
     VComponentDescribableBase() { }
     
-    VComponentDescribableBase(String contentLines)
-    {
-        super(contentLines);
-    }
+//    VComponentDescribableBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }
 
     public VComponentDescribableBase(VComponentDescribableBase<T> source)
     {

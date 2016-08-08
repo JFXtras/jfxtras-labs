@@ -35,7 +35,7 @@ public class VTodoTest
                 "PERCENT-COMPLETE:35" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VTodo madeComponent = new VTodo(content);
+        VTodo madeComponent = VTodo.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
     }
@@ -98,4 +98,10 @@ public class VTodoTest
                .collect(Collectors.toList());
         assertEquals(expectedDates, madeDates);
     }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canParseNullVTodo()
+    {
+        VTodo.parse(null);
+    } 
 }

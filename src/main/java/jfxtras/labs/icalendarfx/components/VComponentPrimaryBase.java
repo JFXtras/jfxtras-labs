@@ -73,10 +73,10 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
      */
     VComponentPrimaryBase() { super(); }
     
-    VComponentPrimaryBase(String contentLines)
-    {
-        super(contentLines);
-    }
+//    VComponentPrimaryBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }
 
     public VComponentPrimaryBase(VComponentPrimaryBase<T> source)
     {

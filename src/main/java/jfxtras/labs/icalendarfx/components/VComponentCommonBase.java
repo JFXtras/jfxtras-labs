@@ -58,13 +58,16 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     /*
      * CONSTRUCTORS
      */
-    VComponentCommonBase() { }
-    
-    /** Parse content lines into calendar component */
-    VComponentCommonBase(String contentLines)
+    VComponentCommonBase()
     {
-        parseContent(contentLines);
+        super();
     }
+    
+//    /** Parse content lines into calendar component */
+//    VComponentCommonBase(String contentLines)
+//    {
+//        parseContent(contentLines);
+//    }
     
     /** Copy constructor */
     public VComponentCommonBase(VComponentCommonBase<T> source)

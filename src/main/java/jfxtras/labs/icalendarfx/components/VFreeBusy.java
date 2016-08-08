@@ -201,10 +201,10 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
      */
     public VFreeBusy() { super(); }
     
-    public VFreeBusy(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VFreeBusy(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     /** Copy constructor */
     public VFreeBusy(VFreeBusy source)

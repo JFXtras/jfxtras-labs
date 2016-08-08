@@ -63,7 +63,7 @@ public class DaylightSavingsTimeTest
                 "COMMENT:My third comment" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        DaylightSavingTime madeComponent = new DaylightSavingTime(content);
+        DaylightSavingTime madeComponent = DaylightSavingTime.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
     }
@@ -83,7 +83,7 @@ public class DaylightSavingsTimeTest
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
 
-        DaylightSavingTime madeComponent = new DaylightSavingTime(content);
+        DaylightSavingTime madeComponent = DaylightSavingTime.parse(content);
         assertEquals(madeComponent, builtComponent);
         
         // add another set of recurrences

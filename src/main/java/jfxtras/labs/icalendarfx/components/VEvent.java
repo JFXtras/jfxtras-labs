@@ -169,11 +169,11 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
      */
     public VEvent() { super(); }
 
-//    @Deprecated
-    public VEvent(String contentLines)
-    {
-        super(contentLines);
-    }
+////    @Deprecated
+//    public VEvent(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     /** Copy constructor */
     public VEvent(VEvent source)

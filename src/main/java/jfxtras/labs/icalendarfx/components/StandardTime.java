@@ -57,19 +57,29 @@ public class StandardTime extends StandardOrDaylight<StandardTime>
     /*
      * CONSTRUCTORS
      */
-    public StandardTime() { }
     
-    public StandardTime(String contentLines)
+    /**
+     * Creates a default StandardTime calendar component with no properties
+     */
+    public StandardTime()
     {
-        super(contentLines);
+        super();
     }
 
+    /**
+     * Creates a deep copy of a StandardTime calendar component
+     */
     public StandardTime(StandardTime source)
     {
         super(source);
     }
 
-    /** Parse content lines into calendar component object */
+    /**
+     *  Creates a new StandardTime calendar component by parsing a String of iCalendar content lines
+     *
+     * @param contentLines  the text to parse, not null
+     * @return  the parsed StandardTime, not null
+     */
     public static StandardTime parse(String contentLines)
     {
         StandardTime component = new StandardTime();

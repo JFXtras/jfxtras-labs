@@ -190,10 +190,10 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
      */
     public VTodo() { super(); }
     
-    public VTodo(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VTodo(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public VTodo(VTodo source)
     {

@@ -21,8 +21,11 @@ public interface VElement
     
     /** Parse content line into calendar element.
      * If element contains children {@link #parseContent(String)} is invoked recursively to parse child elements also
-     *  */
-    void parseContent(String content);
+     * 
+     * @param content  calendar content string to parse
+     * @throws IllegalArgumentException  if calendar content is not valid, such as null
+     */
+    void parseContent(String content) throws IllegalArgumentException;
     
     /**
      * Checks element to determine if necessary properties are set.

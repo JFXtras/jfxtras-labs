@@ -405,10 +405,10 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
      */
     public VTimeZone() { super(); }
     
-    public VTimeZone(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VTimeZone(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public VTimeZone(VTimeZone source)
     {

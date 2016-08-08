@@ -131,10 +131,10 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public StandardOrDaylight() { super(); }
     
-    public StandardOrDaylight(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public StandardOrDaylight(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public StandardOrDaylight(StandardOrDaylight<T> source)
     {

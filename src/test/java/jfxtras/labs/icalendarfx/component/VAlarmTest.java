@@ -36,7 +36,7 @@ public class VAlarmTest
                 "REPEAT:2" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VAlarm madeComponent = new VAlarm(content);
+        VAlarm madeComponent = VAlarm.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
         assertTrue(builtComponent.isValid());

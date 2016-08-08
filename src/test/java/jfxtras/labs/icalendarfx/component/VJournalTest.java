@@ -30,7 +30,7 @@ public class VJournalTest
                 "DESCRIPTION:description 3" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VJournal madeComponent = new VJournal(content);
+        VJournal madeComponent = VJournal.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
     }

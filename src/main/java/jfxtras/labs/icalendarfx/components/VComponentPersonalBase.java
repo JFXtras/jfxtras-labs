@@ -188,10 +188,10 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      */
     VComponentPersonalBase() { super(); }
     
-    VComponentPersonalBase(String contentLines)
-    {
-        super(contentLines);
-    }
+//    VComponentPersonalBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public VComponentPersonalBase(VComponentPersonalBase<T> source)
     {

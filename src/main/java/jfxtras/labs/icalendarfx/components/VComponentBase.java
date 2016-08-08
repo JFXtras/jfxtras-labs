@@ -99,6 +99,10 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override
     public void parseContent(String contentLines)
     {
+        if (contentLines == null)
+        {
+            throw new IllegalArgumentException("Calendar component content string can't be null");
+        }
         parseContent(ICalendarUtilities.unfoldLines(contentLines));
     }
     

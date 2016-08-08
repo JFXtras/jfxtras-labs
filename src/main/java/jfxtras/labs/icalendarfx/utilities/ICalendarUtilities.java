@@ -315,43 +315,46 @@ public final class ICalendarUtilities
      *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
      *  can appear more than once resulting in duplicate key values.
      *  
-     * @param componentString
-     * @return
+     * @param componentString  text of calendar component content lines
+     * @return  {@code List<String>} of unfolded content lines, empty list if content lines is null
      */
     public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
-        String storedLine = "";
-        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-        while (lineIterator.hasNext())
+        if (componentString != null)
         {
-            // unwrap lines by storing previous line, adding to it if next is a continuation
-            // when no more continuation lines are found loop back and start with last storedLine
-            String startLine;
-            if (storedLine.isEmpty())
-            {
-                startLine = lineIterator.next();
-            } else
-            {
-                startLine = storedLine;
-                storedLine = "";
-            }
-            StringBuilder builder = new StringBuilder(startLine);
+            String storedLine = "";
+            Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
             while (lineIterator.hasNext())
             {
-                String anotherLine = lineIterator.next();
-                if (anotherLine.isEmpty()) continue; // ignore blank lines
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
+                // unwrap lines by storing previous line, adding to it if next is a continuation
+                // when no more continuation lines are found loop back and start with last storedLine
+                String startLine;
+                if (storedLine.isEmpty())
+                {
+                    startLine = lineIterator.next();
                 } else
                 {
-                    storedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
+                    startLine = storedLine;
+                    storedLine = "";
                 }
+                StringBuilder builder = new StringBuilder(startLine);
+                while (lineIterator.hasNext())
+                {
+                    String anotherLine = lineIterator.next();
+                    if (anotherLine.isEmpty()) continue; // ignore blank lines
+                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                    { // unwrap anotherLine into line
+                        builder.append(anotherLine.substring(1, anotherLine.length()));
+                    } else
+                    {
+                        storedLine = anotherLine; // save for next iteration
+                        break;  // no continuation line, exit while loop
+                    }
+                }
+                String line = builder.toString();
+                propertyLines.add(line);
             }
-            String line = builder.toString();
-            propertyLines.add(line);
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;

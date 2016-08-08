@@ -409,10 +409,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      */
     public VComponentDisplayableBase() { super(); }
     
-    public VComponentDisplayableBase(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VComponentDisplayableBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public VComponentDisplayableBase(VComponentDisplayableBase<T> source)
     {

@@ -81,10 +81,10 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      */
     VComponentRepeatableBase() { }
     
-    VComponentRepeatableBase(String contentLines)
-    {
-        super(contentLines);
-    }    
+//    VComponentRepeatableBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }    
     
     public VComponentRepeatableBase(StandardOrDaylight<T> source)
     {

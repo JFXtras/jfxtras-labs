@@ -197,10 +197,10 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      */
     public VComponentLocatableBase() { super(); }
     
-    public VComponentLocatableBase(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VComponentLocatableBase(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     public VComponentLocatableBase(VComponentLocatableBase<T> source)
     {

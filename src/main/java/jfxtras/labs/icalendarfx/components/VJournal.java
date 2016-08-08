@@ -114,10 +114,10 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
      */
     public VJournal() { super(); }
     
-    public VJournal(String contentLines)
-    {
-        super(contentLines);
-    }
+//    public VJournal(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     /** Copy constructor */
     public VJournal(VJournal source)
