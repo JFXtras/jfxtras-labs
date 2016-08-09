@@ -2,17 +2,16 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 
 public class VTimeZoneTest
 {
     @Test
-    public void canBuildVTimeZone() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildVTimeZone() throws InstantiationException, IllegalAccessException
     {
         VTimeZone builtComponent = new VTimeZone()
                 .withTimeZoneIdentifier("America/Los_Angeles");
@@ -22,10 +21,9 @@ public class VTimeZoneTest
                 "TZID:America/Los_Angeles" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VTimeZone parsedComponent = builtComponent
-                .getClass()
-                .getConstructor(String.class)
-                .newInstance(expectedContent);
+        VComponent parsedComponent = builtComponent.getClass().newInstance();
+        parsedComponent.parseContent(expectedContent);
+
         assertEquals(parsedComponent, builtComponent);
         assertEquals(expectedContent, builtComponent.toContent());            
     }

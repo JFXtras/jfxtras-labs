@@ -2,15 +2,9 @@ package jfxtras.labs.icalendarfx.components.editors.revisors;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -30,6 +24,9 @@ public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> exte
         super(component);
     }
 
+    /*
+     * END RECURRENCE - NEW VALUE
+     */
     /** Gets the value of the end of the selected recurrence after changes */
     public Temporal getEndRecurrence() { return endRecurrence; }
     private Temporal endRecurrence;

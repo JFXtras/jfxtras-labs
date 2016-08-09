@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -41,7 +41,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public class BaseTest
 {
     @Test
-    public void canBuildBase() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildBase() throws InstantiationException, IllegalAccessException
     {
         List<VComponentBase> components = Arrays.asList(
                 new VEvent()
@@ -91,9 +91,8 @@ public class BaseTest
                     "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
-            VComponentBase parsedComponent = builtComponent
-                    .getClass()
-                    .newInstance();
+
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
             parsedComponent.parseContent(expectedContent);
 
             assertEquals(parsedComponent, builtComponent);

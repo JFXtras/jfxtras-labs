@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +19,7 @@ import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -83,7 +83,7 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
 //    protected VBox vbox = null; // cannot make this final and assign upon construction
     
     @Test
-    public void canBuildDisplayable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildDisplayable() throws InstantiationException, IllegalAccessException
     {
         List<VComponentDisplayable<?>> components = Arrays.asList(
                 new VEvent()
@@ -171,10 +171,9 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
                     "SUMMARY:a test summary" + System.lineSeparator() +
                     "END:" + componentName;
 
-            VComponentDisplayable<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());     
             

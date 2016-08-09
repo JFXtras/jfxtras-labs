@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
@@ -16,12 +15,13 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.StandardTime;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
 public class StandardOrDaylightTimeTest
 {
     @Test
-    public void canBuildStandardOrDaylight() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildStandardOrDaylight() throws InstantiationException, IllegalAccessException
     {
         List<StandardOrDaylight<?>> components = Arrays.asList(
                 new DaylightSavingTime()
@@ -43,10 +43,9 @@ public class StandardOrDaylightTimeTest
                     "TZNAME;LANGUAGE=fr-CA:HNE" + System.lineSeparator() +
                     "END:" + componentName;
 
-            StandardOrDaylight<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

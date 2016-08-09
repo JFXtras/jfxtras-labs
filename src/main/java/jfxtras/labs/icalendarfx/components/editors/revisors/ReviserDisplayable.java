@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -47,17 +47,41 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         setVComponentEdited(vComponent);
     }
 
-    /** Gets the value of the end of the selected recurrence */
+    /*
+     * VCOMPONENT EDITED
+     */
+    /** Gets the value of the edited {@link VComponentDisplayable} */
     public U getVComponentEdited() { return vComponentEdited; }
     private U vComponentEdited;
+    /** Sets the value of the edited {@link VComponentDisplayable} */
     public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
+    /**
+     * Sets the value of the edited {@link VComponentDisplayable}
+     * 
+     * @return - this class for chaining
+     * @see VCalendar
+     */
     public T withVComponentEdited(U vComponentEdited) { setVComponentEdited(vComponentEdited); return (T) this; }
 
+    /*
+     * VCOMPONENT ORIGINAL
+     */
+    /** Gets the value of the original {@link VComponentDisplayable} */
     public U getVComponentOriginal() { return vComponentOriginal; }
     private U vComponentOriginal;
+    /** Sets the value of the original {@link VComponentDisplayable} */
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
+    /**
+     * Sets the value of the edited {@link VComponentDisplayable}
+     * 
+     * @return - this class for chaining
+     * @see VCalendar
+     */
     public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
+    /*
+     * VCOMPONENTS
+     */
     /** Gets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
      * @see VCalendar */
     public List<U> getVComponents() { return vComponents; }
@@ -73,6 +97,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      */
     public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
+    /*
+     * START ORIGINAL RECURRENCE
+     */
     /** Gets the value of the start of the selected recurrence, before changes */
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
@@ -84,7 +111,10 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      * @return - this class for chaining
      */
     public T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return (T) this; }
-    
+
+    /*
+     * START RECURRENCE - NEW VALUE
+     */
     /** Gets the value of the start of the selected recurrence, after changes */
     public Temporal getStartRecurrence() { return startRecurrence; }
     private Temporal startRecurrence;
@@ -97,6 +127,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      */
     public T withStartRecurrence(Temporal startRecurrence) { setStartRecurrence(startRecurrence); return (T) this; }
     
+    /*
+     * CHANGE DIALOG CALLBACK
+     */
     /** Gets the value of the dialog callback to prompt the user to select revision option */
     public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback() { return dialogCallback; }
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback;    

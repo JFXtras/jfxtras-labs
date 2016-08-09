@@ -146,7 +146,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 } else
                 {
                     // TODO - check IANA properties and X- properties
-                    System.out.println("unknown prop:" );
+//                    System.out.println("unknown prop:" );
                     throw new RuntimeException("not implemented");
                 }
             }

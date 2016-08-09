@@ -9,50 +9,59 @@ import java.util.Map;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.editors.deleters.DeleterBase;
+import jfxtras.labs.icalendarfx.components.editors.deleters.Deleter;
 import jfxtras.labs.icalendarfx.components.editors.revisors.Reviser;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Options available when editing or deleting a repeatable appointment.
- * Sometimes all options are not available.  For example, a one-part repeating
- * event doesn't have the SEGMENT option.
+ * 
  */
 public enum ChangeDialogOption
 {
-    ONE                  // individual instance
-  , ALL                  // entire series
-  , ALL_IGNORE_RECURRENCES     // entire series with recurrences ignored
-  , THIS_AND_FUTURE      // selected instance and all in the future
-  , THIS_AND_FUTURE_IGNORE_RECURRENCES      // selected instance and all in the future, with recurrences ignored
-  , CANCEL;              // do nothing
+    ONE                                     // individual instance
+  , ALL                                     // entire series
+  , ALL_IGNORE_RECURRENCES                  // entire series with special recurrences (components with RECURRENCEID) ignored
+  , THIS_AND_FUTURE                         // selected instance and all in the future
+  , THIS_AND_FUTURE_IGNORE_RECURRENCES      // selected instance and all in the future, with special recurrences (components with RECURRENCEID) ignored
+  , CANCEL;                                 // do nothing
     
-   /** Produce the map of change dialog options and the date range the option affects - {@link Reviser} */
+    /**
+     * Produce the map of change dialog options and the date range the option affects
+     * 
+     * @param vComponentOriginal  clone of unedited {@link VComponentDisplayable}
+     * @param vComponentEdited  edited {@link VComponentDisplayable} (only descriptive properties are edited, date/time properties are not edited)
+     * @param startRecurrence  start date/time of selected recurrence  
+     * @param changedProperties  list of PropertyType that are changed between vComponentOriginal and vComponentEdited
+     * @return  Map with key as available {@link ChangeDialogOption} and value start, end date/time pair to be affected by change
+     * 
+     * @see Reviser
+     */
    public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
             U vComponentOriginal,
             U vComponentEdited,
-            Temporal startInstance,
+            Temporal startRecurrence,
             List<PropertyType> changedProperties)
    {
        Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
        if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
        {
-           choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
+           choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startRecurrence, startRecurrence));
        }
         
        Temporal lastRecurrence = vComponentEdited.lastRecurrence();
        Temporal firstRecurrence = vComponentEdited.streamRecurrences().findFirst().get();
-       boolean isLastRecurrence = (lastRecurrence == null) ? false : startInstance.equals(lastRecurrence);
-       boolean isAfterLastRecurrence = (lastRecurrence == null) ? false : DateTimeUtilities.isAfter(startInstance, lastRecurrence);
-       boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
+       boolean isLastRecurrence = (lastRecurrence == null) ? false : startRecurrence.equals(lastRecurrence);
+       boolean isAfterLastRecurrence = (lastRecurrence == null) ? false : DateTimeUtilities.isAfter(startRecurrence, lastRecurrence);
+       boolean isFirstRecurrence = startRecurrence.equals(firstRecurrence);
        boolean isDTStartChanged = ! vComponentEdited.getDateTimeStart().equals(vComponentOriginal.getDateTimeStart());
        boolean isFirstOrLastChanged = ! (isLastRecurrence || isFirstRecurrence);
        if (! isAfterLastRecurrence)
        {
            if (isFirstOrLastChanged || isDTStartChanged)
            {
-               Temporal start = (startInstance == null) ? vComponentEdited.getDateTimeStart().getValue() : startInstance; // set initial start
+               Temporal start = (startRecurrence == null) ? vComponentEdited.getDateTimeStart().getValue() : startRecurrence; // set initial start
                Period dateTimeStartShift = Period.between(LocalDate.from(vComponentEdited.getDateTimeStart().getValue()),
                        LocalDate.from(vComponentOriginal.getDateTimeStart().getValue()));
                start = start.plus(dateTimeStartShift);
@@ -63,8 +72,15 @@ public enum ChangeDialogOption
        return choices;
     }
 
-   /** Produce the map of change dialog options and the date range the option affects - {@link DeleterBase} 
- * @param <U>*/
+   /**
+    * Produce the map of change dialog options and the date range the option affects
+    * 
+    * @param vComponent   {@link VComponentDisplayable} to be deleted
+    * @param startOriginalRecurrence  start date/time of selected recurrence
+    * @return  Map with key as available {@link ChangeDialogOption} and value start, end date/time pair to be affected by change
+    * 
+    * @see Deleter
+    */
     public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal, Temporal>> makeDialogChoices(
             VComponentDisplayable<?> vComponent,
             Temporal startOriginalRecurrence)

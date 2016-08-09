@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -39,7 +39,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 public class LocatableTest
 {
     @Test
-    public void canBuildLocatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildLocatable() throws InstantiationException, IllegalAccessException
     {
         List<VComponentLocatable<?>> components = Arrays.asList(
                 new VEvent()
@@ -107,11 +107,10 @@ public class LocatableTest
                     "ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud" + System.lineSeparator() +
                     "END:VALARM" + System.lineSeparator() +
                     "END:" + componentName;
-                    
-            VComponentLocatable<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

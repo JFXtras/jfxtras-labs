@@ -28,6 +28,7 @@ import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -141,10 +142,9 @@ public class RepeatableTest //extends Application
                     "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                     "END:" + componentName;
                     
-            VComponentRepeatable<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());
             

@@ -2,12 +2,12 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -41,7 +41,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
 public class PersonalTest
 {
     @Test
-    public void canBuildPersonal() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildPersonal() throws InstantiationException, IllegalAccessException
     {
         List<VComponentPersonal<?>> components = Arrays.asList(
                 new VEvent()
@@ -89,10 +89,9 @@ public class PersonalTest
                     "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
                     "END:" + componentName;
 
-            VComponentPersonal<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

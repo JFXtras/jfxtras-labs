@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -34,7 +35,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 public class DescribableTest
 {
     @Test
-    public void canBuildDescribable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildDescribable() throws InstantiationException, IllegalAccessException
     {
         List<VComponentDescribable<?>> components = Arrays.asList(
                 new VEvent()
@@ -69,10 +70,9 @@ public class DescribableTest
                     "SUMMARY;LANGUAGE=en-USA:a test summary" + System.lineSeparator() +
                     "END:" + componentName;
 
-            VComponentDescribable<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

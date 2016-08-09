@@ -37,6 +37,9 @@ public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> 
         this.vComponent = vComponent;
     }
 
+    /*
+     * VCOMPONENTS
+     */
     /** Gets the value of the {@link VComponentDisplayable} to be edited */
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
@@ -49,6 +52,9 @@ public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> 
      */
     public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
+    /*
+     * START ORIGINAL RECURRENCE
+     */
     /** Gets the value of the original recurrence date or date/time */
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
@@ -61,6 +67,9 @@ public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> 
      */
     public T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return (T) this; }
 
+    /*
+     * CHANGE DIALOG CALLBACK
+     */    
     /** Gets the value of the dialog callback to prompt the user to select delete option */
     public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback() { return dialogCallback; }
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback;    
