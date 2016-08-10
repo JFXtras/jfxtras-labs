@@ -95,6 +95,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         //component tests
         BaseTest.class,
         CopyComponentTest.class,
+        DateTimeEndTest.class,
         DaylightSavingsTimeTest.class,
         DeleteComponentTest.class,
         DisplayableTest.class,

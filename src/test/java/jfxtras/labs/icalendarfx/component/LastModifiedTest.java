@@ -2,12 +2,12 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 public class LastModifiedTest
 {
     @Test
-    public void canBuildLastModified() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildLastModified() throws InstantiationException, IllegalAccessException
     {
         List<VComponentLastModified<?>> components = Arrays.asList(
                 new VEvent()
@@ -51,10 +51,9 @@ public class LastModifiedTest
                     "LAST-MODIFIED:20160306T080000Z" + System.lineSeparator() +
                     "END:" + componentName;
                     
-            VComponentLastModified<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+            
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

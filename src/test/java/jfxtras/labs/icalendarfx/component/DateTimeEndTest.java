@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +11,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -32,7 +32,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 public class DateTimeEndTest
 {
     @Test
-    public void canBuildLastModified() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildLastModified() throws InstantiationException, IllegalAccessException
     {
         List<VComponentDateTimeEnd<?>> components = Arrays.asList(
                 new VEvent()
@@ -48,10 +48,9 @@ public class DateTimeEndTest
                     "DTEND:20160306T080000Z" + System.lineSeparator() +
                     "END:" + componentName;
                     
-            VComponentDateTimeEnd<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+            
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

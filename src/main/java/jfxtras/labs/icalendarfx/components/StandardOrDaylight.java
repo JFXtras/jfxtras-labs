@@ -150,7 +150,7 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { PropertyType.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); return (T) this; }
     /**
-     * Refers to the object property for the {@link TimeZoneOffsetFrom}
+     * A property wrapping the {@link TimeZoneOffsetFrom} value.
      */
     public ObjectProperty<TimeZoneOffsetFrom> timeZoneOffsetFromProperty()
     {
@@ -163,7 +163,7 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
     }
     private ObjectProperty<TimeZoneOffsetFrom> timeZoneOffsetFrom;
 
-    /**
+    /*
      * TZOFFSETTO
      * Time Zone Offset To
      * RFC 5545, 3.8.3.4, page 105
@@ -174,12 +174,49 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      * TZOFFSETTO:-0400
      * TZOFFSETTO:+1245
      */
+    /**
+     * <p>Gets the value of the {@link TimeZoneOffsetTo} property }</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     */
     public TimeZoneOffsetTo getTimeZoneOffsetTo() { return timeZoneOffsetToProperty().get(); }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property }</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     */
     public void setTimeZoneOffsetTo(TimeZoneOffsetTo timeZoneOffsetTo) { timeZoneOffsetToProperty().set(timeZoneOffsetTo); }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property } by creating a new {@link TimeZoneOffsetTo} from
+     * the {@link ZoneOffset} parameter</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     * 
+     * @param zoneOffset  value for new {@link TimeZoneOffsetTo}
+     */
     public void setTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(new TimeZoneOffsetTo(zoneOffset)); }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property }</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     * 
+     * @return - this class for chaining
+     */
     public T withTimeZoneOffsetTo(TimeZoneOffsetTo timeZoneOffsetTo) { setTimeZoneOffsetTo(timeZoneOffsetTo); return (T) this; }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property } by creating a new {@link TimeZoneOffsetTo} from
+     * the {@link ZoneOffset} parameter</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     * 
+     * @return - this class for chaining
+     */
     public T withTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(zoneOffset); return (T) this; }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property }  by parsing a iCalendar content string</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     * 
+     * @return - this class for chaining
+     */
     public T withTimeZoneOffsetTo(String timeZoneOffsetTo) { PropertyType.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); return (T) this; }
+    /**
+     * A property wrapping the {@link TimeZoneOffsetTo} value.
+     */
     public ObjectProperty<TimeZoneOffsetTo> timeZoneOffsetToProperty()
     {
         if (timeZoneOffsetTo == null)

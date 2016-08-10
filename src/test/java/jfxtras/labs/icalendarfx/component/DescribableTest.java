@@ -97,10 +97,9 @@ public class DescribableTest
                     "DESCRIPTION:Sample description" + System.lineSeparator() +
                     "END:" + componentName;
                     
-            VComponentDescribable<?> parsedComponent = builtComponent
-                    .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+            VComponent parsedComponent = builtComponent.getClass().newInstance();
+            parsedComponent.parseContent(expectedContent);
+            
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }
