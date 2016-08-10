@@ -6,22 +6,24 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 
 /**
- * ACTION
- * RFC 5545, 3.8.6.1, page 132
+ * <h1>ACTION</h1>
+ * <p>RFC 5545, 3.8.6.1, page 132</p>
  * 
- * This property defines the action to be invoked when an alarm is triggered.
+ * <p>This property defines the action to be invoked when an alarm is triggered.</p>
  * 
- * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
+ * <p>actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name</p>
  * 
- * Applications MUST ignore alarms with x-name and iana-token values they don't recognize.
+ * <p>Applications MUST ignore alarms with x-name and iana-token values they don't recognize.</p>
  * 
- * Examples:
- * ACTION:AUDIO
- * ACTION:DISPLAY
+ * <p>Examples:
+ * <ul>
+ * <li>ACTION:AUDIO
+ * <li>ACTION:DISPLAY
+ * </ul>
+ * </p>
  * 
  * @author David Bal
  * 
- * The property can be specified in following components:
  * @see VAlarm
  */
 public class Action extends PropertyBase<ActionType, Action>

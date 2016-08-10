@@ -14,59 +14,63 @@ import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.UnknownProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /** 
- * VALARM
- * Alarm Component
- * RFC 5545 iCalendar 3.6.6. page 71
+ * <p><h1>VALARM</h1>
+ * Alarm Component<br>
+ * RFC 5545 iCalendar 3.6.6. page 71</p>
  * 
- * Provide a grouping of component properties that define an alarm.
+ * <p>Provide a grouping of component properties that define an alarm.</p>
  * 
- * Description:  A "VALARM" calendar component is a grouping of
+ * <p>Description:  A "VALARM" calendar component is a grouping of
       component properties that is a reminder or alarm for an event or a
       to-do.  For example, it may be used to define a reminder for a
-      pending event or an overdue to-do.
+      pending event or an overdue to-do.</p>
 
-      The "VALARM" calendar component MUST include the "ACTION" and
+      <p>The "VALARM" calendar component MUST include the "ACTION" and
       "TRIGGER" properties.  The "ACTION" property further constrains
-      the "VALARM" calendar component in the following ways:
+      the "VALARM" calendar component in the following ways:</p>
 
-      When the action is "AUDIO", the alarm can also include one and
+      <p>When the action is "AUDIO", the alarm can also include one and
       only one "ATTACH" property, which MUST point to a sound resource,
-      which is rendered when the alarm is triggered.
+      which is rendered when the alarm is triggered.</p>
 
-      When the action is "DISPLAY", the alarm MUST also include a
+      <p>When the action is "DISPLAY", the alarm MUST also include a
       "DESCRIPTION" property, which contains the text to be displayed
-      when the alarm is triggered.
+      when the alarm is triggered.</p>
 
-      When the action is "EMAIL", the alarm MUST include a "DESCRIPTION"
+      <p>When the action is "EMAIL", the alarm MUST include a "DESCRIPTION"
       property, which contains the text to be used as the message body,
       a "SUMMARY" property, which contains the text to be used as the
       message subject, and one or more "ATTENDEE" properties, which
       contain the email address of attendees to receive the message.  It
       can also include one or more "ATTACH" properties, which are
       intended to be sent as message attachments.  When the alarm is
-      triggered, the email message is sent.
+      triggered, the email message is sent.</p>
 
-      The "VALARM" calendar component MUST only appear within either a
+      <p>The "VALARM" calendar component MUST only appear within either a
       "VEVENT" or "VTODO" calendar component.  "VALARM" calendar
-      components cannot be nested.  Multiple mutually independent
+      components cannot be nested.  Multiple mutually independent</p>
 
-      "VALARM" calendar components can be specified for a single
-      "VEVENT" or "VTODO" calendar component.
+      <p>"VALARM" calendar components can be specified for a single
+      "VEVENT" or "VTODO" calendar component.</p>
 
-      The "TRIGGER" property specifies when the alarm will be triggered.
+      <p>The "TRIGGER" property specifies when the alarm will be triggered.
       The "TRIGGER" property specifies a duration prior to the start of
       an event or a to-do.  The "TRIGGER" edge may be explicitly set to
       be relative to the "START" or "END" of the event or to-do with the
       "RELATED" parameter of the "TRIGGER" property.  The "TRIGGER"
       property value type can alternatively be set to an absolute
-      calendar date with UTC time.
+      calendar date with UTC time.</p>
 
-      In an alarm set to trigger on the "START" of an event or to-do,
+      <p>In an alarm set to trigger on the "START" of an event or to-do,
       the "DTSTART" property MUST be present in the associated event or
       to-do.  In an alarm in a "VEVENT" calendar component set to
       trigger on the "END" of the event, either the "DTEND" property
@@ -74,9 +78,9 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
       both be present.  In an alarm in a "VTODO" calendar component set
       to trigger on the "END" of the to-do, either the "DUE" property
       MUST be present, or the "DTSTART" and "DURATION" properties MUST
-      both be present.
+      both be present.</p>
 
-      The alarm can be defined such that it triggers repeatedly.  A
+      <p>The alarm can be defined such that it triggers repeatedly.  A
       definition of an alarm with a repeating trigger MUST include both
       the "DURATION" and "REPEAT" properties.  The "DURATION" property
       specifies the delay period, after which the alarm will repeat.
@@ -85,9 +89,9 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
       count is in addition to the initial triggering of the alarm.  Both
       of these properties MUST be present in order to specify a
       repeating alarm.  If one of these two properties is absent, then
-      the alarm will not repeat beyond the initial trigger.
+      the alarm will not repeat beyond the initial trigger.</p>
 
-      The "ACTION" property is used within the "VALARM" calendar
+      <p>The "ACTION" property is used within the "VALARM" calendar
       component to specify the type of action invoked when the alarm is
       triggered.  The "VALARM" properties provide enough information for
       a specific action to be invoked.  It is typically the
@@ -97,37 +101,51 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
       the user; DISPLAY specifies an alarm that causes a text message to
       be displayed to the user; and EMAIL specifies an alarm that causes
       an electronic email message to be delivered to one or more email
-      addresses.
+      addresses.</p>
 
-      In an AUDIO alarm, if the optional "ATTACH" property is included,
+      <p>In an AUDIO alarm, if the optional "ATTACH" property is included,
       it MUST specify an audio sound resource.  The intention is that
       the sound will be played as the alarm effect.  If an "ATTACH"
       property is specified that does not refer to a sound resource, or
-
       if the specified sound resource cannot be rendered (because its
       format is unsupported, or because it cannot be retrieved), then
       the CUA or other entity responsible for playing the sound may
       choose a fallback action, such as playing a built-in default
-      sound, or playing no sound at all.
+      sound, or playing no sound at all.</p>
 
-      In a DISPLAY alarm, the intended alarm effect is for the text
-      value of the "DESCRIPTION" property to be displayed to the user.
+      <p>In a DISPLAY alarm, the intended alarm effect is for the text
+      value of the "DESCRIPTION" property to be displayed to the user.</p>
 
-      In an EMAIL alarm, the intended alarm effect is for an email
+      <p>In an EMAIL alarm, the intended alarm effect is for an email
       message to be composed and delivered to all the addresses
       specified by the "ATTENDEE" properties in the "VALARM" calendar
       component.  The "DESCRIPTION" property of the "VALARM" calendar
       component MUST be used as the body text of the message, and the
       "SUMMARY" property MUST be used as the subject text.  Any "ATTACH"
       properties in the "VALARM" calendar component SHOULD be sent as
-      attachments to the message.
+      attachments to the message.</p>
 
-         Note: Implementations should carefully consider whether they
+         <p>Note: Implementations should carefully consider whether they
          accept alarm components from untrusted sources, e.g., when
          importing calendar objects from external sources.  One
          reasonable policy is to always ignore alarm components that the
          calendar user has not set herself, or at least ask for
-         confirmation in such a case.
+         confirmation in such a case.</p>
+         
+ *<p>Can contain following properties:
+ *<ul>
+ *<li>{@link Action ACTION}
+ *<li>{@link Attachment ATTACH}
+ *<li>{@link Attendee ATTENDEE}
+ *<li>{@link Description DESCRIPTION}
+ *<li>{@link DurationProp DURATION}
+ *<li>{@link IANAProperty IANA-PROP}
+ *<li>{@link RepeatCount REPEAT}
+ *<li>{@link Summary SUMMARY}
+ *<li>{@link Trigger TRIGGER}
+ *<li>{@link UnknownProperty X-PROP}
+ * </ul>
+ * </p>
  * 
  * @author David Bal
  * @see VEvent
@@ -136,13 +154,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,
         VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
 {
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VALARM;
-//    }
- 
-    /**
+    /*
      * ACTION
      * RFC 5545 iCalendar 3.8.6.1 page 132,
      * This property defines the action to be invoked when an
@@ -152,6 +164,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      * Example:
      * ACTION:DISPLAY
      */
+    /** A property wrapping the {@link Action} value. */
     public ObjectProperty<Action> actionProperty()
     {
         if (action == null)
@@ -162,15 +175,34 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         return action;
     }
     private ObjectProperty<Action> action;
+    /** Gets the value of the {@link Action} */
     public Action getAction() { return actionProperty().get(); }
+    /** Sets the value of the {@link Action} by parsing iCalendar content text */
     public void setAction(String action) { setAction(Action.parse(action)); }
+    /** Sets the value of the {@link Action} */
     public void setAction(Action action) { actionProperty().set(action); }
+    /** Sets the value of the {@link Action} by creating a new {@link Action} from the {@link ActionType} parameter */
     public void setAction(ActionType action) { setAction(new Action(action)); }
+    /**
+     * Sets the value of the {@link Action}
+     * 
+     * @return - this class for chaining
+     */
     public VAlarm withAction(Action action) { setAction(action); return this; }
+    /**
+     * Sets the value of the {@link Action} by creating a new {@link Action} from the {@link ActionType} parameter
+     * 
+     * @return - this class for chaining
+     */    
     public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
+    /**
+     * Sets the value of the {@link Action} by parsing iCalendar content text
+     * 
+     * @return - this class for chaining
+     */
     public VAlarm withAction(String action) { PropertyType.ACTION.parse(this, action); return this; }
     
-    /**
+    /*
      * ATTENDEE: Attendee
      * RFC 5545 iCalendar 3.8.4.1 page 107
      * This property defines an "Attendee" within a calendar component.
@@ -317,21 +349,21 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     /*
      * CONSTRUCTORS
      */
-    public VAlarm() { super(); }
+    /**
+     * Creates a default VAlarm calendar component with no properties
+     */
+    public VAlarm()
+    {
+        super();
+    }
     
-//    public VAlarm(String contentLines)
-//    {
-//        super(contentLines);
-//    }
-    
-    /** Copy constructor */
+    /**
+     * Creates a deep copy of a StandardTime calendar component
+     */
     public VAlarm(VAlarm source)
     {
         super(source);
     }
-    
-//    @Override
-//    public Reviser newRevisor() { return new ReviserVAlarm(this); }
 
     @Override
     public List<String> errors()
@@ -372,7 +404,12 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         return isActionPresent && isTriggerPresent && isDurationAndRepeatOK;
     }
 
-    /** Parse content lines into calendar component object */
+    /**
+     *  Creates a new VAlarm calendar component by parsing a String of iCalendar content lines
+     *
+     * @param contentLines  the text to parse, not null
+     * @return  the parsed VAlarm
+     */
     public static VAlarm parse(String contentLines)
     {
         VAlarm component = new VAlarm();

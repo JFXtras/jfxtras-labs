@@ -128,10 +128,16 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public void setTimeZoneOffsetFrom(ZoneOffset zoneOffset) { setTimeZoneOffsetFrom(new TimeZoneOffsetFrom(zoneOffset)); }
     /**
-     * <p>Sets the value of the {@link TimeZoneOffsetFrom} property }</p>
+     * <p>Sets the value of the {@link TimeZoneOffsetFrom} property} by parsing a iCalendar content string</p>
+     * <p>This property specifies the offset that is in use prior to this time zone observance.</p>
+     */
+    public void setTimeZoneOffsetFrom(String timeZoneOffsetFrom) { PropertyType.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); }
+    /**
+     * <p>Sets the value of the {@link TimeZoneOffsetFrom} property } by creating a new {@link TimeZoneOffsetFrom} from
+     * the {@link ZoneOffset} parameter</p>
      * <p>This property specifies the offset that is in use prior to this time zone observance.</p>
      * 
-     * @return - this class for chaining
+     * @param zoneOffset  value for new {@link TimeZoneOffsetFrom}
      */
     public T withTimeZoneOffsetFrom(TimeZoneOffsetFrom timeZoneOffsetFrom) { setTimeZoneOffsetFrom(timeZoneOffsetFrom); return (T) this; }
     /**
@@ -148,10 +154,8 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      * 
      * @return - this class for chaining
      */
-    public T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { PropertyType.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); return (T) this; }
-    /**
-     * A property wrapping the {@link TimeZoneOffsetFrom} value.
-     */
+    public T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { setTimeZoneOffsetFrom(timeZoneOffsetFrom); return (T) this; }
+    /** A property wrapping the {@link TimeZoneOffsetFrom} value. */
     public ObjectProperty<TimeZoneOffsetFrom> timeZoneOffsetFromProperty()
     {
         if (timeZoneOffsetFrom == null)
@@ -193,6 +197,11 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public void setTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(new TimeZoneOffsetTo(zoneOffset)); }
     /**
+     * <p>Sets the value of the {@link TimeZoneOffsetTo} property} by parsing a iCalendar content string</p>
+     * <p>This property specifies the offset that is in use in this time zone observance.</p>
+     */
+    public void setTimeZoneOffsetTo(String timeZoneOffsetTo) { PropertyType.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); }
+    /**
      * <p>Sets the value of the {@link TimeZoneOffsetTo} property }</p>
      * <p>This property specifies the offset that is in use in this time zone observance.</p>
      * 
@@ -213,7 +222,7 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      * 
      * @return - this class for chaining
      */
-    public T withTimeZoneOffsetTo(String timeZoneOffsetTo) { PropertyType.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); return (T) this; }
+    public T withTimeZoneOffsetTo(String timeZoneOffsetTo) { setTimeZoneOffsetTo(timeZoneOffsetTo); return (T) this; }
     /**
      * A property wrapping the {@link TimeZoneOffsetTo} value.
      */

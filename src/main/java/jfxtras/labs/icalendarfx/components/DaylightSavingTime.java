@@ -75,7 +75,10 @@ public class DaylightSavingTime extends StandardOrDaylight<DaylightSavingTime>
     }
 
     /**
-     *  Creates a new DaylightSavingTime calendar component by parsing a String of iCalendar content lines
+     * Creates a new DaylightSavingTime calendar component by parsing a String of iCalendar content lines
+     *
+     * @param contentLines  the text to parse, not null
+     * @return  the parsed DaylightSavingTime
      */
     public static DaylightSavingTime parse(String contentLines)
     {

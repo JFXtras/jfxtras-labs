@@ -78,7 +78,7 @@ public class StandardTime extends StandardOrDaylight<StandardTime>
      *  Creates a new StandardTime calendar component by parsing a String of iCalendar content lines
      *
      * @param contentLines  the text to parse, not null
-     * @return  the parsed StandardTime, not null
+     * @return  the parsed StandardTime
      */
     public static StandardTime parse(String contentLines)
     {
