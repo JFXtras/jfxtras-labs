@@ -30,7 +30,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  */
 public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentPersonal<T>
 {
-    /**
+    /*
      * ATTENDEE: Attendee
      * RFC 5545 iCalendar 3.8.4.1 page 107
      * This property defines an "Attendee" within a calendar component.
@@ -42,8 +42,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      *  :mailto:jdoe@example.com
      */
     @Override
-    public ObservableList<Attendee> getAttendees() { return attendees; }
-    private ObservableList<Attendee> attendees;
+    public ObjectProperty<ObservableList<Attendee>> attendeesProperty()
+    {
+        if (attendees == null)
+        {
+            attendees = new SimpleObjectProperty<>(this, PropertyType.ATTENDEE.toString());
+        }
+        return attendees;
+    }
+    private ObjectProperty<ObservableList<Attendee>> attendees;
+    @Override
+    public ObservableList<Attendee> getAttendees() { return (attendees == null) ? null : attendees.get(); }
     @Override
     public void setAttendees(ObservableList<Attendee> attendees)
     {
@@ -52,9 +61,9 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
             orderer().registerSortOrderProperty(attendees);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.attendees);
+            orderer().unregisterSortOrderProperty(this.attendees.get());
         }
-        this.attendees = attendees;
+        attendeesProperty().set(attendees);
     }
     
     /**

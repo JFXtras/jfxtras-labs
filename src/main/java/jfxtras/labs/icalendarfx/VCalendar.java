@@ -342,7 +342,7 @@ public class VCalendar extends VParentBase
     /** 
      * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
      * 
-     * @see VTimeZoneOld
+     * @see VTimeZone
      */
     public ObservableList<VTimeZone> getVTimeZones() { return vTimeZones; }
     private ObservableList<VTimeZone> vTimeZones = FXCollections.observableArrayList();

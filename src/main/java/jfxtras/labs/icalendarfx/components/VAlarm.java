@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /** 
- * <p><h1>VALARM</h1>
+ * <p><h2>VALARM</h2>
  * Alarm Component<br>
  * RFC 5545 iCalendar 3.6.6. page 71</p>
  * 
@@ -154,17 +154,17 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,
         VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
 {
-    /*
-     * ACTION
-     * RFC 5545 iCalendar 3.8.6.1 page 132,
-     * This property defines the action to be invoked when an
-     * alarm is triggered.
-     * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
+    /**
+     * <p>Defines the action to be invoked when an alarm is triggered.<br>
+     * RFC 5545 iCalendar 3.8.6.1 page 132</p>
+     * <p>actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name</p>
      * 
-     * Example:
-     * ACTION:DISPLAY
+     * <p>Example:
+     * <ul>
+     * <li>ACTION:DISPLAY
+     * </ul>
+     * </p>
      */
-    /** A property wrapping the {@link Action} value. */
     public ObjectProperty<Action> actionProperty()
     {
         if (action == null)
@@ -175,31 +175,24 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         return action;
     }
     private ObjectProperty<Action> action;
-    /** Gets the value of the {@link Action} */
     public Action getAction() { return actionProperty().get(); }
-    /** Sets the value of the {@link Action} by parsing iCalendar content text */
     public void setAction(String action) { setAction(Action.parse(action)); }
-    /** Sets the value of the {@link Action} */
     public void setAction(Action action) { actionProperty().set(action); }
-    /** Sets the value of the {@link Action} by creating a new {@link Action} from the {@link ActionType} parameter */
     public void setAction(ActionType action) { setAction(new Action(action)); }
     /**
-     * Sets the value of the {@link Action}
+     * Sets the value of the {@link #actionProperty()}
      * 
-     * @return - this class for chaining
+     * @return  this class for chaining
      */
     public VAlarm withAction(Action action) { setAction(action); return this; }
     /**
-     * Sets the value of the {@link Action} by creating a new {@link Action} from the {@link ActionType} parameter
+     * Sets the value of the {@link #actionProperty()} by creating a new {@link Action} from the {@link ActionType} parameter
      * 
-     * @return - this class for chaining
+     * @return  this class for chaining
      */    
     public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
-    /**
-     * Sets the value of the {@link Action} by parsing iCalendar content text
-     * 
-     * @return - this class for chaining
-     */
+    /** Sets the value of the {@link #actionProperty()} by parsing iCalendar content text
+     * @return  this class for chaining */
     public VAlarm withAction(String action) { PropertyType.ACTION.parse(this, action); return this; }
     
     /*
@@ -214,8 +207,17 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      *  :mailto:jdoe@example.com
      */
     @Override
-    public ObservableList<Attendee> getAttendees() { return attendees; }
-    private ObservableList<Attendee> attendees;
+    public ObjectProperty<ObservableList<Attendee>> attendeesProperty()
+    {
+        if (attendees == null)
+        {
+            attendees = new SimpleObjectProperty<>(this, PropertyType.ATTENDEE.toString());
+        }
+        return attendees;
+    }
+    private ObjectProperty<ObservableList<Attendee>> attendees;
+    @Override
+    public ObservableList<Attendee> getAttendees() { return (attendees == null) ? null : attendees.get(); }
     @Override
     public void setAttendees(ObservableList<Attendee> attendees)
     {
@@ -224,12 +226,12 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
             orderer().registerSortOrderProperty(attendees);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.attendees);
+            orderer().unregisterSortOrderProperty(this.attendees.get());
         }
-        this.attendees = attendees;
+        attendeesProperty().set(attendees);
     }
     
-    /**
+    /*
      * DESCRIPTION
      * RFC 5545 iCalendar 3.8.1.5. page 84
      * 
@@ -243,7 +245,8 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      *
      * Note: Only VJournal allows multiple instances of DESCRIPTION
      */
-    @Override public ObjectProperty<Description> descriptionProperty()
+    @Override
+    public ObjectProperty<Description> descriptionProperty()
     {
         if (description == null)
         {
@@ -253,10 +256,10 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         return description;
     }
     @Override
-    public Description getDescription() { return (description == null) ? null : descriptionProperty().get(); }
+    public Description getDescription() { return (description == null) ? null : description.get(); }
     private ObjectProperty<Description> description;
     
-    /** 
+    /*
      * DURATION
      * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * Can't be used if DTEND is used.  Must be one or the other.
@@ -276,20 +279,20 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     private ObjectProperty<DurationProp> duration;
     
     /**
-     * REPEAT: Repeat Count
-     * RFC 5545 iCalendar 3.8.6.2 page 133,
-     * This property defines the number of times the alarm should
-     * be repeated, after the initial trigger.
+     * <p>This property defines the number of times the alarm should
+     * be repeated, after the initial trigger.<br>
+     * RFC 5545 iCalendar 3.8.6.2 page 133,</p>
      * 
-     * If the alarm triggers more than once, then this property MUST be specified
-     * along with the "DURATION" property.
+     * <p>If the alarm triggers more than once, then this property MUST be specified
+     * along with the "DURATION" property.</p>
      * 
-     * Example:  The following is an example of this property for an alarm
+     * <p>Example:  The following is an example of this property for an alarm
      * that repeats 4 additional times with a 5-minute delay after the
-     * initial triggering of the alarm:
+     * initial triggering of the alarm:<br>
      * 
-     * REPEAT:4
+     * REPEAT:4<br>
      * DURATION:PT5M
+     * </p>
      */
     public ObjectProperty<RepeatCount> repeatCountProperty()
     {
@@ -301,29 +304,37 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         return repeatCount;
     }
     private ObjectProperty<RepeatCount> repeatCount;
-    public RepeatCount getRepeatCount() { return repeatCountProperty().get(); }
-//    public void setRepeatCount(String repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
+    public RepeatCount getRepeatCount() { return (repeatCount == null) ? null : repeatCount.get(); }
     public void setRepeatCount(RepeatCount repeatCount) { repeatCountProperty().set(repeatCount); }
-//    public void setRepeatCount(int repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
+    public void setRepeatCount(int repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
+    public void setRepeatCount(String repeatCount) { setRepeatCount(RepeatCount.parse(repeatCount)); }
+    /** Sets the value of the {@link #repeatCountProperty()}
+     * @return  this class for chaining */
     public VAlarm withRepeatCount(RepeatCount repeatCount) { setRepeatCount(repeatCount); return this; }
-//    public VAlarm withRepeatCount(int repeatCount) { setRepeatCount(repeatCount); return this; }
-//    public VAlarm withRepeatCount(String repeatCount) { PropertyEnum.REPEAT_COUNT.parse(this, repeatCount); return this; }
+    /** Sets the value of the {@link #repeatCountProperty()} by creating new {@link RepeatCount} from int parameter
+     * @return  this class for chaining */
+    public VAlarm withRepeatCount(int repeatCount) { setRepeatCount(repeatCount); return this; }
+    /** Sets the value of the {@link #repeatCountProperty()} by parsing iCalendar content text
+     * @return  this class for chaining */
+    public VAlarm withRepeatCount(String repeatCount) { setRepeatCount(repeatCount); return this; }
     
     /**
-     * TRIGGER
-     * RFC 5545 iCalendar 3.8.6.3 page 133,
-     * This property specifies when an alarm will trigger.
+     * <p>This property specifies when an alarm will trigger.<br>
+     * RFC 5545 iCalendar 3.8.6.3 page 133</p>
      * 
-     * Examples:
+     * <p>Examples:
+     * <ul>
      * A trigger set 15 minutes prior to the start of the event or to-do.
-     * TRIGGER:-PT15M
+     * <li>TRIGGER:-PT15M<br>
      *  
      * A trigger set five minutes after the end of an event or the due
      * date of a to-do.
-     * TRIGGER;RELATED=END:PT5M
+     * <li>TRIGGER;RELATED=END:PT5M<br>
      * 
      * A trigger set to an absolute DATE-TIME.
-     * TRIGGER;VALUE=DATE-TIME:19980101T050000Z
+     * <li>TRIGGER;VALUE=DATE-TIME:19980101T050000Z
+     * </ul>
+     * </p>
      */
     public ObjectProperty<Trigger<?>> triggerProperty()
     {
@@ -340,9 +351,17 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     public void setTrigger(Trigger<?> trigger) { triggerProperty().set(trigger); }
     public void setTrigger(Duration trigger) { setTrigger(new Trigger<Duration>(trigger)); }
     public void setTrigger(ZonedDateTime trigger) { setTrigger(new Trigger<ZonedDateTime>(trigger)); }
+    /** Sets the value of the {@link #triggerProperty()}
+     * @return  this class for chaining */
     public VAlarm withTrigger(Trigger<?> trigger) { setTrigger(trigger); return this; }
+    /** Sets the value of the {@link #triggerProperty()} by creating new {@link Trigger} from Duration parameter
+     * @return  this class for chaining */
     public VAlarm withTrigger(Duration trigger) { setTrigger(trigger); return this; }
+    /** Sets the value of the {@link #triggerProperty()} by creating new {@link Trigger} from ZonedDateTime parameter
+     * @return  this class for chaining */
     public VAlarm withTrigger(ZonedDateTime trigger) { setTrigger(trigger); return this; }
+    /** Sets the value of the {@link #triggerProperty()} by parsing iCalendar content text
+     * @return  this class for chaining */
     public VAlarm withTrigger(String trigger) { setTrigger(trigger); return this; }
 
     
