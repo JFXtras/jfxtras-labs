@@ -9,15 +9,15 @@ import java.util.Collection;
  * Adding children is not exposed by the implementation, but rather handled internally when a calendar 
  * component has a property change.
  * 
- * The order of the children is determines the order of the content outputed by a calendar component.
- * 
  * @author David Bal
  */
 public interface VParent extends VElement
 {
-    /** returns unmodifiable collection of child elements */
+    /** returns unmodifiable collection of {@link VChild} elements.  The order of the children equals the order they were added.
+     * Adding children is not exposed by the implementation, but rather handled internally.  When a {@link VChild} has its
+     * value set it's automatically included in the collection of children. */
     Collection<VChild> childrenUnmodifiable();
     
-    /** Copy children elements from source into this parent */
+    /** Copy {@link VChild} elements from source into this {@link VParent} */
     void copyChildrenFrom(VParent source);
 }

@@ -13,37 +13,28 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
- * iCalendar component
- * Contains the following properties:
- * Non-Standard Properties, IANA Properties
- * 
- * Each property contains the following methods:
- * Getter for iCalendar property
- * Getter for JavaFX property
- * Setter for iCalendar property
- * Setter for iCalendar's properties' encapsulated object (omitted if object is a String - Strings are parsed)
- * Setter for iCalendar String content (parsed into new iCalendar object)
- * Also contains chaining "with" methods matching the two or three setters.
+ * Base iCalendar component
  * 
  * @author David Bal
  *
- * @param <T> - implementation class
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VFreeBusy
- * @see VTimeZone
- * @see VAlarmInt
+ * @param <T> - concrete subclass
  */
 public abstract class VComponentBase extends VParentBase implements VComponent
 {
-    VParent myParent;
+    private static String firstContentLine = "BEGIN:";
+    private static String lastContentLine = "END:";
+    
+    private VParent myParent;
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
-    private String firstContentLine = "BEGIN:";
-    private String lastContentLine = "END:";
-    
+    @Override
+    public void copyFrom(VComponent source)
+    {
+        myParent = source.getParent();
+        copyChildrenFrom(source);
+    }
+        
     @Override
     protected Callback<VChild, Void> copyChildCallback()
     {        
@@ -65,9 +56,11 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     /*
      * CONSTRUCTORS
      */
+    /**
+     * Create default component by setting {@link componentName}, and setting content line generator.
+     */
     VComponentBase()
     {
-        addListeners();
         componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
         setContentLineGenerator(new MultiLineContent(
                 orderer(),
@@ -88,11 +81,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     {
         this();
         copyFrom(source);
-    }
-
-    void addListeners()
-    {
-        // functionality added in subclasses
     }
     
     /** Parse content lines into calendar component */

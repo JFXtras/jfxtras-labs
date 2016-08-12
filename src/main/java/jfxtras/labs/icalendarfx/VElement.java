@@ -12,12 +12,11 @@ import java.util.List;
 public interface VElement
 {
     /**
-     * Produce iCalendar content string.  If element is a parent it {@link #toContent() }is invoked recursively to 
-     * produce content of both parent and children.
+     * Returns iCalendar content string.
      * 
      * @return the content string
      */
-    String toContent();
+    String toContent(); // This method is invoked recursively to include content of all children.
     
     /** Parse content line into calendar element.
      * If element contains children {@link #parseContent(String)} is invoked recursively to parse child elements also

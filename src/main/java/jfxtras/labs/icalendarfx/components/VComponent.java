@@ -4,45 +4,44 @@ import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 
 /**
- * iCalendar component with no properties
+ * Top-level calendar component
  * 
  * @author David Bal
  */
 public interface VComponent extends VParent, VChild
 {
     /**
-     * Returns the enum for the component as it would appear in the iCalendar content line
-     * Examples:
-     * VEVENT
-     * VJOURNAL
-     * 
+     * <p>Returns the name of the component as it would appear in the iCalendar content line.</p>
+     * <p>Examples:
+     * <ul>
+     * <li>VEVENT
+     * <li>VJOURNAL
+     * </ul>
+     * </p>
      * @return - the component enum
      */
     String componentName();
     
     /**
-     * Return property content line for iCalendar output files.  See RFC 5545 3.4
-     * Contains component properties with their values and any parameters.
-     * 
-     * The following is a simple example of an iCalendar component:
-     *
-     *  BEGIN:VEVENT
-     *  UID:19970610T172345Z-AF23B2@example.com
-     *  DTSTAMP:19970610T172345Z
-     *  DTSTART:19970714T170000Z
-     *  DTEND:19970715T040000Z
-     *  SUMMARY:Bastille Day Party
+     * <p>Returns content line for a calendar component.  See RFC 5545 3.4
+     * Contains component properties with their values and any parameters.</p>
+     * <p>
+     * The following is a example of iCalendar content text:
+     *  <ul>
+     *  BEGIN:VEVENT<br>
+     *  UID:19970610T172345Z-AF23B2@example.com<br>
+     *  DTSTAMP:19970610T172345Z<br>
+     *  DTSTART:19970714T170000Z<br>
+     *  DTEND:19970715T040000Z<br>
+     *  SUMMARY:Bastille Day Party<br>
      *  END:VEVENT
+     *  </ul>
      * 
      * @return - the component content lines
      */
     @Override
     String toContent();
     
-    /** Copy children and parent from source into this VComponent */
-    default void copyFrom(VComponent source)
-    {
-        setParent(source.getParent());
-        copyChildrenFrom(source);
-    }
+    /** Copy state from source VComponent */
+    void copyFrom(VComponent source);
 }

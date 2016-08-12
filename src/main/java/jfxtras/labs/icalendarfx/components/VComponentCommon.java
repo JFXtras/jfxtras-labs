@@ -8,6 +8,18 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
+/**
+ * <p>ICalendar Component with the following properties:
+ * <ul>
+ * <li> {@link NonStandardProperty}
+ * <li> {@link IANAProperty}
+ * </ul>
+ * </p>
+ * 
+ * @author David Bal
+ *
+ * @param <T>  concrete subclass
+ */
 public interface VComponentCommon<T> extends VComponent
 {
     /**

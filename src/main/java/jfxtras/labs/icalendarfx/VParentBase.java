@@ -25,20 +25,12 @@ public abstract class VParentBase implements VParent
     final private Orderer orderer = new OrdererBase(this);
     public Orderer orderer() { return orderer; }
     
+    /* Strategy to build iCalendar content lines */
     private ContentLineStrategy contentLineGenerator;
     protected void setContentLineGenerator(ContentLineStrategy contentLineGenerator)
     {
         this.contentLineGenerator = contentLineGenerator;
     }
-    
-//    /*
-//     * CONSTRUCTOR
-//     */
-//    public VParentBase(ContentLineStrategy contentLineGenerator)
-//    {
-//        orderer = new OrdererBase(this);
-//        this.contentLineGenerator = contentLineGenerator;
-//    }
     
     /** Strategy to copy subclass's children */
     protected Callback<VChild, Void> copyChildCallback()

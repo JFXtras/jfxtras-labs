@@ -76,12 +76,4 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
         super(source);
 //        copyChildrenFrom(source);
     }
-    
-    @Override
-    void addListeners()
-    {
-        super.addListeners();
-//        getNonStandardProperties().addListener(sortOrderListChangeListener);
-//        getIANAProperties().addListener(sortOrderListChangeListener);
-    }
 }
