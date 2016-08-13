@@ -10,7 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarElementType;
+import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
@@ -449,9 +449,9 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     
     /** parse Standard and Daylight sub-components */
     @Override
-    void parseSubComponents(CalendarElementType subcomponentType, String contentLines)
+    void parseSubComponents(CalendarComponent subcomponentType, String contentLines)
     {
-        if (subcomponentType == CalendarElementType.STANDARD_TIME || subcomponentType == CalendarElementType.DAYLIGHT_SAVING_TIME)
+        if (subcomponentType == CalendarComponent.STANDARD_TIME || subcomponentType == CalendarComponent.DAYLIGHT_SAVING_TIME)
         {
             final ObservableList<StandardOrDaylight<?>> list;
             if (getStandardOrDaylight() == null)
@@ -462,7 +462,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
             {
                 list = getStandardOrDaylight();
             }
-            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarElementType.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
+            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarComponent.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
             list.add(subcomponent);
         } else
         {

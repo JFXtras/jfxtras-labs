@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
-import jfxtras.labs.icalendarfx.parameters.ParameterType;
+import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
 import jfxtras.labs.icalendarfx.parameters.Range;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
@@ -79,7 +79,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (alternateText == null)
         {
-            alternateText = new SimpleObjectProperty<>(this, ParameterType.ALTERNATE_TEXT_REPRESENTATION.toString());
+            alternateText = new SimpleObjectProperty<>(this, PropertyParameter.ALTERNATE_TEXT_REPRESENTATION.toString());
             orderer().registerSortOrderProperty(alternateText);
         }
         return alternateText;
@@ -110,7 +110,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (encoding == null)
         {
-            encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+            encoding = new SimpleObjectProperty<>(this, PropertyParameter.INLINE_ENCODING.toString());
             orderer().registerSortOrderProperty(encoding);
         }
         return encoding;
@@ -143,7 +143,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (freeBusyType == null)
         {
-            freeBusyType = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+            freeBusyType = new SimpleObjectProperty<>(this, PropertyParameter.INLINE_ENCODING.toString());
             orderer().registerSortOrderProperty(freeBusyType);
         }
         return freeBusyType;
@@ -168,7 +168,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (formatType == null)
         {
-            formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
+            formatType = new SimpleObjectProperty<>(this, PropertyParameter.FORMAT_TYPE.toString());
             orderer().registerSortOrderProperty(formatType);
         }
         return formatType;
@@ -201,7 +201,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (range == null)
         {
-            range = new SimpleObjectProperty<>(this, ParameterType.RECURRENCE_IDENTIFIER_RANGE.toString());
+            range = new SimpleObjectProperty<>(this, PropertyParameter.RECURRENCE_IDENTIFIER_RANGE.toString());
             orderer().registerSortOrderProperty(range);
         }
         return range;
@@ -227,7 +227,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (alarmTrigger == null)
         {
-            alarmTrigger = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
+            alarmTrigger = new SimpleObjectProperty<>(this, PropertyParameter.FORMAT_TYPE.toString());
             orderer().registerSortOrderProperty(alarmTrigger);
       }
         return alarmTrigger;
@@ -259,7 +259,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (relationship == null)
         {
-            relationship = new SimpleObjectProperty<>(this, ParameterType.RELATIONSHIP_TYPE.toString());
+            relationship = new SimpleObjectProperty<>(this, PropertyParameter.RELATIONSHIP_TYPE.toString());
             orderer().registerSortOrderProperty(relationship);
         }
         return relationship;
@@ -288,7 +288,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (timeZoneIdentifier == null)
         {
-            timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyParameter.TIME_ZONE_IDENTIFIER.toString());
             orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
@@ -298,7 +298,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(value)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
-    public U withTimeZoneIdentifier(String content) { ParameterType.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
+    public U withTimeZoneIdentifier(String content) { PropertyParameter.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
 
     /*
      * CONSTRUCTORS

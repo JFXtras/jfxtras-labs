@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.util.List;
 
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.CalendarElementType;
+import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
@@ -61,7 +61,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
      */
     VComponentBase()
     {
-        componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
+        componentName = CalendarComponent.enumFromClass(this.getClass()).toString();
         setContentLineGenerator(new MultiLineContent(
                 orderer(),
                 firstContentLine + componentName,
@@ -109,7 +109,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentName());
                 if  (! isMainComponent)
                 {
-                    CalendarElementType subcomponentType = CalendarElementType.enumFromName(line.substring(nameEndIndex+1));
+                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(line.substring(nameEndIndex+1));
                     StringBuilder subcomponentContentBuilder = new StringBuilder(200);
                     subcomponentContentBuilder.append(line + System.lineSeparator());
                     boolean isEndFound = false;
@@ -146,7 +146,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
      * @param subcomponentType 
      * @param string 
      */
-    void parseSubComponents(CalendarElementType subcomponentType, String subcomponentcontentLines) { }
+    void parseSubComponents(CalendarComponent subcomponentType, String subcomponentcontentLines) { }
     
     @Override
     public String toString()

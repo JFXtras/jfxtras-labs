@@ -12,17 +12,23 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.content.ContentLineStrategy;
 
 /**
- * Base class for parent calendar components.  Uses an {@link Orderer} to keep track of child object order.  Ordering
- * requires registering {@link Orderer} listeners to child properties.
+ * <p>Base class for parent calendar components.</p>
+ * 
+ * <p>The order of the children from {@link #childrenUnmodifiable()} equals the order they were added.
+ * Adding children is not exposed by the implementation, but rather handled internally.  When a {@link VChild} has its
+ * value set, it's automatically included in the collection of children by the {@link Orderer}.</p>
+ * 
+ * <p>The {@link Orderer} requires registering listeners to child properties.</p>
  * 
  * @author David Bal
  */
 public abstract class VParentBase implements VParent
 {
     /*
-     * SORT ORDER FOR CHILD ELEMENTS
+     * HANDLE SORT ORDER FOR CHILD ELEMENTS
      */
     final private Orderer orderer = new OrdererBase(this);
+    /** Return the {@link Orderer} for this {@link VParent} */
     public Orderer orderer() { return orderer; }
     
     /* Strategy to build iCalendar content lines */
@@ -32,13 +38,13 @@ public abstract class VParentBase implements VParent
         this.contentLineGenerator = contentLineGenerator;
     }
     
-    /** Strategy to copy subclass's children */
+    /** Strategy to copy subclass's children
+     * This method MUST be overridden in subclasses */
     protected Callback<VChild, Void> copyChildCallback()
     {
-        throw new RuntimeException("Copy child callback is not overridden in subclass " + this.getClass());
+        throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
     };
 
-    /** returns read-only list of child elements following the sort order controlled by {@link Orderer} */
     @Override
     public List<VChild> childrenUnmodifiable()
     {
@@ -59,8 +65,6 @@ public abstract class VParentBase implements VParent
     @Override
     public void copyChildrenFrom(VParent source)
     {
-//        orderer().elementSortOrderMap().clear();
-        // TODO - FIND WAY TO ORDER UNIQUE CHILDREN
         source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
     }
     
@@ -77,7 +81,7 @@ public abstract class VParentBase implements VParent
     {
         if (contentLineGenerator == null)
         {
-            throw new RuntimeException("Can't produce content lines before contentLineGenerator is set");
+            throw new RuntimeException("Can't produce content lines because contentLineGenerator isn't set");  // contentLineGenerator MUST be set by subclasses
         }
         return contentLineGenerator.execute();
     }

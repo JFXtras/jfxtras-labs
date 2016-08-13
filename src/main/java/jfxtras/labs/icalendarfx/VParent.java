@@ -1,23 +1,26 @@
 package jfxtras.labs.icalendarfx;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
- * Interface for parent calendar components.  Has methods for getting list of children and copying
- * children to another parent.
+ * <p>Interface for parent calendar components.  Parent components can have children.</p>
  * 
- * Adding children is not exposed by the implementation, but rather handled internally when a calendar 
- * component has a property change.
+ * <p>Adding children is not exposed by the implementation, but rather handled internally when a calendar 
+ * component has a property change.</p>
  * 
  * @author David Bal
  */
 public interface VParent extends VElement
 {
-    /** returns unmodifiable collection of {@link VChild} elements.  The order of the children equals the order they were added.
-     * Adding children is not exposed by the implementation, but rather handled internally.  When a {@link VChild} has its
-     * value set it's automatically included in the collection of children. */
-    Collection<VChild> childrenUnmodifiable();
+    /** 
+     * <p>Returns unmodifiable list of {@link VChild} elements.</p>
+     * 
+     * @return  unmodifiable list of children
+     */
+    List<VChild> childrenUnmodifiable();
     
-    /** Copy {@link VChild} elements from source into this {@link VParent} */
+    /**
+     * Copy {@link VChild} elements from source into this {@link VParent}
+     */
     void copyChildrenFrom(VParent source);
 }

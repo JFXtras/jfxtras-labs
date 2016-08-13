@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -29,7 +30,7 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.ParameterType;
+import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
@@ -99,7 +100,7 @@ public enum PropertyType
     // Alarm
     ACTION ("ACTION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Action.class) // property class
     {
         @Override
@@ -110,9 +111,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vComponent;
+            VAlarm castComponent = (VAlarm) vElement;
             if (castComponent.getAction() == null)
             {
                 castComponent.setAction(Action.parse(propertyContent));                                
@@ -133,7 +134,7 @@ public enum PropertyType
     // property class
     ATTACHMENT ("ATTACH" // property name
             , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY) // valid property value types, first is default
-            , Arrays.asList(ParameterType.FORMAT_TYPE, ParameterType.INLINE_ENCODING, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.FORMAT_TYPE, PropertyParameter.INLINE_ENCODING, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , Attachment.class)
     {
         @Override
@@ -144,9 +145,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vElement;
             
             final ObservableList<Attachment<?>> list;
             if (castComponent.getAttachments() == null)
@@ -180,11 +181,11 @@ public enum PropertyType
 
     ATTENDEE ("ATTENDEE"    // property name
             , Arrays.asList(ValueType.CALENDAR_USER_ADDRESS) // valid property value types, first is default
-            , Arrays.asList(ParameterType.COMMON_NAME, ParameterType.CALENDAR_USER_TYPE, ParameterType.DELEGATEES,
-                    ParameterType.DELEGATORS, ParameterType.DIRECTORY_ENTRY_REFERENCE,
-                    ParameterType.GROUP_OR_LIST_MEMBERSHIP, ParameterType.LANGUAGE, ParameterType.PARTICIPATION_ROLE,
-                    ParameterType.PARTICIPATION_STATUS, ParameterType.RSVP_EXPECTATION, ParameterType.SENT_BY,
-                    ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.COMMON_NAME, PropertyParameter.CALENDAR_USER_TYPE, PropertyParameter.DELEGATEES,
+                    PropertyParameter.DELEGATORS, PropertyParameter.DIRECTORY_ENTRY_REFERENCE,
+                    PropertyParameter.GROUP_OR_LIST_MEMBERSHIP, PropertyParameter.LANGUAGE, PropertyParameter.PARTICIPATION_ROLE,
+                    PropertyParameter.PARTICIPATION_STATUS, PropertyParameter.RSVP_EXPECTATION, PropertyParameter.SENT_BY,
+                    PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , Attendee.class) // property class
     {
         @Override
@@ -195,9 +196,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
+            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vElement;
             final ObservableList<Attendee> list;
             if (castComponent.getAttendees() == null)
             {
@@ -229,7 +230,7 @@ public enum PropertyType
     // Calendar property
     CALENDAR_SCALE ("CALSCALE" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , CalendarScale.class) // property class
     {
         @Override
@@ -239,7 +240,7 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -253,7 +254,7 @@ public enum PropertyType
     // Descriptive
     CATEGORIES ("CATEGORIES" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , Categories.class) // property class
     {
         @Override
@@ -264,9 +265,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             final ObservableList<Categories> list;
             if (castComponent.getCategories() == null)
             {
@@ -298,7 +299,7 @@ public enum PropertyType
     // Descriptive
     CLASSIFICATION ("CLASS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Classification.class) // property class
     {
         @Override
@@ -309,9 +310,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             if (castComponent.getClassification() == null)
             {
                 castComponent.setClassification(Classification.parse(propertyContent));                                
@@ -332,8 +333,8 @@ public enum PropertyType
     // Descriptive
     COMMENT ("COMMENT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES,
+                    PropertyParameter.OTHER), // allowed parameters
             Comment.class)
     {
         @Override
@@ -344,9 +345,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vElement;
             final ObservableList<Comment> list;
             if (castComponent.getComments() == null)
             {
@@ -378,8 +379,8 @@ public enum PropertyType
     // Relationship
     CONTACT ("CONTACT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES,
+                    PropertyParameter.OTHER), // allowed parameters
             Contact.class)
     {
         @Override
@@ -397,15 +398,15 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            if (vComponent instanceof VFreeBusy)
+            if (vElement instanceof VFreeBusy)
             {// VJournal has one Contact
-                VFreeBusy castComponent = (VFreeBusy) vComponent;
+                VFreeBusy castComponent = (VFreeBusy) vElement;
                 castComponent.setContact(Contact.parse(propertyContent));                
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
                 final ObservableList<Contact> list;
                 if (castComponent.getContacts() == null)
                 {
@@ -446,7 +447,7 @@ public enum PropertyType
     // Date and Time
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeCompleted.class) // property class
     {
         @Override
@@ -457,9 +458,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vComponent;
+            VTodo castComponent = (VTodo) vElement;
             if (castComponent.getDateTimeCompleted() == null)
             {
                 castComponent.setDateTimeCompleted(DateTimeCompleted.parse(propertyContent));
@@ -480,7 +481,7 @@ public enum PropertyType
     // Change management
     DATE_TIME_CREATED ("CREATED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeCreated.class) // property class
     {
         @Override
@@ -491,9 +492,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             if (castComponent.getDateTimeCreated() == null)
             {
                 castComponent.setDateTimeCreated(DateTimeCreated.parse(propertyContent));
@@ -514,7 +515,7 @@ public enum PropertyType
     // Date and time
     DATE_TIME_DUE ("DUE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeDue.class) // property class
     {
         @Override
@@ -525,9 +526,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vComponent;
+            VTodo castComponent = (VTodo) vElement;
             if (castComponent.getDateTimeDue() == null)
             {
                 castComponent.setDateTimeDue(DateTimeDue.parse(propertyContent));
@@ -548,7 +549,7 @@ public enum PropertyType
     // Date and Time
     DATE_TIME_END ("DTEND", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeEnd.class) // property class
     {
         @Override
@@ -559,9 +560,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
+            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vElement;
             if (castComponent.getDateTimeEnd() == null)
             {
                 castComponent.setDateTimeEnd(DateTimeEnd.parse(propertyContent));
@@ -582,7 +583,7 @@ public enum PropertyType
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeStamp.class) // property class
     {
         @Override
@@ -593,9 +594,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
             if (castComponent.getDateTimeStamp() == null)
             {
                 castComponent.setDateTimeStamp(DateTimeStamp.parse(propertyContent));                                
@@ -615,7 +616,7 @@ public enum PropertyType
     },
     DATE_TIME_START ("DTSTART", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DateTimeStart.class) // property class
     {
         @Override
@@ -626,9 +627,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vElement;
             if (castComponent.getDateTimeStart() == null)
             {
                 castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
@@ -649,7 +650,7 @@ public enum PropertyType
     // Descriptive
     DESCRIPTION ("DESCRIPTION",
             Arrays.asList(ValueType.TEXT),
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.OTHER),
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE, PropertyParameter.OTHER),
             Description.class)
     {
         @Override
@@ -667,11 +668,11 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            if (vComponent instanceof VJournal)
+            if (vElement instanceof VJournal)
             { // VJournal has list of Descriptions
-                VJournal castComponent = (VJournal) vComponent;
+                VJournal castComponent = (VJournal) vElement;
                 final ObservableList<Description> list;
                 if (castComponent.getDescriptions() == null)
                 {
@@ -684,7 +685,7 @@ public enum PropertyType
                 list.add(Description.parse(propertyContent));
             } else
             { // Other components have only one Description
-                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
+                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vElement;
                 if (castComponent.getDescription() == null)
                 {
                     castComponent.setDescription(Description.parse(propertyContent));                                
@@ -722,7 +723,7 @@ public enum PropertyType
     // Date and Time
     DURATION ("DURATION", // property name
             Arrays.asList(ValueType.DURATION), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             DurationProp.class)
     {
         @Override
@@ -733,9 +734,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
+            VComponentDuration<?> castComponent = (VComponentDuration<?>) vElement;
             if (castComponent.getDuration() == null)
             {
                 castComponent.setDuration(DurationProp.parse(propertyContent));                                
@@ -756,7 +757,7 @@ public enum PropertyType
     // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             ExceptionDates.class)
     {
         @Override
@@ -767,9 +768,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             final ObservableList<ExceptionDates> list;
             if (castComponent.getExceptionDates() == null)
             {
@@ -801,7 +802,7 @@ public enum PropertyType
     // Date and Time
     FREE_BUSY_TIME ("FREEBUSY", // property name
             Arrays.asList(ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterType.FREE_BUSY_TIME_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.FREE_BUSY_TIME_TYPE, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             FreeBusyTime.class)
     {
         @Override
@@ -812,9 +813,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VFreeBusy castComponent = (VFreeBusy) vComponent;
+            VFreeBusy castComponent = (VFreeBusy) vElement;
             if (castComponent.getFreeBusyTime() == null)
             {
                 castComponent.setFreeBusyTime(FreeBusyTime.parse(propertyContent));                                
@@ -835,7 +836,7 @@ public enum PropertyType
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", // property name
             Arrays.asList(ValueType.TEXT), // In GeographicPosition there are two doubles for latitude and longitude
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             GeographicPosition.class)
     {
         @Override
@@ -846,9 +847,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
             if (castComponent.getGeographicPosition() == null)
             {
                 castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));
@@ -869,7 +870,7 @@ public enum PropertyType
     // Miscellaneous
     IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default (any value allowed)
-            Arrays.asList(ParameterType.values()), // all parameters allowed
+            Arrays.asList(PropertyParameter.values()), // all parameters allowed
             IANAProperty.class) // property class
     {
         @Override
@@ -880,9 +881,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vElement;
             final ObservableList<IANAProperty> list;
             if (castComponent.getIANAProperties() == null)
             {
@@ -914,7 +915,7 @@ public enum PropertyType
     // Change management
     LAST_MODIFIED ("LAST-MODIFIED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             LastModified.class) // property class
     {
         @Override
@@ -925,9 +926,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
+            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vElement;
             if (castComponent.getDateTimeLastModified() == null)
             {
                 castComponent.setDateTimeLastModified(LastModified.parse(propertyContent));
@@ -948,8 +949,8 @@ public enum PropertyType
     // Descriptive
     LOCATION ("LOCATION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES,
+                    PropertyParameter.OTHER), // allowed parameters
             Location.class) // property class
     {
         @Override
@@ -960,9 +961,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
             if (castComponent.getLocation() == null)
             {
                 castComponent.setLocation(Location.parse(propertyContent));                                
@@ -983,7 +984,7 @@ public enum PropertyType
     // Calendar property
     METHOD ("METHOD" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , Method.class) // property class
     {
         @Override
@@ -993,7 +994,7 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1007,7 +1008,7 @@ public enum PropertyType
     // Miscellaneous
     NON_STANDARD ("X-", // property name (begins with X- prefix)
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
-            Arrays.asList(ParameterType.values()), // all parameters allowed
+            Arrays.asList(PropertyParameter.values()), // all parameters allowed
             NonStandardProperty.class) // property class
     {
         @Override
@@ -1018,9 +1019,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vElement;
             final ObservableList<NonStandardProperty> list;
             if (castComponent.getNonStandardProperties() == null)
             {
@@ -1052,8 +1053,8 @@ public enum PropertyType
     // Relationship
     ORGANIZER ("ORGANIZER", // name
             Arrays.asList(ValueType.CALENDAR_USER_ADDRESS), // valid property value types, first is default
-            Arrays.asList(ParameterType.COMMON_NAME, ParameterType.DIRECTORY_ENTRY_REFERENCE, ParameterType.LANGUAGE,
-                    ParameterType.SENT_BY, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.COMMON_NAME, PropertyParameter.DIRECTORY_ENTRY_REFERENCE, PropertyParameter.LANGUAGE,
+                    PropertyParameter.SENT_BY, PropertyParameter.OTHER), // allowed parameters
             Organizer.class) // property class
     {
         @Override
@@ -1064,9 +1065,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
             if (castComponent.getOrganizer() == null)
             {
                 castComponent.setOrganizer(Organizer.parse(propertyContent));
@@ -1087,7 +1088,7 @@ public enum PropertyType
     // Descriptive
     PERCENT_COMPLETE ("PERCENT-COMPLETE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             PercentComplete.class) // property class
     {
         @Override
@@ -1098,9 +1099,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vComponent;
+            VTodo castComponent = (VTodo) vElement;
             if (castComponent.getPercentComplete() == null)
             {
                 castComponent.setPercentComplete(PercentComplete.parse(propertyContent));                                
@@ -1121,7 +1122,7 @@ public enum PropertyType
     // Descriptive
     PRIORITY ("PRIORITY", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Priority.class) // property class
     {
         @Override
@@ -1132,9 +1133,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
             if (castComponent.getPriority() == null)
             {
                 castComponent.setPriority(Priority.parse(propertyContent));                                
@@ -1155,7 +1156,7 @@ public enum PropertyType
     // Calendar property
     PRODUCT_IDENTIFIER ("PRODID" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , ProductIdentifier.class) // property class
     {
         @Override
@@ -1165,7 +1166,7 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1179,7 +1180,7 @@ public enum PropertyType
     // Recurrence
     RECURRENCE_DATE_TIMES ("RDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE, ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             RecurrenceDates.class)
     {
         @Override
@@ -1190,9 +1191,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vElement;
             final ObservableList<RecurrenceDates> list;
             if (castComponent.getRecurrenceDates() == null)
             {
@@ -1224,8 +1225,8 @@ public enum PropertyType
     // Relationship
     RECURRENCE_IDENTIFIER ("RECURRENCE-ID", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.RECURRENCE_IDENTIFIER_RANGE, ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.RECURRENCE_IDENTIFIER_RANGE, PropertyParameter.TIME_ZONE_IDENTIFIER, PropertyParameter.VALUE_DATA_TYPES,
+                    PropertyParameter.OTHER), // allowed parameters
             RecurrenceId.class) // property class
     {
         @Override
@@ -1236,9 +1237,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             if (castComponent.getRecurrenceId() == null)
             {
                 castComponent.setRecurrenceId(RecurrenceId.parse(propertyContent));
@@ -1259,7 +1260,7 @@ public enum PropertyType
     // Recurrence
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             RecurrenceRule.class) // property class
     {
         @Override
@@ -1270,9 +1271,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vElement;
             if (castComponent.getRecurrenceRule() == null)
             {
                 castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
@@ -1293,7 +1294,7 @@ public enum PropertyType
     // Relationship
     RELATED_TO ("RELATED-TO", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.RELATIONSHIP_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.RELATIONSHIP_TYPE, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             RelatedTo.class) // property class
     {
         @Override
@@ -1304,9 +1305,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             final ObservableList<RelatedTo> list;
             if (castComponent.getRelatedTo() == null)
             {
@@ -1338,7 +1339,7 @@ public enum PropertyType
     // Alarm
     REPEAT_COUNT ("REPEAT", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             RepeatCount.class) // property class
     {
         @Override
@@ -1349,9 +1350,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vComponent;
+            VAlarm castComponent = (VAlarm) vElement;
             if (castComponent.getRepeatCount() == null)
             {
                 castComponent.setRepeatCount(RepeatCount.parse(propertyContent));                                
@@ -1372,7 +1373,7 @@ public enum PropertyType
     // Miscellaneous
     REQUEST_STATUS ("REQUEST-STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             RequestStatus.class)
     {
         @Override
@@ -1383,9 +1384,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
             final ObservableList<RequestStatus> list;
             if (castComponent.getRequestStatus() == null)
             {
@@ -1417,8 +1418,8 @@ public enum PropertyType
     // Descriptive
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES,
+                    PropertyParameter.OTHER), // allowed parameters
             Resources.class) // property class
     {
         @Override
@@ -1429,9 +1430,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
             final ObservableList<Resources> list;
             if (castComponent.getResources() == null)
             {
@@ -1463,7 +1464,7 @@ public enum PropertyType
     // Change management
     SEQUENCE ("SEQUENCE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Sequence.class) // property class
     {
         @Override
@@ -1474,9 +1475,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             if (castComponent.getSequence() == null)
             {
                 castComponent.setSequence(Sequence.parse(propertyContent));                                
@@ -1497,7 +1498,7 @@ public enum PropertyType
     // Descriptive
     STATUS ("STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Status.class) // property class
     {
         @Override
@@ -1508,9 +1509,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
             if (castComponent.getStatus() == null)
             {
                 castComponent.setStatus(Status.parse(propertyContent));                                
@@ -1531,8 +1532,8 @@ public enum PropertyType
     // Descriptive
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE,
-                    ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALTERNATE_TEXT_REPRESENTATION, PropertyParameter.LANGUAGE,
+                    PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Summary.class) // property class
     {
         @Override
@@ -1543,9 +1544,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vElement;
             if (castComponent.getSummary() == null)
             {
                 castComponent.setSummary(Summary.parse(propertyContent));
@@ -1566,7 +1567,7 @@ public enum PropertyType
     // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeTransparency.class) // property class
     {
         @Override
@@ -1577,9 +1578,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VEvent castComponent = (VEvent) vComponent;
+            VEvent castComponent = (VEvent) vElement;
             if (castComponent.getTimeTransparency() == null)
             {
                 castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
@@ -1600,7 +1601,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_IDENTIFIER ("TZID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeZoneIdentifier.class) // property class
     {
         @Override
@@ -1611,9 +1612,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VTimeZone castComponent = (VTimeZone) vComponent;
+            VTimeZone castComponent = (VTimeZone) vElement;
             if (castComponent.getTimeZoneIdentifier() == null)
             {
                 castComponent.setTimeZoneIdentifier(TimeZoneIdentifier.parse(propertyContent));
@@ -1634,7 +1635,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_NAME ("TZNAME", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.LANGUAGE, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeZoneName.class) // property class
     {
         @Override
@@ -1645,9 +1646,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
             final ObservableList<TimeZoneName> list;
             if (castComponent.getTimeZoneNames() == null)
             {
@@ -1679,7 +1680,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
@@ -1690,9 +1691,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
             if (castComponent.getTimeZoneOffsetFrom() == null)
             {
                 castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
@@ -1713,7 +1714,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeZoneOffsetTo.class) // property class
     {
         @Override
@@ -1724,9 +1725,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
             if (castComponent.getTimeZoneOffsetTo() == null)
             {
                 castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
@@ -1747,7 +1748,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             TimeZoneURL.class) // property class
     {
         @Override
@@ -1758,9 +1759,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VTimeZone castComponent = (VTimeZone) vComponent;
+            VTimeZone castComponent = (VTimeZone) vElement;
             if (castComponent.getTimeZoneURL() == null)
             {
                 castComponent.setTimeZoneURL(TimeZoneURL.parse(propertyContent));
@@ -1781,7 +1782,7 @@ public enum PropertyType
     // Alarm
     TRIGGER ("TRIGGER", // property name
             Arrays.asList(ValueType.DURATION, ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALARM_TRIGGER_RELATIONSHIP, ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.ALARM_TRIGGER_RELATIONSHIP, PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             Trigger.class) // property class
     {
         @Override
@@ -1792,9 +1793,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vComponent;
+            VAlarm castComponent = (VAlarm) vElement;
             if (castComponent.getTrigger() == null)
             {
                 castComponent.setTrigger(Trigger.parse(propertyContent));
@@ -1815,7 +1816,7 @@ public enum PropertyType
     // Relationship
     UNIQUE_IDENTIFIER ("UID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             UniqueIdentifier.class) // property class
     {
         @Override
@@ -1826,9 +1827,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vElement;
             if (castComponent.getUniqueIdentifier() == null)
             {
                 castComponent.setUniqueIdentifier(UniqueIdentifier.parse(propertyContent));
@@ -1849,7 +1850,7 @@ public enum PropertyType
     // Relationship
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER), // allowed parameters
+            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER), // allowed parameters
             UniformResourceLocator.class) // property class
     {
         @Override
@@ -1860,9 +1861,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vElement;
             castComponent.setUniformResourceLocator(UniformResourceLocator.parse(propertyContent));
         }
 
@@ -1877,7 +1878,7 @@ public enum PropertyType
     // Calendar property
     VERSION ("VERSION" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER) // allowed parameters
+            , Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER) // allowed parameters
             , Version.class) // property class
     {
         @Override
@@ -1887,9 +1888,12 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent vComponent, String propertyContent)
+        public void parse(VElement vElement, String propertyContent)
         {
-            throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
+            VCalendar vCalendar = (VCalendar) vElement;
+            Version property = Version.parse(propertyContent);
+            vCalendar.setVersion(property);
+//            throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
@@ -1954,10 +1958,10 @@ public enum PropertyType
     private List<ValueType> valueTypes;
     public List<ValueType> allowedValueTypes() { return valueTypes; }
 
-    private List<ParameterType> allowedParameters;
-    public List<ParameterType> allowedParameters() { return allowedParameters; }
+    private List<PropertyParameter> allowedParameters;
+    public List<PropertyParameter> allowedParameters() { return allowedParameters; }
     
-    PropertyType(String name, List<ValueType> valueTypes, List<ParameterType> allowedParameters, Class<? extends Property> myClass)
+    PropertyType(String name, List<ValueType> valueTypes, List<PropertyParameter> allowedParameters, Class<? extends Property> myClass)
     {
         this.allowedParameters = allowedParameters;
         this.name = name;
@@ -1973,7 +1977,7 @@ public enum PropertyType
     abstract public Object getProperty(VComponent vComponent);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public void parse(VComponent vComponent, String propertyContent);
+    abstract public void parse(VElement vElement, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
     abstract public void copyProperty(Property<?> child, VComponent destination);

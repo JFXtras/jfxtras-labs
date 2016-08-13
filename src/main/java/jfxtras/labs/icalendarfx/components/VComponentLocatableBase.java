@@ -10,7 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarElementType;
+import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -220,9 +220,9 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** parse VAlarms */
     @Override
-    void parseSubComponents(CalendarElementType subcomponentType, String contentLines)
+    void parseSubComponents(CalendarComponent subcomponentType, String contentLines)
     {
-        if (subcomponentType == CalendarElementType.VALARM)
+        if (subcomponentType == CalendarComponent.VALARM)
         {
             final ObservableList<VAlarm> list;
             if (getVAlarms() == null)

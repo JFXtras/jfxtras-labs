@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
-import jfxtras.labs.icalendarfx.parameters.ParameterType;
+import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -176,7 +176,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     public ValueParameter getValueType() { return valueType.get(); }
     @Override
     public ObjectProperty<ValueParameter> valueTypeProperty() { return valueType; }
-    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, ParameterType.VALUE_DATA_TYPES.toString());
+    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, PropertyParameter.VALUE_DATA_TYPES.toString());
     @Override
     public void setValueType(ValueParameter valueType)
     {
@@ -273,7 +273,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     {        
         return (child) ->
         {
-            ParameterType type = ParameterType.enumFromClass(child.getClass());
+            PropertyParameter type = PropertyParameter.enumFromClass(child.getClass());
             type.copyParameter((Parameter<?>) child, this);
             return null;
         };
@@ -418,7 +418,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             .filter(entry -> ! (entry.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(entry ->
             {
-                ParameterType parameterType = ParameterType.enumFromName(entry.getKey());
+                PropertyParameter parameterType = PropertyParameter.enumFromName(entry.getKey());
                 if (parameterType != null)
                 {
                     if (propertyType().allowedParameters().contains(parameterType))
@@ -430,7 +430,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
+                    PropertyParameter.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
 

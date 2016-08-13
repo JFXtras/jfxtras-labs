@@ -43,7 +43,7 @@ public interface Parameter<T> extends Comparable<Parameter<T>>, VChild
      * 
      * @return - the parameter type
      */
-    ParameterType parameterType();
+    PropertyParameter parameterType();
     
     /**
      * return parameter name-value pair string separated by an "="

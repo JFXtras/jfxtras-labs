@@ -16,7 +16,7 @@ import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
-/** Base class for framework to maintain a sort order of {@link VChild } contents
+/** Base class to maintain a sort order of {@link VChild} elements of a {@link VParent}
  * 
  * @see VParent
  * @see VCalendar
@@ -36,6 +36,7 @@ public class OrdererBase implements Orderer
     /*
      * CONSTRUCTOR
      */
+    /** Create an {@link OrdererBase} for the {@link VParent} parameter */
     public OrdererBase(VParent aParent)
     {
         this.parent = aParent;
@@ -85,8 +86,8 @@ public class OrdererBase implements Orderer
     }
     
     /**
-     * Sort order listener for ObservableList properties
-     * Maintains {@link #elementSortOrderMap} map
+     * Sort order listener for properties containing an ObservableList to 
+     * maintains the {@link #elementSortOrderMap}
      */
     final private ListChangeListener<VChild> sortOrderListChangeListener;
 
@@ -107,15 +108,14 @@ public class OrdererBase implements Orderer
     @Override
     public void unregisterSortOrderProperty(ObservableList<? extends VChild> list)
     {
-//        System.out.println("unregistered" + list);
         if (! list.isEmpty())
         { // remove existing elements to sort order
             list.forEach(vChild -> elementSortOrderMap.remove(vChild));
         }
     }
     
-    /** Sort order listener for object properties
-     * Maintains {@link #elementSortOrderMap} map
+    /** Sort order listener for object properties to 
+     * maintains the {@link #elementSortOrderMap}
      */
     final private ChangeListener<? super VChild> sortOrderChangeListener;
 
@@ -134,7 +134,6 @@ public class OrdererBase implements Orderer
     public void unregisterSortOrderProperty(ObjectProperty<? extends VChild> property)
     {
         elementSortOrderMap.remove(property);
-//        property.removeListener(sortOrderChangeListener); // not needed
     }
     
     @Override

@@ -72,7 +72,7 @@ public class VCalendar extends VParentBase
     {
         if (calendarScale == null)
         {
-            calendarScale = new SimpleObjectProperty<CalendarScale>(this, CalendarElementType.CALENDAR_SCALE.toString());
+            calendarScale = new SimpleObjectProperty<CalendarScale>(this, CalendarProperty.CALENDAR_SCALE.toString());
             orderer().registerSortOrderProperty(calendarScale);
         }
         return calendarScale;
@@ -88,7 +88,7 @@ public class VCalendar extends VParentBase
             setCalendarScale(calendarScale);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -99,7 +99,7 @@ public class VCalendar extends VParentBase
             setCalendarScale(calendarScale);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -116,7 +116,7 @@ public class VCalendar extends VParentBase
     {
         if (method == null)
         {
-            method = new SimpleObjectProperty<Method>(this, CalendarElementType.METHOD.toString());
+            method = new SimpleObjectProperty<Method>(this, CalendarProperty.METHOD.toString());
             orderer().registerSortOrderProperty(method);
         }
         return method;
@@ -132,7 +132,7 @@ public class VCalendar extends VParentBase
             setMethod(method);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.METHOD.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.METHOD.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -143,7 +143,7 @@ public class VCalendar extends VParentBase
             setMethod(method);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.METHOD.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.METHOD.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -162,7 +162,7 @@ public class VCalendar extends VParentBase
     {
         if (productIdentifier == null)
         {
-            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, CalendarElementType.PRODUCT_IDENTIFIER.toString());
+            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, CalendarProperty.PRODUCT_IDENTIFIER.toString());
             orderer().registerSortOrderProperty(productIdentifier);
         }
         return productIdentifier;
@@ -178,7 +178,7 @@ public class VCalendar extends VParentBase
             setProductIdentifier(productIdentifier);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -189,7 +189,7 @@ public class VCalendar extends VParentBase
             setProductIdentifier(productIdentifier);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -210,7 +210,7 @@ public class VCalendar extends VParentBase
     {
         if (version == null)
         {
-            version = new SimpleObjectProperty<Version>(this, CalendarElementType.VERSION.toString());
+            version = new SimpleObjectProperty<Version>(this, CalendarProperty.VERSION.toString());
             orderer().registerSortOrderProperty(version);
         }
         return version;
@@ -226,7 +226,7 @@ public class VCalendar extends VParentBase
             setVersion(version);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.VERSION.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.VERSION.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -237,7 +237,7 @@ public class VCalendar extends VParentBase
             setVersion(version);
         } else
         {
-            throw new IllegalArgumentException(CalendarElementType.VERSION.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarProperty.VERSION.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -517,10 +517,17 @@ public class VCalendar extends VParentBase
     {        
         return (child) ->
         {
-            CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+            CalendarComponent type = CalendarComponent.enumFromClass(child.getClass());
             if (type != null)
             {
                 type.copyChild(child, this);
+            } else
+            {
+                CalendarProperty property = CalendarProperty.enumFromClass(child.getClass());
+                if (property != null)
+                {
+                    property.copyChild(child, this);
+                }
             }
             return null;
         };
@@ -654,13 +661,13 @@ public class VCalendar extends VParentBase
                     myLines.add(line);
                 } while (! line.equals(endLine));
 
-                CalendarElementType elementType = CalendarElementType.valueOf(componentName);
+                CalendarComponent elementType = CalendarComponent.valueOf(componentName);
                 elementType.parse(this, myLines);
                 
             // parse calendar properties (ignores unknown properties)
             } else
             {
-                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
+                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     elementType.parse(this, Arrays.asList(line));
@@ -697,7 +704,7 @@ public class VCalendar extends VParentBase
                     myLines.add(myLine);
                     if (myLine.equals(endLine))
                     {
-                        CalendarElementType elementType = CalendarElementType.valueOf(componentName);
+                        CalendarComponent elementType = CalendarComponent.valueOf(componentName);
                         elementType.parse(this, myLines);
                         break;
                     }
@@ -705,7 +712,7 @@ public class VCalendar extends VParentBase
             // parse calendar properties (ignores unknown properties)
             } else
             {
-                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
+                CalendarComponent elementType = CalendarComponent.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     elementType.parse(this, Arrays.asList(line));
@@ -753,7 +760,7 @@ public class VCalendar extends VParentBase
                         order += 100;
                         Runnable vComponentRunnable = () -> 
                         {
-                            CalendarElementType elementType = CalendarElementType.valueOf(componentName);
+                            CalendarComponent elementType = CalendarComponent.valueOf(componentName);
                             VElement component = elementType.parse(this, myLines);
                             orderer().elementSortOrderMap().put((VChild) component, myOrder);
                         };
@@ -766,7 +773,7 @@ public class VCalendar extends VParentBase
             // parse calendar properties (ignores unknown properties)
             } else
             {
-                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
+                CalendarComponent elementType = CalendarComponent.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     VElement property = elementType.parse(this, Arrays.asList(line));

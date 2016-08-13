@@ -17,12 +17,15 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
-import jfxtras.labs.icalendarfx.properties.calendar.Method;
-import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
-import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
-public enum CalendarElementType
+/**
+ * <p>Enumerated type containing all the {@link VChild} elements that can be in a {@link VCalendar}</p>
+ * 
+ * @author David Bal
+ *
+ */
+// TODO - SPLIT INTO TWO ENUMS - ONE FOR COMPONENTS, ONE FOR VCALENDAR PROPERTIES
+public enum CalendarComponent
 {
     // MAIN COMPONENTS
     VEVENT ("VEVENT",
@@ -36,15 +39,9 @@ public enum CalendarElementType
             PropertyType.RECURRENCE_RULE, PropertyType.REQUEST_STATUS,  PropertyType.RESOURCES, PropertyType.SEQUENCE,
             PropertyType.STATUS, PropertyType.SUMMARY, PropertyType.TIME_TRANSPARENCY, PropertyType.UNIQUE_IDENTIFIER,
             PropertyType.UNIFORM_RESOURCE_LOCATOR),
-            true,
+//            true,
             VEvent.class)
     {
-
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return vCalendar.getVEvents();
-//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -81,15 +78,9 @@ public enum CalendarElementType
             PropertyType.RECURRENCE_IDENTIFIER, PropertyType.RELATED_TO, PropertyType.RECURRENCE_RULE,
             PropertyType.REQUEST_STATUS, PropertyType.RESOURCES, PropertyType.SEQUENCE, PropertyType.STATUS,
             PropertyType.SUMMARY, PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
-            true,
+//            true,
             VTodo.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return vCalendar.getVTodos();
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -116,15 +107,9 @@ public enum CalendarElementType
             PropertyType.RECURRENCE_IDENTIFIER, PropertyType.RELATED_TO, PropertyType.RECURRENCE_RULE, 
             PropertyType.REQUEST_STATUS, PropertyType.SEQUENCE, PropertyType.STATUS, PropertyType.SUMMARY,
             PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
-            true,
+//            true,
             VJournal.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return vCalendar.getVJournals();
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -145,15 +130,9 @@ public enum CalendarElementType
     VTIMEZONE ("VTIMEZONE",
             Arrays.asList(PropertyType.IANA_PROPERTY, PropertyType.LAST_MODIFIED, PropertyType.NON_STANDARD,
             PropertyType.TIME_ZONE_IDENTIFIER, PropertyType.TIME_ZONE_URL),
-            true,
+//            true,
             VTimeZone.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return vCalendar.getVTimeZones();
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -176,15 +155,9 @@ public enum CalendarElementType
             PropertyType.DATE_TIME_END, PropertyType.DATE_TIME_STAMP, PropertyType.DATE_TIME_START,
             PropertyType.FREE_BUSY_TIME, PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.ORGANIZER,
             PropertyType.REQUEST_STATUS, PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
-            true,
+//            true,
             VFreeBusy.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return vCalendar.getVFreeBusies();
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -207,15 +180,9 @@ public enum CalendarElementType
             PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.RECURRENCE_DATE_TIMES,
             PropertyType.RECURRENCE_RULE, PropertyType.TIME_ZONE_NAME, PropertyType.TIME_ZONE_OFFSET_FROM,
             PropertyType.TIME_ZONE_OFFSET_TO),
-            false,
+//            false,
             DaylightSavingTime.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return null; // not a main component - must be embedded inside a VTimeZone
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -235,15 +202,9 @@ public enum CalendarElementType
             PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.RECURRENCE_DATE_TIMES,
             PropertyType.RECURRENCE_RULE, PropertyType.TIME_ZONE_NAME, PropertyType.TIME_ZONE_OFFSET_FROM,
             PropertyType.TIME_ZONE_OFFSET_TO),
-            false,
+//            false,
             StandardTime.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return null; // not a main component - must be embedded inside a VTimeZone
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -262,15 +223,9 @@ public enum CalendarElementType
             Arrays.asList(PropertyType.ACTION, PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.DESCRIPTION,
             PropertyType.DURATION, PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.REPEAT_COUNT,
             PropertyType.SUMMARY, PropertyType.TRIGGER),
-            false,
+//            false,
             VAlarm.class)
     {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            return null; // not a main component - must be embedded inside a VEvent or VTodo
-//        }
-
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
@@ -284,160 +239,132 @@ public enum CalendarElementType
             
         }
 
-    },
-    // CALENDAR PROPERTIES
-    CALENDAR_SCALE (PropertyType.CALENDAR_SCALE.toString(), null, true, CalendarScale.class)
-    {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
-
-        @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
-        {
-            final String line;
-            if (contentLines.size() == 1)
-            {
-                line = contentLines.get(0);
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only have one line of content");
-            }
-            CalendarScale property = CalendarScale.parse(line);
-            vCalendar.setCalendarScale(property);
-            return property;
-        }
-
-        @Override
-        public void copyChild(VChild child, VCalendar destination)
-        {
-            throw new RuntimeException("not implemented");
-            
-        }
-    },
-    METHOD (PropertyType.METHOD.toString(), null, true, Method.class)
-    {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
-
-        @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
-        {
-            final String line;
-            if (contentLines.size() == 1)
-            {
-                line = contentLines.get(0);
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only have one line of content");
-            }
-            Method property = Method.parse(line);
-            vCalendar.setMethod(property);
-            return property;
-        }
-
-        @Override
-        public void copyChild(VChild child, VCalendar destination)
-        {
-            throw new RuntimeException("not implemented");
-            
-        }
-    },
-    PRODUCT_IDENTIFIER (PropertyType.PRODUCT_IDENTIFIER.toString(), null, true, ProductIdentifier.class)
-    {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
-
-        @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
-        {
-            final String line;
-            if (contentLines.size() == 1)
-            {
-                line = contentLines.get(0);
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only have one line of content");
-            }
-            ProductIdentifier property = ProductIdentifier.parse(line);
-            vCalendar.setProductIdentifier(property);
-            return property;
-        }
-
-        @Override
-        public void copyChild(VChild child, VCalendar destination)
-        {
-            throw new RuntimeException("not implemented");
-            
-        }
-    },
-    VERSION (PropertyType.VERSION.toString(), null, true, Version.class)
-    {
-//        @Override
-//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
-
-        @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
-        {
-            final String line;
-            if (contentLines.size() == 1)
-            {
-                line = contentLines.get(0);
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only have one line of content");
-            }
-            Version property = Version.parse(line);
-            vCalendar.setVersion(property);
-            return property;
-        }
-
-        @Override
-        public void copyChild(VChild child, VCalendar destination)
-        {
-            throw new RuntimeException("not implemented");
-            
-        }
     };
+//    // CALENDAR PROPERTIES
+//    CALENDAR_SCALE (ComponentProperty.CALENDAR_SCALE.toString(), null, true, CalendarScale.class)
+//    {
+//        @Override
+//        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+//        {
+//            final String line;
+//            if (contentLines.size() == 1)
+//            {
+//                line = contentLines.get(0);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only have one line of content");
+//            }
+//            CalendarScale property = CalendarScale.parse(line);
+//            vCalendar.setCalendarScale(property);
+//            return property;
+//        }
+//
+//        @Override
+//        public void copyChild(VChild child, VCalendar destination)
+//        {
+//            throw new RuntimeException("not implemented");
+//            
+//        }
+//    },
+//    METHOD (ComponentProperty.METHOD.toString(), null, true, Method.class)
+//    {
+//        @Override
+//        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+//        {
+//            final String line;
+//            if (contentLines.size() == 1)
+//            {
+//                line = contentLines.get(0);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only have one line of content");
+//            }
+//            Method property = Method.parse(line);
+//            vCalendar.setMethod(property);
+//            return property;
+//        }
+//
+//        @Override
+//        public void copyChild(VChild child, VCalendar destination)
+//        {
+//            throw new RuntimeException("not implemented");
+//            
+//        }
+//    },
+//    PRODUCT_IDENTIFIER (ComponentProperty.PRODUCT_IDENTIFIER.toString(), null, true, ProductIdentifier.class)
+//    {
+//        @Override
+//        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+//        {
+//            final String line;
+//            if (contentLines.size() == 1)
+//            {
+//                line = contentLines.get(0);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only have one line of content");
+//            }
+//            ProductIdentifier property = ProductIdentifier.parse(line);
+//            vCalendar.setProductIdentifier(property);
+//            return property;
+//        }
+//
+//        @Override
+//        public void copyChild(VChild child, VCalendar destination)
+//        {
+//            throw new RuntimeException("not implemented");
+//            
+//        }
+//    },
+//    VERSION (ComponentProperty.VERSION.toString(), null, true, Version.class)
+//    {
+//        @Override
+//        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+//        {
+//            final String line;
+//            if (contentLines.size() == 1)
+//            {
+//                line = contentLines.get(0);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only have one line of content");
+//            }
+//            Version property = Version.parse(line);
+//            vCalendar.setVersion(property);
+//            return property;
+//        }
+//
+//        @Override
+//        public void copyChild(VChild child, VCalendar destination)
+//        {
+//            throw new RuntimeException("not implemented");
+//            
+//        }
+//    };
 
     // Map to match up name to enum
-    private static Map<String, CalendarElementType> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, CalendarElementType> makeEnumFromNameMap()
+    private static Map<String, CalendarComponent> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, CalendarComponent> makeEnumFromNameMap()
     {
-        Map<String, CalendarElementType> map = new HashMap<>();
-        CalendarElementType[] values = CalendarElementType.values();
+        Map<String, CalendarComponent> map = new HashMap<>();
+        CalendarComponent[] values = CalendarComponent.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static CalendarElementType enumFromName(String propertyName)
+    public static CalendarComponent enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends VElement>, CalendarElementType> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends VElement>, CalendarElementType> makeEnumFromClassMap()
+    private static Map<Class<? extends VElement>, CalendarComponent> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends VElement>, CalendarComponent> makeEnumFromClassMap()
     {
-        Map<Class<? extends VElement>, CalendarElementType> map = new HashMap<>();
-        CalendarElementType[] values = CalendarElementType.values();
+        Map<Class<? extends VElement>, CalendarComponent> map = new HashMap<>();
+        CalendarComponent[] values = CalendarComponent.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].myClass, values[i]);
@@ -445,7 +372,7 @@ public enum CalendarElementType
         return map;
     }
     /** get enum from map */
-    public static CalendarElementType enumFromClass(Class<? extends VElement> myClass)
+    public static CalendarComponent enumFromClass(Class<? extends VElement> myClass)
     {
         return enumFromClassMap.get(myClass);
     }
@@ -460,14 +387,14 @@ public enum CalendarElementType
     private List<PropertyType> allowedProperties;
     public List<PropertyType> allowedProperties() { return allowedProperties; }
 
-    private boolean isCalendarElement;
-    public boolean isCalendarElement() { return isCalendarElement; }
+//    private boolean isCalendarElement;
+//    public boolean isCalendarElement() { return isCalendarElement; }
     
-    CalendarElementType(String name, List<PropertyType> allowedProperties, boolean isCalendarElement, Class<? extends VElement> myClass)
+    CalendarComponent(String name, List<PropertyType> allowedProperties, Class<? extends VElement> myClass)
     {
         this.name = name;
         this.allowedProperties = allowedProperties;
-        this.isCalendarElement = isCalendarElement;
+//        this.isCalendarElement = isCalendarElement;
         this.myClass = myClass;
     }
 

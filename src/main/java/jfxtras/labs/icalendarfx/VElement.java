@@ -3,8 +3,7 @@ package jfxtras.labs.icalendarfx;
 import java.util.List;
 
 /**
- * Interface for all calendar elements.  These include
- * calendar components (e.g. VEVENT), calendar properties (e.g. VERSION) and parameters (i.e. VALUE).
+ * <p>Interface for all calendar elements.</p>
  * 
  * @author David Bal
  *
@@ -12,7 +11,7 @@ import java.util.List;
 public interface VElement
 {
     /**
-     * Returns iCalendar content string.
+     * Returns iCalendar content text.
      * 
      * @return the content string
      */
