@@ -25,9 +25,12 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
 
 
@@ -233,28 +236,28 @@ public final class DateTimeUtilities
         return duration;
     }
     
-    /**
-     * Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
-     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
-     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
-     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
-     * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
-     * 
-     * 
-     * @param temporalPropertyLine
-     * @return
-     */
-    @Deprecated // use new 
-    public static Temporal parse(String temporalPropertyLine)
-    {
-        Map<String, String> parameterMap = ICalendarUtilities.propertyLineToParameterMap(temporalPropertyLine);
-//        System.out.println("parameterMap:" + parameterMap);
-        return Arrays.stream(DateTimeType.values())
-                .map(d -> d.parse(parameterMap))
-                .filter(d -> d != null)
-                .findAny()
-                .get();
-    }
+//    /**
+//     * Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
+//     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
+//     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
+//     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
+//     * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
+//     * 
+//     * 
+//     * @param temporalPropertyLine
+//     * @return
+//     */
+//    @Deprecated // use new 
+//    public static Temporal parse(String temporalPropertyLine)
+//    {
+//        Map<String, String> parameterMap = ICalendarUtilities.propertyLineToParameterMap(temporalPropertyLine);
+////        System.out.println("parameterMap:" + parameterMap);
+//        return Arrays.stream(DateTimeType.values())
+//                .map(d -> d.parse(parameterMap))
+//                .filter(d -> d != null)
+//                .findAny()
+//                .get();
+//    }
     
     public static Temporal parse(String temporalString, ZoneId zone)
     {
@@ -349,7 +352,9 @@ public final class DateTimeUtilities
      */ 
     public static Temporal temporalFromString(String string)
     {
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(string);
+        List<Pair<String, String>> list = ICalendarUtilities.contentToParameterListPair(string);
+        Map<String, String> map = list.stream().collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+//        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(string);
         StringBuilder builder = new StringBuilder(50);
         String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         if (map.get(PropertyParameter.TIME_ZONE_IDENTIFIER.toString()) != null)

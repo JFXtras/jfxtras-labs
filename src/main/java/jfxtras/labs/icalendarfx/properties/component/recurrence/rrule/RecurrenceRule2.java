@@ -519,8 +519,9 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     @Override
     public void parseContent(String contentLine)
     {
-        ICalendarUtilities.propertyLineToParameterMap(contentLine)
-                .entrySet()
+        ICalendarUtilities.contentToParameterListPair(contentLine)
+//        ICalendarUtilities.propertyLineToParameterMap(contentLine)
+//                .entrySet()
                 .stream()
                 .forEach(entry ->
                 {

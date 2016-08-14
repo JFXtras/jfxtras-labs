@@ -2,11 +2,12 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -16,92 +17,78 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 public class GeneralPropertyTest
 {
     @Test
-    public void canMakeParameterMap()
+    public void canMakeParameterList()
     {
         String contentLine = "DESCRIPTION;ALTREP=\"CID:part3.msg.970415T083000@example.com\";LANGUAGE=en:Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
-        expectedMap.put("ALTREP", "\"CID:part3.msg.970415T083000@example.com\"");
-        expectedMap.put("LANGUAGE", "en");
-        assertEquals(expectedMap, valueMap);
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("ALTREP", "\"CID:part3.msg.970415T083000@example.com\""));
+        expectedList.add(new Pair<>("LANGUAGE", "en"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap2()
+    public void canMakeParameterList2()
     {
         String contentLine = "DESCRIPTION:";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
-        assertEquals(expectedMap, valueMap);
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, ""));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap3()
+    public void canMakeParameterList3()
     {
         String contentLine = ":";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
-        assertEquals(expectedMap, valueMap);
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, ""));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap4()
+    public void canMakeParameterList4()
     {
-        String expectedContent = "SUMMARY:Department Party";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(expectedContent));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "SUMMARY:Department Party";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap5()
+    public void canMakeParameterList5()
     {
-        String s = "Department Party";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "Department Party";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap6()
+    public void canMakeParameterList6()
     {
-        String s = ";LANGUAGE=en:TEST SUMMARY";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
-        expectedMap.put("LANGUAGE", "en");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = ";LANGUAGE=en:TEST SUMMARY";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("LANGUAGE", "en"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
-    public void canMakeParameterMap7()
+    public void canMakeParameterList7()
     {
-        String s = "LANGUAGE=en:TEST SUMMARY";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
-        expectedMap.put("LANGUAGE", "en");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "LANGUAGE=en:TEST SUMMARY";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("LANGUAGE", "en"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY"));
+        assertEquals(expectedList, valueList);
     }
-    
-    @Test
-    public void canMakeParameterMap8()
-    {
-        String s = "SUMMARY;LANGUAGE=en;LANGUAGE=fr:TEST SUMMARY";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        valueMap.entrySet().stream().forEach(System.out::println);
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
-        expectedMap.put("LANGUAGE", "en");
-        expectedMap.put("LANGUAGE", "fr");
-        assertEquals(expectedMap, valueMap);
-    }
-
     
     @Test
     public void canChangeValueType()

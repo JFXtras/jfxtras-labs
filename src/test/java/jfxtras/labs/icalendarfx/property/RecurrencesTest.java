@@ -13,14 +13,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -30,35 +29,35 @@ public class RecurrencesTest
     @Test
     public void canParseRDate1()
     {
-        String s = "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "19970304,19970504,19970704,19970904");
-        expectedMap.put("VALUE", "DATE");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("VALUE", "DATE"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "19970304,19970504,19970704,19970904"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
     public void canParseRDate2()
     {
-        String s = "RDATE;TZID=America/New_York:19970714T083000";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "19970714T083000");
-        expectedMap.put("TZID", "America/New_York");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "RDATE;TZID=America/New_York:19970714T083000";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("TZID", "America/New_York"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "19970714T083000"));
+        assertEquals(expectedList, valueList);
     }
     
     // Can parsing period, but period not currently supported in streaming dates
     @Test
     public void canParseRDate3()
     {
-        String s = "RDATE;VALUE=PERIOD:19960403T020000Z/19960403T040000Z,19960404T010000Z/PT3H";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
-        SortedMap<String, String> expectedMap = new TreeMap<>();
-        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "19960403T020000Z/19960403T040000Z,19960404T010000Z/PT3H");
-        expectedMap.put("VALUE", "PERIOD");
-        assertEquals(expectedMap, valueMap);
+        String contentLine = "RDATE;VALUE=PERIOD:19960403T020000Z/19960403T040000Z,19960404T010000Z/PT3H";
+        List<Pair<String, String>> valueList = ICalendarUtilities.contentToParameterListPair(contentLine);
+        List<Pair<String, String>> expectedList = new ArrayList<>();
+        expectedList.add(new Pair<>("VALUE", "PERIOD"));
+        expectedList.add(new Pair<>(ICalendarUtilities.PROPERTY_VALUE_KEY, "19960403T020000Z/19960403T040000Z,19960404T010000Z/PT3H"));
+        assertEquals(expectedList, valueList);
     }
     
     @Test
