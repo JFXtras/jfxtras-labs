@@ -423,6 +423,13 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                 {
                     if (propertyType().allowedParameters().contains(parameterType))
                     {
+//                        // TODO - ADD ALREADY PRESENT CHECK HERE - REMOVE FROM ENUM
+//                        Object existingParam = parameterType.getParameter(this);
+//                        if (existingParam != null && ! (existingParam.getValue() instanceof List))
+//                        {
+//                            throw new IllegalArgumentException(existingParam + " can only occur once in a calendar component");
+//                        }
+                        
                         parameterType.parse(this, entry.getValue());
                     } else
                     {

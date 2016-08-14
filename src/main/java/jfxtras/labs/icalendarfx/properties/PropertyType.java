@@ -8,7 +8,9 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -111,20 +113,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vElement;
-            if (castComponent.getAction() == null)
-            {
-                castComponent.setAction(Action.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            Action child = Action.parse(propertyContent);
+            VAlarm castComponent = (VAlarm) vParent;
+            castComponent.setAction(child);
+//            if (castComponent.getAction() == null)
+//            {
+//                castComponent.setAction(child);                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
             Action propertyCopy = new Action((Action) child);
@@ -145,10 +150,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vElement;
-            
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vParent;
             final ObservableList<Attachment<?>> list;
             if (castComponent.getAttachments() == null)
             {
@@ -158,12 +162,13 @@ public enum PropertyType
             {
                 list = castComponent.getAttachments();
             }
-
-            list.add(Attachment.parse(propertyContent));
+            Attachment<?> child = Attachment.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
             final ObservableList<Attachment<?>> list;
@@ -196,9 +201,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vElement;
+            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vParent;
             final ObservableList<Attendee> list;
             if (castComponent.getAttendees() == null)
             {
@@ -208,11 +213,13 @@ public enum PropertyType
             {
                 list = castComponent.getAttendees();
             }
-            list.add(Attendee.parse(propertyContent));
+            Attendee child = Attendee.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentAttendee<?> castDestination = (VComponentAttendee<?>) destination;
             final ObservableList<Attendee> list;
@@ -240,13 +247,13 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -265,9 +272,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
             final ObservableList<Categories> list;
             if (castComponent.getCategories() == null)
             {
@@ -277,11 +284,13 @@ public enum PropertyType
             {
                 list = castComponent.getCategories();
             }
-            list.add(Categories.parse(propertyContent));
+            Categories child = Categories.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             final ObservableList<Categories> list;
@@ -310,20 +319,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
-            if (castComponent.getClassification() == null)
-            {
-                castComponent.setClassification(Classification.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            Classification child = Classification.parse(propertyContent);
+            castComponent.setClassification(child);
+            return child;
+//            if (castComponent.getClassification() == null)
+//            {
+//                castComponent.setClassification(Classification.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             Classification propertyCopy = new Classification((Classification) child);
@@ -345,9 +357,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vElement;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vParent;
             final ObservableList<Comment> list;
             if (castComponent.getComments() == null)
             {
@@ -357,11 +369,13 @@ public enum PropertyType
             {
                 list = castComponent.getComments();
             }
-            list.add(Comment.parse(propertyContent));
+            Comment child = Comment.parse(propertyContent);
+            list.add(child);
+            return child;
         }
         
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
             final ObservableList<Comment> list;
@@ -398,15 +412,16 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            if (vElement instanceof VFreeBusy)
+            Contact child = Contact.parse(propertyContent);
+            if (vParent instanceof VFreeBusy)
             {// VJournal has one Contact
-                VFreeBusy castComponent = (VFreeBusy) vElement;
-                castComponent.setContact(Contact.parse(propertyContent));                
+                VFreeBusy castComponent = (VFreeBusy) vParent;
+                castComponent.setContact(child);                
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
+                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
                 final ObservableList<Contact> list;
                 if (castComponent.getContacts() == null)
                 {
@@ -416,12 +431,13 @@ public enum PropertyType
                 {
                     list = castComponent.getContacts();
                 }
-                list.add(Contact.parse(propertyContent));
+                list.add(child);
             }
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             if (destination instanceof VFreeBusy)
             { // VFreeBusy has one Contact
@@ -458,20 +474,24 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vElement;
-            if (castComponent.getDateTimeCompleted() == null)
-            {
-                castComponent.setDateTimeCompleted(DateTimeCompleted.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VTodo castComponent = (VTodo) vParent;
+            DateTimeCompleted child = DateTimeCompleted.parse(propertyContent);
+            castComponent.setDateTimeCompleted(child);
+            return child;
+//            if (castComponent.getDateTimeCompleted() == null)
+//            {
+//                
+//                castComponent.setDateTimeCompleted(child);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VTodo castDestination = (VTodo) destination;
             DateTimeCompleted propertyCopy = new DateTimeCompleted((DateTimeCompleted) child);
@@ -492,20 +512,24 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
-            if (castComponent.getDateTimeCreated() == null)
-            {
-                castComponent.setDateTimeCreated(DateTimeCreated.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            DateTimeCreated child = DateTimeCreated.parse(propertyContent);
+            castComponent.setDateTimeCreated(child);
+            return child;
+//            if (castComponent.getDateTimeCreated() == null)
+//            {
+//                DateTimeCreated child = DateTimeCreated.parse(propertyContent);
+//                castComponent.setDateTimeCreated(child);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             DateTimeCreated propertyCopy = new DateTimeCreated((DateTimeCreated) child);
@@ -526,20 +550,24 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vElement;
-            if (castComponent.getDateTimeDue() == null)
-            {
-                castComponent.setDateTimeDue(DateTimeDue.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VTodo castComponent = (VTodo) vParent;
+            DateTimeDue child = DateTimeDue.parse(propertyContent);
+            castComponent.setDateTimeDue(child);
+            return child;
+//            if (castComponent.getDateTimeDue() == null)
+//            {
+//                DateTimeDue child = DateTimeDue.parse(propertyContent);
+//                castComponent.setDateTimeDue(child);
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VTodo castDestination = (VTodo) destination;
             DateTimeDue propertyCopy = new DateTimeDue((DateTimeDue) child);
@@ -560,20 +588,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vElement;
-            if (castComponent.getDateTimeEnd() == null)
-            {
-                castComponent.setDateTimeEnd(DateTimeEnd.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vParent;
+            DateTimeEnd child = DateTimeEnd.parse(propertyContent);
+            castComponent.setDateTimeEnd(child);
+            return child;
+//            if (castComponent.getDateTimeEnd() == null)
+//            {
+//                castComponent.setDateTimeEnd(DateTimeEnd.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDateTimeEnd<?> castDestination = (VComponentDateTimeEnd<?>) destination;
             DateTimeEnd propertyCopy = new DateTimeEnd((DateTimeEnd) child);
@@ -594,20 +625,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
-            if (castComponent.getDateTimeStamp() == null)
-            {
-                castComponent.setDateTimeStamp(DateTimeStamp.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
+            DateTimeStamp child = DateTimeStamp.parse(propertyContent);
+            castComponent.setDateTimeStamp(child);
+            return child;
+//            if (castComponent.getDateTimeStamp() == null)
+//            {
+//                castComponent.setDateTimeStamp(DateTimeStamp.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) child);
@@ -627,20 +661,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vElement;
-            if (castComponent.getDateTimeStart() == null)
-            {
-                castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vParent;
+            DateTimeStart child = DateTimeStart.parse(propertyContent);
+            castComponent.setDateTimeStart(child);
+            return child;
+//            if (castComponent.getDateTimeStart() == null)
+//            {
+//                castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
             DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) child);
@@ -668,11 +705,12 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            if (vElement instanceof VJournal)
+            Description child = Description.parse(propertyContent);
+            if (vParent instanceof VJournal)
             { // VJournal has list of Descriptions
-                VJournal castComponent = (VJournal) vElement;
+                VJournal castComponent = (VJournal) vParent;
                 final ObservableList<Description> list;
                 if (castComponent.getDescriptions() == null)
                 {
@@ -682,22 +720,23 @@ public enum PropertyType
                 {
                     list = castComponent.getDescriptions();
                 }
-                list.add(Description.parse(propertyContent));
+                list.add(child);
             } else
             { // Other components have only one Description
-                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vElement;
+                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vParent;
                 if (castComponent.getDescription() == null)
                 {
-                    castComponent.setDescription(Description.parse(propertyContent));                                
+                    castComponent.setDescription(child);                                
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
                 }
             }
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             if (destination instanceof VJournal)
             { // VJournal has list of Descriptions
@@ -734,20 +773,22 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDuration<?> castComponent = (VComponentDuration<?>) vElement;
+            DurationProp child = DurationProp.parse(propertyContent);            
+            VComponentDuration<?> castComponent = (VComponentDuration<?>) vParent;
             if (castComponent.getDuration() == null)
             {
-                castComponent.setDuration(DurationProp.parse(propertyContent));                                
+                castComponent.setDuration(child);                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDuration<?> castDestination = (VComponentDuration<?>) destination;
             DurationProp propertyCopy = new DurationProp((DurationProp) child);
@@ -768,9 +809,10 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
+            ExceptionDates child = ExceptionDates.parse(propertyContent);
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
             final ObservableList<ExceptionDates> list;
             if (castComponent.getExceptionDates() == null)
             {
@@ -780,11 +822,12 @@ public enum PropertyType
             {
                 list = castComponent.getExceptionDates();
             }
-            list.add(ExceptionDates.parse(propertyContent));
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             final ObservableList<ExceptionDates> list;
@@ -813,20 +856,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VFreeBusy castComponent = (VFreeBusy) vElement;
-            if (castComponent.getFreeBusyTime() == null)
-            {
-                castComponent.setFreeBusyTime(FreeBusyTime.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VFreeBusy castComponent = (VFreeBusy) vParent;
+            FreeBusyTime child = FreeBusyTime.parse(propertyContent);
+            castComponent.setFreeBusyTime(child);
+            return child;
+//            if (castComponent.getFreeBusyTime() == null)
+//            {
+//                castComponent.setFreeBusyTime(FreeBusyTime.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VFreeBusy castDestination = (VFreeBusy) destination;
             FreeBusyTime propertyCopy = new FreeBusyTime((FreeBusyTime) child);
@@ -847,20 +893,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
-            if (castComponent.getGeographicPosition() == null)
-            {
-                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            GeographicPosition child = GeographicPosition.parse(propertyContent);
+            castComponent.setGeographicPosition(child);
+            return child;
+//            if (castComponent.getGeographicPosition() == null)
+//            {
+//                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
             GeographicPosition propertyCopy = new GeographicPosition((GeographicPosition) child);
@@ -881,9 +930,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vElement;
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vParent;
             final ObservableList<IANAProperty> list;
             if (castComponent.getIANAProperties() == null)
             {
@@ -893,11 +942,13 @@ public enum PropertyType
             {
                 list = castComponent.getIANAProperties();
             }
-            list.add(IANAProperty.parse(propertyContent));
+            IANAProperty child = IANAProperty.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
             final ObservableList<IANAProperty> list;
@@ -926,20 +977,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vElement;
-            if (castComponent.getDateTimeLastModified() == null)
-            {
-                castComponent.setDateTimeLastModified(LastModified.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vParent;
+            LastModified child = LastModified.parse(propertyContent);
+            castComponent.setDateTimeLastModified(child);
+            return child;
+//            if (castComponent.getDateTimeLastModified() == null)
+//            {
+//                castComponent.setDateTimeLastModified(LastModified.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentLastModified<?> castDestination = (VComponentLastModified<?>) destination;
             LastModified propertyCopy = new LastModified((LastModified) child);
@@ -961,20 +1015,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
-            if (castComponent.getLocation() == null)
-            {
-                castComponent.setLocation(Location.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            Location child = Location.parse(propertyContent);
+            castComponent.setLocation(child);
+            return child;
+//            if (castComponent.getLocation() == null)
+//            {
+//                castComponent.setLocation(Location.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
             Location propertyCopy = new Location((Location) child);
@@ -994,13 +1051,13 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1019,9 +1076,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vElement;
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vParent;
             final ObservableList<NonStandardProperty> list;
             if (castComponent.getNonStandardProperties() == null)
             {
@@ -1031,11 +1088,13 @@ public enum PropertyType
             {
                 list = castComponent.getNonStandardProperties();
             }
-            list.add(NonStandardProperty.parse(propertyContent));
+            NonStandardProperty child = NonStandardProperty.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
             final ObservableList<NonStandardProperty> list;
@@ -1065,20 +1124,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
-            if (castComponent.getOrganizer() == null)
-            {
-                castComponent.setOrganizer(Organizer.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
+            Organizer child = Organizer.parse(propertyContent);
+            castComponent.setOrganizer(child);
+            return child;
+//            if (castComponent.getOrganizer() == null)
+//            {
+//                castComponent.setOrganizer(Organizer.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
         
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             Organizer propertyCopy = new Organizer((Organizer) child);
@@ -1099,20 +1161,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VTodo castComponent = (VTodo) vElement;
-            if (castComponent.getPercentComplete() == null)
-            {
-                castComponent.setPercentComplete(PercentComplete.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VTodo castComponent = (VTodo) vParent;
+            PercentComplete child = PercentComplete.parse(propertyContent);
+            castComponent.setPercentComplete(child);
+            return child;
+//            if (castComponent.getPercentComplete() == null)
+//            {
+//                castComponent.setPercentComplete(PercentComplete.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
         
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VTodo castDestination = (VTodo) destination;
             PercentComplete propertyCopy = new PercentComplete((PercentComplete) child);
@@ -1133,20 +1198,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
-            if (castComponent.getPriority() == null)
-            {
-                castComponent.setPriority(Priority.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            Priority child = Priority.parse(propertyContent);
+            castComponent.setPriority(child);
+            return child;
+//            if (castComponent.getPriority() == null)
+//            {
+//                castComponent.setPriority(Priority.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
             Priority propertyCopy = new Priority((Priority) child);
@@ -1166,13 +1234,13 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1191,9 +1259,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vElement;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vParent;
             final ObservableList<RecurrenceDates> list;
             if (castComponent.getRecurrenceDates() == null)
             {
@@ -1203,11 +1271,13 @@ public enum PropertyType
             {
                 list = castComponent.getRecurrenceDates();
             }
-            list.add(RecurrenceDates.parse(propertyContent));
+            RecurrenceDates child = RecurrenceDates.parse(propertyContent);
+            list.add(child);
+            return child;
         }
         
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
             final ObservableList<RecurrenceDates> list;
@@ -1237,20 +1307,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
-            if (castComponent.getRecurrenceId() == null)
-            {
-                castComponent.setRecurrenceId(RecurrenceId.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            RecurrenceId child = RecurrenceId.parse(propertyContent);
+            castComponent.setRecurrenceId(child);
+            return child;
+//            if (castComponent.getRecurrenceId() == null)
+//            {
+//                castComponent.setRecurrenceId(RecurrenceId.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             RecurrenceId propertyCopy = new RecurrenceId((RecurrenceId) child);
@@ -1271,20 +1344,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vElement;
-            if (castComponent.getRecurrenceRule() == null)
-            {
-                castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vParent;
+            RecurrenceRule child = RecurrenceRule.parse(propertyContent);
+            castComponent.setRecurrenceRule(child);
+            return child;
+//            if (castComponent.getRecurrenceRule() == null)
+//            {
+//                castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
             RecurrenceRule propertyCopy = new RecurrenceRule((RecurrenceRule) child);
@@ -1305,9 +1381,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
             final ObservableList<RelatedTo> list;
             if (castComponent.getRelatedTo() == null)
             {
@@ -1317,11 +1393,13 @@ public enum PropertyType
             {
                 list = castComponent.getRelatedTo();
             }
-            list.add(RelatedTo.parse(propertyContent));
+            RelatedTo child = RelatedTo.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             final ObservableList<RelatedTo> list;
@@ -1350,20 +1428,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vElement;
-            if (castComponent.getRepeatCount() == null)
-            {
-                castComponent.setRepeatCount(RepeatCount.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VAlarm castComponent = (VAlarm) vParent;
+            RepeatCount child = RepeatCount.parse(propertyContent);
+            castComponent.setRepeatCount(child);
+            return child;
+//            if (castComponent.getRepeatCount() == null)
+//            {
+//                castComponent.setRepeatCount(RepeatCount.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
             RepeatCount propertyCopy = new RepeatCount((RepeatCount) child);
@@ -1384,9 +1465,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vElement;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
             final ObservableList<RequestStatus> list;
             if (castComponent.getRequestStatus() == null)
             {
@@ -1396,11 +1477,13 @@ public enum PropertyType
             {
                 list = castComponent.getRequestStatus();
             }
-            list.add(RequestStatus.parse(propertyContent));
+            RequestStatus child = RequestStatus.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             final ObservableList<RequestStatus> list;
@@ -1430,9 +1513,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vElement;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
             final ObservableList<Resources> list;
             if (castComponent.getResources() == null)
             {
@@ -1442,11 +1525,13 @@ public enum PropertyType
             {
                 list = castComponent.getResources();
             }
-            list.add(Resources.parse(propertyContent));
+            Resources child = Resources.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
             final ObservableList<Resources> list;
@@ -1475,20 +1560,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
-            if (castComponent.getSequence() == null)
-            {
-                castComponent.setSequence(Sequence.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            Sequence child = Sequence.parse(propertyContent);
+            castComponent.setSequence(child);
+            return child;
+//            if (castComponent.getSequence() == null)
+//            {
+//                castComponent.setSequence(Sequence.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             Sequence propertyCopy = new Sequence((Sequence) child);
@@ -1509,20 +1597,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vElement;
-            if (castComponent.getStatus() == null)
-            {
-                castComponent.setStatus(Status.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            Status child = Status.parse(propertyContent);
+            castComponent.setStatus(child);
+            return child;            
+//            if (castComponent.getStatus() == null)
+//            {
+//                castComponent.setStatus(Status.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
             Status propertyCopy = new Status((Status) child);
@@ -1544,20 +1635,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vElement;
-            if (castComponent.getSummary() == null)
-            {
-                castComponent.setSummary(Summary.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vParent;
+            Summary child = Summary.parse(propertyContent);
+            castComponent.setSummary(child);
+            return child;
+//            if (castComponent.getSummary() == null)
+//            {
+//                castComponent.setSummary(Summary.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
             Summary propertyCopy = new Summary((Summary) child);
@@ -1578,20 +1672,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VEvent castComponent = (VEvent) vElement;
-            if (castComponent.getTimeTransparency() == null)
-            {
-                castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VEvent castComponent = (VEvent) vParent;
+            TimeTransparency child = TimeTransparency.parse(propertyContent);
+            castComponent.setTimeTransparency(child);
+            return child;
+//            if (castComponent.getTimeTransparency() == null)
+//            {
+//                castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VEvent castDestination = (VEvent) destination;
             TimeTransparency propertyCopy = new TimeTransparency((TimeTransparency) child);
@@ -1612,20 +1709,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VTimeZone castComponent = (VTimeZone) vElement;
-            if (castComponent.getTimeZoneIdentifier() == null)
-            {
-                castComponent.setTimeZoneIdentifier(TimeZoneIdentifier.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VTimeZone castComponent = (VTimeZone) vParent;
+            TimeZoneIdentifier child = TimeZoneIdentifier.parse(propertyContent);
+            castComponent.setTimeZoneIdentifier(child);
+            return child;
+//            if (castComponent.getTimeZoneIdentifier() == null)
+//            {
+//                castComponent.setTimeZoneIdentifier(TimeZoneIdentifier.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VTimeZone castDestination = (VTimeZone) destination;
             TimeZoneIdentifier propertyCopy = new TimeZoneIdentifier((TimeZoneIdentifier) child);
@@ -1646,9 +1746,9 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vParent;
             final ObservableList<TimeZoneName> list;
             if (castComponent.getTimeZoneNames() == null)
             {
@@ -1658,11 +1758,13 @@ public enum PropertyType
             {
                 list = castComponent.getTimeZoneNames();
             }
-            list.add(TimeZoneName.parse(propertyContent));
+            TimeZoneName child = TimeZoneName.parse(propertyContent);
+            list.add(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
             final ObservableList<TimeZoneName> list;
@@ -1691,20 +1793,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
-            if (castComponent.getTimeZoneOffsetFrom() == null)
-            {
-                castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vParent;
+            TimeZoneOffsetFrom child = TimeZoneOffsetFrom.parse(propertyContent);
+            castComponent.setTimeZoneOffsetFrom(child);
+            return child;
+//            if (castComponent.getTimeZoneOffsetFrom() == null)
+//            {
+//                castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
             TimeZoneOffsetFrom propertyCopy = new TimeZoneOffsetFrom((TimeZoneOffsetFrom) child);
@@ -1725,20 +1830,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vElement;
-            if (castComponent.getTimeZoneOffsetTo() == null)
-            {
-                castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vParent;
+            TimeZoneOffsetTo child = TimeZoneOffsetTo.parse(propertyContent);
+            castComponent.setTimeZoneOffsetTo(child);
+            return child;
+//            if (castComponent.getTimeZoneOffsetTo() == null)
+//            {
+//                castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
             TimeZoneOffsetTo propertyCopy = new TimeZoneOffsetTo((TimeZoneOffsetTo) child);
@@ -1759,20 +1867,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VTimeZone castComponent = (VTimeZone) vElement;
-            if (castComponent.getTimeZoneURL() == null)
-            {
-                castComponent.setTimeZoneURL(TimeZoneURL.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VTimeZone castComponent = (VTimeZone) vParent;
+            TimeZoneURL child = TimeZoneURL.parse(propertyContent);
+            castComponent.setTimeZoneURL(child);
+            return child;
+//            if (castComponent.getTimeZoneURL() == null)
+//            {
+//                castComponent.setTimeZoneURL(TimeZoneURL.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VTimeZone castDestination = (VTimeZone) destination;
             TimeZoneURL propertyCopy = new TimeZoneURL((TimeZoneURL) child);
@@ -1793,20 +1904,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VAlarm castComponent = (VAlarm) vElement;
-            if (castComponent.getTrigger() == null)
-            {
-                castComponent.setTrigger(Trigger.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VAlarm castComponent = (VAlarm) vParent;
+            Trigger<?> child = Trigger.parse(propertyContent);
+            castComponent.setTrigger(child);
+            return child;            
+//            if (castComponent.getTrigger() == null)
+//            {
+//                castComponent.setTrigger(Trigger.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
             Trigger<?> propertyCopy = new Trigger<>((Trigger<?>) child);
@@ -1827,20 +1941,23 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vElement;
-            if (castComponent.getUniqueIdentifier() == null)
-            {
-                castComponent.setUniqueIdentifier(UniqueIdentifier.parse(propertyContent));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vParent;
+            UniqueIdentifier child = UniqueIdentifier.parse(propertyContent);
+            castComponent.setUniqueIdentifier(child);
+            return child;
+//            if (castComponent.getUniqueIdentifier() == null)
+//            {
+//                castComponent.setUniqueIdentifier(UniqueIdentifier.parse(propertyContent));
+//            } else
+//            {
+//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+//            }
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             UniqueIdentifier propertyCopy = new UniqueIdentifier((UniqueIdentifier) child);
@@ -1861,14 +1978,16 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vElement;
-            castComponent.setUniformResourceLocator(UniformResourceLocator.parse(propertyContent));
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vParent;
+            UniformResourceLocator child = UniformResourceLocator.parse(propertyContent);
+            castComponent.setUniformResourceLocator(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) child);
@@ -1888,16 +2007,16 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VElement vElement, String propertyContent)
+        public VChild parse(VParent vParent, String propertyContent)
         {
-            VCalendar vCalendar = (VCalendar) vElement;
-            Version property = Version.parse(propertyContent);
-            vCalendar.setVersion(property);
-//            throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
+            VCalendar vCalendar = (VCalendar) vParent;
+            Version child = Version.parse(propertyContent);
+            vCalendar.setVersion(child);
+            return child;
         }
 
         @Override
-        public void copyProperty(Property<?> child, VComponent destination)
+        public void copyProperty(VChild child, VParent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1971,14 +2090,14 @@ public enum PropertyType
     /*
      * ABSTRACT METHODS
      */
-    /** Returns associated Property<?> or List<Property<?>> 
-     * @deprecated  not needed due to addition of Orderer, may be deleted */
-    @Deprecated
+    /** Returns associated Property<?> or List<Property<?>> */
     abstract public Object getProperty(VComponent vComponent);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public void parse(VElement vElement, String propertyContent);
+    abstract public VChild parse(VParent vParent, String propertyContent);
+//    abstract public VChild parse(VParent vParent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    abstract public void copyProperty(Property<?> child, VComponent destination);
+    abstract public void copyProperty(VChild child, VParent destination);
+//    abstract public void copyProperty(VChild child, VParent destination);
 }

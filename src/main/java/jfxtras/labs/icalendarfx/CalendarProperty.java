@@ -7,6 +7,7 @@ import java.util.Map;
 
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -19,7 +20,7 @@ public enum CalendarProperty
              CalendarScale.class)
     {
         @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VChild parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -45,7 +46,7 @@ public enum CalendarProperty
             Method.class)
     {
         @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VChild parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -71,7 +72,7 @@ public enum CalendarProperty
             ProductIdentifier.class)
     {
         @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VChild parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -97,19 +98,19 @@ public enum CalendarProperty
             Version.class)
     {
         @Override
-        public VElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VChild parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
             {
-                line = contentLines.get(0);
+                return PropertyType.VERSION.parse(vCalendar, contentLines.get(0));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only have one line of content");
             }
-            Version property = Version.parse(line);
-            vCalendar.setVersion(property);
-            return property;
+//            Version property = Version.parse(line);
+//            vCalendar.setVersion(property);
+//            return property;
         }
 
         @Override
@@ -172,7 +173,7 @@ public enum CalendarProperty
     }
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public VElement parse(VCalendar vCalendar, List<String> contentLines);
+    abstract public VChild parse(VCalendar vCalendar, List<String> contentLines);
     
     abstract public void copyChild(VChild child, VCalendar destination);
 }

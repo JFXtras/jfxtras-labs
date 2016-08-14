@@ -119,4 +119,10 @@ public class GeneralPropertyTest
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);
     }
+    
+    @Test
+    public void canCatchDuplicateParameter()
+    {
+        throw new RuntimeException("not implemented");
+    }
 }

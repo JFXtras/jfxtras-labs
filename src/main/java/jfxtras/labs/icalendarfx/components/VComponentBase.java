@@ -8,7 +8,6 @@ import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -43,7 +42,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             PropertyType type = PropertyType.enumFromClass(child.getClass());
             if (type != null)
             { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-                type.copyProperty((Property<?>) child, this);
+                type.copyProperty(child, this);
             }
             return null;
         };
@@ -128,9 +127,16 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 PropertyType propertyType = PropertyType.enumFromName(propertyName);
                 if (propertyType != null)
                 {
-//                    propertySortOrder.put(propertyName, sortOrderCounter);
-//                    sortOrderCounter += 100; // add 100 to allow insertions in between
-                    propertyType.parse(this, line);
+                    // TODO - ADD ALREADY PRESENT CHECK HERE - REMOVE FROM ENUM
+                    Object existingProperty = propertyType.getProperty(this);
+                    if (existingProperty == null)
+                    {
+                        propertyType.parse(this, line);
+                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
+                    } else if (existingProperty instanceof List)
+                    {
+                        propertyType.parse(this, line);
+                    }
                 } else
                 {
                     // TODO - check IANA properties and X- properties

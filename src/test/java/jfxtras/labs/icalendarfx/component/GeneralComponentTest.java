@@ -112,4 +112,10 @@ public class GeneralComponentTest
         vevent.setDateTimeStart(dtStart);
         assertEquals(dtStart, vevent.childrenUnmodifiable().get(1));
     }
+    
+    @Test
+    public void canCatchDuplicateProperty()
+    {
+        throw new RuntimeException("not implemented");
+    }
 }
