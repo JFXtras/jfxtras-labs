@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
@@ -412,49 +412,43 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         }
         
         // parse parameters
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
-        map.entrySet()
-            .stream()
-            .filter(entry -> ! (entry.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
+        List<Pair<String, String>> list = ICalendarUtilities.contentToParameterListPair(propertyValue);
+        list.stream()
             .forEach(entry ->
             {
                 PropertyParameter parameterType = PropertyParameter.enumFromName(entry.getKey());
-                if (parameterType != null)
+                boolean isAllowed = propertyType().allowedParameters().contains(parameterType);
+                if (parameterType != null && isAllowed)
                 {
-                    if (propertyType().allowedParameters().contains(parameterType))
+                    Object existingParemeter = parameterType.getParameter(this);
+                    if (existingParemeter == null || existingParemeter instanceof List)
                     {
-//                        // TODO - ADD ALREADY PRESENT CHECK HERE - REMOVE FROM ENUM
-//                        Object existingParam = parameterType.getParameter(this);
-//                        if (existingParam != null && ! (existingParam.getValue() instanceof List))
-//                        {
-//                            throw new IllegalArgumentException(existingParam + " can only occur once in a calendar component");
-//                        }
-                        
                         parameterType.parse(this, entry.getValue());
                     } else
                     {
-                        throw new IllegalArgumentException("Parameter " + parameterType + " not allowed for property " + propertyType());
+                        throw new IllegalArgumentException(parameterType + " can only occur once in a calendar component");
+                    }
+                } else if (entry.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY)
+                {
+                 // save property value
+                    propertyValueString = entry.getValue();
+                    T value = getConverter().fromString(getPropertyValueString());
+                    if (value == null)
+                    {
+                        setUnknownValue(propertyValueString);
+                    } else
+                    {
+                        setValue(value);
+                        if (value.toString() == "UNKNOWN") // enum name indicating unknown value
+                        {
+                            setUnknownValue(propertyValueString);
+                        }
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
                     PropertyParameter.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
-
-        // save property value        
-        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        T value = getConverter().fromString(getPropertyValueString());
-        if (value == null)
-        {
-            setUnknownValue(propertyValueString);
-        } else
-        {
-            setValue(value);
-            if (value.toString() == "UNKNOWN") // enum name indicating unknown value
-            {
-                setUnknownValue(propertyValueString);
-            }
-        }
         
         if (! isValid())
         {

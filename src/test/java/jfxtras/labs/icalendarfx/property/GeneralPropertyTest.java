@@ -90,6 +90,20 @@ public class GeneralPropertyTest
     }
     
     @Test
+    public void canMakeParameterMap8()
+    {
+        String s = "SUMMARY;LANGUAGE=en;LANGUAGE=fr:TEST SUMMARY";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        valueMap.entrySet().stream().forEach(System.out::println);
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
+        expectedMap.put("LANGUAGE", "en");
+        expectedMap.put("LANGUAGE", "fr");
+        assertEquals(expectedMap, valueMap);
+    }
+
+    
+    @Test
     public void canChangeValueType()
     {
         String content = "X-MYPROP:1";
@@ -120,9 +134,10 @@ public class GeneralPropertyTest
         assertEquals(expectedProperty, madeProperty);
     }
     
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void canCatchDuplicateParameter()
     {
-        throw new RuntimeException("not implemented");
+        String contentLines = "SUMMARY;LANGUAGE=en;LANGUAGE=fr:TEST SUMMARY";
+        Summary.parse(contentLines);
     }
 }

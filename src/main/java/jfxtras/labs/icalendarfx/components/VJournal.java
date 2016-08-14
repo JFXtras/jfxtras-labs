@@ -89,7 +89,7 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
         }
         return descriptions;
     }
-    public ObservableList<Description> getDescriptions() { return descriptions.get(); }
+    public ObservableList<Description> getDescriptions() { return (descriptions == null) ? null : descriptions.get(); }
     private ObjectProperty<ObservableList<Description>> descriptions;
     public void setDescriptions(ObservableList<Description> descriptions)
     {

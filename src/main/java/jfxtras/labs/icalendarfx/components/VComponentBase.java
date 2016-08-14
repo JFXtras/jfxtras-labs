@@ -127,21 +127,17 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 PropertyType propertyType = PropertyType.enumFromName(propertyName);
                 if (propertyType != null)
                 {
-                    // TODO - ADD ALREADY PRESENT CHECK HERE - REMOVE FROM ENUM
                     Object existingProperty = propertyType.getProperty(this);
-                    if (existingProperty == null)
+                    if (existingProperty == null || existingProperty instanceof List)
                     {
                         propertyType.parse(this, line);
+                    } else
+                    {
                         throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
-                    } else if (existingProperty instanceof List)
-                    {
-                        propertyType.parse(this, line);
                     }
                 } else
                 {
-                    // TODO - check IANA properties and X- properties
-//                    System.out.println("unknown prop:" );
-                    throw new RuntimeException("not implemented");
+                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
                 }
             }
         }

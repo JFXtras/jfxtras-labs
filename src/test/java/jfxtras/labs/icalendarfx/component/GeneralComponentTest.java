@@ -113,9 +113,13 @@ public class GeneralComponentTest
         assertEquals(dtStart, vevent.childrenUnmodifiable().get(1));
     }
     
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void canCatchDuplicateProperty()
     {
-        throw new RuntimeException("not implemented");
+        String contentLines = "BEGIN:VEVENT" + System.lineSeparator()
+        + "SUMMARY:test summary1" + System.lineSeparator()
+        + "SUMMARY:test summary2" + System.lineSeparator()
+        + "END:VEVENT";
+        VEvent.parse(contentLines);
     }
 }
