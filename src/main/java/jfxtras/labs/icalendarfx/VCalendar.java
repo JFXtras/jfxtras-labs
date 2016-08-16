@@ -1,5 +1,9 @@
 package jfxtras.labs.icalendarfx;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -632,60 +636,15 @@ public class VCalendar extends VParentBase
         orderer().registerSortOrderProperty(getVTimeZones());
         orderer().registerSortOrderProperty(getVFreeBusies());
     }
-
-//    /** Parse content lines into calendar object */
-//    @Override
-//    public void parseContent(String content)
-//    {
-//        List<String> contentLines = ICalendarUtilities.unfoldLines(content);
-//        if (! contentLines.get(0).equals("BEGIN:VCALENDAR"))
-//        {
-//            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
-//        }
-//        for (int index=1; index<contentLines.size(); index++)
-//        {
-//            String line = contentLines.get(index);
-//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
-//            String propertyName = line.substring(0, nameEndIndex);
-//            
-//            // Parse component
-//            if (propertyName.equals("BEGIN"))
-//            {
-//                String componentName = line.substring(nameEndIndex+1);
-//                List<String> myLines = new ArrayList<>(20);
-//                myLines.add(line);
-//                final String endLine = "END:" + componentName;
-//                do
-//                {
-//                    index++;
-//                    line = contentLines.get(index);
-//                    myLines.add(line);
-//                } while (! line.equals(endLine));
-//
-//                CalendarComponent elementType = CalendarComponent.valueOf(componentName);
-//                elementType.parse(this, myLines);
-//                
-//            // parse calendar properties (ignores unknown properties)
-//            } else
-//            {
-//                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
-//                if (elementType != null)
-//                {
-//                    elementType.parse(this, Arrays.asList(line));
-//                }
-//            }
-//        }
-//    }
     
     @Override
     public void parseContent(String content)
     {
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines);
+        parseContentMulti(unfoldedLines);
     }
     
-    // single threaded
     /** Parse unfolded content lines into calendar object */
     public void parseContent(Iterator<String> unfoldedLineIterator)
     {
@@ -694,22 +653,9 @@ public class VCalendar extends VParentBase
         {
             throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
         }
-        ObjectProperty<String> storedLine = new SimpleObjectProperty<>(""); // reference to previous line for unfoldLines method
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
-
-//            if (lineIterator.hasNext())
-//            {
-//            unwrappedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
-//                storedLine.set(unwrappedLine);
-//            } else
-//            {
-//                // use stored line as last line when iterator is empty
-//                unwrappedLine = storedLine.get();
-//                storedLine.set("");
-//            }
-//            String line = lineIterator.next();
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
             String propertyName = unfoldedLine.substring(0, nameEndIndex);
             
@@ -717,27 +663,8 @@ public class VCalendar extends VParentBase
             if (propertyName.equals("BEGIN"))
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
-//                System.out.println("start component:" + componentName + " " + storedLine.get());
                 VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
                 addVComponent(newComponent);
-//                System.out.println("next component:" + lineIterator.next());
-                storedLine.set("");
-//                String componentName = unwrappedLine.substring(nameEndIndex+1);
-//                List<String> myLines = new ArrayList<>(20);
-//                myLines.add(line);
-//                final String endLine = "END:" + componentName;
-//                while (lineIterator.hasNext())
-//                {
-//                    String myLine = lineIterator.next();
-//                    myLines.add(myLine);
-//                    if (myLine.equals(endLine))
-//                    {
-//                        CalendarComponent elementType = CalendarComponent.valueOf(componentName);
-//                        elementType.parse(this, myLines);
-//                        break;
-//                    }
-//                }                
-            // parse calendar properties (ignores unknown properties)
             } else
             {
                 CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
@@ -748,159 +675,11 @@ public class VCalendar extends VParentBase
             }
         }
     }
-    
-//    // single threaded
-//    /** Parse content lines into calendar object */
-//    public void parseContent(Iterator<CharSequence> lineIterator)
-//    {
-//        CharSequence firstLine = lineIterator.next();
-//        if (! firstLine.equals("BEGIN:VCALENDAR"))
-//        {
-//            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
-//        }
-//        
-//        // read rest of lines into list
-//        List<CharSequence> lines = new ArrayList<>();
-//        while (lineIterator.hasNext())
-//        {
-//            lines.add(lineIterator.next());
-//        }
-//        parseContent(lines);
-//    }
-    
-//    public void parseContent(CharSequence contentLines)
-//    {
-//        // TODO GET RID OF TOSTRING
-//        List<CharSequence> lines = Arrays.stream(contentLines.toString().split(System.lineSeparator())).collect(Collectors.toList());
-//        parseContent(lines);
-//    }
 
-    
-//    public void parseContent(List<CharSequence> contentLines)
-//    {
-//        List<CharSequence> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines);
-//        
-//        Iterator<CharSequence> lineIterator = unfoldedLines.iterator();
-//        while (lineIterator.hasNext())
-//        {
-//            CharSequence line = lineIterator.next();
-////          if (lineIterator.hasNext())
-////          {
-////          unwrappedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
-////              storedLine.set(unwrappedLine);
-////          } else
-////          {
-////              // use stored line as last line when iterator is empty
-////              unwrappedLine = storedLine.get();
-////              storedLine.set("");
-////          }
-////          String line = lineIterator.next();
-//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
-//            String propertyName = line.subSequence(0, nameEndIndex).toString();
-//          
-//            // Parse component
-//            if ("BEGIN".contentEquals(propertyName))
-//            {
-//                String componentName = line.subSequence(nameEndIndex+1, line.length()-1).toString();
-////                System.out.println("start component:" + componentName + " " + storedLine.get());
-//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, lineIterator);
-//                addVComponent(newComponent);
-////              System.out.println("next component:" + lineIterator.next());
-////              String componentName = unwrappedLine.substring(nameEndIndex+1);
-////              List<String> myLines = new ArrayList<>(20);
-////              myLines.add(line);
-////              final String endLine = "END:" + componentName;
-////              while (lineIterator.hasNext())
-////              {
-////                  String myLine = lineIterator.next();
-////                  myLines.add(myLine);
-////                  if (myLine.equals(endLine))
-////                  {
-////                      CalendarComponent elementType = CalendarComponent.valueOf(componentName);
-////                      elementType.parse(this, myLines);
-////                      break;
-////                  }
-////              }                
-//          // parse calendar properties (ignores unknown properties)
-//            } else
-//            {
-//                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
-//                if (elementType != null)
-//                {
-//                    elementType.parse(this, line.toString());
-//                }
-//            }
-//        }
-//    }
-    
-//    // single threaded
-//    /** Parse content lines into calendar object */
-//    public void parseContent(String content)
-//    {
-//        List<String> contentLines = content.ICalendarUtilities.unfoldLines(content);
-//        String firstLine = content.next();
-//        if (! firstLine.equals("BEGIN:VCALENDAR"))
-//        {
-//            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
-//        }
-//        ObjectProperty<String> storedLine = new SimpleObjectProperty<>(""); // reference to previous line for unfoldLines method
-//        String unwrappedLine;
-//        while (content.hasNext())
-//        {
-////            if (lineIterator.hasNext())
-////            {
-//            unwrappedLine = ICalendarUtilities.unfoldLines(content, storedLine);
-////                storedLine.set(unwrappedLine);
-////            } else
-////            {
-////                // use stored line as last line when iterator is empty
-////                unwrappedLine = storedLine.get();
-////                storedLine.set("");
-////            }
-////            String line = lineIterator.next();
-//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unwrappedLine);
-//            String propertyName = unwrappedLine.substring(0, nameEndIndex);
-//            
-//            // Parse component
-//            if (propertyName.equals("BEGIN"))
-//            {
-//                String componentName = unwrappedLine.substring(nameEndIndex+1);
-//                System.out.println("start component:" + componentName + " " + storedLine.get());
-//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, content);
-//                addVComponent(newComponent);
-////                System.out.println("next component:" + lineIterator.next());
-//                storedLine.set("");
-////                String componentName = unwrappedLine.substring(nameEndIndex+1);
-////                List<String> myLines = new ArrayList<>(20);
-////                myLines.add(line);
-////                final String endLine = "END:" + componentName;
-////                while (lineIterator.hasNext())
-////                {
-////                    String myLine = lineIterator.next();
-////                    myLines.add(myLine);
-////                    if (myLine.equals(endLine))
-////                    {
-////                        CalendarComponent elementType = CalendarComponent.valueOf(componentName);
-////                        elementType.parse(this, myLines);
-////                        break;
-////                    }
-////                }                
-//            // parse calendar properties (ignores unknown properties)
-//            } else
-//            {
-//                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
-//                if (elementType != null)
-//                {
-//                    elementType.parse(this, Arrays.asList(unwrappedLine));
-//                }
-//            }
-//        }
-//    }
-    
-    // mulri threaded
+    // multi threaded
     /** Parse content lines into calendar object */
     // TODO - TEST THIS - MAY NOT MAINTAIN ORDER
-    public void parseContentM(Iterator<String> lineIterator)
+    public void parseContentMulti(Iterator<String> lineIterator)
     {
         // Callables to generate components
         ExecutorService service = Executors.newWorkStealingPool();
@@ -969,6 +748,28 @@ public class VCalendar extends VParentBase
         }
     }
     
+    @Override
+    public String toString()
+    {
+        return super.toString() + " " + toContent();
+    }
+    
+    public static VCalendar parseICalendarFile(Path icsFilePath) throws IOException
+    {
+        BufferedReader br = Files.newBufferedReader(icsFilePath);
+        List<String> lines = br.lines().collect(Collectors.toList());
+        System.out.println("original lines:" + lines.size());
+//        lines.stream().forEach(System.out::println);
+        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
+        System.out.println("unfolded lines:" + ICalendarUtilities.unfoldLines(lines).size());
+
+//        ICalendarUtilities.unfoldLines(lines).stream().forEach(System.out::println);
+        VCalendar vCalendar = new VCalendar();
+        vCalendar.parseContentMulti(unfoldedLines);
+        System.out.println("length:" + vCalendar.toContent().length());
+        return vCalendar;
+    }
+
 //    public static VCalendar parseICalendarFile(Iterator<String> lineIterator)
 //    {
 //        VCalendar vCalendar = new VCalendar();

@@ -37,7 +37,8 @@ public enum CalendarProperty
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
+            CalendarScale calendarScale = (CalendarScale) child;
+            destination.setCalendarScale(calendarScale);
         }
     },
     METHOD ("METHOD",
@@ -63,7 +64,8 @@ public enum CalendarProperty
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
+            Method method = (Method) child;
+            destination.setMethod(method);
         }
     },
     PRODUCT_IDENTIFIER ("PRODID",
@@ -89,7 +91,8 @@ public enum CalendarProperty
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
+            ProductIdentifier productIdentifier = (ProductIdentifier) child;
+            destination.setProductIdentifier(productIdentifier);
         }
     },
     VERSION ("VERSION",
@@ -115,7 +118,8 @@ public enum CalendarProperty
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
+            Version version = (Version) child;
+            destination.setVersion(version);
         }
     };
     

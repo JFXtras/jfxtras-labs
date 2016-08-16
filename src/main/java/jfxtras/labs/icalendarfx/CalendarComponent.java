@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -55,16 +53,17 @@ public enum CalendarComponent
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            final ObservableList<VEvent> list;
-            if (destination.getVEvents() == null)
-            {
-                list = FXCollections.observableArrayList();
-                destination.setVEvents(list);
-            } else
-            {
-                list = destination.getVEvents();
-            }
-            list.add(new VEvent((VEvent) child));
+            destination.addVComponent(new VEvent((VEvent) child));
+//            final ObservableList<VEvent> list;
+//            if (destination.getVEvents() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                destination.setVEvents(list);
+//            } else
+//            {
+//                list = destination.getVEvents();
+//            }
+//            list.add(new VEvent((VEvent) child));
         }
     },
     VTODO ("VTODO",
@@ -93,8 +92,7 @@ public enum CalendarComponent
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
-            
+            destination.addVComponent(new VTodo((VTodo) child));
         }
 
     },
@@ -122,8 +120,7 @@ public enum CalendarComponent
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
-            
+            destination.addVComponent(new VJournal((VJournal) child));
         }
 
     },
@@ -145,8 +142,7 @@ public enum CalendarComponent
         @Override
         public void copyChild(VChild child, VCalendar destination)
         {
-            throw new RuntimeException("not implemented");
-            
+            destination.addVComponent(new VTimeZone((VTimeZone) child));
         }
 
     },
@@ -174,6 +170,7 @@ public enum CalendarComponent
             
         }
     },
+    // TODO - Below should probably be removed?
     // NON-MAIN COMPONENTS - MUST BE NESTED IN A MAIN COMPONENT
     DAYLIGHT_SAVING_TIME ("DAYLIGHT",
             Arrays.asList(PropertyType.COMMENT, PropertyType.DATE_TIME_START,
@@ -193,7 +190,6 @@ public enum CalendarComponent
         public void copyChild(VChild child, VCalendar destination)
         {
             throw new RuntimeException("not implemented");
-            
         }
 
     },
