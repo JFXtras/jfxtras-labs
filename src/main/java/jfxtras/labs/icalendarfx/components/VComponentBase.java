@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;;
 
 /**
  * Base iCalendar component
@@ -85,42 +86,31 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     
     /** Parse content lines into calendar component */
     @Override
-    public void parseContent(String contentLines)
+    public void parseContent(String content)
     {
-        if (contentLines == null)
+        if (content == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
-        parseContent(ICalendarUtilities.unfoldLines(contentLines));
+        content.indexOf(System.lineSeparator());
+        List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
+        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+        parseContent(unfoldedLines, null);
     }
 
     /** Parse unfolded content lines into calendar component. */
     @Override
-    public void parseContent(Iterator<String> unfoldedLineIterator)
+    public void parseContent(Iterator<String> unfoldedLineIterator, List<String> errors)
     {
         if (unfoldedLineIterator == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
-//        ObjectProperty<String> storedLine = new SimpleObjectProperty<>(""); // reference to previous line for unfoldLines method
-//        String unwrappedLine;
-//        while (lineIterator.hasNext() || ! storedLine.get().isEmpty())
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
-//            if (lineIterator.hasNext())
-//            {
-//                unwrappedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
-//            } else
-//            {
-//                // use stored line as last line when iterator is empty
-//                unwrappedLine = storedLine.get();
-//                storedLine.set("");
-//            }
-            System.out.println("line:" + unfoldedLine);
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
             String propertyName = unfoldedLine.substring(0, nameEndIndex);
-            System.out.println("propertyName:" + propertyName + " " + propertyName.equals("END"));            
             // Parse subcomponent
             if (propertyName.equals("BEGIN"))
             {
@@ -134,9 +124,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     do
                     {
                         unfoldedLine = unfoldedLineIterator.next();
-//                        unfoldedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
-//                        System.out.println("unwrappedLine:" + unfoldedLine);
-//                        String subLine = contentLines.get(++index);
                         subcomponentContentBuilder.append(unfoldedLine + System.lineSeparator());
                         isSubcomponentEndFound = unfoldedLine.subSequence(0, 3).equals("END");
                     } while (! isSubcomponentEndFound);
@@ -144,7 +131,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             } else if (propertyName.equals("END"))
             {
-//                System.out.println("storedLine:" + storedLine);
                 break; // exit when end found
             } else
             {  // parse properties - ignore unknown properties
@@ -154,69 +140,97 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     Object existingProperty = propertyType.getProperty(this);
                     if (existingProperty == null || existingProperty instanceof List)
                     {
-                        propertyType.parse(this, unfoldedLine);
+                        try
+                        {
+                            propertyType.parse(this, unfoldedLine);
+                        } catch (Exception e)
+                        {
+                         // TODO - CHECK NEW PROPERTY FOR VALIDITY - IF REQUIRED LOG SEVERE AND FAIL
+                            errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);
+                        }
                     } else
                     {
-                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
+                        if (errors != null)
+                        {
+                            errors.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
+                        } else
+                        {
+                            throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
+                        }
                     }
                 } else
                 {
-                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
+                    if (errors != null)
+                    {
+                        errors.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
+                    } else
+                    {
+                        throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
+                    }
                 }
             }
         }
-//        parseContent(ICalendarUtilities.unfoldLines(lineIterator));
     }
     
-    /** Parse component from list of unfolded lines */
-    public void parseContent(List<String> contentLines)
-    {
-        for (int index=0; index<contentLines.size(); index++)
-        {
-            String line = contentLines.get(index).toString();
-            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
-            String propertyName = line.substring(0, nameEndIndex);
-            
-            // Parse subcomponent
-            if (propertyName.equals("BEGIN"))
-            {
-                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentName());
-                if  (! isMainComponent)
-                {
-                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(line.substring(nameEndIndex+1));
-                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
-                    subcomponentContentBuilder.append(line + System.lineSeparator());
-                    boolean isEndFound = false;
-                    do
-                    {
-                        String subLine = contentLines.get(++index);
-                        subcomponentContentBuilder.append(subLine + System.lineSeparator());
-                        isEndFound = subLine.subSequence(0, 3).equals("END");
-                    } while (! isEndFound);
-                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
-                }
-                
-            // parse properties - ignore unknown properties
-            } else if (! propertyName.equals("END"))
-            {
-                PropertyType propertyType = PropertyType.enumFromName(propertyName);
-                if (propertyType != null)
-                {
-                    Object existingProperty = propertyType.getProperty(this);
-                    if (existingProperty == null || existingProperty instanceof List)
-                    {
-                        propertyType.parse(this, line);
-                    } else
-                    {
-                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
-                    }
-                } else
-                {
-                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
-                }
-            }
-        }
-    }
+//    public void parseContent(List<String> contentLines)
+//    {
+//        parseContent(contentLines.iterator(), null);
+//    }    
+    
+//    /** Parse component from list of unfolded lines */
+//    public void parseContent(List<String> contentLines)
+//    {
+//        for (int index=0; index<contentLines.size(); index++)
+//        {
+//            String line = contentLines.get(index).toString();
+//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
+//            String propertyName = line.substring(0, nameEndIndex);
+//            
+//            // Parse subcomponent
+//            if (propertyName.equals("BEGIN"))
+//            {
+//                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentName());
+//                if  (! isMainComponent)
+//                {
+//                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(line.substring(nameEndIndex+1));
+//                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
+//                    subcomponentContentBuilder.append(line + System.lineSeparator());
+//                    boolean isEndFound = false;
+//                    do
+//                    {
+//                        String subLine = contentLines.get(++index);
+//                        subcomponentContentBuilder.append(subLine + System.lineSeparator());
+//                        isEndFound = subLine.subSequence(0, 3).equals("END");
+//                    } while (! isEndFound);
+//                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+//                }
+//                
+//            // parse properties - ignore unknown properties
+//            } else if (! propertyName.equals("END"))
+//            {
+//                PropertyType propertyType = PropertyType.enumFromName(propertyName);
+//                if (propertyType != null)
+//                {
+//                    Object existingProperty = propertyType.getProperty(this);
+//                    if (existingProperty == null || existingProperty instanceof List)
+//                    {
+//                        propertyType.parse(this, line);
+//                        // TODO - CHECK NEW PROPERTY FOR VALIDITY - IF REQUIRED LOG SEVERE AND FAIL
+//                    } else
+//                    {
+//                        // THIS IMPLEMENTATION WILL NOT WORK WITH MULTI-THREADING, pass logger?
+//                        LOGGER.log(Level.WARNING, "2." + propertyType.ordinal() + 
+//                                ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + line);
+////                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
+//                    }
+//                } else
+//                {
+//                    LOGGER.log(Level.WARNING, "2.0" + ";Success, unknown property is ignored;" + line);
+////                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}

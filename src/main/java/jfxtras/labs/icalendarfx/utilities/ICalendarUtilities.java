@@ -41,7 +41,30 @@ public final class ICalendarUtilities
     
     public final static String PROPERTY_VALUE_KEY = ":";
 
-
+//    public static List<String> splitStringToLines(String text)
+//    {
+//        int lastIndex = 0;
+//        int length = text.length();
+//        List<String> list = new ArrayList<>(length / 80);
+//        int index = 0;
+//        while (index < length)
+//        {
+//            int split = text.indexOf(System.lineSeparator(), index+1);
+////            System.out.println("split:" + split + " " + index);
+//            if (split > 0)
+//            {
+//                list.add(text.substring(index, split));
+//                index = split;
+//            } else
+//            {
+//                break;
+//            }
+//            if (lastIndex == index) break;
+//            lastIndex = index;
+//        }
+//        list.add(text.substring(index));
+//        return list;
+//    }
     
 //    /**
 //     * Starting with lines-separated list of content lines, the lines are unwrapped and 

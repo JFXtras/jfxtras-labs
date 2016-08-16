@@ -89,7 +89,9 @@ public enum ValueType
                         return (T) new URI(string);
                     } catch (URISyntaxException e)
                     {
-                        e.printStackTrace();
+                        // do nada
+//                        throw e;
+//                        e.printStackTrace();
                     }
                     return null;
                 }

@@ -169,6 +169,7 @@ public class GeneralCalendarTest extends ICalendarTestAbstract
        "END:VCALENDAR";
         VCalendar vCalendar = VCalendar.parse(content);
 //        System.out.println(vCalendar.toContent());
+//        System.out.println(content);
         assertEquals(content, vCalendar.toContent());
 //        VEventNew e = vCalendar.getVEvents().get(1);
 //        e.getNonStandardProperties().stream().forEach(System.out::println);
