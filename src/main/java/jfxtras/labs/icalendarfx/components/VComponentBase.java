@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.util.Callback;
@@ -92,13 +93,87 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         }
         parseContent(ICalendarUtilities.unfoldLines(contentLines));
     }
+
+    /** Parse unfolded content lines into calendar component. */
+    @Override
+    public void parseContent(Iterator<String> unfoldedLineIterator)
+    {
+        if (unfoldedLineIterator == null)
+        {
+            throw new IllegalArgumentException("Calendar component content string can't be null");
+        }
+//        ObjectProperty<String> storedLine = new SimpleObjectProperty<>(""); // reference to previous line for unfoldLines method
+//        String unwrappedLine;
+//        while (lineIterator.hasNext() || ! storedLine.get().isEmpty())
+        while (unfoldedLineIterator.hasNext())
+        {
+            String unfoldedLine = unfoldedLineIterator.next();
+//            if (lineIterator.hasNext())
+//            {
+//                unwrappedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
+//            } else
+//            {
+//                // use stored line as last line when iterator is empty
+//                unwrappedLine = storedLine.get();
+//                storedLine.set("");
+//            }
+            System.out.println("line:" + unfoldedLine);
+            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
+            String propertyName = unfoldedLine.substring(0, nameEndIndex);
+            System.out.println("propertyName:" + propertyName + " " + propertyName.equals("END"));            
+            // Parse subcomponent
+            if (propertyName.equals("BEGIN"))
+            {
+                boolean isMainComponent = unfoldedLine.substring(nameEndIndex+1).equals(componentName());
+                if  (! isMainComponent)
+                {
+                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(unfoldedLine.substring(nameEndIndex+1));
+                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
+                    subcomponentContentBuilder.append(unfoldedLine + System.lineSeparator());
+                    boolean isSubcomponentEndFound = false;
+                    do
+                    {
+                        unfoldedLine = unfoldedLineIterator.next();
+//                        unfoldedLine = ICalendarUtilities.unfoldLines(lineIterator, storedLine);
+//                        System.out.println("unwrappedLine:" + unfoldedLine);
+//                        String subLine = contentLines.get(++index);
+                        subcomponentContentBuilder.append(unfoldedLine + System.lineSeparator());
+                        isSubcomponentEndFound = unfoldedLine.subSequence(0, 3).equals("END");
+                    } while (! isSubcomponentEndFound);
+                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+                }
+            } else if (propertyName.equals("END"))
+            {
+//                System.out.println("storedLine:" + storedLine);
+                break; // exit when end found
+            } else
+            {  // parse properties - ignore unknown properties
+                PropertyType propertyType = PropertyType.enumFromName(propertyName);
+                if (propertyType != null)
+                {
+                    Object existingProperty = propertyType.getProperty(this);
+                    if (existingProperty == null || existingProperty instanceof List)
+                    {
+                        propertyType.parse(this, unfoldedLine);
+                    } else
+                    {
+                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
+                    }
+                } else
+                {
+                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
+                }
+            }
+        }
+//        parseContent(ICalendarUtilities.unfoldLines(lineIterator));
+    }
     
     /** Parse component from list of unfolded lines */
     public void parseContent(List<String> contentLines)
     {
         for (int index=0; index<contentLines.size(); index++)
         {
-            String line = contentLines.get(index);
+            String line = contentLines.get(index).toString();
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
             String propertyName = line.substring(0, nameEndIndex);
             

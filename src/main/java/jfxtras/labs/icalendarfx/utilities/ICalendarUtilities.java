@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
@@ -362,9 +363,9 @@ public final class ICalendarUtilities
     /**
      * Returns index where property name ends - after first ';' or ':'
      */
-    public static int getPropertyNameIndex(String propertyLine)
+    public static int getPropertyNameIndex(CharSequence propertyLine)
     {
-        if ((propertyLine == null) || propertyLine.isEmpty())
+        if ((propertyLine == null) || (propertyLine.length() == 0))
         {
             return 0;
         }
@@ -424,6 +425,7 @@ public final class ICalendarUtilities
      * @param componentString  text of calendar component content lines
      * @return  {@code List<String>} of unfolded content lines, empty list if content lines is null
      */
+    @Deprecated
     public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
@@ -466,6 +468,49 @@ public final class ICalendarUtilities
         return propertyLines;
     }
     
+    public static List<String> unfoldLines(List<String> foldedContent)
+    {
+        List<String> unfoldedContent = new ArrayList<>();
+        if (foldedContent != null)
+        {
+            String storedLine = "";
+            Iterator<String> lineIterator = foldedContent.iterator();
+            while (lineIterator.hasNext())
+            {
+                // unwrap lines by storing previous line, adding to it if next is a continuation
+                // when no more continuation lines are found loop back and start with last storedLine
+                CharSequence startLine;
+                if (storedLine.length() == 0)
+                {
+                    startLine = lineIterator.next();
+                } else
+                {
+                    startLine = storedLine;
+                    storedLine = "";
+                }
+                StringBuilder builder = new StringBuilder(startLine);
+                while (lineIterator.hasNext())
+                {
+                    String anotherLine = lineIterator.next();
+                    if (anotherLine.length() == 0) continue; // ignore blank lines
+                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                    { // unwrap anotherLine into line
+                        builder.append(anotherLine.subSequence(1, anotherLine.length()));
+                    } else
+                    {
+                        storedLine = anotherLine; // save for next iteration
+                        break;  // no continuation line, exit while loop
+                    }
+                }
+                String unfoldedLine = builder.toString();
+                unfoldedContent.add(unfoldedLine);
+            }
+        }
+//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
+        return unfoldedContent;
+    }
+    
+    @Deprecated    
     public static List<String> unfoldLines(Iterator<String> lineIterator)
     {
         List<String> propertyLines = new ArrayList<>();
@@ -503,42 +548,46 @@ public final class ICalendarUtilities
         return propertyLines;
     }
     
-    public static String unfoldLines2(Iterator<String> lineIterator)
+    /**
+     * 
+     * @param lineIterator  content text iterator
+     * @param storedLine  last line from iterator, empty string if none
+     * @return
+     */
+    @Deprecated
+    public static String unfoldLines(Iterator<String> lineIterator, ObjectProperty<String> storedLine)
     {
-        String storedLine = "";
         while (lineIterator.hasNext())
         {
             // unwrap lines by storing previous line, adding to it if next is a continuation
             // when no more continuation lines are found loop back and start with last storedLine
             String startLine;
-            if (storedLine.isEmpty())
+            if (storedLine.get().isEmpty())
             {
                 startLine = lineIterator.next();
             } else
             {
-                startLine = storedLine;
-                storedLine = "";
+                startLine = storedLine.get();
+                storedLine.set("");
             }
             StringBuilder builder = new StringBuilder(startLine);
-            while (lineIterator.hasNext())
+            boolean isEnd = startLine.subSequence(0, 3).equals("END");
+            if (! isEnd)
             {
-                String anotherLine = lineIterator.next();
-                if (anotherLine.isEmpty()) continue; // ignore blank lines
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
-                } else
+                while (lineIterator.hasNext())
                 {
-                    storedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
+                    String anotherLine = lineIterator.next();
+                    if (anotherLine.isEmpty()) continue; // ignore blank lines
+                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                    { // unwrap anotherLine into line
+                        builder.append(anotherLine.substring(1, anotherLine.length()));
+                    } else
+                    {
+                        storedLine.set(anotherLine); // save for next iteration
+                        break;  // no continuation line, exit while loop
+                    }
                 }
             }
-            Spliterator<String> spliterator = Spliterators.spliteratorUnknownSize(lineIterator, Spliterator.ORDERED);
-            Stream<String> remainingLineIterator = StreamSupport.stream(spliterator, false);
-            Stream<String> storedElement = Stream.of(storedLine);
-            Iterator<String> newLineIterator = Stream.concat(storedElement, remainingLineIterator).iterator();
-            // TODO - how do I return new iterator?
-            
             return builder.toString();
         }
         return null;

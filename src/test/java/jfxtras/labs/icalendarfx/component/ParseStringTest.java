@@ -8,7 +8,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class ICalendarParseVEventTest extends ICalendarTestAbstract
+public class ParseStringTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */
     @Test

@@ -267,6 +267,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     /** Parse content lines into calendar component object */
+    @Deprecated // use simple factory
     public static VEvent parse(String contentLines)
     {
         VEvent component = new VEvent();
@@ -274,6 +275,15 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return component;
     }
 
+//    /** Parse content lines into calendar component object */
+//    @Deprecated // use simple factory
+//    public static VEvent parse(Iterator<String> contentLines)
+//    {
+//        VEvent component = new VEvent();
+//        component.parseContent(contentLines);
+//        return component;
+//    }
+    
     @Override
     public void checkDateTimeStartConsistency()
     {

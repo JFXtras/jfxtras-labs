@@ -80,6 +80,7 @@ public class StandardTime extends StandardOrDaylight<StandardTime>
      * @param contentLines  the text to parse, not null
      * @return  the parsed StandardTime
      */
+    @Deprecated // use simple factory
     public static StandardTime parse(String contentLines)
     {
         StandardTime component = new StandardTime();

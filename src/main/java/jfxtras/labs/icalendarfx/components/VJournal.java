@@ -146,6 +146,7 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     }
     
     /** Parse content lines into calendar component object */
+    @Deprecated // use simple factory
     public static VJournal parse(String contentLines)
     {
         VJournal component = new VJournal();

@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Iterator;
+
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 
@@ -44,4 +46,7 @@ public interface VComponent extends VParent, VChild
     
     /** Copy state from source VComponent */
     void copyFrom(VComponent source);
+    
+    /** Parse a VComponent from a {@code Iterator<String>} */
+    public void parseContent(Iterator<String> contentLines);
 }

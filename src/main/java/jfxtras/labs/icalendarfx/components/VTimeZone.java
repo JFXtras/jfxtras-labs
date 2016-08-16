@@ -539,6 +539,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     }
 
     /** Parse content lines into calendar component object */
+    @Deprecated // use simple factory
     public static VTimeZone parse(String contentLines)
     {
         VTimeZone component = new VTimeZone();

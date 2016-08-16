@@ -242,6 +242,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     }
     
     /** Parse content lines into calendar component object */
+    @Deprecated // use simple factory
     public static VFreeBusy parse(String contentLines)
     {
         VFreeBusy component = new VFreeBusy();

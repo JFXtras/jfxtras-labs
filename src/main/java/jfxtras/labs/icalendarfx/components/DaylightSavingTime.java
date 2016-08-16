@@ -80,6 +80,7 @@ public class DaylightSavingTime extends StandardOrDaylight<DaylightSavingTime>
      * @param contentLines  the text to parse, not null
      * @return  the parsed DaylightSavingTime
      */
+    @Deprecated // use simple factory
     public static DaylightSavingTime parse(String contentLines)
     {
         DaylightSavingTime component = new DaylightSavingTime();
