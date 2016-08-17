@@ -79,7 +79,8 @@ public class ParseCalendarTest
        "BEGIN:VCALENDAR" + System.lineSeparator() +
        "Ignore this line" + System.lineSeparator() +       
        "END:VCALENDAR";
-        VCalendar.parse(content);
+        VCalendar v = VCalendar.parse(content);
+        assertEquals(29, v.toContent().length());
     }
 
     @Test

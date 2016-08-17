@@ -784,8 +784,9 @@ public class VCalendar extends VParentBase
                 if (elementType != null)
                 {
                     elementType.parse(this, unfoldedLine);
-                } else
+                } else if (unfoldedLine.contains(":"))
                 {
+                    //non-standard
                     boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
                     boolean isIANA = IANAProperty.isIANAProperty(propertyName);
                     if (isNonStandard)
@@ -795,8 +796,7 @@ public class VCalendar extends VParentBase
                     {
                         CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
                     }
-                    //non-standard
-                }
+                } // else ignore unknown line
             }
         }
     }
