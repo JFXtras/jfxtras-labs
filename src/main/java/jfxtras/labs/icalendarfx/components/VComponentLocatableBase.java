@@ -241,6 +241,31 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         }
     }
     
+    /** parse VAlarms */
+    @Override
+    void parseSubComponents(CalendarComponent subcomponentType, Iterator<String> contentIterator)
+    {
+        if (subcomponentType == CalendarComponent.VALARM)
+        {
+            final ObservableList<VAlarm> list;
+            if (getVAlarms() == null)
+            {
+                list = FXCollections.observableArrayList();
+                setVAlarms(list);
+            } else
+            {
+                list = getVAlarms();
+            }
+            SimpleVComponentFactory.newVComponent(contentIterator);
+            list.add((VAlarm) SimpleVComponentFactory.newVComponent(contentIterator));
+//            list.add(VAlarm.parse(contentIterator));
+        } else
+        {
+            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
+                    " found inside " + componentName() + " component");
+        }
+    }
+    
     /** copy VAlarms */
     @Override
     public void copyChildrenFrom(VParent source)

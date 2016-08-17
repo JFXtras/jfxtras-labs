@@ -39,6 +39,10 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseAt
 public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropertyAttendee<T>, PropertyAltText<T>,
     PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>, PropertyAlarmTrigger<T>, PropertyRelationship<T>
 {
+    private String propertyName;
+    // TODO - MOVE PROPERTY NAME HERE
+    // Override getter and add setter.  Other properties have constant property name.
+    
     /**
      * ALTREP : Alternate Text Representation
      * To specify an alternate text representation for the property value.

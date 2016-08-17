@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,15 +40,14 @@ public enum CalendarComponent
 //            true,
             VEvent.class)
     {
-
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            VEvent e = new VEvent();
-            e.parseContent(unfoldedLines);
-            vCalendar.getVEvents().add(e);
-            return e;
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            VEvent e = new VEvent();
+//            e.parseContent(unfoldedLines);
+//            vCalendar.getVEvents().add(e);
+//            return e;
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -81,14 +79,14 @@ public enum CalendarComponent
 //            true,
             VTodo.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            VTodo e = new VTodo();
-            e.parseContent(unfoldedLines);
-            vCalendar.getVTodos().add(e);
-            return e;
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            VTodo e = new VTodo();
+//            e.parseContent(unfoldedLines);
+//            vCalendar.getVTodos().add(e);
+//            return e;
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -109,14 +107,14 @@ public enum CalendarComponent
 //            true,
             VJournal.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            VJournal e = new VJournal();
-            e.parseContent(unfoldedLines);
-            vCalendar.getVJournals().add(e);
-            return e;
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            VJournal e = new VJournal();
+//            e.parseContent(unfoldedLines);
+//            vCalendar.getVJournals().add(e);
+//            return e;
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -131,14 +129,14 @@ public enum CalendarComponent
 //            true,
             VTimeZone.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            VTimeZone e = new VTimeZone();
-            e.parseContent(unfoldedLines);
-            vCalendar.getVTimeZones().add(e);
-            return e;
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            VTimeZone e = new VTimeZone();
+//            e.parseContent(unfoldedLines);
+//            vCalendar.getVTimeZones().add(e);
+//            return e;
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -155,14 +153,14 @@ public enum CalendarComponent
 //            true,
             VFreeBusy.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            VFreeBusy e = new VFreeBusy();
-            e.parseContent(unfoldedLines);
-            vCalendar.getVFreeBusies().add(e);
-            return e;
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            VFreeBusy e = new VFreeBusy();
+//            e.parseContent(unfoldedLines);
+//            vCalendar.getVFreeBusies().add(e);
+//            return e;
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -181,11 +179,11 @@ public enum CalendarComponent
 //            false,
             DaylightSavingTime.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -202,11 +200,11 @@ public enum CalendarComponent
 //            false,
             StandardTime.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -223,11 +221,11 @@ public enum CalendarComponent
 //            false,
             VAlarm.class)
     {
-        @Override
-        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
-        {
-            throw new RuntimeException("Not a main component - must be embedded inside a VEvent or VTodo");
-        }
+//        @Override
+//        public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
+//        {
+//            throw new RuntimeException("Not a main component - must be embedded inside a VEvent or VTodo");
+//        }
 
         @Override
         public void copyChild(VChild child, VCalendar destination)
@@ -398,7 +396,7 @@ public enum CalendarComponent
 //    abstract public List<? extends VComponent> getComponents(VCalendar vCalendar);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines);
+//    abstract public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines);
     
     abstract public void copyChild(VChild child, VCalendar destination);
 //    {

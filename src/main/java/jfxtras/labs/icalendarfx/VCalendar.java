@@ -2,12 +2,8 @@ package jfxtras.labs.icalendarfx;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,13 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -33,16 +22,21 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentPersonalBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -60,44 +54,6 @@ public class VCalendar extends VParentBase
     public static String myVersion = "1.0";
     private static final String FIRST_CONTENT_LINE = "BEGIN:VCALENDAR";
     private static final String LAST_CONTENT_LINE = "END:VCALENDAR";
-    
-    public static final Logger LOGGER = setupLogger(VCalendar.class.getName());
-    private static final String LOG_FILE = "log_DATE.txt";
-//    private static final ByteArrayOutputStream OUT = new ByteArrayOutputStream();
-//    private static final SimpleFormatter FMT = new SimpleFormatter();
-//    private static final StreamHandler HANDLER = new StreamHandler(OUT, FMT);
-    private static Logger setupLogger(String name)
-    {
-        // get the global logger to configure it
-        Logger logger = Logger.getLogger(name);
-
-        // suppress the logging output to the console
-        Logger rootLogger = Logger.getLogger("");
-        Handler[] handlers = rootLogger.getHandlers();
-
-        if (handlers[0] instanceof ConsoleHandler) {
-            handlers[0].setLevel(Level.SEVERE);
-        }
-        
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd.HH:mm");
-        String now = dateFormat.format(LocalDateTime.now());
-        String f = LOG_FILE.replace("DATE", now);
-//        Settings.LOG_FILE.toFile().mkdirs(); // make directory if does not exist
-        FileHandler fileTxt;
-        try
-        {
-            fileTxt = new FileHandler(f);
-            fileTxt.setFormatter(new LogFormatter());
-            logger.addHandler(fileTxt);
-        } catch (SecurityException | IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        logger.setLevel(Level.ALL);
-        return logger;
-    }
     
     /*
      * Calendar properties
@@ -293,6 +249,87 @@ public class VCalendar extends VParentBase
         return this;
     }
 
+    /**
+     * <p>Defines a non-standard property that begins with a "X-" prefix<br>
+     * 3.8.8.2.  Non-Standard Properties</p>
+     * 
+     * <p>Example:<br>
+     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.<br>
+     *  org/mysubj.au
+     * </p>
+     */
+    public ObservableList<NonStandardProperty> getNonStandardProperties() { return nonStandardProps; }
+    private ObservableList<NonStandardProperty> nonStandardProps;
+    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps)
+    {
+        if (nonStandardProps != null)
+        {
+            orderer().registerSortOrderProperty(nonStandardProps);
+        } else
+        {
+            orderer().unregisterSortOrderProperty(this.nonStandardProps);
+        }
+        this.nonStandardProps = nonStandardProps;
+    }
+    public VCalendar withNonStandardProperty(String...nonStandardProps)
+    {
+        Arrays.stream(nonStandardProps).forEach(c -> PropertyType.NON_STANDARD.parse(this, c));
+        return this;
+    }
+    public VCalendar withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return this; }
+    public VCalendar withNonStandardProperty(NonStandardProperty...nonStandardProps)
+    {
+        if (getNonStandardProperties() == null)
+        {
+            setNonStandardProperties(FXCollections.observableArrayList(nonStandardProps));
+        } else
+        {
+            getNonStandardProperties().addAll(nonStandardProps);
+        }
+        return this;
+    }
+
+    /**
+     * <p>Defines an IANA-registered property<br>
+     * 3.8.8.1.  IANA Properties</p>
+     * 
+     * <p>Examples:<br>
+     * <ul>
+     * <li>NON-SMOKING;VALUE=BOOLEAN:TRUE
+     * <li>DRESSCODE:CASUAL
+     * </ul>
+     */
+    public ObservableList<IANAProperty> getIANAProperties() { return ianaProps; }
+    private ObservableList<IANAProperty> ianaProps;
+    public void setIANAProperties(ObservableList<IANAProperty> ianaProps)
+    {
+        if (ianaProps != null)
+        {
+            orderer().registerSortOrderProperty(ianaProps);
+        } else
+        {
+            orderer().unregisterSortOrderProperty(this.ianaProps);
+        }
+        this.ianaProps = ianaProps;
+    }
+    public VCalendar withIANAProperty(String...ianaProps)
+    {
+        Arrays.stream(ianaProps).forEach(c -> PropertyType.IANA_PROPERTY.parse(this, c));
+        return this;
+    }
+    public VCalendar withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return this; }
+    public VCalendar withIANAProperty(IANAProperty...ianaProps)
+    {
+        if (getIANAProperties() == null)
+        {
+            setIANAProperties(FXCollections.observableArrayList(ianaProps));
+        } else
+        {
+            getIANAProperties().addAll(ianaProps);
+        }
+        return this;
+    }
+    
     /*
      * Calendar Components
      */
@@ -437,6 +474,46 @@ public class VCalendar extends VParentBase
         {
             throw new RuntimeException("Unsuppored VComponent type:" + newVComponent.getClass());
         }
+    }
+    
+    /** Create a VComponent by parsing component text and add it to the appropriate list 
+     * @see #addVComponent(VComponent)*/
+    public void addVComponent(String contentText)
+    {
+        VComponent vComponent = SimpleVComponentFactory.emptyVComponent(contentText);
+        vComponent.parseContent(contentText);
+        addVComponent(vComponent);
+    }
+    
+    /**
+     * Parse component text to new VComponent with {@link RequestStatus REQUEST-STATUS} properties containing 
+     * the result of the process, such as success message or error report.
+     * 
+     * @param contentText  iCalendar content lines
+     * @return  list of error messages if import failed, null if successful
+     */
+    public VComponent importVComponent(String contentText)
+    {
+        VComponentPersonalBase<?> vComponent = (VComponentPersonalBase<?>) SimpleVComponentFactory.emptyVComponent(contentText);
+        List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
+        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+        boolean useRequestStatus = true;
+        List<String> requestStatusErrors = vComponent.parseContent(unfoldedLines, useRequestStatus);
+        requestStatusErrors.stream().forEach(System.out::println);
+        // TODO - CHECK FOR CONFLICTS
+        return vComponent;
+    }
+    
+    /**
+     * Import new VComponent with {@link RequestStatus REQUEST-STATUS} properties containing 
+     * the result of the process, such as success message or error report.
+     * 
+     * @param contentText  iCalendar content lines
+     * @return  list of error messages if import failed, null if successful
+     */
+    public List<String> importVComponent(VComponent newVComponent)
+    {
+        throw new RuntimeException("not implemented");
     }
     
     /**
@@ -584,54 +661,6 @@ public class VCalendar extends VParentBase
         };
     }
     
-//    /** 
-//     * SORT ORDER
-//     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content or
-//     * order of added components.
-//     * 
-//     * If a parameter is not present in the map, it is put at the end of the sorted by
-//     * DTSTAMP.  If DTSTAMP is not present, the component is put on top.
-//     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-//     * a specific parameter order (e.g. unit testing).
-//     */
-//    public Map<VCalendarElement, Integer> elementSortOrder() { return elementSortOrder; }
-//    final private Map<VCalendarElement, Integer> elementSortOrder = new HashMap<>();
-//    private volatile Integer sortOrderCounter = 0;
-//    
-//    /**
-//     * Maintains {@link #elementSortOrder} map
-//     */
-//    private ListChangeListener<VCalendarElement> sortOrderListChangeListener = (ListChangeListener.Change<? extends VCalendarElement> change) ->
-//    {
-//        while (change.next())
-//        {
-//            if (change.wasAdded())
-//            {
-//                change.getAddedSubList().forEach(vComponent ->  elementSortOrder().put(vComponent, sortOrderCounter));
-//                sortOrderCounter += 100;
-//            } else
-//            {
-//                if (change.wasRemoved())
-//                {
-//                    change.getRemoved().forEach(vComponent -> 
-//                    {
-//                        elementSortOrder().remove(vComponent);
-//                    });
-//                }                
-//            }
-//        }
-//    };
-//    
-//    private ChangeListener<? super VCalendarElement> sortOrderChangeListener = (obs, oldValue, newValue) ->
-//    {
-//        if (oldValue != null)
-//        {
-//            elementSortOrder().remove(oldValue);
-//        }
-//        elementSortOrder().put(newValue, sortOrderCounter);
-//        sortOrderCounter += 100;
-//    };
-    
     /*
      * CONSTRUCTORS
      */
@@ -650,23 +679,12 @@ public class VCalendar extends VParentBase
     public VCalendar(VCalendar source)
     {
         this();
-//        throw new RuntimeException("not implemented");
         copyChildrenFrom(source);    
     }
 
     /*
      * OTHER METHODS
      */
-    
-//    /** Copy property into this component */
-//    @Override protected void copyChild(VCalendarElement child)
-//    {
-//        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
-//        if (type != null)
-//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-//            type.copyChild(child, this);
-//        }        
-//    }
     
     private void addListeners()
     {
@@ -684,12 +702,50 @@ public class VCalendar extends VParentBase
     }
     
     @Override
+    public String toString()
+    {
+        return super.toString() + " " + toContent();
+    }
+    
+    @Override
     public void parseContent(String content)
     {
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
         parseContent(unfoldedLines);
     }
+    
+//    /** Parse folded content lines into calendar object */
+//    public void parseContent(List<String> unfoldedLineIterator)
+//    {
+////        List<String> errors = new ArrayList<>();
+//        String firstLine = unfoldedLineIterator.next();
+//        if (! firstLine.equals("BEGIN:VCALENDAR"))
+//        {
+//            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
+//        }
+//        while (unfoldedLineIterator.hasNext())
+//        {
+//            String unfoldedLine = unfoldedLineIterator.next();
+//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
+//            String propertyName = (nameEndIndex > 0) ? unfoldedLine.substring(0, nameEndIndex) : "";
+//            
+//            // Parse component
+//            if (propertyName.equals("BEGIN"))
+//            {
+//                String componentName = unfoldedLine.substring(nameEndIndex+1);
+//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
+//                addVComponent(newComponent);
+//            } else
+//            {
+//                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
+//                if (elementType != null)
+//                {
+//                    elementType.parse(this, unfoldedLine);
+//                }
+//            }
+//        }
+//    }
     
     /** Parse unfolded content lines into calendar object */
     public void parseContent(Iterator<String> unfoldedLineIterator)
@@ -704,20 +760,34 @@ public class VCalendar extends VParentBase
         {
             String unfoldedLine = unfoldedLineIterator.next();
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
-            String propertyName = unfoldedLine.substring(0, nameEndIndex);
+            String propertyName = (nameEndIndex > 0) ? unfoldedLine.substring(0, nameEndIndex) : "";
             
             // Parse component
             if (propertyName.equals("BEGIN"))
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
                 VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
+//                VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
+//                newComponent.parseContent(content);
                 addVComponent(newComponent);
             } else
-            {
+            { // parse calendar property
                 CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     elementType.parse(this, unfoldedLine);
+                } else
+                {
+                    boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
+                    boolean isIANA = IANAProperty.isIANAProperty(propertyName);
+                    if (isNonStandard)
+                    {
+                        CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);
+                    } else if (isIANA)
+                    {
+                        CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
+                    }
+                    //non-standard
                 }
             }
         }
@@ -796,12 +866,13 @@ public class VCalendar extends VParentBase
 //        }
 //    }
     
-    @Override
-    public String toString()
-    {
-        return super.toString() + " " + toContent();
-    }
-    
+    /**
+     * Creates a new VCalendar from an ics file
+     * 
+     * @param icsFilePath  path of ics file to parse
+     * @return  Created VCalendar
+     * @throws IOException
+     */
     public static VCalendar parseICalendarFile(Path icsFilePath) throws IOException
     {
         BufferedReader br = Files.newBufferedReader(icsFilePath);
@@ -812,133 +883,10 @@ public class VCalendar extends VParentBase
         return vCalendar;
     }
 
-//    public static VCalendar parseICalendarFile(Iterator<String> lineIterator)
-//    {
-//        VCalendar vCalendar = new VCalendar();
-//        ExecutorService service = Executors.newSingleThreadExecutor();
-//        List<Callable<Object>> tasks = new ArrayList<>();
-//        try
-//        {
-////            BufferedReader br = Files.newBufferedReader(icsFilePath);
-////            Iterator<String> lineIterator = br.lines().iterator();
-//            while (lineIterator.hasNext())
-//            {
-//                String line = ICalendarUtilities.unfoldLines(lineIterator);
-////                String line = lineIterator.next();
-//                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
-//                String propertyName = p.getKey();
-//                Arrays.stream(VCalendarComponent.values())
-//                        .forEach(property -> 
-//                        {
-//                            boolean matchOneLineProperty = propertyName.equals(property.toString());
-//                            if (matchOneLineProperty)
-//                            {
-//                                property.parseAndSetProperty(vCalendar, p.getValue());
-//                            } else if (line.equals(property.startDelimiter()))
-//                            {// multi-line property
-//                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
-//                                boolean matchEnd = false;
-//                                do
-//                                {
-//                                    String propertyLine = lineIterator.next();
-//                                    matchEnd = propertyLine.equals(property.endDelimiter());
-//                                    propertyValue.append(propertyLine + System.lineSeparator());
-//                                } while (! matchEnd);
-//                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
-//                                tasks.add(Executors.callable(multiLinePropertyRunnable));
-//                            } // otherwise, unknown property should be ignored
-//                        });
-//            }
-//                service.invokeAll(tasks);
-//        } catch (InterruptedException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return vCalendar;
-//    }
-
     public static VCalendar parse(String contentLines)
     {
         VCalendar c = new VCalendar();
         c.parseContent(contentLines);
         return c;
-    }
-    
-    /**
-     * LogFormatter to format log entries
-     * From traceback only logs entries that contain ninjawise class.  Other lines are omitted.
-     * If a null exception was passed then only the message is logged (no traceback exists).
-     * 
-     * @author David Bal
-     *
-     */
-    final static class LogFormatter extends Formatter
-    {
-        private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
-        public LogFormatter() {}
-        
-        @Override
-        public String format(LogRecord record) {
-            StringBuilder sb = new StringBuilder();
-
-//            sb.append(new Date(record.getMillis()))
-//                .append(" ")
-//                .append(record.getLevel().getLocalizedName())
-//                .append(": ")
-//                .append(formatMessage(record))
-//                .append(LINE_SEPARATOR);
-
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            
-            sb.append(record.getThreadID())
-                .append("::")
-                .append(record.getLevel().getLocalizedName())
-                .append("::")
-                .append(record.getSourceClassName())
-                .append("::")
-                .append(record.getSourceMethodName())
-                .append("::")
-                .append(f.format(LocalDateTime.now()))
-                .append("::")
-                .append(record.getMessage());
-
-            if (record.getThrown() != null) {
-                try {
-                    StringWriter sw = new StringWriter();
-                    PrintWriter pw = new PrintWriter(sw);
-                    record.getThrown().printStackTrace(pw);
-                    pw.close();
-                    if (record.getLevel() == Level.SEVERE) {
-                        sb.append(LINE_SEPARATOR)
-                            .append("\t")
-                            .append(sw.toString());
-                    } else {
-                        String[] lines = sw.toString().split(LINE_SEPARATOR);
-                        for (int i=0; i<lines.length; i++) {    // output all lines with class name
-                            String classString = VCalendar.class.toString();
-                            int beginIndex = classString.indexOf("com");
-                            int endIndex = classString.indexOf(".Main");
-                            String projectString = classString.substring(beginIndex, endIndex);
-                            if (lines[i].contains(projectString)) {
-                                sb.append(LINE_SEPARATOR)
-                                  .append(lines[i]);
-                            } else if (i==0) {
-                                sb.append(LINE_SEPARATOR)
-                                  .append("\t")
-                                  .append(lines[i]);
-                            }
-//                            else
-//                                break;
-                        }
-                    }
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            sb.append(LINE_SEPARATOR);
-            return sb.toString();
-        }
-        
     }
 }

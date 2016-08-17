@@ -96,12 +96,13 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         content.indexOf(System.lineSeparator());
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines);
+        parseContent(unfoldedLines, false);
+        
     }
 
     /** Parse unfolded content lines into calendar component. */
     @Override
-    public List<String> parseContent(Iterator<String> unfoldedLineIterator)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useRequestStatus)
     {
         if (unfoldedLineIterator == null)
         {
@@ -147,17 +148,23 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                             propertyType.parse(this, unfoldedLine);
                         } catch (Exception e)
                         {
-                            if (propertyType.isRequired(this))
+                            if (useRequestStatus)
                             {
-                                errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                if (propertyType.isRequired(this))
+                                {
+                                    errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                } else
+                                {
+                                    errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                }
                             } else
                             {
-                                errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                throw e;
                             }
                         }
                     } else
                     {
-                        if (errors != null)
+                        if (useRequestStatus)
                         {
                             errors.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                         } else
@@ -167,7 +174,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     }
                 } else
                 {
-                    if (errors != null)
+                    if (useRequestStatus)
                     {
                         errors.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                     } else
@@ -177,7 +184,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             }
         }
-        return errors;
+        return (useRequestStatus) ? errors : null;
     }
     
 //    public void parseContent(List<String> contentLines)
@@ -245,8 +252,16 @@ public abstract class VComponentBase extends VParentBase implements VComponent
      * @param subcomponentType 
      * @param string 
      */
-    void parseSubComponents(CalendarComponent subcomponentType, String subcomponentcontentLines) { }
-    
+    void parseSubComponents(CalendarComponent subcomponentType, String subcomponentContentLines) { } // no opp
+
+    /**
+     * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
+     * @param subcomponentType 
+     * @param string 
+     */
+    void parseSubComponents(CalendarComponent subcomponentType, Iterator<String> subcomponentContentIterator) { } // no opp
+
+        
     @Override
     public String toString()
     {

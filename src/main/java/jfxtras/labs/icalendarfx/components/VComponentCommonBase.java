@@ -6,7 +6,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 public abstract class VComponentCommonBase<T> extends VComponentBase implements VComponentCommon<T>
 {
-    /**
+    /*
      * 3.8.8.2.  Non-Standard Properties
      * Any property name with a "X-" prefix
      * 
@@ -31,7 +31,7 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     }
     /** add comma separated nonStandardProps into separate nonStandardProps objects */
     
-    /**
+    /*
      * 3.8.8.1.  IANA Properties
      * An IANA-registered property name
      * 

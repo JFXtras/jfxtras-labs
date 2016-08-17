@@ -386,7 +386,7 @@ public final class ICalendarUtilities
     /**
      * Returns index where property name ends - after first ';' or ':'
      */
-    public static int getPropertyNameIndex(CharSequence propertyLine)
+    public static int getPropertyNameIndex(String propertyLine)
     {
         if ((propertyLine == null) || (propertyLine.length() == 0))
         {
@@ -448,44 +448,45 @@ public final class ICalendarUtilities
      * @param componentString  text of calendar component content lines
      * @return  {@code List<String>} of unfolded content lines, empty list if content lines is null
      */
-    @Deprecated
     public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
         if (componentString != null)
         {
-            String storedLine = "";
+//            String storedLine = "";
             Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-            while (lineIterator.hasNext())
-            {
-                // unwrap lines by storing previous line, adding to it if next is a continuation
-                // when no more continuation lines are found loop back and start with last storedLine
-                String startLine;
-                if (storedLine.isEmpty())
-                {
-                    startLine = lineIterator.next();
-                } else
-                {
-                    startLine = storedLine;
-                    storedLine = "";
-                }
-                StringBuilder builder = new StringBuilder(startLine);
-                while (lineIterator.hasNext())
-                {
-                    String anotherLine = lineIterator.next();
-                    if (anotherLine.isEmpty()) continue; // ignore blank lines
-                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                    { // unwrap anotherLine into line
-                        builder.append(anotherLine.substring(1, anotherLine.length()));
-                    } else
-                    {
-                        storedLine = anotherLine; // save for next iteration
-                        break;  // no continuation line, exit while loop
-                    }
-                }
-                String line = builder.toString();
-                propertyLines.add(line);
-            }
+            return unfoldLines(lineIterator);
+
+//            while (lineIterator.hasNext())
+//            {
+//                // unwrap lines by storing previous line, adding to it if next is a continuation
+//                // when no more continuation lines are found loop back and start with last storedLine
+//                String startLine;
+//                if (storedLine.isEmpty())
+//                {
+//                    startLine = lineIterator.next();
+//                } else
+//                {
+//                    startLine = storedLine;
+//                    storedLine = "";
+//                }
+//                StringBuilder builder = new StringBuilder(startLine);
+//                while (lineIterator.hasNext())
+//                {
+//                    String anotherLine = lineIterator.next();
+//                    if (anotherLine.isEmpty()) continue; // ignore blank lines
+//                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//                    { // unwrap anotherLine into line
+//                        builder.append(anotherLine.substring(1, anotherLine.length()));
+//                    } else
+//                    {
+//                        storedLine = anotherLine; // save for next iteration
+//                        break;  // no continuation line, exit while loop
+//                    }
+//                }
+//                String line = builder.toString();
+//                propertyLines.add(line);
+//            }
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
@@ -496,44 +497,44 @@ public final class ICalendarUtilities
         List<String> unfoldedContent = new ArrayList<>();
         if (foldedContent != null)
         {
-            String storedLine = "";
+//            String storedLine = "";
             Iterator<String> lineIterator = foldedContent.iterator();
-            while (lineIterator.hasNext())
-            {
-                // unwrap lines by storing previous line, adding to it if next is a continuation
-                // when no more continuation lines are found loop back and start with last storedLine
-                CharSequence startLine;
-                if (storedLine.length() == 0)
-                {
-                    startLine = lineIterator.next();
-                } else
-                {
-                    startLine = storedLine;
-                    storedLine = "";
-                }
-                StringBuilder builder = new StringBuilder(startLine);
-                while (lineIterator.hasNext())
-                {
-                    String anotherLine = lineIterator.next();
-                    if (anotherLine.length() == 0) continue; // ignore blank lines
-                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                    { // unwrap anotherLine into line
-                        builder.append(anotherLine.subSequence(1, anotherLine.length()));
-                    } else
-                    {
-                        storedLine = anotherLine; // save for next iteration
-                        break;  // no continuation line, exit while loop
-                    }
-                }
-                String unfoldedLine = builder.toString();
-                unfoldedContent.add(unfoldedLine);
-            }
+            return unfoldLines(lineIterator);
+//            while (lineIterator.hasNext())
+//            {
+//                // unwrap lines by storing previous line, adding to it if next is a continuation
+//                // when no more continuation lines are found loop back and start with last storedLine
+//                CharSequence startLine;
+//                if (storedLine.length() == 0)
+//                {
+//                    startLine = lineIterator.next();
+//                } else
+//                {
+//                    startLine = storedLine;
+//                    storedLine = "";
+//                }
+//                StringBuilder builder = new StringBuilder(startLine);
+//                while (lineIterator.hasNext())
+//                {
+//                    String anotherLine = lineIterator.next();
+//                    if (anotherLine.length() == 0) continue; // ignore blank lines
+//                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//                    { // unwrap anotherLine into line
+//                        builder.append(anotherLine.subSequence(1, anotherLine.length()));
+//                    } else
+//                    {
+//                        storedLine = anotherLine; // save for next iteration
+//                        break;  // no continuation line, exit while loop
+//                    }
+//                }
+//                String unfoldedLine = builder.toString();
+//                unfoldedContent.add(unfoldedLine);
+//            }
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return unfoldedContent;
     }
     
-    @Deprecated    
     public static List<String> unfoldLines(Iterator<String> lineIterator)
     {
         List<String> propertyLines = new ArrayList<>();
@@ -568,6 +569,7 @@ public final class ICalendarUtilities
             String line = builder.toString();
             propertyLines.add(line);
         }
+        if (! storedLine.isEmpty()) propertyLines.add(storedLine);
         return propertyLines;
     }
     

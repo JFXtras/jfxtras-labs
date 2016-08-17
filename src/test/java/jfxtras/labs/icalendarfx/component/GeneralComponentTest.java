@@ -53,7 +53,8 @@ public class GeneralComponentTest
                 "CLASS:PUBLIC" + System.lineSeparator() +
                 "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
                 "END:" + componentName;
-        VEvent.parse(content);
+        VEvent v = VEvent.parse(content);
+        System.out.println(v.toContent());
     }
     
     @Test

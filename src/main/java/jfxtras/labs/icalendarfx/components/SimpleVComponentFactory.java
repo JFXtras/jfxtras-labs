@@ -29,6 +29,11 @@ public class SimpleVComponentFactory
         }
         switch (component)
         {
+        case DAYLIGHT_SAVING_TIME:
+        case STANDARD_TIME:
+        case VALARM:
+            myComponent = new VAlarm();
+            break;
         case VEVENT:
             myComponent = new VEvent();
             break;
@@ -47,7 +52,8 @@ public class SimpleVComponentFactory
         default:
             throw new IllegalArgumentException("Unsupported component:" + component);
         }
-        myComponent.parseContent(contentIterator);
+        boolean collectErrorList = false;
+        myComponent.parseContent(contentIterator, collectErrorList);
         return myComponent;
     }
     
@@ -65,28 +71,6 @@ public class SimpleVComponentFactory
             // make new component
             String componentName = line.substring(nameEndIndex+1, line.length());
             myComponent = newVComponent(componentName, contentIterator);
-//            CalendarComponent component = CalendarComponent.enumFromName(componentName);
-//            switch (component)
-//            {
-//            case VEVENT:
-//                myComponent = new VEvent();
-//                break;
-//            case VFREEBUSY:
-//                myComponent = new VFreeBusy();
-//                break;
-//            case VJOURNAL:
-//                myComponent = new VJournal();
-//                break;
-//            case VTIMEZONE:
-//                myComponent = new VTimeZone();
-//                break;
-//            case VTODO:
-//                myComponent = new VTodo();
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Unsupported component:" + component);
-//            }
-//            myComponent.parseContent(contentIterator);
         } else
         {
             throw new IllegalArgumentException("First content line MUST start with \"BEGIN\" not:" + line);
@@ -94,10 +78,64 @@ public class SimpleVComponentFactory
         return myComponent;
     }
     
-    public static VComponent newVComponent(String contentText)
+    public static VComponent parseVComponent(String contentText)
     {
         List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
         return newVComponent(unfoldedLines);
     }
+    
+    /**
+     * 
+     * @param contentText
+     * @return
+     */
+    public static VComponent emptyVComponent(String contentText)
+    {
+        int endFirstLine = contentText.indexOf(System.lineSeparator());
+        endFirstLine = (endFirstLine < 0) ? contentText.length() : endFirstLine;
+        String firstLine = contentText.substring(0, endFirstLine);
+        String componentName = firstLine.replace("BEGIN:", "");
+
+        // make new component
+        final VComponent myComponent;
+        CalendarComponent component = CalendarComponent.enumFromName(componentName.toString());
+        if (component == null)
+        {
+            throw new IllegalArgumentException(componentName + " is not a valid calendar component name.");            
+        }
+        switch (component)
+        {
+        case VEVENT:
+            myComponent = new VEvent();
+            break;
+        case VFREEBUSY:
+            myComponent = new VFreeBusy();
+            break;
+        case VJOURNAL:
+            myComponent = new VJournal();
+            break;
+        case VTIMEZONE:
+            myComponent = new VTimeZone();
+            break;
+        case VTODO:
+            myComponent = new VTodo();
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported component:" + component);
+        }
+        return myComponent;
+    }
+    
+//    /**
+//     * 
+//     * @param contentText  iCalendar content lines
+//     * @return  created VComponent with {@link RequestStatus REQUEST-STATUS} properties containing result
+//     */
+//    public static VComponent importVComponent(String contentText)
+//    {
+//        List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+//        return newVComponent(unfoldedLines);
+//    }
 }

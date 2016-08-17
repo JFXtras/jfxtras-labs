@@ -50,5 +50,5 @@ public interface VComponent extends VParent, VChild
     void copyFrom(VComponent source);
     
     /** Parse a VComponent from a {@code Iterator<String>}.  Returns list of error strings for {@link RequestStatus} */
-    public List<String> parseContent(Iterator<String> contentLines);
+    public List<String> parseContent(Iterator<String> contentLines, boolean collectErrorList);
 }

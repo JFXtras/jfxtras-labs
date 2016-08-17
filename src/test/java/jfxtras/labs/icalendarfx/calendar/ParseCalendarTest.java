@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 
 public class ParseCalendarTest
 {
@@ -57,5 +58,46 @@ public class ParseCalendarTest
         assertEquals(content, vCalendar.toContent());
 //        VEventNew e = vCalendar.getVEvents().get(1);
 //        e.getNonStandardProperties().stream().forEach(System.out::println);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void canParseNullCalendar()
+    {
+        VCalendar.parse(null);
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canParseInvalidCalendar1()
+    {
+        VCalendar.parse("invalid calendar");
+    }
+    
+    @Test
+    public void canParseInvalidCalendar2()
+    {
+        String content = 
+       "BEGIN:VCALENDAR" + System.lineSeparator() +
+       "Ignore this line" + System.lineSeparator() +       
+       "END:VCALENDAR";
+        VCalendar.parse(content);
+    }
+
+    @Test
+    public void canParseEmptyCalendar1()
+    {
+        SimpleVComponentFactory.emptyVComponent("VEVENT");
+    }
+    
+    @Test
+    public void canParseEmptyCalendar2()
+    {
+        String content = "BEGIN:VEVENT" + System.lineSeparator() +
+        "UID:19970610T172345Z-AF23B2@example.com" + System.lineSeparator() +
+        "DTSTAMP:19970610T172345Z" + System.lineSeparator() +
+        "DTSTART:19970714T170000Z" + System.lineSeparator() +
+        "DTEND:19970715T040000Z" + System.lineSeparator() +
+        "SUMMARY:Bastille Day Party" + System.lineSeparator() +
+        "END:VEVENT";
+        SimpleVComponentFactory.emptyVComponent(content);
     }
 }

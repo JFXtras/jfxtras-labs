@@ -34,7 +34,7 @@ public class ParseIteratorTest extends ICalendarTestAbstract
                           + " far away." + System.lineSeparator()
                           + "END:VEVENT";
 //    Iterator<String> iterator = Arrays.stream(vEventString.split(System.lineSeparator())).iterator();
-    VComponent vEvent = SimpleVComponentFactory.newVComponent(vEventString);
+    VComponent vEvent = SimpleVComponentFactory.parseVComponent(vEventString);
 //    VEvent vEvent = VEvent.parse(iterator);
     VEvent expectedVEvent = getWholeDayDaily1()
             .withComments("This is a multiline comment.")
@@ -90,7 +90,7 @@ public class ParseIteratorTest extends ICalendarTestAbstract
                           + "END:VALARM" + System.lineSeparator()
                           + "END:VEVENT";
 //    Iterator<String> iterator = Arrays.stream(vEventString.split(System.lineSeparator())).iterator();
-    VComponent vEvent = SimpleVComponentFactory.newVComponent(vEventString);
+    VComponent vEvent = SimpleVComponentFactory.parseVComponent(vEventString);
     VEvent expectedVEvent = getWholeDayDaily1()
             .withComments("This is a multiline comment.")
             .withVAlarms(new VAlarm()

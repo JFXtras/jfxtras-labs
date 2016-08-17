@@ -2,14 +2,18 @@ package jfxtras.labs.icalendarfx.calendar;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class ReadICSFileTest
 {
@@ -33,8 +37,10 @@ public class ReadICSFileTest
         String fileName = "mathBirthdays.ics";       
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());
+        BufferedReader br = Files.newBufferedReader(icsFilePath);
+        List<String> expectedLines = ICalendarUtilities.unfoldLines(br.lines().iterator());
         VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath);
-        assertEquals(434739, vCalendar.toContent().length());
-        assertEquals(1321, vCalendar.getVEvents().size());
+        List<String> lines = ICalendarUtilities.unfoldLines(vCalendar.toContent());
+        assertEquals(expectedLines, lines);
     }
 }

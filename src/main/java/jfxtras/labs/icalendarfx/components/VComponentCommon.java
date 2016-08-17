@@ -23,12 +23,13 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public interface VComponentCommon<T> extends VComponent
 {
     /**
-     * 3.8.8.2.  Non-Standard Properties
-     * Any property name with a "X-" prefix
+     * <p>Defines a non-standard property that begins with a "X-" prefix<br>
+     * 3.8.8.2.  Non-Standard Properties</p>
      * 
-     * Example:
-     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
+     * <p>Example:<br>
+     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.<br>
      *  org/mysubj.au
+     * </p>
      */
     ObservableList<NonStandardProperty> getNonStandardProperties();
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
@@ -51,12 +52,14 @@ public interface VComponentCommon<T> extends VComponent
     }
 
     /**
-     * 3.8.8.1.  IANA Properties
-     * An IANA-registered property name
+     * <p>Defines an IANA-registered property<br>
+     * 3.8.8.1.  IANA Properties</p>
      * 
-     * Examples:
-     * NON-SMOKING;VALUE=BOOLEAN:TRUE
-     * DRESSCODE:CASUAL
+     * <p>Examples:<br>
+     * <ul>
+     * <li>NON-SMOKING;VALUE=BOOLEAN:TRUE
+     * <li>DRESSCODE:CASUAL
+     * </ul>
      */
     ObservableList<IANAProperty> getIANAProperties();
     void setIANAProperties(ObservableList<IANAProperty> properties);

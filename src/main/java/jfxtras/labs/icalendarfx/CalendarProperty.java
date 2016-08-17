@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 public enum CalendarProperty
 {
@@ -41,6 +45,45 @@ public enum CalendarProperty
             destination.setCalendarScale(calendarScale);
         }
     },
+    // Miscellaneous
+    IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
+            Arrays.asList(PropertyParameter.values()), // all parameters allowed
+            IANAProperty.class) // property class
+    {
+
+        @Override
+        public VChild parse(VCalendar vCalendar, String contentLine)
+        {
+            final ObservableList<IANAProperty> list;
+            if (vCalendar.getIANAProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                vCalendar.setIANAProperties(list);
+            } else
+            {
+                list = vCalendar.getIANAProperties();
+            }
+            IANAProperty child = IANAProperty.parse(contentLine);
+            list.add(child);
+            return child;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            final ObservableList<IANAProperty> list;
+            if (destination.getIANAProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                destination.setIANAProperties(list);
+            } else
+            {
+                list = destination.getIANAProperties();
+            }
+            list.add(new IANAProperty((IANAProperty) child));
+        }
+
+    },
     METHOD ("METHOD",
             Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
             Method.class)
@@ -68,6 +111,46 @@ public enum CalendarProperty
             destination.setMethod(method);
         }
     },
+    // Miscellaneous
+    NON_STANDARD ("X-", // property name (begins with X- prefix)
+            Arrays.asList(PropertyParameter.values()), // all parameters allowed
+            NonStandardProperty.class) // property class
+    {
+
+        @Override
+        public VChild parse(VCalendar vCalendar, String contentLine)
+        {
+            final ObservableList<NonStandardProperty> list;
+            if (vCalendar.getNonStandardProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                vCalendar.setNonStandardProperties(list);
+            } else
+            {
+                list = vCalendar.getNonStandardProperties();
+            }
+            NonStandardProperty child = NonStandardProperty.parse(contentLine);
+            list.add(child);
+            return child;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            final ObservableList<NonStandardProperty> list;
+            if (destination.getNonStandardProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                destination.setNonStandardProperties(list);
+            } else
+            {
+                list = destination.getNonStandardProperties();
+            }
+            list.add(new NonStandardProperty((NonStandardProperty) child));
+        }
+
+    },
+    
     PRODUCT_IDENTIFIER ("PRODID",
             Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
             ProductIdentifier.class)

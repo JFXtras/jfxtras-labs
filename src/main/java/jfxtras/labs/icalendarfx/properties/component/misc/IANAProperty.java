@@ -40,6 +40,12 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {
     public static final List<String> REGISTERED_IANA_PROPERTY_NAMES = 
             Arrays.asList("TESTPROP1", "TESTPROP2");
+    
+    /** Returns true if name is a registered IANA property, false otherwise */
+    public static boolean isIANAProperty(String name)
+    {
+        return REGISTERED_IANA_PROPERTY_NAMES.contains(name);
+    }
       
     public IANAProperty(Object value)
     {
