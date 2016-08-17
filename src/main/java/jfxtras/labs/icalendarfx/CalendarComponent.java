@@ -46,7 +46,7 @@ public enum CalendarComponent
         public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
         {
             VEvent e = new VEvent();
-            e.parseContent(unfoldedLines, null);
+            e.parseContent(unfoldedLines);
             vCalendar.getVEvents().add(e);
             return e;
         }
@@ -85,7 +85,7 @@ public enum CalendarComponent
         public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
         {
             VTodo e = new VTodo();
-            e.parseContent(unfoldedLines, null);
+            e.parseContent(unfoldedLines);
             vCalendar.getVTodos().add(e);
             return e;
         }
@@ -113,7 +113,7 @@ public enum CalendarComponent
         public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
         {
             VJournal e = new VJournal();
-            e.parseContent(unfoldedLines, null);
+            e.parseContent(unfoldedLines);
             vCalendar.getVJournals().add(e);
             return e;
         }
@@ -135,7 +135,7 @@ public enum CalendarComponent
         public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
         {
             VTimeZone e = new VTimeZone();
-            e.parseContent(unfoldedLines, null);
+            e.parseContent(unfoldedLines);
             vCalendar.getVTimeZones().add(e);
             return e;
         }
@@ -159,7 +159,7 @@ public enum CalendarComponent
         public VElement parse(VCalendar vCalendar, Iterator<String> unfoldedLines)
         {
             VFreeBusy e = new VFreeBusy();
-            e.parseContent(unfoldedLines, null);
+            e.parseContent(unfoldedLines);
             vCalendar.getVFreeBusies().add(e);
             return e;
         }

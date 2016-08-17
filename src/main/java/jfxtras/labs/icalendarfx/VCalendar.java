@@ -694,26 +694,7 @@ public class VCalendar extends VParentBase
     /** Parse unfolded content lines into calendar object */
     public void parseContent(Iterator<String> unfoldedLineIterator)
     {
-//        Logger parseLogger = setupLogger(getClass().getName());
-        
-//        SimpleFormatter fmt = new SimpleFormatter();
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        StreamHandler handler = new StreamHandler(out, fmt);
-//        parseLogger.addHandler(handler);
-//        
-//        parseLogger.log(Level.INFO, "allPanes data setup complete");
-////        parseLogger.
-//
-//        handler.flush();
-//        String errors = new String(out.toByteArray(), StandardCharsets.UTF_8);
-//        System.out.println("errors:" + errors);
-//
-//        parseLogger.log(Level.INFO, "a2llPanes data setup complete");
-//
-//        handler.flush();
-//         errors = new String(out.toByteArray(), StandardCharsets.UTF_8);
-//        System.out.println("errors:" + errors);
-        List<String> errors = new ArrayList<>();
+//        List<String> errors = new ArrayList<>();
         String firstLine = unfoldedLineIterator.next();
         if (! firstLine.equals("BEGIN:VCALENDAR"))
         {
@@ -729,7 +710,7 @@ public class VCalendar extends VParentBase
             if (propertyName.equals("BEGIN"))
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
-                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator, errors);
+                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
                 addVComponent(newComponent);
             } else
             {
@@ -740,8 +721,6 @@ public class VCalendar extends VParentBase
                 }
             }
         }
-        errors.stream().forEach(System.out::println);
-//        System.out.println("errors:" + errors);
     }
 
 //    // multi threaded
@@ -827,15 +806,9 @@ public class VCalendar extends VParentBase
     {
         BufferedReader br = Files.newBufferedReader(icsFilePath);
         List<String> lines = br.lines().collect(Collectors.toList());
-//        System.out.println("original lines:" + lines.size());
-//        lines.stream().forEach(System.out::println);
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
-//        System.out.println("unfolded lines:" + ICalendarUtilities.unfoldLines(lines).size());
-
-//        ICalendarUtilities.unfoldLines(lines).stream().forEach(System.out::println);
         VCalendar vCalendar = new VCalendar();
         vCalendar.parseContent(unfoldedLines);
-        System.out.println("length:" + vCalendar.toContent().length());
         return vCalendar;
     }
 

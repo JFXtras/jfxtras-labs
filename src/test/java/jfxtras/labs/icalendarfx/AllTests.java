@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import jfxtras.labs.icalendarfx.calendar.CalendarScaleTest;
 import jfxtras.labs.icalendarfx.calendar.CopyCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
+import jfxtras.labs.icalendarfx.calendar.ReadICSFileTest;
 import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.CopyComponentTest;
@@ -93,6 +94,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CalendarScaleTest.class,
         CopyCalendarTest.class,
         GeneralCalendarTest.class,
+        ReadICSFileTest.class,
         VCalendarRecurrenceIDTest.class,
                 
         //component tests

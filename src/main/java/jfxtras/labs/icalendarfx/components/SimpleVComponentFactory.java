@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 public class SimpleVComponentFactory
 {
     /** Create new VComponent from component name and parsing iCalendar content text */
-    public static VComponent newVComponent(String componentName, Iterator<String> contentIterator, List<String> errors)
+    public static VComponent newVComponent(String componentName, Iterator<String> contentIterator)
     {
         final VComponent myComponent;
         CalendarComponent component = CalendarComponent.enumFromName(componentName.toString());
@@ -47,7 +47,7 @@ public class SimpleVComponentFactory
         default:
             throw new IllegalArgumentException("Unsupported component:" + component);
         }
-        myComponent.parseContent(contentIterator, errors);
+        myComponent.parseContent(contentIterator);
         return myComponent;
     }
     
@@ -64,7 +64,7 @@ public class SimpleVComponentFactory
         {
             // make new component
             String componentName = line.substring(nameEndIndex+1, line.length());
-            myComponent = newVComponent(componentName, contentIterator, null);
+            myComponent = newVComponent(componentName, contentIterator);
 //            CalendarComponent component = CalendarComponent.enumFromName(componentName);
 //            switch (component)
 //            {

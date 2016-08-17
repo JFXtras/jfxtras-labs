@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.calendar;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -15,36 +17,24 @@ public class ReadICSFileTest
     public void canReadICSFile1() throws IOException
     {
         String fileName = "Yahoo_Sample_Calendar.ics";
-//        String fileName = "mathBirthdays.ics";
-//        "/jfxtras-labs/src/test/resources/jfxtras/labs/icalendarfx/calendar/mathBirthdays.ics"
-//        URL url = this.getClass().getResource(fileName);
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        File file = new File(classLoader.getResource(fileName).getFile());
-//        Enumeration<URL> e = Test.class.getClassLoader().getResources("");
-//        while (e.hasMoreElements())
-//        {
-//            System.out.println("ClassLoader Resource: " + e.nextElement());
-//        }
-//        System.out.println("Class Resource: " + Test.class.getResource("/"));
-        
-//        URL resource = getClass().getResource("/");
-//        System.out.println(resource);
-        
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());
-        
-        long t1 = System.currentTimeMillis();
-        
         VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath);
-        
-        long t2 = System.currentTimeMillis();
-        
-        String c = vCalendar.toContent();
-
-        
-        
-//        System.out.println("vCalendar vevents:" + vCalendar.getVEvents().size());
-        System.out.println("time ms:" + (t2-t1));
-//        System.out.println(vCalendar.toContent());
+        assertEquals(8584, vCalendar.toContent().length());
+        assertEquals(7, vCalendar.getVEvents().size());
+        assertEquals(1, vCalendar.getVTimeZones().size());
+        int subcomponents = vCalendar.getVTimeZones().get(0).getStandardOrDaylight().size();
+        assertEquals(9, subcomponents);
+    }
+    
+    @Test
+    public void canReadICSFile2() throws IOException
+    {
+        String fileName = "mathBirthdays.ics";       
+        URL url = getClass().getResource(fileName);
+        Path icsFilePath = Paths.get(url.getFile());
+        VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath);
+        assertEquals(434739, vCalendar.toContent().length());
+        assertEquals(1321, vCalendar.getVEvents().size());
     }
 }

@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -95,17 +96,18 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         content.indexOf(System.lineSeparator());
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines, null);
+        parseContent(unfoldedLines);
     }
 
     /** Parse unfolded content lines into calendar component. */
     @Override
-    public void parseContent(Iterator<String> unfoldedLineIterator, List<String> errors)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator)
     {
         if (unfoldedLineIterator == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
+        List<String> errors = new ArrayList<>();
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
@@ -175,6 +177,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             }
         }
+        return errors;
     }
     
 //    public void parseContent(List<String> contentLines)

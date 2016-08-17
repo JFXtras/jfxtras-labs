@@ -5,6 +5,7 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
+import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 
 /**
  * Top-level calendar component
@@ -48,6 +49,6 @@ public interface VComponent extends VParent, VChild
     /** Copy state from source VComponent */
     void copyFrom(VComponent source);
     
-    /** Parse a VComponent from a {@code Iterator<String>} */
-    public void parseContent(Iterator<String> contentLines, List<String> errors);
+    /** Parse a VComponent from a {@code Iterator<String>}.  Returns list of error strings for {@link RequestStatus} */
+    public List<String> parseContent(Iterator<String> contentLines);
 }

@@ -1,10 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -205,6 +207,21 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     public VComponentPersonalBase(VComponentPersonalBase<T> source)
     {
         super(source);
+    }
+    
+    @Override
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator)
+    {
+        List<String> statusErrors = super.parseContent(unfoldedLineIterator);
+        if (statusErrors.isEmpty())
+        {
+            withRequestStatus("2.0;Success");
+        } else
+        {
+            setRequestStatus(FXCollections.observableArrayList());
+            statusErrors.stream().forEach(e -> getRequestStatus().add(RequestStatus.parse(e)));
+        }
+        return statusErrors;
     }
     
     @Override
