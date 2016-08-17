@@ -746,9 +746,17 @@ public class VCalendar extends VParentBase
 //            }
 //        }
 //    }
-    
+
     /** Parse unfolded content lines into calendar object */
     public void parseContent(Iterator<String> unfoldedLineIterator)
+    {
+        boolean useResourceStatus = false;
+        parseContent(unfoldedLineIterator, useResourceStatus);
+    }
+
+    
+    /** Parse unfolded content lines into calendar object */
+    public void parseContent(Iterator<String> unfoldedLineIterator, boolean useResourceStatus)
     {
 //        List<String> errors = new ArrayList<>();
         String firstLine = unfoldedLineIterator.next();
@@ -766,9 +774,9 @@ public class VCalendar extends VParentBase
             if (propertyName.equals("BEGIN"))
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
-                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
-//                VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
-//                newComponent.parseContent(content);
+//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
+                VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
+                newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
                 addVComponent(newComponent);
             } else
             { // parse calendar property
@@ -880,6 +888,23 @@ public class VCalendar extends VParentBase
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
         VCalendar vCalendar = new VCalendar();
         vCalendar.parseContent(unfoldedLines);
+        return vCalendar;
+    }
+    
+    /**
+     * Creates a new VCalendar from an ics file
+     * 
+     * @param icsFilePath  path of ics file to parse
+     * @return  Created VCalendar
+     * @throws IOException
+     */
+    public static VCalendar parseICalendarFile(Path icsFilePath, boolean useResourceStatus) throws IOException
+    {
+        BufferedReader br = Files.newBufferedReader(icsFilePath);
+        List<String> lines = br.lines().collect(Collectors.toList());
+        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
+        VCalendar vCalendar = new VCalendar();
+        vCalendar.parseContent(unfoldedLines, useResourceStatus);
         return vCalendar;
     }
 

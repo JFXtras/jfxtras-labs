@@ -23,7 +23,8 @@ public class ReadICSFileTest
         String fileName = "Yahoo_Sample_Calendar.ics";
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());
-        VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath);
+        boolean useResourceStatus = true;
+        VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath, useResourceStatus);
         assertEquals(8584, vCalendar.toContent().length());
         assertEquals(7, vCalendar.getVEvents().size());
         assertEquals(1, vCalendar.getVTimeZones().size());
