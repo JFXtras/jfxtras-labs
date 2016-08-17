@@ -145,8 +145,13 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                             propertyType.parse(this, unfoldedLine);
                         } catch (Exception e)
                         {
-                         // TODO - CHECK NEW PROPERTY FOR VALIDITY - IF REQUIRED LOG SEVERE AND FAIL
-                            errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);
+                            if (propertyType.isRequired(this))
+                            {
+                                errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                            } else
+                            {
+                                errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                            }
                         }
                     } else
                     {

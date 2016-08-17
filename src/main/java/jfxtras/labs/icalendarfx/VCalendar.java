@@ -740,13 +740,8 @@ public class VCalendar extends VParentBase
                 }
             }
         }
-        
-//        StreamHandler handler = LOGGER.getHandlers()[1];
-//        HANDLER.flush();
-//        String errors = new String(OUT.toByteArray(), StandardCharsets.UTF_8);
-//     System.out.println("errors:" + errors);
-//        String errors = new String(out.toByteArray(), StandardCharsets.UTF_8);
-        System.out.println("errors:" + errors);
+        errors.stream().forEach(System.out::println);
+//        System.out.println("errors:" + errors);
     }
 
 //    // multi threaded

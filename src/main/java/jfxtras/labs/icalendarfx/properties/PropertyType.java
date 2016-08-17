@@ -118,13 +118,6 @@ public enum PropertyType
             Action child = Action.parse(propertyContent);
             VAlarm castComponent = (VAlarm) vParent;
             castComponent.setAction(child);
-//            if (castComponent.getAction() == null)
-//            {
-//                castComponent.setAction(child);                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
             return child;
         }
 
@@ -135,6 +128,9 @@ public enum PropertyType
             Action propertyCopy = new Action((Action) child);
             castDestination.setAction(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // property class
     ATTACHMENT ("ATTACH" // property name
@@ -610,6 +606,9 @@ public enum PropertyType
             DateTimeEnd propertyCopy = new DateTimeEnd((DateTimeEnd) child);
             castDestination.setDateTimeEnd(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", // property name
@@ -647,6 +646,9 @@ public enum PropertyType
             DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) child);
             castDestination.setDateTimeStamp(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     DATE_TIME_START ("DTSTART", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
@@ -682,6 +684,12 @@ public enum PropertyType
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
             DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) child);
             castDestination.setDateTimeStart(propertyCopy);
+        }
+        
+        @Override
+        public boolean isRequired(VParent parent )
+        {
+            return (parent instanceof VEvent) ? true : false;
         }
     },
     // Descriptive
@@ -794,6 +802,9 @@ public enum PropertyType
             DurationProp propertyCopy = new DurationProp((DurationProp) child);
             castDestination.setDuration(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
@@ -1715,13 +1726,6 @@ public enum PropertyType
             TimeZoneIdentifier child = TimeZoneIdentifier.parse(propertyContent);
             castComponent.setTimeZoneIdentifier(child);
             return child;
-//            if (castComponent.getTimeZoneIdentifier() == null)
-//            {
-//                castComponent.setTimeZoneIdentifier(TimeZoneIdentifier.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1730,6 +1734,12 @@ public enum PropertyType
             VTimeZone castDestination = (VTimeZone) destination;
             TimeZoneIdentifier propertyCopy = new TimeZoneIdentifier((TimeZoneIdentifier) child);
             castDestination.setTimeZoneIdentifier(propertyCopy);
+        }
+        
+        @Override
+        public boolean isRequired(VParent parent )
+        {
+            return (parent instanceof VTimeZone) ? true : false;
         }
     },
     // Time Zone
@@ -1799,13 +1809,6 @@ public enum PropertyType
             TimeZoneOffsetFrom child = TimeZoneOffsetFrom.parse(propertyContent);
             castComponent.setTimeZoneOffsetFrom(child);
             return child;
-//            if (castComponent.getTimeZoneOffsetFrom() == null)
-//            {
-//                castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1815,6 +1818,9 @@ public enum PropertyType
             TimeZoneOffsetFrom propertyCopy = new TimeZoneOffsetFrom((TimeZoneOffsetFrom) child);
             castDestination.setTimeZoneOffsetFrom(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
@@ -1836,13 +1842,6 @@ public enum PropertyType
             TimeZoneOffsetTo child = TimeZoneOffsetTo.parse(propertyContent);
             castComponent.setTimeZoneOffsetTo(child);
             return child;
-//            if (castComponent.getTimeZoneOffsetTo() == null)
-//            {
-//                castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1852,6 +1851,9 @@ public enum PropertyType
             TimeZoneOffsetTo propertyCopy = new TimeZoneOffsetTo((TimeZoneOffsetTo) child);
             castDestination.setTimeZoneOffsetTo(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
@@ -1873,13 +1875,6 @@ public enum PropertyType
             TimeZoneURL child = TimeZoneURL.parse(propertyContent);
             castComponent.setTimeZoneURL(child);
             return child;
-//            if (castComponent.getTimeZoneURL() == null)
-//            {
-//                castComponent.setTimeZoneURL(TimeZoneURL.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1910,13 +1905,6 @@ public enum PropertyType
             Trigger<?> child = Trigger.parse(propertyContent);
             castComponent.setTrigger(child);
             return child;            
-//            if (castComponent.getTrigger() == null)
-//            {
-//                castComponent.setTrigger(Trigger.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1926,6 +1914,9 @@ public enum PropertyType
             Trigger<?> propertyCopy = new Trigger<>((Trigger<?>) child);
             castDestination.setTrigger(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Relationship
     UNIQUE_IDENTIFIER ("UID", // property name
@@ -1993,6 +1984,9 @@ public enum PropertyType
             UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) child);
             castDestination.setUniformResourceLocator(propertyCopy);
         }
+        
+        @Override
+        public boolean isRequired(VParent parent ) { return true; }
     },
     // Calendar property
     VERSION ("VERSION" // property name
@@ -2100,4 +2094,7 @@ public enum PropertyType
     /** copies the associated property from the source component to the destination component */
     abstract public void copyProperty(VChild child, VParent destination);
 //    abstract public void copyProperty(VChild child, VParent destination);
+    
+    /** If property is required returns true, false otherwise */
+    public boolean isRequired(VParent parent ) { return false; }
 }
