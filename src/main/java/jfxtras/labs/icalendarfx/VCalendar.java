@@ -37,6 +37,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -490,7 +491,7 @@ public class VCalendar extends VParentBase
      * the result of the process, such as success message or error report.
      * 
      * @param contentText  iCalendar content lines
-     * @return  list of error messages if import failed, null if successful
+     * @return  the created VComponent with {@link RequestStatus REQUEST-STATUS} populated to indicate success or failuer.
      */
     public VComponent importVComponent(String contentText)
     {
@@ -498,11 +499,109 @@ public class VCalendar extends VParentBase
         List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
         boolean useRequestStatus = true;
-        List<String> requestStatusErrors = vComponent.parseContent(unfoldedLines, useRequestStatus);
-        requestStatusErrors.stream().forEach(System.out::println);
-        // TODO - CHECK FOR CONFLICTS
+        vComponent.parseContent(unfoldedLines, useRequestStatus);
+//        requestStatusErrors.stream().forEach(System.out::println);
+        // TODO - only check conflict if opaque
+        boolean isScheduleConflict = (vComponent instanceof VEvent) ? DateTimeUtilities.checkScheduleConflict((VEvent) vComponent, getVEvents()) : false;
+        if (isScheduleConflict)
+        {
+            final ObservableList<RequestStatus> requestStatus;
+            if (vComponent.getRequestStatus() == null)
+            {
+                requestStatus = FXCollections.observableArrayList();
+                vComponent.setRequestStatus(requestStatus);
+            } else
+            {
+                requestStatus = vComponent.getRequestStatus();
+            }
+            requestStatus.add(RequestStatus.parse("4.1;Event conflict.  Date-time is busy."));
+        }
+        
+        final boolean isVComponentValidToAdd;
+        if (vComponent.getRequestStatus() == null)
+        {
+            isVComponentValidToAdd = true;
+        } else
+        {
+            isVComponentValidToAdd = ! vComponent.getRequestStatus().stream()
+                    .map(s -> s.getValue())
+                    .anyMatch(s -> (s.charAt(0) == '3') || (s.charAt(0) == '4')); // error codes start with 3 or 4
+        }
+        
+        if (isVComponentValidToAdd)
+        {
+            addVComponent(vComponent);
+        }
         return vComponent;
     }
+    
+    // TODO - NEED TO GO IN DATE TIME UTILITIES
+    /*
+     * need list of recurrences and duration from vComponent
+     * make list of recurrences and duration for all other opaque VEvents
+     * check if ANY recurrences are in between any others
+     */
+//    private final static int CONFLICT_CHECK_QUANTITY = 100;
+//    private boolean checkScheduleConflict(VEvent vComponent)
+//    {
+//        // must be opaque to cause conflict, opaque is default
+//        TimeTransparencyType newTransparency = (vComponent.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : vComponent.getTimeTransparency().getValue();
+//        if (newTransparency == TimeTransparencyType.TRANSPARENT)
+//        {
+//            return false;
+//        }
+//        
+//        LocalDate dtstart = LocalDate.from(vComponent.getDateTimeStart().getValue());
+//        TemporalAmount duration = vComponent.getActualDuration();
+//        
+//        // Make list of Pairs containing start and end temporals
+//        List<Pair<Temporal,Temporal>> eventTimes = new ArrayList<>();
+//        for (VEvent v : getVEvents())
+//        {
+//            // can only conflict with opaque events, opaque is default
+//            TimeTransparencyType myTransparency = (v.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : v.getTimeTransparency().getValue();
+//            if (myTransparency == TimeTransparencyType.OPAQUE)
+//            {
+//                Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
+//                TemporalAmount actualDuration = v.getActualDuration();
+//                v.streamRecurrences(myDTStart)
+//                        .limit(CONFLICT_CHECK_QUANTITY)
+//                        .forEach(t -> eventTimes.add(new Pair<>(t, t.plus(actualDuration))));                
+//            }
+//        }
+//        
+//        /* Check for conflicts:
+//         * Start and End must NOT:
+//         *  Be after an event start
+//         *  Be before same event end
+//         *  Is new start before the existing end
+//         *  Is new start after the existing start
+//         */
+//        return vComponent.streamRecurrences()
+//                .limit(CONFLICT_CHECK_QUANTITY)
+//                .anyMatch(newStart ->
+//                {
+//                    Temporal newEnd = newStart.plus(duration);
+//                    return eventTimes.stream().anyMatch(p ->
+//                    {
+//                        Temporal existingStart = p.getKey();
+//                        Temporal existingEnd = p.getValue();
+//                        // test start
+//                        boolean isAfter = DateTimeUtilities.isAfter(newStart, existingStart);
+//                        if (isAfter)
+//                        {
+//                            return DateTimeUtilities.isBefore(newStart, existingEnd);
+//                        }
+//                        // test end
+//                        boolean isAfter2 = DateTimeUtilities.isAfter(newEnd, existingStart);
+//                        if (isAfter2)
+//                        {
+//                            return DateTimeUtilities.isBefore(newEnd, existingEnd);
+//                        }
+//                        return false;
+//                    });
+//                });
+//    }
     
     /**
      * Import new VComponent with {@link RequestStatus REQUEST-STATUS} properties containing 

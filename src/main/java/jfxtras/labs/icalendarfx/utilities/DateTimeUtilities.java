@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +32,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 
 /**
@@ -194,6 +197,86 @@ public final class DateTimeUtilities
                 throw new DateTimeException("Unsupported Temporal class: " + t1.getClass());
             }
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+    }
+    
+    private final static int CONFLICT_CHECK_QUANTITY = 4;
+    /** Check if schedule conflict exists for {@link TimeTransparencyType.OPAQUE OPAQUE} events 
+     * using default check quantity
+     * 
+     * @param vEvent  event to test
+     * @param vEvents  existing events
+     * @return  true if scheduling conflict exists, false otherwise
+     */
+    public static boolean checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents)
+    {
+        return checkScheduleConflict(vEvent, vEvents, CONFLICT_CHECK_QUANTITY);
+    }
+    /** Check if schedule conflict exists for {@link TimeTransparencyType.OPAQUE OPAQUE} events.
+     * 
+     * @param vEvent  event to test
+     * @param vEvents  existing events
+     * @param checkQuantity  amount of recurrences to be tested
+     * @return  true if scheduling conflict exists, false otherwise
+     */
+    public static boolean checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
+    {
+        // must be opaque to cause conflict, opaque is default
+        TimeTransparencyType newTransparency = (vEvent.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : vEvent.getTimeTransparency().getValue();
+        if (newTransparency == TimeTransparencyType.TRANSPARENT)
+        {
+            return false;
+        }
+        
+        LocalDate dtstart = LocalDate.from(vEvent.getDateTimeStart().getValue());
+        TemporalAmount duration = vEvent.getActualDuration();
+        
+        // Make list of Pairs containing start and end temporals
+        List<Pair<Temporal,Temporal>> eventTimes = new ArrayList<>();
+        for (VEvent v : vEvents)
+        {
+            // can only conflict with opaque events, opaque is default
+            TimeTransparencyType myTransparency = (v.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : v.getTimeTransparency().getValue();
+            if (myTransparency == TimeTransparencyType.OPAQUE)
+            {
+                Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
+                TemporalAmount actualDuration = v.getActualDuration();
+                v.streamRecurrences(myDTStart)
+                        .limit(checkQuantity)
+                        .forEach(t -> eventTimes.add(new Pair<>(t, t.plus(actualDuration))));                
+            }
+        }
+
+        /* Check for conflicts:
+         * Start and End must NOT:
+         *  Be after an event start
+         *  Be before same event end
+         *  Is new start before the existing end
+         *  Is new start after the existing start
+         */
+        return vEvent.streamRecurrences()
+                .limit(checkQuantity)
+                .anyMatch(newStart ->
+                {
+                    Temporal newEnd = newStart.plus(duration);
+                    return eventTimes.stream().anyMatch(p ->
+                    {
+                        Temporal existingStart = p.getKey();
+                        Temporal existingEnd = p.getValue();
+                        // test start
+                        boolean isAfter = ! DateTimeUtilities.isBefore(newStart, existingStart);
+                        if (isAfter)
+                        {
+                            return DateTimeUtilities.isBefore(newStart, existingEnd);
+                        }
+                        // test end
+                        boolean isAfter2 = ! DateTimeUtilities.isBefore(newEnd, existingStart);
+                        if (isAfter2)
+                        {
+                            return DateTimeUtilities.isBefore(newEnd, existingEnd);
+                        }
+                        return false;
+                    });
+                });
     }
     
     /**
@@ -471,6 +554,13 @@ public final class DateTimeUtilities
     {
         return DateTimeType.of(temporal).propertyTag(propertyName, temporal);
     }
+//    
+//    // TODO - NEED TO GO IN DATE TIME UTILITIES
+//    public static boolean checkScheduleConflict(VCalendar vCalendar, VComponentPersonalBase<?> vComponent)
+//    {
+//        LocalDate dtstart = LocalDate.from(vComponent.getDateTimeStart().getValue());
+//        List<Temporal> makeRecurrences(getVEvents(), dtstart, 1000)
+//    }
     
     public enum DateTimeType
     {
