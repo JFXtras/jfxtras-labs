@@ -26,6 +26,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -199,15 +200,15 @@ public final class DateTimeUtilities
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
     
-    private final static int CONFLICT_CHECK_QUANTITY = 4;
+    private final static int CONFLICT_CHECK_QUANTITY = 400;
     /** Check if schedule conflict exists for {@link TimeTransparencyType.OPAQUE OPAQUE} events 
      * using default check quantity
      * 
      * @param vEvent  event to test
      * @param vEvents  existing events
-     * @return  true if scheduling conflict exists, false otherwise
+     * @return  UID and start of recurrence of conflicting event, null otherwise
      */
-    public static boolean checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents)
+    public static String checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents)
     {
         return checkScheduleConflict(vEvent, vEvents, CONFLICT_CHECK_QUANTITY);
     }
@@ -216,67 +217,171 @@ public final class DateTimeUtilities
      * @param vEvent  event to test
      * @param vEvents  existing events
      * @param checkQuantity  amount of recurrences to be tested
-     * @return  true if scheduling conflict exists, false otherwise
+     * @return  UID and start of recurrence of conflicting event, null otherwise
      */
-    public static boolean checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
+    public static String checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
     {
         // must be opaque to cause conflict, opaque is default
         TimeTransparencyType newTransparency = (vEvent.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : vEvent.getTimeTransparency().getValue();
         if (newTransparency == TimeTransparencyType.TRANSPARENT)
         {
-            return false;
+            return null;
         }
         
         LocalDate dtstart = LocalDate.from(vEvent.getDateTimeStart().getValue());
         TemporalAmount duration = vEvent.getActualDuration();
+        List<Temporal> newStarts = vEvent.streamRecurrences().limit(checkQuantity).collect(Collectors.toList());
+        Temporal lastStart = newStarts.get(newStarts.size()-1);
         
-        // Make list of Pairs containing start and end temporals
-        List<Pair<Temporal,Temporal>> eventTimes = new ArrayList<>();
+        /*
+         * Make sorted list of events before lastStart from all VEvents
+         */
+        List<Triple> eventTimes = vEvents.stream()
+            .filter(v -> 
+            { // only keep OPAQUE events
+                TimeTransparencyType myTransparency = (v.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : v.getTimeTransparency().getValue();
+                return myTransparency == TimeTransparencyType.OPAQUE;
+            })
+            .flatMap(v ->
+            {
+                TemporalAmount actualDuration = v.getActualDuration();
+                Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
+                return v.streamRecurrences(myDTStart)
+                    .limit(checkQuantity)
+                    .map(t -> 
+                    {
+                        String uid = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().getValue() : null;
+                        return new Triple(t, t.plus(actualDuration), uid);
+                    });
+            })
+            .filter(t -> DateTimeUtilities.isBefore(t.start, lastStart))
+            .sorted((t1, t2) -> DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(t1.start, t2.start))
+            .collect(Collectors.toList());
+        
+        /*
+         *  Search for a conflict
+         */
+        for (Temporal newStart : newStarts)
+        {
+            Temporal newEnd = newStart.plus(duration);
+            Triple firstConflict = eventTimes.stream()
+                .filter(triple ->
+                {
+                    // test start
+                    boolean isOnOrAfter = ! DateTimeUtilities.isBefore(newStart, triple.start);
+                    if (isOnOrAfter)
+                    {
+                        return ! DateTimeUtilities.isAfter(newStart, triple.end);
+                    }
+                    // test end
+                    boolean isAfter = DateTimeUtilities.isAfter(newEnd, triple.start);
+                    if (isAfter)
+                    {
+                        return DateTimeUtilities.isBefore(newEnd, triple.end);
+                    }
+                    return false;
+                })
+                .findAny()
+                .orElseGet(() -> null);
+            if (firstConflict != null)
+            {
+                String uid = (firstConflict.uid != null) ? firstConflict.uid + ", " : "";
+                return (firstConflict == null) ? null : uid + firstConflict.start;
+            }
+        }
+        return null; // no conflicts found
+    }
+    // Triple class for checkScheduleConflict
+    static class Triple
+    {
+        public Triple(Temporal start, Temporal end, String uid)
+        {
+            this.start = start;
+            this.end = end;
+            this.uid = uid;
+        }
+        Temporal start;
+        Temporal end;
+        String uid;
+    }
+    
+    /** Check if schedule conflict exists for {@link TimeTransparencyType.OPAQUE OPAQUE} events.
+     * Finds conflict faster, but not necessarily the first conflict that occurs
+     * 
+     * @param vEvent  event to test
+     * @param vEvents  existing events
+     * @param checkQuantity  amount of recurrences to be tested
+     * @return  UID and start of recurrence of conflicting event, null otherwise
+     */
+    public static String checkScheduleConflict2(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
+    {
+        // must be opaque to cause conflict, opaque is default
+        TimeTransparencyType newTransparency = (vEvent.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : vEvent.getTimeTransparency().getValue();
+        if (newTransparency == TimeTransparencyType.TRANSPARENT)
+        {
+            return null;
+        }
+        
+        LocalDate dtstart = LocalDate.from(vEvent.getDateTimeStart().getValue());
+        TemporalAmount duration = vEvent.getActualDuration();
+        List<Temporal> newStarts = vEvent.streamRecurrences().limit(checkQuantity).collect(Collectors.toList());
+        Temporal lastStart = newStarts.get(newStarts.size()-1);
+                   
+        /*
+         *  Search for a conflict
+         *  Note: The first conflict found may not be the first occurring conflict.
+         *  Make list of Pairs containing start and end temporals
+         */
         for (VEvent v : vEvents)
         {
             // can only conflict with opaque events, opaque is default
             TimeTransparencyType myTransparency = (v.getTimeTransparency() == null) ? TimeTransparencyType.OPAQUE : v.getTimeTransparency().getValue();
             if (myTransparency == TimeTransparencyType.OPAQUE)
             {
+                List<Pair<Temporal,Temporal>> eventTimes = new ArrayList<>();
                 Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
                 TemporalAmount actualDuration = v.getActualDuration();
-                v.streamRecurrences(myDTStart)
-                        .limit(checkQuantity)
-                        .forEach(t -> eventTimes.add(new Pair<>(t, t.plus(actualDuration))));                
-            }
-        }
-
-        /* Check for conflicts:
-         * Start and End must NOT:
-         *  Be after an event start
-         *  Be before same event end
-         *  Is new start before the existing end
-         *  Is new start after the existing start
-         */
-        return vEvent.streamRecurrences()
-                .limit(checkQuantity)
-                .anyMatch(newStart ->
+                Iterator<Temporal> existingStartIterator = v.streamRecurrences(myDTStart).limit(checkQuantity).iterator();
+                while (existingStartIterator.hasNext())
+                {
+                    Temporal t = existingStartIterator.next();
+                    if (DateTimeUtilities.isAfter(t, lastStart)) break; // quit adding if after last new start temporal
+                    eventTimes.add(new Pair<>(t, t.plus(actualDuration)));
+                }
+                
+                for (Temporal newStart : newStarts)
                 {
                     Temporal newEnd = newStart.plus(duration);
-                    return eventTimes.stream().anyMatch(p ->
+                    Pair<Temporal, Temporal> conflict = eventTimes.stream()
+                        .filter(p ->
+                        {
+                            Temporal existingStart = p.getKey();
+                            Temporal existingEnd = p.getValue();
+                            // test start
+                            boolean isOnOrAfter = ! DateTimeUtilities.isBefore(newStart, existingStart);
+                            if (isOnOrAfter)
+                            {
+                                return ! DateTimeUtilities.isAfter(newStart, existingEnd);
+                            }
+                            // test end
+                            boolean isAfter = DateTimeUtilities.isAfter(newEnd, existingStart);
+                            if (isAfter)
+                            {
+                                return DateTimeUtilities.isBefore(newEnd, existingEnd);
+                            }
+                            return false;
+                        })
+                        .findAny()
+                        .orElseGet(() -> null);
+                    if (conflict != null)
                     {
-                        Temporal existingStart = p.getKey();
-                        Temporal existingEnd = p.getValue();
-                        // test start
-                        boolean isAfter = ! DateTimeUtilities.isBefore(newStart, existingStart);
-                        if (isAfter)
-                        {
-                            return DateTimeUtilities.isBefore(newStart, existingEnd);
-                        }
-                        // test end
-                        boolean isAfter2 = ! DateTimeUtilities.isBefore(newEnd, existingStart);
-                        if (isAfter2)
-                        {
-                            return DateTimeUtilities.isBefore(newEnd, existingEnd);
-                        }
-                        return false;
-                    });
-                });
+                        String uid = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().getValue() + ", " : "";
+                        return (conflict == null) ? null : uid + conflict.getKey();
+                    }
+                }
+            }
+        }
+        return null; // no conflicts found
     }
     
     /**

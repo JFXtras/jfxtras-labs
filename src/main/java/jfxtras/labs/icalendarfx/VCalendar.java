@@ -502,8 +502,8 @@ public class VCalendar extends VParentBase
         vComponent.parseContent(unfoldedLines, useRequestStatus);
 //        requestStatusErrors.stream().forEach(System.out::println);
         // TODO - only check conflict if opaque
-        boolean isScheduleConflict = (vComponent instanceof VEvent) ? DateTimeUtilities.checkScheduleConflict((VEvent) vComponent, getVEvents()) : false;
-        if (isScheduleConflict)
+        String conflict = (vComponent instanceof VEvent) ? DateTimeUtilities.checkScheduleConflict((VEvent) vComponent, getVEvents()) : null;
+        if (conflict == null)
         {
             final ObservableList<RequestStatus> requestStatus;
             if (vComponent.getRequestStatus() == null)
@@ -514,7 +514,7 @@ public class VCalendar extends VParentBase
             {
                 requestStatus = vComponent.getRequestStatus();
             }
-            requestStatus.add(RequestStatus.parse("4.1;Event conflict.  Date-time is busy."));
+            requestStatus.add(RequestStatus.parse("4.1;Event conflict with " + conflict));
         }
         
         final boolean isVComponentValidToAdd;
