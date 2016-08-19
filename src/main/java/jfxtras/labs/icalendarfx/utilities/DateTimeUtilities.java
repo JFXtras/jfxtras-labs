@@ -219,6 +219,7 @@ public final class DateTimeUtilities
      * @param checkQuantity  amount of recurrences to be tested
      * @return  UID and start of recurrence of conflicting event, null otherwise
      */
+    // TODO - Should this method compare FreeBusy times too?
     public static String checkScheduleConflict(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
     {
         // must be opaque to cause conflict, opaque is default
@@ -228,6 +229,9 @@ public final class DateTimeUtilities
             return null;
         }
         
+        /*
+         * Make list of recurrence start date/times for VEvent to be tested
+         */
         LocalDate dtstart = LocalDate.from(vEvent.getDateTimeStart().getValue());
         TemporalAmount duration = vEvent.getActualDuration();
         List<Temporal> newStarts = vEvent.streamRecurrences().limit(checkQuantity).collect(Collectors.toList());
@@ -248,18 +252,19 @@ public final class DateTimeUtilities
                 Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
                 return v.streamRecurrences(myDTStart)
                     .limit(checkQuantity)
+                    .filter(t -> DateTimeUtilities.isBefore(t, lastStart))
                     .map(t -> 
                     {
                         String uid = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().getValue() : null;
                         return new Triple(t, t.plus(actualDuration), uid);
                     });
             })
-            .filter(t -> DateTimeUtilities.isBefore(t.start, lastStart))
             .sorted((t1, t2) -> DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(t1.start, t2.start))
             .collect(Collectors.toList());
-        
+
         /*
          *  Search for a conflict
+         *  1.  New start before existing end, new end after existing start
          */
         for (Temporal newStart : newStarts)
         {
@@ -267,19 +272,9 @@ public final class DateTimeUtilities
             Triple firstConflict = eventTimes.stream()
                 .filter(triple ->
                 {
-                    // test start
-                    boolean isOnOrAfter = ! DateTimeUtilities.isBefore(newStart, triple.start);
-                    if (isOnOrAfter)
-                    {
-                        return ! DateTimeUtilities.isAfter(newStart, triple.end);
-                    }
-                    // test end
-                    boolean isAfter = DateTimeUtilities.isAfter(newEnd, triple.start);
-                    if (isAfter)
-                    {
-                        return DateTimeUtilities.isBefore(newEnd, triple.end);
-                    }
-                    return false;
+                    boolean newStartBeforeEnd = DateTimeUtilities.isBefore(newStart, triple.end);
+                    boolean newEndAfterStart = DateTimeUtilities.isAfter(newEnd, triple.start);
+                    return (newStartBeforeEnd && newEndAfterStart);
                 })
                 .findAny()
                 .orElseGet(() -> null);
@@ -292,7 +287,7 @@ public final class DateTimeUtilities
         return null; // no conflicts found
     }
     // Triple class for checkScheduleConflict
-    static class Triple
+    private static class Triple
     {
         public Triple(Temporal start, Temporal end, String uid)
         {
@@ -313,6 +308,7 @@ public final class DateTimeUtilities
      * @param checkQuantity  amount of recurrences to be tested
      * @return  UID and start of recurrence of conflicting event, null otherwise
      */
+    // TODO - DOESN'T WORK, FIX IF WANTED
     public static String checkScheduleConflict2(VEvent vEvent, List<VEvent> vEvents, int checkQuantity)
     {
         // must be opaque to cause conflict, opaque is default
