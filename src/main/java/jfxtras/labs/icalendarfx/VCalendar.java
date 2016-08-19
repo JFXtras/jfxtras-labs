@@ -503,7 +503,7 @@ public class VCalendar extends VParentBase
 //        requestStatusErrors.stream().forEach(System.out::println);
         // TODO - only check conflict if opaque
         String conflict = (vComponent instanceof VEvent) ? DateTimeUtilities.checkScheduleConflict((VEvent) vComponent, getVEvents()) : null;
-        if (conflict == null)
+        if (conflict != null)
         {
             final ObservableList<RequestStatus> requestStatus;
             if (vComponent.getRequestStatus() == null)
@@ -513,6 +513,16 @@ public class VCalendar extends VParentBase
             } else
             {
                 requestStatus = vComponent.getRequestStatus();
+            }
+            // remove success REQUEST-STATUS message, if present
+            Iterator<RequestStatus> rsIterator = requestStatus.iterator();
+            while (rsIterator.hasNext())
+            {
+                RequestStatus rs = rsIterator.next();
+                if (rs.getValue().substring(0, 3).equals("2.0"))
+                {
+                    rsIterator.remove();
+                }
             }
             requestStatus.add(RequestStatus.parse("4.1;Event conflict with " + conflict));
         }

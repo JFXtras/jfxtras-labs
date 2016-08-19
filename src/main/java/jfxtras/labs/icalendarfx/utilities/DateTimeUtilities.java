@@ -236,7 +236,7 @@ public final class DateTimeUtilities
         TemporalAmount duration = vEvent.getActualDuration();
         List<Temporal> newStarts = vEvent.streamRecurrences().limit(checkQuantity).collect(Collectors.toList());
         Temporal lastStart = newStarts.get(newStarts.size()-1);
-        
+
         /*
          * Make sorted list of events before lastStart from all VEvents
          */
@@ -252,7 +252,7 @@ public final class DateTimeUtilities
                 Temporal myDTStart = v.getDateTimeStart().getValue().with(dtstart);
                 return v.streamRecurrences(myDTStart)
                     .limit(checkQuantity)
-                    .filter(t -> DateTimeUtilities.isBefore(t, lastStart))
+                    .filter(t -> ! DateTimeUtilities.isAfter(t, lastStart))
                     .map(t -> 
                     {
                         String uid = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().getValue() : null;
@@ -281,7 +281,7 @@ public final class DateTimeUtilities
             if (firstConflict != null)
             {
                 String uid = (firstConflict.uid != null) ? firstConflict.uid + ", " : "";
-                return (firstConflict == null) ? null : uid + firstConflict.start;
+                return (firstConflict == null) ? null : uid + DateTimeUtilities.temporalToString(firstConflict.start);
             }
         }
         return null; // no conflicts found

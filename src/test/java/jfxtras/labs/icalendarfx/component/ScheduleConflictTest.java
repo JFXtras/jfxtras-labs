@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -29,7 +28,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
         List<VEvent> list = Arrays.asList(getYearly1());
         VEvent vEvent = getDaily1();
         String conflict = DateTimeUtilities.checkScheduleConflict(vEvent, list);
-        assertEquals("20151109T082900-0@jfxtras.org, 2015-11-09T10:00", conflict);
+        assertEquals("20151109T082900-0@jfxtras.org, 20151109T100000", conflict);
     }
     
     @Test // overlaps about a year in future
@@ -46,7 +45,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-11-09T10:00", conflict);
+        assertEquals("20161109T100000", conflict);
     }
     
     @Test // multiple events with a TRANSPARENT one that must be ignored to be correct
@@ -81,7 +80,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.FRIDAY)));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-06-03T09:00", conflict);
+        assertEquals("20160603T090000", conflict);
     }
         
     @Test // starts before, ends in middle
@@ -99,7 +98,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-11-09T10:00", conflict);
+        assertEquals("20161109T100000", conflict);
     }
     
     @Test // starts in middle, ends in middle
@@ -117,7 +116,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-11-09T10:00", conflict);
+        assertEquals("20161109T100000", conflict);
     }
     
     @Test // starts in middle, ends outside
@@ -135,7 +134,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-11-09T10:00", conflict);
+        assertEquals("20161109T100000", conflict);
     }
     
     @Test // test individual conflict
@@ -151,7 +150,7 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withDateTimeStart(LocalDateTime.of(2015, 12, 1, 10, 30))
                 .withDuration(Duration.ofHours(1));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2015-12-01T10:00", conflict);
+        assertEquals("20151201T100000", conflict);
     }
 
     
@@ -170,7 +169,23 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
-        assertEquals("2016-11-09T10:00", conflict);
+        assertEquals("20161109T100000", conflict);
+    }
+    
+    @Test // individual event conflict
+    public void canDetectScheduleConflict10()
+    {
+        VEvent existingVEvent = new VEvent()
+            .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+            .withDuration(Duration.ofHours(1))
+            .withRecurrenceRule(new RecurrenceRule2()
+                    .withFrequency(FrequencyType.DAILY));
+        List<VEvent> list = Arrays.asList(existingVEvent);
+        VEvent newVEvent = new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 1, 10, 0))
+                .withDuration(Duration.ofHours(1));
+        String conflict = DateTimeUtilities.checkScheduleConflict(newVEvent, list);
+        assertEquals("20160501T100000", conflict);
     }
     
     @Test // return null when no conflict
@@ -220,12 +235,8 @@ public class ScheduleConflictTest extends ICalendarTestAbstract
                 "DTSTART:20160406T100000" + System.lineSeparator() +
                 "DTEND:20160406T123000" + System.lineSeparator() +
                 "END:VEVENT";
-        VEvent v = VEvent.parse(content);
-        v.               withRecurrenceRule(new RecurrenceRule2()
-                .withFrequency(FrequencyType.DAILY));
-        String conflict = DateTimeUtilities.checkScheduleConflict(v, c.getVEvents());
-        System.out.println(conflict);
-        VComponent newVComponent = c.importVComponent(content);
-        System.out.println(newVComponent);
+        VEvent newVComponent = (VEvent) c.importVComponent(content);
+        assertEquals(1, c.getVEvents().size()); // show imported component wasn't accepted
+        assertEquals("4.1;Event conflict with 20150110T080000-0@jfxtras.org, 20160406T100000", newVComponent.getRequestStatus().get(0).getValue());
     }
 }
