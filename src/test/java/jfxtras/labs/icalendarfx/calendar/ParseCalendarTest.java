@@ -101,10 +101,4 @@ public class ParseCalendarTest
         "END:VEVENT";
         SimpleVComponentFactory.emptyVComponent(content);
     }
-    
-    @Test
-    public void canParseScheduleConflict()
-    {
-        throw new RuntimeException("not implemented");
-    }
 }
