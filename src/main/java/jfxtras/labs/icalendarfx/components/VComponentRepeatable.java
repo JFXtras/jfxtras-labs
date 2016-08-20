@@ -23,6 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -42,7 +43,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @param <T> implemented class
  * @param <R> recurrence type
  */
-public interface VComponentRepeatable<T> extends VComponentPrimary<T>
+public interface VComponentRepeatable<T> extends VComponent
 {    
     /**
      * RDATE: Recurrence Date-Times
@@ -63,7 +64,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     }
     default T withRecurrenceDates(String...recurrenceDates)
     {
-        Arrays.stream(recurrenceDates).forEach(s -> PropertyType.RECURRENCE_DATE_TIMES.parse(this, s));   
+        Arrays.stream(recurrenceDates).forEach(s -> PropertyType.RECURRENCE_DATE_TIMES.parse(this, s));
         return (T) this;
     }
     default T withRecurrenceDates(Temporal...recurrenceDates)
@@ -184,7 +185,6 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         return true;
     }
     
-    @Override
     default void checkDateTimeStartConsistency()
     {
         if ((getRecurrenceDates() != null) && (getDateTimeStart() != null))
@@ -274,6 +274,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
+    
+    // From VComponentPrimary
+    DateTimeStart getDateTimeStart();
 
     /**
      * Handles caching of recurrence start Temporal values.

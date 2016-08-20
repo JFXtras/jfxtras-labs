@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.components.editors.deleters.Deleter;
 import jfxtras.labs.icalendarfx.components.editors.revisors.Reviser;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -30,15 +30,15 @@ public enum ChangeDialogOption
     /**
      * Produce the map of change dialog options and the date range the option affects
      * 
-     * @param vComponentOriginal  clone of unedited {@link VComponentDisplayable}
-     * @param vComponentEdited  edited {@link VComponentDisplayable} (only descriptive properties are edited, date/time properties are not edited)
+     * @param vComponentOriginal  clone of unedited {@link VComponentDisplayableBase}
+     * @param vComponentEdited  edited {@link VComponentDisplayableBase} (only descriptive properties are edited, date/time properties are not edited)
      * @param startRecurrence  start date/time of selected recurrence  
      * @param changedProperties  list of PropertyType that are changed between vComponentOriginal and vComponentEdited
      * @return  Map with key as available {@link ChangeDialogOption} and value start, end date/time pair to be affected by change
      * 
      * @see Reviser
      */
-   public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
+   public static <U extends VComponentDisplayableBase<U>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
             U vComponentOriginal,
             U vComponentEdited,
             Temporal startRecurrence,
@@ -75,14 +75,14 @@ public enum ChangeDialogOption
    /**
     * Produce the map of change dialog options and the date range the option affects
     * 
-    * @param vComponent   {@link VComponentDisplayable} to be deleted
+    * @param vComponent   {@link VComponentDisplayableBase} to be deleted
     * @param startOriginalRecurrence  start date/time of selected recurrence
     * @return  Map with key as available {@link ChangeDialogOption} and value start, end date/time pair to be affected by change
     * 
     * @see Deleter
     */
-    public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal, Temporal>> makeDialogChoices(
-            VComponentDisplayable<?> vComponent,
+    public static <U extends VComponentDisplayableBase<U>> Map<ChangeDialogOption, Pair<Temporal, Temporal>> makeDialogChoices(
+            VComponentDisplayableBase<?> vComponent,
             Temporal startOriginalRecurrence)
     {
         Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();

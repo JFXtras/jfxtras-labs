@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -10,7 +11,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
-public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentLocatable<T>, VComponentDescribable2<T>
+public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentDescribable2<T>, VComponentDuration<T>
 {
     /**
      * DESCRIPTION
@@ -36,7 +36,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      *
      * Note: Only VJournal allows multiple instances of DESCRIPTION
      */
-    @Override public ObjectProperty<Description> descriptionProperty()
+    @Override
+    public ObjectProperty<Description> descriptionProperty()
     {
         if (description == null)
         {
@@ -57,7 +58,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * Example:
      * DURATION:PT15M
      * */
-    @Override public ObjectProperty<DurationProp> durationProperty()
+    @Override
+    public ObjectProperty<DurationProp> durationProperty()
     {
         if (duration == null)
         {
@@ -80,7 +82,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * Example:
      * GEO:37.386013;-122.082932
      */
-    @Override public ObjectProperty<GeographicPosition> geographicPositionProperty()
+    public ObjectProperty<GeographicPosition> geographicPositionProperty()
     {
         if (geographicPosition == null)
         {
@@ -90,6 +92,62 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return geographicPosition;
     }
     private ObjectProperty<GeographicPosition> geographicPosition;
+    public GeographicPosition getGeographicPosition() { return geographicPositionProperty().get(); }
+    public void setGeographicPosition(GeographicPosition geographicPosition) { geographicPositionProperty().set(geographicPosition); }
+    public void setGeographicPosition(String geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(GeographicPosition.parse(geographicPosition));
+        } else
+        {
+            getGeographicPosition().setValue(geographicPosition);
+        }
+    }
+    public void setGeographicPosition(double latitude, double longitude)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(new GeographicPosition(latitude, longitude));
+        } else
+        {
+            getGeographicPosition().setLatitude(latitude);
+            getGeographicPosition().setLongitude(longitude);
+        }
+    }
+    public T withGeographicPosition(GeographicPosition geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(geographicPosition);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withGeographicPosition(String geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(geographicPosition);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withGeographicPosition(double latitude, double longitude)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(latitude, longitude);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     /**
      * LOCATION:
@@ -99,7 +157,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * Example:
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
-    @Override public ObjectProperty<Location> locationProperty()
+    public ObjectProperty<Location> locationProperty()
     {
         if (location == null)
         {
@@ -109,6 +167,44 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return location;
     }
     private ObjectProperty<Location> location;
+    public Location getLocation() { return locationProperty().get(); }
+    public void setLocation(Location location) { locationProperty().set(location); }
+    public void setLocation(String location)
+    {
+        if (getLocation() == null)
+        {
+            setLocation(Location.parse(location));
+        } else
+        {
+            Location temp = Location.parse(location);
+            getLocation().setValue(temp.getValue());
+        }
+    }
+    public T withLocation(Location location)
+    {
+        if (getLocation() == null)
+        {
+            setLocation(location);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withLocation(String location)
+    {
+        if (getLocation() == null)
+        {
+            if (location != null)
+            {
+                setLocation(location);
+            }
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     /**
      * PRIORITY
@@ -119,7 +215,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * Example: The following is an example of a property with the highest priority:
      * PRIORITY:1
      */
-    @Override public ObjectProperty<Priority> priorityProperty()
+    public ObjectProperty<Priority> priorityProperty()
     {
         if (priority == null)
         {
@@ -129,6 +225,62 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return priority;
     }
     private ObjectProperty<Priority> priority;
+    public Priority getPriority() { return priorityProperty().get(); }
+    public void setPriority(Priority priority) { priorityProperty().set(priority); }
+    public void setPriority(String priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(Priority.parse(priority));
+        } else
+        {
+            Priority temp = Priority.parse(priority);
+            getPriority().setValue(temp.getValue());
+        }
+    }
+    public void setPriority(int priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(new Priority(priority));
+        } else
+        {
+            getPriority().setValue(priority);
+        }
+    }
+    public T withPriority(Priority priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withPriority(String priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withPriority(int priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * RESOURCES:
@@ -140,10 +292,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * RESOURCES:EASEL,PROJECTOR,VCR
      * RESOURCES;LANGUAGE=fr:Nettoyeur haute pression
      */
-    @Override
     public ObservableList<Resources> getResources() { return resources; }
     private ObservableList<Resources> resources;
-    @Override
     public void setResources(ObservableList<Resources> resources)
     {
         if (resources != null)
@@ -154,6 +304,27 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
             orderer().unregisterSortOrderProperty(this.resources);
         }
         this.resources = resources;
+    }
+    public T withResources(ObservableList<Resources> resources)
+    {
+        setResources(resources);
+        return (T) this;
+    }
+    public T withResources(String...resources)
+    {
+        Arrays.stream(resources).forEach(c -> PropertyType.RESOURCES.parse(this, c));
+        return (T) this;
+    }
+    public T withResources(Resources...resources)
+    {
+        if (getResources() == null)
+        {
+            setResources(FXCollections.observableArrayList(resources));
+        } else
+        {
+            getResources().addAll(resources);
+        }
+        return (T) this;
     }
 
     /** 
@@ -166,10 +337,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * The "VALARM" calendar component MUST only appear within either a
      * "VEVENT" or "VTODO" calendar component.
      */
-    @Override
     public ObservableList<VAlarm> getVAlarms() { return vAlarms; }
     private ObservableList<VAlarm> vAlarms;
-    @Override
     public void setVAlarms(ObservableList<VAlarm> vAlarms)
     {
         if (vAlarms != null)
@@ -181,8 +350,20 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         }
         this.vAlarms = vAlarms;
     }
+    public T withVAlarms(ObservableList<VAlarm> vAlarms) { setVAlarms(vAlarms); return (T) this; }
+    public T withVAlarms(VAlarm...vAlarms)
+    {
+        if (getVAlarms() == null)
+        {
+            setVAlarms(FXCollections.observableArrayList(vAlarms));
+        } else
+        {
+            getVAlarms().addAll(vAlarms);
+        }
+        return (T) this;
+    }
     
-    static void copyVAlarms(VComponentLocatable<?> source, VComponentLocatable<?> destination)
+    static void copyVAlarms(VComponentLocatableBase<?> source, VComponentLocatableBase<?> destination)
     {
         VAlarm[] collect = source.getVAlarms()
                 .stream()
@@ -197,32 +378,15 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      */
     public VComponentLocatableBase() { super(); }
     
-//    public VComponentLocatableBase(String contentLines)
-//    {
-//        super(contentLines);
-//    }
-    
     public VComponentLocatableBase(VComponentLocatableBase<T> source)
     {
         super(source);
     }
 
-//    /** Include VAlarm sub-components in content lines */
-//    @Override
-//    void appendMiddleContentLines(StringBuilder builder)
-//    {
-//        super.appendMiddleContentLines(builder);
-//        if (getVAlarms() != null)
-//        {
-//            getVAlarms().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
-//        }
-//    }
-    
-    /** parse VAlarms */
     @Override
-    void parseSubComponents(CalendarComponent subcomponentType, String contentLines)
+    void addSubcomponent(VComponent subcomponent)
     {
-        if (subcomponentType == CalendarComponent.VALARM)
+        if (subcomponent instanceof VAlarm)
         {
             final ObservableList<VAlarm> list;
             if (getVAlarms() == null)
@@ -233,37 +397,12 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
             {
                 list = getVAlarms();
             }
-            list.add(VAlarm.parse(contentLines));
+            list.add((VAlarm) subcomponent);
         } else
         {
-            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
+            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponent.getClass().getSimpleName() +
                     " found inside " + componentName() + " component");
-        }
-    }
-    
-    /** parse VAlarms */
-    @Override
-    void parseSubComponents(CalendarComponent subcomponentType, Iterator<String> contentIterator)
-    {
-        if (subcomponentType == CalendarComponent.VALARM)
-        {
-            final ObservableList<VAlarm> list;
-            if (getVAlarms() == null)
-            {
-                list = FXCollections.observableArrayList();
-                setVAlarms(list);
-            } else
-            {
-                list = getVAlarms();
-            }
-            SimpleVComponentFactory.newVComponent(contentIterator);
-            list.add((VAlarm) SimpleVComponentFactory.newVComponent(contentIterator));
-//            list.add(VAlarm.parse(contentIterator));
-        } else
-        {
-            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
-                    " found inside " + componentName() + " component");
-        }
+        }        
     }
     
     /** copy VAlarms */
@@ -271,7 +410,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     public void copyChildrenFrom(VParent source)
     {
         super.copyChildrenFrom(source);
-        VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+        VComponentLocatableBase<?> castSource = (VComponentLocatableBase<?>) source;
         if (castSource.getVAlarms() != null)
         {
             if (getVAlarms() == null)
@@ -296,7 +435,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     @Override // include VAlarms
     public boolean equals(Object obj)
     {
-        VComponentLocatable<?> testObj = (VComponentLocatable<?>) obj;
+        VComponentLocatableBase<?> testObj = (VComponentLocatableBase<?>) obj;
         final boolean isVAlarmsEqual;
         if (getVAlarms() != null)
         {
@@ -337,4 +476,19 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         final TemporalAmount adjustment = getActualDuration();
         return super.streamRecurrences(start.minus(adjustment));
     }
+    
+    /** A convenience method that returns either Duration property value, or a calculated duration based on start and end values */
+    public abstract TemporalAmount getActualDuration();
+    
+    /**
+     * A convenience method that sets DTEND, DURATION (VEvent) or DUE (VTodo) depending on which ever is already set
+     * to new value calculated by the duration or period between input parameters (depending on if the parameters
+     * are LocalDate or a date/time type (i.e. ZonedDateTime))
+     *  
+     * Note: In order to set DTEND, DTSTART must be assigned a value.  DURATION and DUE doesn't require a DTSTART value.
+     *  
+     * @param startRecurrence
+     * @param endRecurrence
+     */
+    public abstract void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence);
 }

@@ -10,7 +10,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
@@ -435,23 +434,11 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         }
         return Collections.unmodifiableList(errors);
     }
-
-//    /** include Standard and Daylight sub-components in content lines */
-//    @Override
-//    void appendMiddleContentLines(StringBuilder builder)
-//    {
-//        super.appendMiddleContentLines(builder);
-//        if (getStandardOrDaylight() != null)
-//        {
-//            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
-//        }
-//    }
     
-    /** parse Standard and Daylight sub-components */
     @Override
-    void parseSubComponents(CalendarComponent subcomponentType, String contentLines)
+    void addSubcomponent(VComponent subcomponent)
     {
-        if (subcomponentType == CalendarComponent.STANDARD_TIME || subcomponentType == CalendarComponent.DAYLIGHT_SAVING_TIME)
+        if (subcomponent instanceof StandardOrDaylight<?>)
         {
             final ObservableList<StandardOrDaylight<?>> list;
             if (getStandardOrDaylight() == null)
@@ -462,12 +449,11 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
             {
                 list = getStandardOrDaylight();
             }
-            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarComponent.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
-            list.add(subcomponent);
+            list.add((StandardOrDaylight<?>) subcomponent);
         } else
         {
-            throw new IllegalArgumentException("Unsuported subcomponent type:" + subcomponentType +
-                    " found inside " + componentName() + " component");
+            throw new IllegalArgumentException("Unsuported subcomponent type:" + subcomponent.getClass().getSimpleName() +
+                  " found inside " + componentName() + " component");
         }
     }
     
@@ -539,7 +525,6 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     }
 
     /** Parse content lines into calendar component object */
-    @Deprecated // use simple factory
     public static VTimeZone parse(String contentLines)
     {
         VTimeZone component = new VTimeZone();

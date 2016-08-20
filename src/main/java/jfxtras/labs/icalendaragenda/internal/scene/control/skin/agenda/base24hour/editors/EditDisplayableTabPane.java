@@ -25,7 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -38,10 +38,10 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
  * 
  * @author David Bal
  * 
- * @param <T> subclass of {@link VComponentDisplayable}
- * @param <U> subclass of {@link EditDescriptiveVBox} associated with the subclass of {@link VComponentDisplayable}
+ * @param <T> subclass of {@link VComponentDisplayableBase}
+ * @param <U> subclass of {@link EditDescriptiveVBox} associated with the subclass of {@link VComponentDisplayableBase}
  */
-public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>, U extends EditDescriptiveVBox<T>> extends TabPane
+public abstract class EditDisplayableTabPane<T extends VComponentDisplayableBase<T>, U extends EditDescriptiveVBox<T>> extends TabPane
 {
     U editDescriptiveVBox;
     EditRecurrenceRuleVBox<T> recurrenceRuleVBox;

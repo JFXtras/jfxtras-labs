@@ -9,7 +9,7 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 
 /**
  * Abstract factory to create recurrences from VComponents.
@@ -38,13 +38,13 @@ public abstract class RecurrenceFactory<R>
     public LocalDateTime getEndRange() { return endRange.get(); }
     
     /**
-     * Makes recurrences from a {@link VComponentDisplayable}
+     * Makes recurrences from a {@link VComponentDisplayableBase}
      * Recurrences are made between {@link #getStartRange()} and {@link #getEndRange()}
      * 
      * @param vComponent - calendar component
      * @return created appointments
      */
-    public List<R> makeRecurrences(VComponentDisplayable<?> vComponent)
+    public List<R> makeRecurrences(VComponentDisplayableBase<?> vComponent)
     {
         if ((getStartRange() == null) || (getEndRange() == null))
         {
@@ -76,5 +76,5 @@ public abstract class RecurrenceFactory<R>
     }
     
     /** Strategy to make Recurrence from VComponent and start Temporal */
-    abstract R makeRecurrence(VComponentDisplayable<?> vComponent, Temporal startTemporal);
+    abstract R makeRecurrence(VComponentDisplayableBase<?> vComponent, Temporal startTemporal);
 }

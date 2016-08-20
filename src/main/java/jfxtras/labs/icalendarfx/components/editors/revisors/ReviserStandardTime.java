@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components.editors.revisors;
 
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 
 // TODO - add functionality
 /**

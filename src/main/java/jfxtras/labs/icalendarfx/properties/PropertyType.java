@@ -16,16 +16,16 @@ import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
-import jfxtras.labs.icalendarfx.components.VComponentCommon;
+import jfxtras.labs.icalendarfx.components.VComponentCommonBase;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.components.VComponentDuration;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentPersonal;
-import jfxtras.labs.icalendarfx.components.VComponentPrimary;
+import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
+import jfxtras.labs.icalendarfx.components.VComponentPersonalBase;
+import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -263,14 +263,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getCategories();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             final ObservableList<Categories> list;
             if (castComponent.getCategories() == null)
             {
@@ -288,7 +288,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             final ObservableList<Categories> list;
             if (castDestination.getCategories() == null)
             {
@@ -310,14 +310,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getClassification();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             Classification child = Classification.parse(propertyContent);
             castComponent.setClassification(child);
             return child;
@@ -333,7 +333,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             Classification propertyCopy = new Classification((Classification) child);
             castDestination.setClassification(propertyCopy);
         }
@@ -348,14 +348,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPrimary<?> castProperty = (VComponentPrimary<?>) vComponent;
+            VComponentPrimaryBase<?> castProperty = (VComponentPrimaryBase<?>) vComponent;
             return castProperty.getComments();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vParent;
+            VComponentPrimaryBase<?> castComponent = (VComponentPrimaryBase<?>) vParent;
             final ObservableList<Comment> list;
             if (castComponent.getComments() == null)
             {
@@ -373,7 +373,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
+            VComponentPrimaryBase<?> castDestination = (VComponentPrimaryBase<?>) destination;
             final ObservableList<Comment> list;
             if (castDestination.getComments() == null)
             {
@@ -402,7 +402,7 @@ public enum PropertyType
                 return castComponent.getContact();                
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+                VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
                 return castComponent.getContacts();
             }
         }
@@ -417,7 +417,7 @@ public enum PropertyType
                 castComponent.setContact(child);                
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+                VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
                 final ObservableList<Contact> list;
                 if (castComponent.getContacts() == null)
                 {
@@ -442,7 +442,7 @@ public enum PropertyType
                 castDestination.setContact(propertyCopy);
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+                VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
                 final ObservableList<Contact> list;
                 if (castDestination.getContacts() == null)
                 {
@@ -503,14 +503,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getDateTimeCreated();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             DateTimeCreated child = DateTimeCreated.parse(propertyContent);
             castComponent.setDateTimeCreated(child);
             return child;
@@ -527,7 +527,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             DateTimeCreated propertyCopy = new DateTimeCreated((DateTimeCreated) child);
             castDestination.setDateTimeCreated(propertyCopy);
         }
@@ -619,14 +619,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vComponent;
             return castComponent.getDateTimeStamp();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vParent;
             DateTimeStamp child = DateTimeStamp.parse(propertyContent);
             castComponent.setDateTimeStamp(child);
             return child;
@@ -642,7 +642,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            VComponentPersonalBase<?> castDestination = (VComponentPersonalBase<?>) destination;
             DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) child);
             castDestination.setDateTimeStamp(propertyCopy);
         }
@@ -658,14 +658,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
+            VComponentPrimaryBase<?> castComponent = (VComponentPrimaryBase<?>) vComponent;
             return castComponent.getDateTimeStart();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vParent;
+            VComponentPrimaryBase<?> castComponent = (VComponentPrimaryBase<?>) vParent;
             DateTimeStart child = DateTimeStart.parse(propertyContent);
             castComponent.setDateTimeStart(child);
             return child;
@@ -681,7 +681,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
+            VComponentPrimaryBase<?> castDestination = (VComponentPrimaryBase<?>) destination;
             DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) child);
             castDestination.setDateTimeStart(propertyCopy);
         }
@@ -815,7 +815,7 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getExceptionDates();
         }
 
@@ -823,7 +823,7 @@ public enum PropertyType
         public VChild parse(VParent vParent, String propertyContent)
         {
             ExceptionDates child = ExceptionDates.parse(propertyContent);
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             final ObservableList<ExceptionDates> list;
             if (castComponent.getExceptionDates() == null)
             {
@@ -840,7 +840,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             final ObservableList<ExceptionDates> list;
             if (castDestination.getExceptionDates() == null)
             {
@@ -899,14 +899,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vComponent;
             return castComponent.getGeographicPosition();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vParent;
             GeographicPosition child = GeographicPosition.parse(propertyContent);
             castComponent.setGeographicPosition(child);
             return child;
@@ -922,7 +922,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            VComponentLocatableBase<?> castDestination = (VComponentLocatableBase<?>) destination;
             GeographicPosition propertyCopy = new GeographicPosition((GeographicPosition) child);
             castDestination.setGeographicPosition(propertyCopy);
         }
@@ -936,14 +936,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vComponent;
             return castComponent.getIANAProperties();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vParent;
+            VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vParent;
             final ObservableList<IANAProperty> list;
             if (castComponent.getIANAProperties() == null)
             {
@@ -961,7 +961,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
+            VComponentCommonBase<?> castDestination = (VComponentCommonBase<?>) destination;
             final ObservableList<IANAProperty> list;
             if (castDestination.getIANAProperties() == null)
             {
@@ -1021,14 +1021,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vComponent;
             return castComponent.getLocation();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vParent;
             Location child = Location.parse(propertyContent);
             castComponent.setLocation(child);
             return child;
@@ -1044,7 +1044,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            VComponentLocatableBase<?> castDestination = (VComponentLocatableBase<?>) destination;
             Location propertyCopy = new Location((Location) child);
             castDestination.setLocation(propertyCopy);
         }
@@ -1082,14 +1082,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vComponent;
             return castComponent.getNonStandardProperties();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentCommon<?> castComponent = (VComponentCommon<?>) vParent;
+            VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vParent;
             final ObservableList<NonStandardProperty> list;
             if (castComponent.getNonStandardProperties() == null)
             {
@@ -1107,7 +1107,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
+            VComponentCommonBase<?> castDestination = (VComponentCommonBase<?>) destination;
             final ObservableList<NonStandardProperty> list;
             if (castDestination.getNonStandardProperties() == null)
             {
@@ -1130,14 +1130,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vComponent;
             return castComponent.getOrganizer();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vParent;
             Organizer child = Organizer.parse(propertyContent);
             castComponent.setOrganizer(child);
             return child;
@@ -1153,7 +1153,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            VComponentPersonalBase<?> castDestination = (VComponentPersonalBase<?>) destination;
             Organizer propertyCopy = new Organizer((Organizer) child);
             castDestination.setOrganizer(propertyCopy);
         }
@@ -1204,14 +1204,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vComponent;
             return castComponent.getPriority();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vParent;
             Priority child = Priority.parse(propertyContent);
             castComponent.setPriority(child);
             return child;
@@ -1227,7 +1227,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            VComponentLocatableBase<?> castDestination = (VComponentLocatableBase<?>) destination;
             Priority propertyCopy = new Priority((Priority) child);
             castDestination.setPriority(propertyCopy);
         }
@@ -1313,14 +1313,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getRecurrenceId();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             RecurrenceId child = RecurrenceId.parse(propertyContent);
             castComponent.setRecurrenceId(child);
             return child;
@@ -1336,7 +1336,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             RecurrenceId propertyCopy = new RecurrenceId((RecurrenceId) child);
             castDestination.setRecurrenceId(propertyCopy);
         }
@@ -1387,14 +1387,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getRelatedTo();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             final ObservableList<RelatedTo> list;
             if (castComponent.getRelatedTo() == null)
             {
@@ -1412,7 +1412,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             final ObservableList<RelatedTo> list;
             if (castDestination.getRelatedTo() == null)
             {
@@ -1471,14 +1471,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vComponent;
             return castComponent.getRequestStatus();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vParent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?>) vParent;
             final ObservableList<RequestStatus> list;
             if (castComponent.getRequestStatus() == null)
             {
@@ -1496,7 +1496,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            VComponentPersonalBase<?> castDestination = (VComponentPersonalBase<?>) destination;
             final ObservableList<RequestStatus> list;
             if (castDestination.getRequestStatus() == null)
             {
@@ -1519,14 +1519,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentLocatable<?> castProperty = (VComponentLocatable<?>) vComponent;
+            VComponentLocatableBase<?> castProperty = (VComponentLocatableBase<?>) vComponent;
             return castProperty.getResources();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vParent;
+            VComponentLocatableBase<?> castComponent = (VComponentLocatableBase<?>) vParent;
             final ObservableList<Resources> list;
             if (castComponent.getResources() == null)
             {
@@ -1544,7 +1544,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            VComponentLocatableBase<?> castDestination = (VComponentLocatableBase<?>) destination;
             final ObservableList<Resources> list;
             if (castDestination.getResources() == null)
             {
@@ -1566,14 +1566,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getSequence();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             Sequence child = Sequence.parse(propertyContent);
             castComponent.setSequence(child);
             return child;
@@ -1589,7 +1589,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             Sequence propertyCopy = new Sequence((Sequence) child);
             castDestination.setSequence(propertyCopy);
         }
@@ -1603,14 +1603,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vComponent;
             return castComponent.getStatus();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vParent;
+            VComponentDisplayableBase<?> castComponent = (VComponentDisplayableBase<?>) vParent;
             Status child = Status.parse(propertyContent);
             castComponent.setStatus(child);
             return child;            
@@ -1626,7 +1626,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            VComponentDisplayableBase<?> castDestination = (VComponentDisplayableBase<?>) destination;
             Status propertyCopy = new Status((Status) child);
             castDestination.setStatus(propertyCopy);
         }
@@ -1927,14 +1927,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?> ) vComponent;
             return castComponent.getUniqueIdentifier();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vParent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?> ) vParent;
             UniqueIdentifier child = UniqueIdentifier.parse(propertyContent);
             castComponent.setUniqueIdentifier(child);
             return child;
@@ -1950,7 +1950,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            VComponentPersonalBase<?> castDestination = (VComponentPersonalBase<?>) destination;
             UniqueIdentifier propertyCopy = new UniqueIdentifier((UniqueIdentifier) child);
             castDestination.setUniqueIdentifier(propertyCopy);
         }
@@ -1964,14 +1964,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponent vComponent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?> ) vComponent;
             return castComponent.getUniformResourceLocator();
         }
 
         @Override
         public VChild parse(VParent vParent, String propertyContent)
         {
-            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vParent;
+            VComponentPersonalBase<?> castComponent = (VComponentPersonalBase<?> ) vParent;
             UniformResourceLocator child = UniformResourceLocator.parse(propertyContent);
             castComponent.setUniformResourceLocator(child);
             return child;
@@ -1980,7 +1980,7 @@ public enum PropertyType
         @Override
         public void copyProperty(VChild child, VParent destination)
         {
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            VComponentPersonalBase<?> castDestination = (VComponentPersonalBase<?>) destination;
             UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) child);
             castDestination.setUniformResourceLocator(propertyCopy);
         }

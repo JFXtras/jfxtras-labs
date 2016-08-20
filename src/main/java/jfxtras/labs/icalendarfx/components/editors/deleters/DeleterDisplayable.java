@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -19,15 +19,15 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
- * <p>Handles deleting recurrences of a {@link VComponentDisplayable}
+ * <p>Handles deleting recurrences of a {@link VComponentDisplayableBase}
  * (e.g. {@link VEvent}, {@link VTodo}, {@link VJournal})</p>
  * 
  * @author David Bal
  *
  * @param <T> concrete implementation of this class
- * @param <U> concrete {@link VComponentDisplayable} class
+ * @param <U> concrete {@link VComponentDisplayableBase} class
  */
-public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends DeleterBase<U>
+public abstract class DeleterDisplayable<T, U extends VComponentDisplayableBase<?>> extends DeleterBase<U>
 {
 	// The component to have deletion action acted upon.
     private U vComponent;
@@ -40,13 +40,13 @@ public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> 
     /*
      * VCOMPONENTS
      */
-    /** Gets the value of the {@link VComponentDisplayable} to be edited */
+    /** Gets the value of the {@link VComponentDisplayableBase} to be edited */
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
-    /** Sets the value of the {@link VComponentDisplayable} to be edited */
+    /** Sets the value of the {@link VComponentDisplayableBase} to be edited */
     public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
     /**
-     * Sets the value of the {@link VComponentDisplayable} to be edited and returns this class for chaining.
+     * Sets the value of the {@link VComponentDisplayableBase} to be edited and returns this class for chaining.
      * 
      * @return - this class for chaining
      */
@@ -156,7 +156,7 @@ public abstract class DeleterDisplayable<T, U extends VComponentDisplayable<?>> 
                     until = LocalDate.from(previous);                    
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
-                List<VComponentDisplayable<?>> recurrenceChildren = vComponent.recurrenceChildren()
+                List<VComponentDisplayableBase<?>> recurrenceChildren = vComponent.recurrenceChildren()
                         .stream()
                         .filter(v -> DateTimeUtilities.isAfter(v.getRecurrenceId().getValue(), getStartOriginalRecurrence()))
                         .collect(Collectors.toList());

@@ -1,6 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,6 +14,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VCalendar;
@@ -19,7 +25,9 @@ import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
@@ -31,7 +39,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentDisplayable<T>, VComponentRepeatable<T>, VComponentDescribable<T>
+public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>
 {
     /**
      * ATTACH
@@ -44,7 +52,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
      * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
      *  reports/r-960812.ps
-     * */
+     */
     @Override
     public ObservableList<Attachment<?>> getAttachments() { return attachments; }
     private ObservableList<Attachment<?>> attachments;
@@ -69,10 +77,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    @Override
     public ObservableList<Categories> getCategories() { return categories; }
     private ObservableList<Categories> categories;
-    @Override
     public void setCategories(ObservableList<Categories> categories)
     {
         if (categories != null)
@@ -83,6 +89,27 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             orderer().unregisterSortOrderProperty(this.categories);
         }
         this.categories = categories;
+    }
+    public T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
+    public T withCategories(String...categories)
+    {
+        if (categories != null)
+        {
+            String c = Arrays.stream(categories).collect(Collectors.joining(","));
+            PropertyType.CATEGORIES.parse(this, c);
+        }
+        return (T) this;
+    }
+    public T withCategories(Categories...categories)
+    {
+        if (getCategories() == null)
+        {
+            setCategories(FXCollections.observableArrayList(categories));
+        } else
+        {
+            getCategories().addAll(categories);
+        }
+        return (T) this;
     }
     
     /**
@@ -95,7 +122,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * Example:
      * CLASS:PUBLIC
      */
-    @Override
     public ObjectProperty<Classification> classificationProperty()
     {
         if (classification == null)
@@ -105,9 +131,63 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return classification;
     }
-    @Override
     public Classification getClassification() { return (classification == null) ? null : classificationProperty().get(); }
     private ObjectProperty<Classification> classification;
+    public void setClassification(String classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(Classification.parse(classification));
+        } else
+        {
+            Classification temp = Classification.parse(classification);
+            getClassification().setValue(temp.getValue());
+        }
+    }
+    public void setClassification(Classification classification) { classificationProperty().set(classification); }
+    public void setClassification(ClassificationType classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(new Classification(classification));            
+        } else
+        {
+            getClassification().setValue(classification);
+        }
+    }
+    public T withClassification(Classification classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withClassification(ClassificationType classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withClassification(String classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * CONTACT:
@@ -121,10 +201,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
      *  +1-919-555-1234
      */
-    @Override
     public ObservableList<Contact> getContacts() { return contacts; }
     private ObservableList<Contact> contacts;
-    @Override
     public void setContacts(ObservableList<Contact> contacts)
     {
         if (contacts != null)
@@ -136,6 +214,24 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         this.contacts = contacts;
     }
+    public T withContacts(ObservableList<Contact> contacts) { setContacts(contacts); return (T) this; }
+    public T withContacts(String...contacts)
+    {
+        Arrays.stream(contacts).forEach(c -> PropertyType.CONTACT.parse(this, c));
+        return (T) this;
+    }
+    public T withContacts(Contact...contacts)
+    {
+        if (getContacts() == null)
+        {
+            setContacts(FXCollections.observableArrayList(contacts));
+        } else
+        {
+            getContacts().addAll(contacts);
+        }
+        return (T) this;
+    }
+    
     
     /**
      * CREATED: Date-Time Created
@@ -147,7 +243,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * Example:
      * CREATED:19960329T133000Z
      */
-    @Override
     public ObjectProperty<DateTimeCreated> dateTimeCreatedProperty()
     {
         if (dateTimeCreated == null)
@@ -157,9 +252,63 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return dateTimeCreated;
     }
-    @Override
     public DateTimeCreated getDateTimeCreated() { return (dateTimeCreated == null) ? null : dateTimeCreatedProperty().get(); }
     private ObjectProperty<DateTimeCreated> dateTimeCreated;
+    public void setDateTimeCreated(String dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(DateTimeCreated.parse(dtCreated));
+        } else
+        {
+            DateTimeCreated temp = DateTimeCreated.parse(dtCreated);
+            setDateTimeCreated(temp);
+        }
+    }
+    public void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
+    public void setDateTimeCreated(ZonedDateTime dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(new DateTimeCreated(dtCreated));
+        } else
+        {
+            getDateTimeCreated().setValue(dtCreated);
+        }
+    }
+    public T withDateTimeCreated(ZonedDateTime dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withDateTimeCreated(String dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withDateTimeCreated(DateTimeCreated dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
    /** 
     * EXDATE
@@ -169,13 +318,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     * This property defines the list of DATE-TIME exceptions for
     * recurring events, to-dos, journal entries, or time zone definitions.
     */ 
-    @Override
     public ObservableList<ExceptionDates> getExceptionDates()
     {
         return exceptions;
     }
     private ObservableList<ExceptionDates> exceptions;
-    @Override
     public void setExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
         if (exceptions != null)
@@ -188,6 +335,42 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             orderer().unregisterSortOrderProperty(this.exceptions);
         }
         this.exceptions = exceptions;
+    }
+    public T withExceptionDates(ObservableList<ExceptionDates> exceptions)
+    {
+        setExceptionDates(exceptions);
+        return (T) this;
+    }
+    public T withExceptionDates(String...exceptions)
+    {
+        Arrays.stream(exceptions).forEach(s -> PropertyType.EXCEPTION_DATE_TIMES.parse(this, s));   
+        return (T) this;
+    }
+    public T withExceptionDates(Temporal...exceptions)
+    {
+        final ObservableList<ExceptionDates> list;
+        if (getExceptionDates() == null)
+        {
+            list = FXCollections.observableArrayList();
+            setExceptionDates(list);
+        } else
+        {
+            list = getExceptionDates();
+        }
+        list.add(new ExceptionDates(exceptions));
+        return (T) this;
+    }
+    public T withExceptionDates(ExceptionDates...exceptions)
+    {
+        if (getExceptionDates() == null)
+        {
+            setExceptionDates(FXCollections.observableArrayList());
+            Arrays.stream(exceptions).forEach(e -> getExceptionDates().add(e)); // add one at a time to ensure date-time type compliance
+        } else
+        {
+            getExceptionDates().addAll(exceptions);
+        }
+        return (T) this;
     }
     
     /**
@@ -258,7 +441,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * Example:
      * RECURRENCE-ID;VALUE=DATE:19960401
      */
-    @Override
     public ObjectProperty<RecurrenceId> recurrenceIdProperty()
     {
         if (recurrenceId == null)
@@ -269,14 +451,105 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return recurrenceId;
     }
-    @Override
     public RecurrenceId getRecurrenceId() { return (recurrenceId == null) ? null : recurrenceIdProperty().get(); }
     private ObjectProperty<RecurrenceId> recurrenceId;
-    
-//    private VComponentDisplayable<?> recurrenceParent;
-//    void setRecurrenceParent(VComponentDisplayable<?> recurrenceParent) { this.recurrenceParent = recurrenceParent; }
-//    @Override
-//    public VComponentDisplayable<?> recurrenceParent() { return recurrenceParent; }
+    public void setRecurrenceId(RecurrenceId recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
+    public void setRecurrenceId(String recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(RecurrenceId.parse(recurrenceId));
+        } else
+        {
+            RecurrenceId temp = RecurrenceId.parse(recurrenceId);
+            if (temp.getValue().getClass().equals(getRecurrenceId().getValue().getClass()))
+            {
+                getRecurrenceId().setValue(temp.getValue());
+            } else
+            {
+                setRecurrenceId(temp);
+            }
+        }
+    }
+    public void setRecurrenceId(Temporal temporal)
+    {
+        if ((getRecurrenceId() == null) || ! getRecurrenceId().getValue().getClass().equals(temporal.getClass()))
+        {
+            if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
+            {
+                if (getRecurrenceId() == null)
+                {
+                    setRecurrenceId(new RecurrenceId(temporal));
+                } else
+                {
+                    getRecurrenceId().setValue(temporal);
+                }
+            } else
+            {
+                throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                        + temporal.getClass().getSimpleName() + " is not supported");
+            }
+        } else
+        {
+            getRecurrenceId().setValue(temporal);
+        }
+    }
+    public T withRecurrenceId(RecurrenceId recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withRecurrenceId(String recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withRecurrenceId(Temporal recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener
+     *  after recurrenceIdProperty() is initialized */
+    void checkRecurrenceIdConsistency()
+    {
+        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            if (getParent() != null)
+            {
+                List<VComponentDisplayableBase<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
+                VComponentDisplayableBase<?> parentComponent = relatedComponents.stream()
+                        .filter(v -> v.getRecurrenceId() == null)
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("no parent component found"));
+                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
+                if (recurrenceIdType != dateTimeStartType)
+                {
+                    throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+                }
+            }
+        }
+    }
 
     /**
      * RELATED-TO:
@@ -289,10 +562,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * Example:
      * RELATED-TO:19960401-080045-4000F192713-0052@example.com
      */
-    @Override
     public ObservableList<RelatedTo> getRelatedTo() { return relatedTo; }
     private ObservableList<RelatedTo> relatedTo;
-    @Override
     public void setRelatedTo(ObservableList<RelatedTo> relatedTo)
     {
         if (relatedTo != null)
@@ -303,6 +574,23 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             orderer().unregisterSortOrderProperty(this.relatedTo);
         }
         this.relatedTo = relatedTo;
+    }
+    public T withRelatedTo(ObservableList<RelatedTo> relatedTo) { setRelatedTo(relatedTo); return (T) this; }
+    public T withRelatedTo(String...relatedTo)
+    {
+        Arrays.stream(relatedTo).forEach(c -> PropertyType.RELATED_TO.parse(this, c));
+        return (T) this;
+    }
+    public T withRelatedTo(RelatedTo...relatedTo)
+    {
+        if (getRelatedTo() == null)
+        {
+            setRelatedTo(FXCollections.observableArrayList(relatedTo));
+        } else
+        {
+            getRelatedTo().addAll(relatedTo);
+        }
+        return (T) this;
     }
     
     /**
@@ -344,7 +632,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      *
      * SEQUENCE:2
      */
-    @Override
     public ObjectProperty<Sequence> sequenceProperty()
     {
         if (sequence == null)
@@ -354,9 +641,73 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return sequence;
     }
-    @Override
     public Sequence getSequence() { return (sequence == null) ? null : sequenceProperty().get(); }
     private ObjectProperty<Sequence> sequence;
+    public void setSequence(String sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(Sequence.parse(sequence));
+        } else
+        {
+            Sequence temp = Sequence.parse(sequence);
+            getSequence().setValue(temp.getValue());
+        }
+    }
+    public void setSequence(Integer sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(new Sequence(sequence));
+        } else
+        {
+            getSequence().setValue(sequence);
+        }
+    }
+    public void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
+    public T withSequence(Sequence sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withSequence(Integer sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withSequence(String sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public void incrementSequence()
+    {
+        if (getSequence() != null)
+        {
+            setSequence(getSequence().getValue()+1);            
+        } else
+        {
+            setSequence(1);            
+        }
+    }
 
     /**
      * SUMMARY
@@ -389,7 +740,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * Example:
      * STATUS:TENTATIVE
      */
-    @Override
     public ObjectProperty<Status> statusProperty()
     {
         if (status == null)
@@ -399,10 +749,91 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return status;
     }
-    @Override
     public Status getStatus() { return (status == null) ? null : statusProperty().get(); }
     private ObjectProperty<Status> status;
+    public void setStatus(String status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(Status.parse(status));
+        } else
+        {
+            Status temp = Status.parse(status);
+            getStatus().setValue(temp.getValue());
+        }
+    }
+    public void setStatus(Status status) { statusProperty().set(status); }
+    public void setStatus(StatusType status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(new Status(status));
+        } else
+        {
+            getStatus().setValue(status);
+        }
+    }
+    public T withStatus(Status status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withStatus(StatusType status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withStatus(String status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
+    @Override
+    public void checkDateTimeStartConsistency()
+    {
+        VComponentRepeatable.super.checkDateTimeStartConsistency();
+        if ((getExceptionDates() != null) && (getDateTimeStart() != null))
+        {
+            Temporal firstException = getExceptionDates().get(0).getValue().iterator().next();
+            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (exceptionType != dateTimeStartType)
+            {
+                throw new DateTimeException("Exceptions DateTimeType (" + exceptionType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+        checkRecurrenceIdConsistency();
+//        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
+//        {
+//            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+//            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//            if (recurrenceIdType != dateTimeStartType)
+//            {
+//                throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+//                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+//            }
+//        }        
+    }
     
     /*
      * CONSTRUCTORS
@@ -423,14 +854,14 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
         // get stream with recurrence rule (RRULE) and recurrence date (RDATE)
-        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
+        Stream<Temporal> inStream = VComponentRepeatable.super.streamRecurrences(start);
 
         // assign temporal comparator to match start type
         final Comparator<Temporal> temporalComparator = DateTimeUtilities.getTemporalComparator(start);
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;
-        List<VComponentDisplayable<?>> children = recurrenceChildren();
+        List<VComponentDisplayableBase<?>> children = recurrenceChildren();
         if (children != null)
         {
             // If present, remove recurrence ID original values
@@ -480,20 +911,18 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      */
     /**  Callback to make list of child components (those with RECURRENCE-ID and same UID)
      * Callback assigned in {@link VCalendar#displayableListChangeListener } */
-    private Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeRecurrenceChildrenListCallBack;
+    private Callback<VComponentDisplayableBase<?>, List<VComponentDisplayableBase<?>>> makeRecurrenceChildrenListCallBack;
 //    @Override
-//    public Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack()
+//    public Callback<VComponentDisplayableBase<?>, List<VComponentDisplayableBase<?>>> getChildComponentsListCallBack()
 //    {
 //        return makeChildComponentsListCallBack;
 //    }
-    @Override
-    public void setRecurrenceChildrenListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeRecurrenceChildrenListCallBack)
+    public void setRecurrenceChildrenListCallBack(Callback<VComponentDisplayableBase<?>, List<VComponentDisplayableBase<?>>> makeRecurrenceChildrenListCallBack)
     {
         this.makeRecurrenceChildrenListCallBack = makeRecurrenceChildrenListCallBack;
     }
 
-    @Override
-    public List<VComponentDisplayable<?>> recurrenceChildren()
+    public List<VComponentDisplayableBase<?>> recurrenceChildren()
     {
         if ((getRecurrenceId() == null) && (makeRecurrenceChildrenListCallBack != null))
         {
@@ -505,16 +934,14 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     /*
      * RECURRENCE PARENT - (the VComponent with matching UID and no RECURRENCEID)
      */
-    private Callback<VComponentDisplayable<?>, VComponentDisplayable<?>> recurrenceParentCallBack;
+    private Callback<VComponentDisplayableBase<?>, VComponentDisplayableBase<?>> recurrenceParentCallBack;
 
-    @Override
-    public void setRecurrenceParentListCallBack(Callback<VComponentDisplayable<?>, VComponentDisplayable<?>> recurrenceParentCallBack)
+    public void setRecurrenceParentListCallBack(Callback<VComponentDisplayableBase<?>, VComponentDisplayableBase<?>> recurrenceParentCallBack)
     {
         this.recurrenceParentCallBack = recurrenceParentCallBack;
     }
     
-    @Override
-    public VComponentDisplayable<?> recurrenceParent()
+    public VComponentDisplayableBase<?> recurrenceParent()
     {
         if ((getRecurrenceId() != null) && (recurrenceParentCallBack != null))
         {
@@ -548,8 +975,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             if (getRecurrenceId() != null && getParent() != null)
             {
                 DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-                List<VComponentDisplayable<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
-                VComponentDisplayable<?> parentComponent = relatedComponents.stream()
+                List<VComponentDisplayableBase<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
+                VComponentDisplayableBase<?> parentComponent = relatedComponents.stream()
                         .filter(v -> v.getRecurrenceId() == null)
                         .findFirst()
                         .orElseGet(() -> null);

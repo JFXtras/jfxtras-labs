@@ -30,7 +30,11 @@ public class SimpleVComponentFactory
         switch (component)
         {
         case DAYLIGHT_SAVING_TIME:
+            myComponent = new DaylightSavingTime();
+            break;
         case STANDARD_TIME:
+            myComponent = new StandardTime();
+            break;
         case VALARM:
             myComponent = new VAlarm();
             break;

@@ -29,6 +29,7 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -148,7 +149,7 @@ public class RepeatableTest //extends Application
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());
             
-            builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 13)));
+            ((VComponentPrimaryBase<?>) builtComponent).setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 13)));
             List<Temporal> madeDates = builtComponent                    
                     .streamRecurrences()
                     .limit(12)

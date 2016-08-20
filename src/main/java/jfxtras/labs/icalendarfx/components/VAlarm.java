@@ -377,7 +377,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     }
     
     /**
-     * Creates a deep copy of a StandardTime calendar component
+     * Creates a deep copy of a VAlarm calendar component
      */
     public VAlarm(VAlarm source)
     {
@@ -429,7 +429,6 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      * @param contentLines  the text to parse, not null
      * @return  the parsed VAlarm
      */
-    @Deprecated // use simple factory
     public static VAlarm parse(String contentLines)
     {
         VAlarm component = new VAlarm();

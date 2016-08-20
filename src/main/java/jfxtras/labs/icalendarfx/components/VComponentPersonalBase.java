@@ -1,6 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +33,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see VJournalInt
  * @see VFreeBusy
  */
-public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentPersonal<T>
+public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentAttendee<T>
 {
     /*
      * ATTENDEE: Attendee
@@ -73,7 +76,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    @Override
     public ObjectProperty<DateTimeStamp> dateTimeStampProperty()
     {
         if (dateTimeStamp == null)
@@ -84,6 +86,68 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return dateTimeStamp;
     }
     private ObjectProperty<DateTimeStamp> dateTimeStamp;
+    public DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
+    public void setDateTimeStamp(String dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(DateTimeStamp.parse(dtStamp));
+        } else
+        {
+            DateTimeStamp temp = DateTimeStamp.parse(dtStamp);
+            if (temp.getValue().getClass().equals(getDateTimeStamp().getValue().getClass()))
+            {
+                getDateTimeStamp().setValue(temp.getValue());
+            } else
+            {
+                setDateTimeStamp(temp);
+            }
+        }
+    }
+    public void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
+    public void setDateTimeStamp(ZonedDateTime dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(new DateTimeStamp(dtStamp));
+        } else
+        {
+            getDateTimeStamp().setValue(dtStamp);
+        }
+    }
+    public T withDateTimeStamp(ZonedDateTime dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withDateTimeStamp(String dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withDateTimeStamp(DateTimeStamp dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     /**
      * ORGANIZER: Organizer
@@ -93,7 +157,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * Example:
      * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
      */
-    @Override
     public ObjectProperty<Organizer> organizerProperty()
     {
         if (organizer == null)
@@ -103,9 +166,42 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         return organizer;
     }
-    @Override
     public Organizer getOrganizer() { return (organizer == null) ? null : organizerProperty().get(); }
     private ObjectProperty<Organizer> organizer;
+    public void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
+    public void setOrganizer(String organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(Organizer.parse(organizer));
+        } else
+        {
+            Organizer temp = Organizer.parse(organizer);
+            getOrganizer().setValue(temp.getValue());
+        }
+    }
+    public T withOrganizer(String organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(organizer);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withOrganizer(Organizer organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(organizer);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     /**
      * REQUEST-STATUS: Request Status
@@ -118,13 +214,11 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      *  mailto:jsmith@example.com
      * 
      */
-    @Override
     public ObservableList<RequestStatus> getRequestStatus()
     {
         return requestStatus;
     }
     private ObservableList<RequestStatus> requestStatus;
-    @Override
     public void setRequestStatus(ObservableList<RequestStatus> requestStatus)
     {
         if (requestStatus != null)
@@ -136,6 +230,23 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         this.requestStatus = requestStatus;
     }
+    public T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
+    public T withRequestStatus(String...requestStatus)
+    {
+        Arrays.stream(requestStatus).forEach(c -> PropertyType.REQUEST_STATUS.parse(this, c));
+        return (T) this;
+    }
+    public T withRequestStatus(RequestStatus...requestStatus)
+    {
+        if (getRequestStatus() == null)
+        {
+            setRequestStatus(FXCollections.observableArrayList(requestStatus));
+        } else
+        {
+            getRequestStatus().addAll(requestStatus);
+        }
+        return (T) this;
+    }
 
     /**
      * UID, Unique identifier
@@ -146,7 +257,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * Example:
      * UID:19960401T080045Z-4000F192713-0052@example.com
      */
-    @Override public ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty()
+    public ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty()
     {
         if (uniqueIdentifier == null)
         {
@@ -156,9 +267,58 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return uniqueIdentifier;
     }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
-
+    public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
+    public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
+    public void setUniqueIdentifier(String uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier));
+        } else
+        {
+            UniqueIdentifier temp = UniqueIdentifier.parse(uniqueIdentifier);
+            getUniqueIdentifier().setValue(temp.getValue());
+        }
+    }
+    /** Set uniqueIdentifier by calling uidGeneratorCallback */
+    public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); }
+    public T withUniqueIdentifier(String uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(uniqueIdentifier);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(uniqueIdentifier);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    /** Assign UID by using UID generator callback */
+    public T withUniqueIdentifier()
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(getUidGeneratorCallback().call(null));
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    
+   
     /** Callback for creating unique uid values  */
-    @Override
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0; // TODO - FIND WAY TO UPDATE WHEN PARSING A CALENDAR, USE X-PROP?
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
@@ -167,8 +327,15 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
-    @Override
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
+    /** set UID callback generator.  This MUST be set before using the no-arg withUniqueIdentifier if
+     * not using default callback.
+     */
+    public T withUidGeneratorCallback(Callback<Void, String> uidCallback)
+    {
+        setUidGeneratorCallback(uidCallback);
+        return (T) this;
+    }
 
     
     /**
@@ -180,7 +347,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * Example:
      * URL:http://example.com/pub/calendars/jsmith/mytime.ics
      */
-    @Override
     public ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty()
     {
         if (uniformResourceLocator == null)
@@ -190,10 +356,55 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         return uniformResourceLocator;
     }
-    @Override
     public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? null : uniformResourceLocatorProperty().get(); }
     private ObjectProperty<UniformResourceLocator> uniformResourceLocator;
-
+    public void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
+    public void setUniformResourceLocator(String url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(UniformResourceLocator.parse(url));
+        } else
+        {
+            UniformResourceLocator temp = UniformResourceLocator.parse(url);
+            getUniformResourceLocator().setValue(temp.getValue());
+        }
+    }
+    public void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
+    public T withUniformResourceLocator(String url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withUniformResourceLocator(URI url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    public T withUniformResourceLocator(UniformResourceLocator url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    
     /*
      * CONSTRUCTORS
      */

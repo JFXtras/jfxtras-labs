@@ -8,10 +8,11 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
+public interface VComponentDateTimeEnd<T> extends VComponent
 {
     /**
      * DTEND, Date-Time End.
@@ -96,6 +97,9 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
+    
+    // From VComponentPrimary
+    DateTimeStart getDateTimeStart();
     
     /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */

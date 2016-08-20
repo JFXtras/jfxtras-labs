@@ -21,7 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.components.VComponentPersonalBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -659,15 +659,15 @@ public class VCalendar extends VParentBase
      * Note: if you only want child components you need to filter the list to only include components
      * that have a RECURRENCE-ID
      */
-    private Map<String, List<VComponentDisplayable<?>>> uidComponentsMap = new HashMap<>(); // public for testing
-    public Map<String, List<VComponentDisplayable<?>>> uidComponentsMap() { return Collections.unmodifiableMap(uidComponentsMap); }
+    private Map<String, List<VComponentDisplayableBase<?>>> uidComponentsMap = new HashMap<>(); // public for testing
+    public Map<String, List<VComponentDisplayableBase<?>>> uidComponentsMap() { return Collections.unmodifiableMap(uidComponentsMap); }
     
     /**
      * RecurrenceID listener
      * notifies parents when a child component with recurrenceID is created or removed
      * also maintains {@link #uidToComponentMap}
      */
-    private ListChangeListener<VComponentDisplayable<?>> displayableListChangeListener = (ListChangeListener.Change<? extends VComponentDisplayable<?>> change) ->
+    private ListChangeListener<VComponentDisplayableBase<?>> displayableListChangeListener = (ListChangeListener.Change<? extends VComponentDisplayableBase<?>> change) ->
     {
         while (change.next())
         {
@@ -698,7 +698,7 @@ public class VCalendar extends VParentBase
                     if (vComponent.getUniqueIdentifier() != null)
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();
-                        final List<VComponentDisplayable<?>> relatedComponents;
+                        final List<VComponentDisplayableBase<?>> relatedComponents;
                         if (uidComponentsMap.get(uid) == null)
                         {
                             relatedComponents = new ArrayList<>();
@@ -717,7 +717,7 @@ public class VCalendar extends VParentBase
                     change.getRemoved().forEach(vComponent -> 
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();
-                        List<VComponentDisplayable<?>> relatedComponents = uidComponentsMap.get(uid);
+                        List<VComponentDisplayableBase<?>> relatedComponents = uidComponentsMap.get(uid);
                         if (relatedComponents != null)
                         {
                             relatedComponents.remove(vComponent);

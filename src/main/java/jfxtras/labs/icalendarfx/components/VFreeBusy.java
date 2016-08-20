@@ -235,11 +235,11 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         return Collections.unmodifiableList(errors);
     }
         
-    @Override
-    public void checkDateTimeStartConsistency()
-    {
-//        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
-    }
+//    @Override
+//    public void checkDateTimeStartConsistency()
+//    {
+////        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
+//    }
     
     /** Parse content lines into calendar component object */
     @Deprecated // use simple factory

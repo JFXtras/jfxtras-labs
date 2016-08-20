@@ -12,25 +12,90 @@ import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
+import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendarfx.properties.calendar.Method;
+import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;;
 
 /**
- * Base iCalendar component
+ * <h2>RFC 5545, 3.6. Calendar Components<h2>
+ * 
+ * <p>The body of the iCalendar object consists of a sequence of calendar
+ * properties and one or more calendar components.  The calendar
+ * properties are attributes that apply to the calendar object as a
+ * whole.  The calendar components are collections of properties that
+ * express a particular calendar semantic.  For example, the calendar
+ * component can specify an event, a to-do, a journal entry, time zone
+ * information, free/busy time information, or an alarm.</p>
+ *
+ * <p>The body of the iCalendar object is defined by the following
+ * notation:
+ *
+ *<ul>
+ *<li>icalbody   = calprops component
+ *<li>calprops
+ *  <ul>
+ *  <li>The following are REQUIRED, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link ProductIdentifier PRODID}
+ *    <li>{@link Version VERSION}
+ *    </ul>
+ *  </ul>
+ *  <ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link CalendarScale CALSCALE}
+ *    <li>{@link Method METHOD}
+ *    </ul>
+ *  </ul>
+ *  <ul>
+ *  <li>The following are OPTIONAL, and MAY occur more than once.
+ *    <ul>
+ *    <li>{@link NonStandardProperty X-PROP}
+ *    <li>{@link IANAProperty IANA-PROP}
+ *    </ul>
+ *  </ul>
+ *<li>component
+ *  <ul>
+ *  <li>{@link VEvent VEVENT}
+ *  <li>{@link VTodo VTODO}
+ *  <li>{@link VJournal VJOURNAL}
+ *  <li>{@link VFreeBusy VFREEBUSY}
+ *  <li>{@link VTimeZone VTIMEZONE}
+ *  <li>IANA-Comp (not implemented)
+ *  <li>X-Comp (not implemented)
+ *  </ul>
+ *</ul>
+ *
+ * <P>An iCalendar object MUST include the {@link ProductIdentifier PRODID} and {@link Version VERSION} calendar
+ * properties.  In addition, it MUST include at least one calendar
+ * component.  Special forms of iCalendar objects are possible to
+ * publish just busy time (i.e., only a {@link VFreeBusy VFREEBUSY} calendar component)
+ * or time zone (i.e., only a {@link VTimeZone VTIMEZONE} calendar component)
+ * information.  In addition, a complex iCalendar object that is used to
+ * capture a complete snapshot of the contents of a calendar is possible
+ * (e.g., composite of many different calendar components).  More
+ * commonly, an iCalendar object will consist of just a single {@link VEvent VEVENT},
+ * {@link VTodo VTODO}, or {@link VJournal VJOURNAL} calendar component.  Applications MUST ignore
+ * x-comp and iana-comp values they don't recognize.  Applications that
+ * support importing iCalendar objects SHOULD support all of the
+ * component types defined in this document, and SHOULD NOT silently
+ * drop any components as that can lead to user data loss.</P
  * 
  * @author David Bal
- *
- * @param <T> - concrete subclass
  */
 public abstract class VComponentBase extends VParentBase implements VComponent
 {
-    private static String firstContentLine = "BEGIN:";
-    private static String lastContentLine = "END:";
+    private static final String FIRST_LINE_PREFIX = "BEGIN:";
+    private static final String LAST_LINE_PREFIX = "END:";
     
     private VParent myParent;
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
-    @Override
     public void copyFrom(VComponent source)
     {
         myParent = source.getParent();
@@ -66,26 +131,27 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         componentName = CalendarComponent.enumFromClass(this.getClass()).toString();
         setContentLineGenerator(new MultiLineContent(
                 orderer(),
-                firstContentLine + componentName,
-                lastContentLine + componentName,
+                FIRST_LINE_PREFIX + componentName,
+                LAST_LINE_PREFIX + componentName,
                 400));
     }
     
-    /** Parse content lines into calendar component */
-    VComponentBase(String contentLines)
-    {
-        this();
-        parseContent(contentLines);
-    }
+//    /** Parse content lines into calendar component */
+//    VComponentBase(String contentLines)
+//    {
+//        this();
+//        parseContent(contentLines);
+//    }
     
-    /** Copy constructor */
-    public VComponentBase(VComponentBase source)
+    /**
+     * Creates a deep copy of a component
+     */
+    VComponentBase(VComponentBase source)
     {
         this();
         copyFrom(source);
     }
     
-    /** Parse content lines into calendar component */
     @Override
     public void parseContent(String content)
     {
@@ -100,9 +166,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         
     }
 
-    /** Parse unfolded content lines into calendar component. */
     @Override
-    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useRequestStatus)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean collectErrorMessages)
     {
         if (unfoldedLineIterator == null)
         {
@@ -120,17 +185,9 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 boolean isMainComponent = unfoldedLine.substring(nameEndIndex+1).equals(componentName());
                 if  (! isMainComponent)
                 {
-                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(unfoldedLine.substring(nameEndIndex+1));
-                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
-                    subcomponentContentBuilder.append(unfoldedLine + System.lineSeparator());
-                    boolean isSubcomponentEndFound = false;
-                    do
-                    {
-                        unfoldedLine = unfoldedLineIterator.next();
-                        subcomponentContentBuilder.append(unfoldedLine + System.lineSeparator());
-                        isSubcomponentEndFound = unfoldedLine.subSequence(0, 3).equals("END");
-                    } while (! isSubcomponentEndFound);
-                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+                    String subcomponentName = unfoldedLine.substring(nameEndIndex+1);
+                    VComponent subcomponent = SimpleVComponentFactory.newVComponent(subcomponentName, unfoldedLineIterator);
+                    addSubcomponent(subcomponent);
                 }
             } else if (propertyName.equals("END"))
             {
@@ -148,7 +205,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                             propertyType.parse(this, unfoldedLine);
                         } catch (Exception e)
                         {
-                            if (useRequestStatus)
+                            if (collectErrorMessages)
                             {
                                 if (propertyType.isRequired(this))
                                 {
@@ -164,7 +221,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                         }
                     } else
                     {
-                        if (useRequestStatus)
+                        if (collectErrorMessages)
                         {
                             errors.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                         } else
@@ -174,7 +231,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     }
                 } else
                 {
-                    if (useRequestStatus)
+                    if (collectErrorMessages)
                     {
                         errors.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                     } else
@@ -184,84 +241,16 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             }
         }
-        return (useRequestStatus) ? errors : null;
+        return (collectErrorMessages) ? errors : null;
     }
-    
-//    public void parseContent(List<String> contentLines)
-//    {
-//        parseContent(contentLines.iterator(), null);
-//    }    
-    
-//    /** Parse component from list of unfolded lines */
-//    public void parseContent(List<String> contentLines)
-//    {
-//        for (int index=0; index<contentLines.size(); index++)
-//        {
-//            String line = contentLines.get(index).toString();
-//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
-//            String propertyName = line.substring(0, nameEndIndex);
-//            
-//            // Parse subcomponent
-//            if (propertyName.equals("BEGIN"))
-//            {
-//                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentName());
-//                if  (! isMainComponent)
-//                {
-//                    CalendarComponent subcomponentType = CalendarComponent.enumFromName(line.substring(nameEndIndex+1));
-//                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
-//                    subcomponentContentBuilder.append(line + System.lineSeparator());
-//                    boolean isEndFound = false;
-//                    do
-//                    {
-//                        String subLine = contentLines.get(++index);
-//                        subcomponentContentBuilder.append(subLine + System.lineSeparator());
-//                        isEndFound = subLine.subSequence(0, 3).equals("END");
-//                    } while (! isEndFound);
-//                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
-//                }
-//                
-//            // parse properties - ignore unknown properties
-//            } else if (! propertyName.equals("END"))
-//            {
-//                PropertyType propertyType = PropertyType.enumFromName(propertyName);
-//                if (propertyType != null)
-//                {
-//                    Object existingProperty = propertyType.getProperty(this);
-//                    if (existingProperty == null || existingProperty instanceof List)
-//                    {
-//                        propertyType.parse(this, line);
-//                        // TODO - CHECK NEW PROPERTY FOR VALIDITY - IF REQUIRED LOG SEVERE AND FAIL
-//                    } else
-//                    {
-//                        // THIS IMPLEMENTATION WILL NOT WORK WITH MULTI-THREADING, pass logger?
-//                        LOGGER.log(Level.WARNING, "2." + propertyType.ordinal() + 
-//                                ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + line);
-////                        throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
-//                    }
-//                } else
-//                {
-//                    LOGGER.log(Level.WARNING, "2.0" + ";Success, unknown property is ignored;" + line);
-////                    throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
-//                }
-//            }
-//        }
-//    }
 
     /**
-     * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
-     * @param subcomponentType 
-     * @param string 
+     * Hook to add subcomponent such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
+     * 
+     * @param subcomponent
      */
-    void parseSubComponents(CalendarComponent subcomponentType, String subcomponentContentLines) { } // no opp
-
-    /**
-     * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
-     * @param subcomponentType 
-     * @param string 
-     */
-    void parseSubComponents(CalendarComponent subcomponentType, Iterator<String> subcomponentContentIterator) { } // no opp
-
-        
+    void addSubcomponent(VComponent subcomponent) { };
+            
     @Override
     public String toString()
     {

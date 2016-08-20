@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -41,7 +41,7 @@ public class LocatableTest
     @Test
     public void canBuildLocatable() throws InstantiationException, IllegalAccessException
     {
-        List<VComponentLocatable<?>> components = Arrays.asList(
+        List<VComponentLocatableBase<?>> components = Arrays.asList(
                 new VEvent()
                     .withDescription("DESCRIPTION:A simple description")
                     .withDuration(Duration.ofMinutes(45))
@@ -84,7 +84,7 @@ public class LocatableTest
                             "END:VALARM"))
                 );
         
-        for (VComponentLocatable<?> builtComponent : components)
+        for (VComponentLocatableBase<?> builtComponent : components)
         {
             String componentName = builtComponent.componentName();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

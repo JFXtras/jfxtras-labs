@@ -13,7 +13,7 @@ import java.util.Comparator;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VComponentPrimary;
+import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
@@ -30,7 +30,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 public abstract class ICalendarTestAbstract
 {
     // Sorts by DTSTART, then by the string content
-    public final static Comparator<VComponentPrimary<?>> VCOMPONENT_COMPARATOR = (VComponentPrimary<?> v1, VComponentPrimary<?> v2) ->
+    public final static Comparator<VComponentPrimaryBase<?>> VCOMPONENT_COMPARATOR = (VComponentPrimaryBase<?> v1, VComponentPrimaryBase<?> v2) ->
     {
         if ((v1.getDateTimeStart() != null) && (v2.getDateTimeStart() != null))
         {

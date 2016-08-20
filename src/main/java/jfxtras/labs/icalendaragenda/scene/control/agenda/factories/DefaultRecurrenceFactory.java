@@ -6,8 +6,8 @@ import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Optional;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -30,20 +30,20 @@ public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
         this.appointmentGroups = appointmentGroups;
     }
 
-    /** Make {@link AppointmentImplTemporal} from {@link VComponentDisplayable} */
+    /** Make {@link AppointmentImplTemporal} from {@link VComponentDisplayableBase} */
     @Override
-    Appointment makeRecurrence(VComponentDisplayable<?> vComponent, Temporal startTemporal)
+    Appointment makeRecurrence(VComponentDisplayableBase<?> vComponent, Temporal startTemporal)
     {
         Boolean isWholeDay = vComponent.getDateTimeStart().getValue() instanceof LocalDate;
         final String description;
         final Temporal endTemporal;
         final String location;
-        if (vComponent instanceof VComponentLocatable<?>)
+        if (vComponent instanceof VComponentLocatableBase<?>)
         { // VTODO and VEVENT
-            VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponent;
-            description = (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null;
-            location = (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null;
-            TemporalAmount adjustment = vComponentLocatable.getActualDuration();
+            VComponentLocatableBase<?> VComponentLocatableBase = (VComponentLocatableBase<?>) vComponent;
+            description = (VComponentLocatableBase.getDescription() != null) ? VComponentLocatableBase.getDescription().getValue() : null;
+            location = (VComponentLocatableBase.getLocation() != null) ? VComponentLocatableBase.getLocation().getValue() : null;
+            TemporalAmount adjustment = VComponentLocatableBase.getActualDuration();
             endTemporal = startTemporal.plus(adjustment);
         } else if (vComponent instanceof VJournal)
         {

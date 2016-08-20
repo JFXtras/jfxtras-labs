@@ -18,7 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.scene.control.LocalDateTextField;
@@ -32,7 +32,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  *
  * @param <T> subclass of {@link VComponentLocatable}
  */
-public abstract class EditDescriptiveLocatableVBox<T extends VComponentLocatable<T>> extends EditDescriptiveVBox<T>
+public abstract class EditDescriptiveLocatableVBox<T extends VComponentLocatableBase<T>> extends EditDescriptiveVBox<T>
 {
     private static final Duration DEFAULT_DURATION = Duration.ofHours(1);
     protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence

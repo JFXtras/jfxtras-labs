@@ -1,11 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 /**
@@ -37,7 +38,11 @@ public interface VComponentAttendee<T> extends VComponent
      *  
      *  @return - this class for chaining
      */
-    default T withAttendees(ObservableList<Attendee> attendees) { setAttendees(attendees); return (T) this; }
+    default T withAttendees(ObservableList<Attendee> attendees)
+    {
+        setAttendees(attendees);
+        return (T) this;
+    }
     /**
      * Sets the value of the {@link #attendeesProperty()} from a vararg of {@link Attendee} objects.
      * 
@@ -45,13 +50,7 @@ public interface VComponentAttendee<T> extends VComponent
      */    
     default T withAttendees(Attendee...attendees)
     {
-//        if (getAttendees() == null)
-//        {
-            setAttendees(FXCollections.observableArrayList(attendees));
-//        } else
-//        {
-//            getAttendees().addAll(attendees);
-//        }
+        setAttendees(FXCollections.observableArrayList(attendees));
         return (T) this;
     }
     /**
@@ -62,7 +61,10 @@ public interface VComponentAttendee<T> extends VComponent
      */    
     default T withAttendees(String...attendees)
     {
-        Arrays.stream(attendees).forEach(c -> PropertyType.ATTENDEE.parse(this, c));
+        List<Attendee> a = Arrays.stream(attendees)
+            .map(c -> Attendee.parse(c))
+            .collect(Collectors.toList());
+        setAttendees(FXCollections.observableArrayList(a));
         return (T) this;
     }
 }
