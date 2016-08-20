@@ -18,8 +18,10 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
-import jfxtras.labs.icalendarfx.properties.component.misc.UnknownProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /** 
@@ -27,130 +29,193 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
  * Alarm Component<br>
  * RFC 5545 iCalendar 3.6.6. page 71</p>
  * 
+ * <p>The body of the iCalendar object is defined by the following
+ * notation:
+ *<ul>
+ *<li>alarmc
+ *  <ul>
+ *  <li>"BEGIN" ":" "VALARM" CRLF
+ *  <li>(audioprop / dispprop / emailprop)
+ *  <li> "END" ":" "VALARM" CRLF
+ *  </ul>
+ *<li>audioprop
+ *  <ul>
+ *  <li>The following are REQUIRED, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link Action ACTION}
+ *    <li>{@link Trigger TRIGGER}
+ *    </ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once; but if one occurs, so MUST the other.
+ *    <ul>
+ *    <li>{@link DurationProp DURATION}
+ *    <li>{@link RepeatCount REPEAT}
+ *    </ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link Attachment ATTACH}
+ *    </ul>
+ *  <li>The following are OPTIONAL, and MAY occur more than once.
+ *    <ul>
+ *    <li>{@link IANAProperty IANA-PROP}
+ *    <li>{@link NonStandardProperty X-PROP}
+ *    </ul>
+ *  </ul>
+ *<li>dispprop
+ *  <ul>
+ *  <li>The following are REQUIRED, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link Action ACTION}
+ *    <li>{@link Description DESCRIPTION}
+ *    <li>{@link Trigger TRIGGER}
+ *    </ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once; but if one occurs, so MUST the other.
+ *    <ul>
+ *    <li>{@link DurationProp DURATION}
+ *    <li>{@link RepeatCount REPEAT}
+ *    </ul>
+ *  <li>The following are OPTIONAL, and MAY occur more than once.
+ *    <ul>
+ *    <li>{@link IANAProperty IANA-PROP}
+ *    <li>{@link NonStandardProperty X-PROP}
+ *    </ul>
+ *  </ul>
+ *<li>emailprop
+ *  <ul>
+ *  <li>The following are REQUIRED, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>{@link Action ACTION}
+ *    <li>{@link Description DESCRIPTION}
+ *    <li>{@link Summary SUMMARY}
+ *    <li>{@link Trigger TRIGGER}
+ *    </ul>
+ *  <li>The following are REQUIRED, but MAY occur more than once.
+ *    <ul>
+ *    <li>{@link Attendee ATTENDEE}
+ *    </ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once; but if one occurs, so MUST the other.
+ *    <ul>
+ *    <li>{@link DurationProp DURATION}
+ *    <li>{@link RepeatCount REPEAT}
+ *    </ul>
+ *  <li>The following are OPTIONAL, and MAY occur more than once.
+ *    <ul>
+ *    <li>{@link Attachment ATTACH}
+ *    <li>{@link IANAProperty IANA-PROP}
+ *    <li>{@link NonStandardProperty X-PROP}
+ *    </ul>
+ *  </ul>
+ *</ul>
+ * 
  * <p>Provide a grouping of component properties that define an alarm.</p>
  * 
- * <p>Description:  A "VALARM" calendar component is a grouping of
-      component properties that is a reminder or alarm for an event or a
-      to-do.  For example, it may be used to define a reminder for a
-      pending event or an overdue to-do.</p>
-
-      <p>The "VALARM" calendar component MUST include the "ACTION" and
-      "TRIGGER" properties.  The "ACTION" property further constrains
-      the "VALARM" calendar component in the following ways:</p>
-
-      <p>When the action is "AUDIO", the alarm can also include one and
-      only one "ATTACH" property, which MUST point to a sound resource,
-      which is rendered when the alarm is triggered.</p>
-
-      <p>When the action is "DISPLAY", the alarm MUST also include a
-      "DESCRIPTION" property, which contains the text to be displayed
-      when the alarm is triggered.</p>
-
-      <p>When the action is "EMAIL", the alarm MUST include a "DESCRIPTION"
-      property, which contains the text to be used as the message body,
-      a "SUMMARY" property, which contains the text to be used as the
-      message subject, and one or more "ATTENDEE" properties, which
-      contain the email address of attendees to receive the message.  It
-      can also include one or more "ATTACH" properties, which are
-      intended to be sent as message attachments.  When the alarm is
-      triggered, the email message is sent.</p>
-
-      <p>The "VALARM" calendar component MUST only appear within either a
-      "VEVENT" or "VTODO" calendar component.  "VALARM" calendar
-      components cannot be nested.  Multiple mutually independent</p>
-
-      <p>"VALARM" calendar components can be specified for a single
-      "VEVENT" or "VTODO" calendar component.</p>
-
-      <p>The "TRIGGER" property specifies when the alarm will be triggered.
-      The "TRIGGER" property specifies a duration prior to the start of
-      an event or a to-do.  The "TRIGGER" edge may be explicitly set to
-      be relative to the "START" or "END" of the event or to-do with the
-      "RELATED" parameter of the "TRIGGER" property.  The "TRIGGER"
-      property value type can alternatively be set to an absolute
-      calendar date with UTC time.</p>
-
-      <p>In an alarm set to trigger on the "START" of an event or to-do,
-      the "DTSTART" property MUST be present in the associated event or
-      to-do.  In an alarm in a "VEVENT" calendar component set to
-      trigger on the "END" of the event, either the "DTEND" property
-      MUST be present, or the "DTSTART" and "DURATION" properties MUST
-      both be present.  In an alarm in a "VTODO" calendar component set
-      to trigger on the "END" of the to-do, either the "DUE" property
-      MUST be present, or the "DTSTART" and "DURATION" properties MUST
-      both be present.</p>
-
-      <p>The alarm can be defined such that it triggers repeatedly.  A
-      definition of an alarm with a repeating trigger MUST include both
-      the "DURATION" and "REPEAT" properties.  The "DURATION" property
-      specifies the delay period, after which the alarm will repeat.
-      The "REPEAT" property specifies the number of additional
-      repetitions that the alarm will be triggered.  This repetition
-      count is in addition to the initial triggering of the alarm.  Both
-      of these properties MUST be present in order to specify a
-      repeating alarm.  If one of these two properties is absent, then
-      the alarm will not repeat beyond the initial trigger.</p>
-
-      <p>The "ACTION" property is used within the "VALARM" calendar
-      component to specify the type of action invoked when the alarm is
-      triggered.  The "VALARM" properties provide enough information for
-      a specific action to be invoked.  It is typically the
-      responsibility of a "Calendar User Agent" (CUA) to deliver the
-      alarm in the specified fashion.  An "ACTION" property value of
-      AUDIO specifies an alarm that causes a sound to be played to alert
-      the user; DISPLAY specifies an alarm that causes a text message to
-      be displayed to the user; and EMAIL specifies an alarm that causes
-      an electronic email message to be delivered to one or more email
-      addresses.</p>
-
-      <p>In an AUDIO alarm, if the optional "ATTACH" property is included,
-      it MUST specify an audio sound resource.  The intention is that
-      the sound will be played as the alarm effect.  If an "ATTACH"
-      property is specified that does not refer to a sound resource, or
-      if the specified sound resource cannot be rendered (because its
-      format is unsupported, or because it cannot be retrieved), then
-      the CUA or other entity responsible for playing the sound may
-      choose a fallback action, such as playing a built-in default
-      sound, or playing no sound at all.</p>
-
-      <p>In a DISPLAY alarm, the intended alarm effect is for the text
-      value of the "DESCRIPTION" property to be displayed to the user.</p>
-
-      <p>In an EMAIL alarm, the intended alarm effect is for an email
-      message to be composed and delivered to all the addresses
-      specified by the "ATTENDEE" properties in the "VALARM" calendar
-      component.  The "DESCRIPTION" property of the "VALARM" calendar
-      component MUST be used as the body text of the message, and the
-      "SUMMARY" property MUST be used as the subject text.  Any "ATTACH"
-      properties in the "VALARM" calendar component SHOULD be sent as
-      attachments to the message.</p>
-
-         <p>Note: Implementations should carefully consider whether they
-         accept alarm components from untrusted sources, e.g., when
-         importing calendar objects from external sources.  One
-         reasonable policy is to always ignore alarm components that the
-         calendar user has not set herself, or at least ask for
-         confirmation in such a case.</p>
-         
- *<p>Can contain following properties:
- *<ul>
- *<li>{@link Action ACTION}
- *<li>{@link Attachment ATTACH}
- *<li>{@link Attendee ATTENDEE}
- *<li>{@link Description DESCRIPTION}
- *<li>{@link DurationProp DURATION}
- *<li>{@link IANAProperty IANA-PROP}
- *<li>{@link RepeatCount REPEAT}
- *<li>{@link Summary SUMMARY}
- *<li>{@link Trigger TRIGGER}
- *<li>{@link UnknownProperty X-PROP}
- * </ul>
- * </p>
+ * <p>Description:  A {@link VAlarm VALARM} calendar component is a grouping of
+ *    component properties that is a reminder or alarm for an event or a
+ *    to-do.  For example, it may be used to define a reminder for a
+ *    pending event or an overdue to-do.</p>
+ *
+ *    <p>The {@link VAlarm VALARM} calendar component MUST include the {@link Action ACTION} and
+ *    {@link Trigger TRIGGER} properties.  The {@link Action ACTION} property further constrains
+ *    the {@link VAlarm VALARM} calendar component in the following ways:</p>
+ *
+ *    <p>When the action is "AUDIO", the alarm can also include one and
+ *    only one {@link Attachment ATTACH} property, which MUST point to a sound resource,
+ *    which is rendered when the alarm is triggered.</p>
+ *
+ *    <p>When the action is "DISPLAY", the alarm MUST also include a
+ *    {@link Description DESCRIPTION} property, which contains the text to be displayed
+ *    when the alarm is triggered.</p>
+ *
+ *    <p>When the action is "EMAIL", the alarm MUST include a {@link Description DESCRIPTION}
+ *    property, which contains the text to be used as the message body,
+ *    a {@link Summary SUMMARY} property, which contains the text to be used as the
+ *    message subject, and one or more {@link Attendee ATTENDEE} properties, which
+ *    contain the email address of attendees to receive the message.  It
+ *    can also include one or more {@link Attachment ATTACH} properties, which are
+ *    intended to be sent as message attachments.  When the alarm is
+ *    triggered, the email message is sent.</p>
+ *
+ *    <p>The {@link VAlarm VALARM} calendar component MUST only appear within either a
+ *    {@link VEvent VEVENT} or {@link VTodo VTODO} calendar component.  {@link VAlarm VALARM} calendar
+ *    components cannot be nested.  Multiple mutually independent</p>
+ *
+ *    <p>{@link VAlarm VALARM} calendar components can be specified for a single
+ *    {@link VEvent VEVENT} or {@link VTodo VTODO} calendar component.</p>
+ *
+ *    <p>The {@link Trigger TRIGGER} property specifies when the alarm will be triggered.
+ *    The {@link Trigger TRIGGER} property specifies a duration prior to the start of
+ *    an event or a to-do.  The {@link Trigger TRIGGER} edge may be explicitly set to
+ *    be relative to the "START" or "END" of the event or to-do with the
+ *    "RELATED" parameter of the {@link Trigger TRIGGER} property.  The {@link Trigger TRIGGER}
+ *    property value type can alternatively be set to an absolute
+ *    calendar date with UTC time.</p>
+ *
+ *    <p>In an alarm set to trigger on the "START" of an event or to-do,
+ *    the {@link DateTimeStart DTSTART} property MUST be present in the associated event or
+ *    to-do.  In an alarm in a {@link VEvent VEVENT} calendar component set to
+ *    trigger on the "END" of the event, either the {@link DateTimeEnd DTEND} property
+ *    MUST be present, or the {@link DateTimeStart DTSTART} and {@link Duration DURATION} properties MUST
+ *    both be present.  In an alarm in a {@link VTodo VTODO} calendar component set
+ *    to trigger on the "END" of the to-do, either the "DUE" property
+ *    MUST be present, or the {@link DateTimeStart DTSTART} and {@link Duration DURATION} properties MUST
+ *    both be present.</p>
+ *
+ *    <p>The alarm can be defined such that it triggers repeatedly.  A
+ *    definition of an alarm with a repeating trigger MUST include both
+ *    the {@link Duration DURATION} and {@link RepeatCount REPEAT} properties.  The {@link Duration DURATION} property
+ *    specifies the delay period, after which the alarm will repeat.
+ *    The {@link RepeatCount REPEAT} property specifies the number of additional
+ *    repetitions that the alarm will be triggered.  This repetition
+ *    count is in addition to the initial triggering of the alarm.  Both
+ *    of these properties MUST be present in order to specify a
+ *    repeating alarm.  If one of these two properties is absent, then
+ *    the alarm will not repeat beyond the initial trigger.</p>
+ *
+ *    <p>The {@link Action ACTION} property is used within the {@link VAlarm VALARM} calendar
+ *    component to specify the type of action invoked when the alarm is
+ *    triggered.  The {@link VAlarm VALARM} properties provide enough information for
+ *    a specific action to be invoked.  It is typically the
+ *    responsibility of a "Calendar User Agent" (CUA) to deliver the
+ *    alarm in the specified fashion.  An {@link Action ACTION} property value of
+ *    AUDIO specifies an alarm that causes a sound to be played to alert
+ *    the user; DISPLAY specifies an alarm that causes a text message to
+ *    be displayed to the user; and EMAIL specifies an alarm that causes
+ *    an electronic email message to be delivered to one or more email
+ *    addresses.</p>
+ *
+ *    <p>In an AUDIO alarm, if the optional {@link Attachment ATTACH} property is included,
+ *    it MUST specify an audio sound resource.  The intention is that
+ *    the sound will be played as the alarm effect.  If an {@link Attachment ATTACH}
+ *    property is specified that does not refer to a sound resource, or
+ *    if the specified sound resource cannot be rendered (because its
+ *    format is unsupported, or because it cannot be retrieved), then
+ *    the CUA or other entity responsible for playing the sound may
+ *    choose a fallback action, such as playing a built-in default
+ *    sound, or playing no sound at all.</p>
+ *
+ *    <p>In a DISPLAY alarm, the intended alarm effect is for the text
+ *    value of the {@link Description DESCRIPTION} property to be displayed to the user.</p>
+ *
+ *    <p>In an EMAIL alarm, the intended alarm effect is for an email
+ *    message to be composed and delivered to all the addresses
+ *    specified by the {@link Attendee ATTENDEE} properties in the {@link VAlarm VALARM} calendar
+ *    component.  The {@link Description DESCRIPTION} property of the {@link VAlarm VALARM} calendar
+ *    component MUST be used as the body text of the message, and the
+ *    {@link Summary SUMMARY} property MUST be used as the subject text.  Any {@link Attachment ATTACH}
+ *    properties in the {@link VAlarm VALARM} calendar component SHOULD be sent as
+ *    attachments to the message.</p>
+ *
+ *       <p>Note: Implementations should carefully consider whether they
+ *       accept alarm components from untrusted sources, e.g., when
+ *       importing calendar objects from external sources.  One
+ *       reasonable policy is to always ignore alarm components that the
+ *       calendar user has not set herself, or at least ask for
+ *       confirmation in such a case.</p>
  * 
  * @author David Bal
  * @see VEvent
  * @see VTodo
  */
+// TODO - add to isValid tests to verify audioprop / dispprop / emailprop
 public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,
         VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
 {
@@ -184,21 +249,33 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      * 
      * @return  this class for chaining
      */
-    public VAlarm withAction(Action action) { setAction(action); return this; }
+    public VAlarm withAction(Action action)
+    {
+        setAction(action);
+        return this;
+    }
     /**
      * Sets the value of the {@link #actionProperty()} by creating a new {@link Action} from the {@link ActionType} parameter
      * 
      * @return  this class for chaining
      */    
-    public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
+    public VAlarm withAction(ActionType actionType)
+    {
+        setAction(actionType);
+        return this;
+    }
     /** Sets the value of the {@link #actionProperty()} by parsing iCalendar content text
      * @return  this class for chaining */
-    public VAlarm withAction(String action) { PropertyType.ACTION.parse(this, action); return this; }
+    public VAlarm withAction(String action)
+    {
+        setAction(Action.parse(action));
+        return this;
+    }
     
     /*
      * ATTENDEE: Attendee
      * RFC 5545 iCalendar 3.8.4.1 page 107
-     * This property defines an "Attendee" within a calendar component.
+     * This property defines an {@link Attendee ATTENDEE} within a calendar component.
      * 
      * Examples:
      * ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":
@@ -236,7 +313,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      * RFC 5545 iCalendar 3.8.1.5. page 84
      * 
      * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
+     * calendar component than that provided by the {@link Summary SUMMARY} property.
      * 
      * Example:
      * DESCRIPTION:Meeting to provide technical review for "Phoenix"
@@ -284,7 +361,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
      * RFC 5545 iCalendar 3.8.6.2 page 133,</p>
      * 
      * <p>If the alarm triggers more than once, then this property MUST be specified
-     * along with the "DURATION" property.</p>
+     * along with the {@link Duration DURATION} property.</p>
      * 
      * <p>Example:  The following is an example of this property for an alarm
      * that repeats 4 additional times with a 5-minute delay after the

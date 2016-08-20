@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -31,7 +32,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
 {
     /**
-     * <p>This property specifies the customary designation for a time zone description.<br
+     * <p>This property specifies the customary designation for a time zone description.<br>
      * RFC 5545, 3.8.3.2, page 103
      * </p>
      * 
@@ -59,7 +60,7 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
             orderer().registerSortOrderProperty(timeZoneNames);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.timeZoneNames.get());
+            orderer().unregisterSortOrderProperty(timeZoneNamesProperty().get());
         }
         timeZoneNamesProperty().set(timeZoneNames);
     }
@@ -68,7 +69,11 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      * 
      * @return - this class for chaining
      */
-    public T withTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames) { setTimeZoneNames(timeZoneNames); return (T) this; }
+    public T withTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames)
+    {
+        setTimeZoneNames(timeZoneNames);
+        return (T) this;
+    }
     /**
      * Sets the value of the {@link #timeZoneNamesProperty()} by parsing a vararg of time zone name strings
      * 
@@ -76,7 +81,10 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public T withTimeZoneNames(String...timeZoneNames)
     {
-        Arrays.stream(timeZoneNames).forEach(c -> PropertyType.TIME_ZONE_NAME.parse(this, c));
+        List<TimeZoneName> a = Arrays.stream(timeZoneNames)
+                .map(c -> TimeZoneName.parse(c))
+                .collect(Collectors.toList());
+        setTimeZoneNames(FXCollections.observableArrayList(a));
         return (T) this;
     }
     /**
@@ -86,13 +94,7 @@ public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
      */
     public T withTimeZoneNames(TimeZoneName...timeZoneNames)
     {
-//        if (getTimeZoneNames() == null)
-//        {
-            setTimeZoneNames(FXCollections.observableArrayList(timeZoneNames));
-//        } else
-//        {
-//            getTimeZoneNames().addAll(timeZoneNames);
-//        }
+        setTimeZoneNames(FXCollections.observableArrayList(timeZoneNames));
         return (T) this;
     }
     

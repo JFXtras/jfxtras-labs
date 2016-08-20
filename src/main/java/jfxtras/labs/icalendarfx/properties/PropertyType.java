@@ -937,7 +937,7 @@ public enum PropertyType
         public Object getProperty(VComponent vComponent)
         {
             VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vComponent;
-            return castComponent.getIANAProperties();
+            return castComponent.getIana();
         }
 
         @Override
@@ -945,13 +945,13 @@ public enum PropertyType
         {
             VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vParent;
             final ObservableList<IANAProperty> list;
-            if (castComponent.getIANAProperties() == null)
+            if (castComponent.getIana() == null)
             {
                 list = FXCollections.observableArrayList();
-                castComponent.setIANAProperties(list);
+                castComponent.setIana(list);
             } else
             {
-                list = castComponent.getIANAProperties();
+                list = castComponent.getIana();
             }
             IANAProperty child = IANAProperty.parse(propertyContent);
             list.add(child);
@@ -963,13 +963,13 @@ public enum PropertyType
         {
             VComponentCommonBase<?> castDestination = (VComponentCommonBase<?>) destination;
             final ObservableList<IANAProperty> list;
-            if (castDestination.getIANAProperties() == null)
+            if (castDestination.getIana() == null)
             {
                 list = FXCollections.observableArrayList();
-                castDestination.setIANAProperties(list);
+                castDestination.setIana(list);
             } else
             {
-                list = castDestination.getIANAProperties();
+                list = castDestination.getIana();
             }
             list.add(new IANAProperty((IANAProperty) child));
         }
@@ -1083,7 +1083,7 @@ public enum PropertyType
         public Object getProperty(VComponent vComponent)
         {
             VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vComponent;
-            return castComponent.getNonStandardProperties();
+            return castComponent.getNonStandard();
         }
 
         @Override
@@ -1091,13 +1091,13 @@ public enum PropertyType
         {
             VComponentCommonBase<?> castComponent = (VComponentCommonBase<?>) vParent;
             final ObservableList<NonStandardProperty> list;
-            if (castComponent.getNonStandardProperties() == null)
+            if (castComponent.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                castComponent.setNonStandardProperties(list);
+                castComponent.setNonStandard(list);
             } else
             {
-                list = castComponent.getNonStandardProperties();
+                list = castComponent.getNonStandard();
             }
             NonStandardProperty child = NonStandardProperty.parse(propertyContent);
             list.add(child);
@@ -1109,13 +1109,13 @@ public enum PropertyType
         {
             VComponentCommonBase<?> castDestination = (VComponentCommonBase<?>) destination;
             final ObservableList<NonStandardProperty> list;
-            if (castDestination.getNonStandardProperties() == null)
+            if (castDestination.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                castDestination.setNonStandardProperties(list);
+                castDestination.setNonStandard(list);
             } else
             {
-                list = castDestination.getNonStandardProperties();
+                list = castDestination.getNonStandard();
             }
             list.add(new NonStandardProperty((NonStandardProperty) child));
         }
@@ -2088,6 +2088,7 @@ public enum PropertyType
     abstract public Object getProperty(VComponent vComponent);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
+    @Deprecated
     abstract public VChild parse(VParent vParent, String propertyContent);
 //    abstract public VChild parse(VParent vParent, String propertyContent);
 
