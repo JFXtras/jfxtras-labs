@@ -42,20 +42,23 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>
 {
     /**
-     * ATTACH
-     * Attachment
-     * RFC 5545, 3.8.1.1, page 80
-     * 
      * This property provides the capability to associate a document object with a calendar component.
-     * 
-     * Examples:
-     * ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
-     * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
-     *  reports/r-960812.ps
      */
     @Override
-    public ObservableList<Attachment<?>> getAttachments() { return attachments; }
-    private ObservableList<Attachment<?>> attachments;
+    public ObjectProperty<ObservableList<Attachment<?>>> attachmentsProperty()
+    {
+        if (attachments == null)
+        {
+            attachments = new SimpleObjectProperty<>(this, PropertyType.ATTACHMENT.toString());
+        }
+        return attachments;
+    }
+    @Override
+    public ObservableList<Attachment<?>> getAttachments()
+    {
+        return (attachments == null) ? null : attachments.get();
+    }
+    private ObjectProperty<ObservableList<Attachment<?>>> attachments;
     @Override
     public void setAttachments(ObservableList<Attachment<?>> attachments)
     {
@@ -64,9 +67,9 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             orderer().registerSortOrderProperty(attachments);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.attachments);
+            orderer().unregisterSortOrderProperty(attachmentsProperty().get());
         }
-        this.attachments = attachments;
+        attachmentsProperty().set(attachments);
     }
     
     /**

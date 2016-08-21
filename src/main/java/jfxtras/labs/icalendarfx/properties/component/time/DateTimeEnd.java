@@ -4,26 +4,71 @@ import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
+import jfxtras.labs.icalendarfx.parameters.OtherParameter;
+import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
+import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
- * DTEND
- * Date-Time End (for local-date)
- * RFC 5545, 3.8.2.2, page 95
+ * <h2> RFC 5545, 3.8.2.2.  Date-Time End</h2>
  * 
- * This property specifies when the calendar component ends.
- * 
- * The value type of this property MUST be the same as the "DTSTART" property, and
- * its value MUST be later in time than the value of the "DTSTART" property.
- * 
- * Example:
- * DTEND;VALUE=DATE:19980704
- * 
- * @author David Bal
+ *<p>Property Name:  DTEND</p>
  *
- * The property can be specified in following components:
- * @see VEvent
- * @see VFreeBusy
+ *<p>Purpose:  This property specifies the date and time that a calendar
+ * component ends.</p>
+ *
+ *<p>Value Type:  The default value type is DATE-TIME.  The value type can
+ * be set to a DATE value type.</p>
+ * 
+ *<p>Property Parameters:  {@link IANAProperty IANA}, {@link NonStandardProperty non-standard}, {@link ValueType value data type}, and {@link TimeZoneIdentifierParameter time
+ * zone identifier} property parameters can be specified on this
+ * property.</p>
+ * 
+ * <p>Conformance:  This property can be specified in {@link VEvent VEVENT} or
+ * {@link VFreeBusy} calendar components.</p>
+ * 
+ *<p>Description:  Within the {@link VEvent VEVENT} calendar component, this property
+ * defines the date and time by which the event ends.  The value type
+ * of this property MUST be the same as the {@link DateTimeStart DTSTART} property, and
+ * its value MUST be later in time than the value of the {@link DateTimeStart DTSTART}
+ * property.  Furthermore, this property MUST be specified as a date
+ * with local time if and only if the {@link DateTimeStart DTSTART} property is also
+ * specified as a date with local time.</p>
+ * 
+ *<p>Within the {@link VFreeBusy} calendar component, this property defines
+ * the end date and time for the free or busy time information.  The
+ * time MUST be specified in the UTC time format.  The value MUST be
+ * later in time than the value of the {@link DateTimeStart DTSTART} property.</p>
+ * 
+ *<p>Format Definition:  This property is defined by the following
+ * notation:<br>
+ * 
+ *<ul>
+ *<li>dtend
+ *  <ul>
+ *  <li>{@link DateTimeEnd DTEND} dtendparam ":" dtendval CRLF
+ *  </ul>
+ *<li>dtendparam
+ *  <ul>
+ *  <li>The following are OPTIONAL, but MUST NOT occur more than once.
+ *    <ul>
+ *    <li>";" {@link ValueType VALUE} "=" {@link ValueType#DATE} or {@link ValueType#DATE_TIME}
+ *    <li>";" {@link TimeZoneIdentifierParameter TZID}
+ *    </ul>
+ *  <li>The following are OPTIONAL, and MAY occur more than once.
+ *    <ul>
+ *    <li>";" {@link OtherParameter}
+ *    </ul>
+ *  </ul>
+ *</ul>
+ *
+ *<p>Example:  The following is an example of this property:
+ *<ul>
+ *<li>DTEND:19960401T150000Z
+ *<li>DTEND;VALUE=DATE:19980704
+ *</ul>
  */
 public class DateTimeEnd extends PropertyBaseDateTime<Temporal, DateTimeEnd>
 {    
@@ -31,11 +76,6 @@ public class DateTimeEnd extends PropertyBaseDateTime<Temporal, DateTimeEnd>
     {
         super(temporal);
     }
-
-//    public DateTimeEnd(Class<T> clazz, CharSequence contentLine)
-//    {
-//        super(clazz, contentLine);
-//    }
     
     public DateTimeEnd(DateTimeEnd source)
     {

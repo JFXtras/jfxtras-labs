@@ -27,16 +27,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public abstract class VComponentCommonBase<T> extends VComponentBase
 {
     /**
-     * <p>Any property name with a "X-" prefix.
-     * This class of property provides a framework for defining non-standard properties.<br>
-     * 3.8.8.2.  Non-Standard Properties</p>
-     * <p>
-     * Example:
-     * <ul>
-     * <li>X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.<br>
-     *  org/mysubj.au
-     *  </ul>
-     *  </p>
+     * This class of property provides a framework for defining non-standard properties.
      */
     public ObjectProperty<ObservableList<NonStandardProperty>> nonStandardProperty()
     {
@@ -98,20 +89,8 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
     }
     
     /**
-     * <p>An IANA-registered property name<br>
-     * 3.8.8.1.  IANA Properties</p>
-     * 
-     *<p> This specification allows other properties registered
-     * with IANA to be specified in any calendar components.  Compliant
-     * applications are expected to be able to parse these other IANA-
-     * registered properties but can ignore them.</p>
-     * <p>
-     * Examples:
-     * <ul>
-     * <li>NON-SMOKING;VALUE=BOOLEAN:TRUE
-     * <li>DRESSCODE:CASUAL
-     * </ul>
-     * </p>
+     *<p>Allows other properties registered
+     * with IANA to be specified in any calendar components.</p>
      */
     public ObjectProperty<ObservableList<IANAProperty>> ianaProperty()
     {

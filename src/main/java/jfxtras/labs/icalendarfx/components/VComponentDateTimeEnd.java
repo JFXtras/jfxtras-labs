@@ -12,14 +12,18 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
+/**
+ * Interface for {@link DateTimeEnd} property
+ * 
+ * @author David Bal
+ *
+ * @param <T> concrete subclass
+ */
 public interface VComponentDateTimeEnd<T> extends VComponent
 {
     /**
-     * DTEND, Date-Time End.
-     * RFC 5545 iCalendar 3.8.2.2 page 95
-     * Specifies the date and time that a calendar component ends.
-     * Can't be used if DURATION is used.  Must be one or the other.
-     * Must be same Temporal type as dateTimeStart (DTSTART)
+     *<p>This property specifies the date and time that a calendar
+     * component ends.</p>
      */
     ObjectProperty<DateTimeEnd> dateTimeEndProperty();
     DateTimeEnd getDateTimeEnd();

@@ -11,30 +11,87 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.Encoding;
 import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
+import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
- * ATTACH
- * Attachment
- * RFC 5545, 3.8.1.1, page 80
- * 
- * This property provides the capability to associate a document object with a calendar component.
- * 
- * Examples:
- * ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
- * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
- *  reports/r-960812.ps
+   <h2>3.8.1.1.  Attachment</h2>
+
+   <p>Property Name:  ATTACH</p>
+
+   <p>Purpose:  This property provides the capability to associate a
+      document object with a calendar component.</p>
+
+   <p>Value Type:  The default value type for this property is URI.  The
+      value type can also be set to BINARY to indicate inline binary
+      encoded content information.</p>
+
+   <p>Property Parameters:  {@link IANAProperty IANA}, {@link NonStandardProperty non-standard},
+      {@link Encoding inline encoding}, and {@link ValueParameter value
+      data type property} parameters can be specified on this property.
+      The {@link FormatType format type parameter} can be specified on this property and is
+      RECOMMENDED for inline binary encoded content information.</p>
+
+   <p>Conformance:  This property can be specified multiple times in a
+      {@link VEvent VEVENT}, {@link VTodo VTODO}, {@link VJournal VJOURNAL}, or {@link VAlarm VALARM} calendar component with
+      the exception of AUDIO alarm that only allows this property to
+      occur once.</p>
+
+   <p>Description:  This property is used in {@link VEvent VEVENT}, {@link VTodo VTODO}, and
+      {@link VJournal VJOURNAL} calendar components to associate a resource (e.g.,
+      document) with the calendar component.  This property is used in
+      {@link VAlarm VALARM} calendar components to specify an audio sound resource or
+      an email message attachment.  This property can be specified as a
+      URI pointing to a resource or as inline binary encoded content.</p>
+
+      <p>When this property is specified as inline binary encoded content,
+      calendar applications MAY attempt to guess the media type of the
+      resource via inspection of its content if and only if the media
+      type of the resource is not given by the {@link FormatType FMTTYPE} parameter.  If
+      the media type remains unknown, calendar applications SHOULD treat
+      it as type "application/octet-stream".</p>
+
+  <p>Format Definition:  This property is defined by the following notation:
+  <ul>
+  <li>attach
+    <ul>
+    <li>{@link Attachment ATTACH} attachparam ( ":" {@link URI uri} )
+      <ul>
+      <li>";" {@link Encoding ENCODING} "=" {@link EncodingType#BASE64 BASE64}
+      <li>";" {@link ValueParameter VALUE} "=" {@link ValueType#BINARY BINARY}
+      <li>":" binary
+      <li>CRLF
+      </ul>
+    </ul>
+  <li>attachparam
+    <ul>
+    <li>The following is OPTIONAL for a URI value, RECOMMENDED for a BINARY value, and MUST NOT occur more than once.
+      <ul>
+      <li>";" {@link FormatType fmttypeparam}
+      </ul>
+    <li>The following are OPTIONAL, and MAY occur more than once.
+      <ul>
+      <li>";" {@link OtherParameter}
+      </ul>
+    </ul>
+  </ul>
+  
+  <p>Example:  The following is an example of this property:
+  <ul>
+  <li>ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
+  <li>ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/<br>
+        reports/r-960812.ps
+  </ul>
+  </p>
+  <h2>RFC 5545                       iCalendar                  September 2009</h2>
  * 
  * @author David Bal
- * 
- * The property can be specified in following components:
- * @see VEvent
- * @see VTodo
- * @see VJournal
- * @see VAlarm
  */
 public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>
 {

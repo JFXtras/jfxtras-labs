@@ -1,52 +1,66 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 /**
- * Describable VComponents
+ * <p>{@link VComponent} with the following properties
+ * <ul>
+ * <li>{@link Attachment ATTACH}
+ * <li>{@link Summary SUMMARY}
+ * </ul>
+ * </p>
  * 
  * @author David Bal
- * @see VEventOld
- * @see VTodoOld
- * @see VJournal
- * @see VAlarm
- *  */
+ */
 public interface VComponentDescribable<T> extends VComponent
 {
     /**
-     * ATTACH: Attachment
-     * RFC 5545 iCalendar 3.8.1.1. page 80
      * This property provides the capability to associate a
      * document object with a calendar component.
-     * 
-     * Example:
-     * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
-     *  reports/r-960812.p
      */
+    ObjectProperty<ObservableList<Attachment<?>>> attachmentsProperty();
     ObservableList<Attachment<?>> getAttachments();
     void setAttachments(ObservableList<Attachment<?>> properties);
-    default T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
-    default T withAttachments(String...attachments)
+    /**
+     * Sets the value of the {@link #attachmentsProperty()}.
+     * 
+     * @return - this class for chaining
+     */
+    default T withAttachments(ObservableList<Attachment<?>> attachments)
     {
-        Arrays.stream(attachments).forEach(c -> PropertyType.ATTACHMENT.parse(this, c));
+        setAttachments(attachments);
         return (T) this;
     }
+    /**
+     * Sets the value of the {@link #attachmentsProperty()} by parsing a vararg of
+     * iCalendar content text representing individual {@link Attachment} objects.
+     * 
+     * @return - this class for chaining
+     */
+    default T withAttachments(String...attachments)
+    {
+        List<Attachment<?>> a = Arrays.stream(attachments)
+                .map(c -> Attachment.parse(c))
+                .collect(Collectors.toList());
+        setAttachments(FXCollections.observableArrayList(a));
+        return (T) this;
+    }
+    /**
+     * Sets the value of the {@link #attachmentsProperty()} from a vararg of {@link Attachment} objects.
+     * 
+     * @return - this class for chaining
+     */
     default T withAttachments(Attachment<?>...attachments)
     {
-        if (getAttachments() == null)
-        {
-            setAttachments(FXCollections.observableArrayList(attachments));
-        } else
-        {
-            getAttachments().addAll(attachments);
-        }
+        setAttachments(FXCollections.observableArrayList(attachments));
         return (T) this;
     }
     
