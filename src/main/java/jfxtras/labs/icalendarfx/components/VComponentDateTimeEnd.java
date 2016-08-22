@@ -70,36 +70,36 @@ public interface VComponentDateTimeEnd<T> extends VComponent
     }
     default T withDateTimeEnd(Temporal dtEnd)
     {
-        if (getDateTimeEnd() == null)
-        {
+//        if (getDateTimeEnd() == null)
+//        {
             setDateTimeEnd(dtEnd);
             return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
     default T withDateTimeEnd(String dtEnd)
     {
-        if (getDateTimeEnd() == null)
-        {
+//        if (getDateTimeEnd() == null)
+//        {
             setDateTimeEnd(dtEnd);
             return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
     default T withDateTimeEnd(DateTimeEnd dtEnd)
     {
-        if (getDateTimeEnd() == null)
-        {
+//        if (getDateTimeEnd() == null)
+//        {
             setDateTimeEnd(dtEnd);
             return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
     
     // From VComponentPrimary

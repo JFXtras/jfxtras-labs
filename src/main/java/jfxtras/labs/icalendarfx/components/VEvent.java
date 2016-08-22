@@ -220,41 +220,44 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     @Override
     public List<String> errors()
     {
+        // TODO - GET ERRORS FROM CHILDREN?
+        // REMOVE DTEND LISTENERS??  WHAT ABOUT RDATE AND EXDATE LISTENERS???
         List<String> errors = super.errors();
         if (getDateTimeStart() == null)
         {
             errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
         }
-        
-        if (getDateTimeEnd() != null)
+        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
+        boolean isDurationPresent = getDuration() != null;       
+
+        boolean isDateTimeEndMatch = true;
+        if (isDateTimeEndPresent)
         {
             if (getDateTimeStart() != null)
             {
                 DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
                 DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-                boolean isDateTimeEndMatch = startType == endType;
+                isDateTimeEndMatch = startType == endType;
                 if (! isDateTimeEndMatch)
                 {
-                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
+                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType + ")");
                 }
             }
         }
         
-        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
-        boolean isDurationPresent = getDuration() != null;       
         if (! isDateTimeEndPresent && ! isDurationPresent)
         {
             errors.add("Neither DTEND or DURATION is present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
         } else if (isDateTimeEndPresent && isDurationPresent)
         {
             errors.add("Both DTEND and DURATION are present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
-        } else if (isDateTimeEndPresent)
+        } else if (isDateTimeEndPresent && isDateTimeEndMatch)
         {
             if (! DateTimeUtilities.isAfter(getDateTimeEnd().getValue(), getDateTimeStart().getValue()))
             {
                 errors.add("DTEND is not after DTSTART.  DTEND MUST be after DTSTART");                
             }
-        } else // duration is present
+        } else if (isDurationPresent) // duration is present
         {
             Temporal actualEnd = getDateTimeStart().getValue().plus(getDuration().getValue());
             if (! DateTimeUtilities.isAfter(actualEnd, getDateTimeStart().getValue()))
@@ -267,7 +270,6 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     /** Parse content lines into calendar component object */
-    @Deprecated // use simple factory
     public static VEvent parse(String contentLines)
     {
         VEvent component = new VEvent();

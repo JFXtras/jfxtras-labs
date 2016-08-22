@@ -73,31 +73,47 @@ public interface VComponentDescribable<T> extends VComponent
      * */
     ObjectProperty<Summary> summaryProperty();
     Summary getSummary();
-    default void setSummary(String summary) { setSummary(Summary.parse(summary)); }
-    default void setSummary(Summary summary) { summaryProperty().set(summary); }
+    default void setSummary(String summary)
+    {
+        setSummary(Summary.parse(summary));
+    }
+    default void setSummary(Summary summary)
+    {
+        summaryProperty().set(summary);
+    }
+    /**
+     * Sets the value of the {@link #summaryProperty()}
+     * 
+     * @return - this class for chaining
+     */
     default T withSummary(Summary summary)
     {
-        if (getSummary() == null)
-        {
+//        if (getSummary() == null)
+//        {
             setSummary(summary);
             return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
+    /**
+     * Sets the value of the {@link #summaryProperty()} by parsing iCalendar content text.
+     * 
+     * @return - this class for chaining
+     */
     default T withSummary(String summary)
     {
-        if (getSummary() == null)
-        {
-            if (summary != null)
-            {
+//        if (getSummary() == null)
+//        {
+//            if (summary != null)
+//            {
                 setSummary(summary);
-            }
+//            }
             return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
 }

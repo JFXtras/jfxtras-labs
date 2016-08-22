@@ -65,6 +65,19 @@ public class DateTimeEndTest
                 .withDateTimeEnd("20160306T080000Z");
     }
     
+    @Test
+    public void canCatchWrongDateType4()
+    {
+        VEvent v = new VEvent()
+                .withDateTimeStart(LocalDate.of(1997, 3, 1))
+                .withDateTimeEnd("20160306T080000Z");
+        System.out.println(v.toContent());
+        v.errors().stream().forEach(System.out::println);
+        // TODO - MAYBE REMOVE LISTENER TO CHECK FOR VALIDITY - RELY ON ERRORS()
+        throw new RuntimeException("isn't catching DTEND wrong type");
+        // TODO - add VELEMENT name and colon as first word in error
+   }
+    
     @Test (expected = DateTimeException.class)
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongDateType2()
