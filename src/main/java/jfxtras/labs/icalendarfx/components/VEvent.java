@@ -15,7 +15,6 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * VEVENT
@@ -101,24 +100,24 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
             orderer().registerSortOrderProperty(dateTimeEnd);
-            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
+//            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
     }
     @Override
     public DateTimeEnd getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
     private ObjectProperty<DateTimeEnd> dateTimeEnd;
-    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
-     *  after dateTimeEndProperty() is initialized */
-    @Override
-    public void checkDateTimeEndConsistency()
-    {
-        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
-        if ((getDateTimeEnd() != null) && (getDuration() != null))
-        {
-            throw new DateTimeException("DURATION and DTEND can't both be set");
-        }
-    }
+//    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
+//     *  after dateTimeEndProperty() is initialized */
+//    @Override
+//    public void checkDateTimeEndConsistency()
+//    {
+//        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
+//        if ((getDateTimeEnd() != null) && (getDuration() != null))
+//        {
+//            throw new DateTimeException("DURATION and DTEND can't both be set");
+//        }
+//    }
     
     /** add listener to Duration to ensure both DURATION and DTEND are not both set */
     @Override public ObjectProperty<DurationProp> durationProperty()
@@ -223,6 +222,9 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         // TODO - GET ERRORS FROM CHILDREN?
         // REMOVE DTEND LISTENERS??  WHAT ABOUT RDATE AND EXDATE LISTENERS???
         List<String> errors = super.errors();
+        List<String> dtendErrors = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        errors.addAll(dtendErrors);
+        boolean isDateTimeEndMatch = dtendErrors.size() == 0;
         if (getDateTimeStart() == null)
         {
             errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
@@ -230,20 +232,20 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         boolean isDateTimeEndPresent = getDateTimeEnd() != null;
         boolean isDurationPresent = getDuration() != null;       
 
-        boolean isDateTimeEndMatch = true;
-        if (isDateTimeEndPresent)
-        {
-            if (getDateTimeStart() != null)
-            {
-                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-                isDateTimeEndMatch = startType == endType;
-                if (! isDateTimeEndMatch)
-                {
-                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType + ")");
-                }
-            }
-        }
+//        boolean isDateTimeEndMatch = true;
+//        if (isDateTimeEndPresent)
+//        {
+//            if (getDateTimeStart() != null)
+//            {
+//                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+//                isDateTimeEndMatch = startType == endType;
+//                if (! isDateTimeEndMatch)
+//                {
+//                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType + ")");
+//                }
+//            }
+//        }
         
         if (! isDateTimeEndPresent && ! isDurationPresent)
         {

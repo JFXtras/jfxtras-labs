@@ -425,14 +425,17 @@ public interface VComponentRepeatable<T> extends VComponent
         List<String> errors = new ArrayList<>();
         if (testObj.getRecurrenceDates() != null)
         {
-            Temporal r1 = testObj.getRecurrenceDates().get(0).getValue().iterator().next();
-            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
-            DateTimeType startType = DateTimeUtilities.DateTimeType.of(testObj.getDateTimeStart().getValue());
-            boolean isRecurrenceTypeMatch = startType == recurrenceType;
-            if (! isRecurrenceTypeMatch)
+            testObj.getRecurrenceDates().stream().forEach(rd ->
             {
-                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
-            }
+                Temporal r1 = rd.getValue().iterator().next();
+                DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+                DateTimeType startType = DateTimeUtilities.DateTimeType.of(testObj.getDateTimeStart().getValue());
+                boolean isRecurrenceTypeMatch = startType == recurrenceType;
+                if (! isRecurrenceTypeMatch)
+                {
+                    errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+                }                
+            });
         }
 
         if (testObj.getRecurrenceRule() != null && testObj.getRecurrenceRule().getValue().getUntil() != null)

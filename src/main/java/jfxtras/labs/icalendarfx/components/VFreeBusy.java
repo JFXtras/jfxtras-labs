@@ -12,8 +12,6 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * VFREEBUSY
@@ -148,7 +146,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
             orderer().registerSortOrderProperty(dateTimeEnd);
-            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
+//            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
     }
@@ -219,19 +217,22 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        if (getDateTimeEnd() != null)
-        {
-            if (getDateTimeStart() != null)
-            {
-                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-                boolean isDateTimeEndMatch = startType == endType;
-                if (! isDateTimeEndMatch)
-                {
-                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
-                }
-            }
-        }
+        List<String> dtendErrors = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        errors.addAll(dtendErrors);
+//
+//        if (getDateTimeEnd() != null)
+//        {
+//            if (getDateTimeStart() != null)
+//            {
+//                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+//                boolean isDateTimeEndMatch = startType == endType;
+//                if (! isDateTimeEndMatch)
+//                {
+//                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
+//                }
+//            }
+//        }
         return Collections.unmodifiableList(errors);
     }
         
