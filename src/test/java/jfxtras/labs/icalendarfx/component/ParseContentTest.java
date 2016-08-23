@@ -8,7 +8,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class ParseStringTest extends ICalendarTestAbstract
+public class ParseContentTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */
     @Test
@@ -176,10 +176,9 @@ public class ParseStringTest extends ICalendarTestAbstract
     }
     
     @Test
-    @Ignore
     public void canParseGoogleRepeatWithExDates()
     {
-    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+    String content = "BEGIN:VEVENT" + System.lineSeparator()
             + "DTSTART;TZID=America/Los_Angeles:20160207T123000" + System.lineSeparator()
             + "DTEND;TZID=America/Los_Angeles:20160207T153000" + System.lineSeparator()
             + "RRULE:FREQ=DAILY;UNTIL=20160512T193000Z" + System.lineSeparator()
@@ -197,7 +196,7 @@ public class ParseStringTest extends ICalendarTestAbstract
             + "SUMMARY:test3" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent vEvent = VEvent.parse(content);
     VEvent expectedVEvent = getGoogleWithExceptions();
     assertEquals(expectedVEvent, vEvent);
     }

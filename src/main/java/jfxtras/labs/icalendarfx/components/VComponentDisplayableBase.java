@@ -332,7 +332,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         {
             orderer().registerSortOrderProperty(exceptions);
             exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-            checkRecurrencesConsistency(exceptions, null); // test current data
+            if (! exceptions.isEmpty() && ! exceptions.get(0).getValue().isEmpty())
+            {
+                Temporal firstRecurrence = exceptions.get(0).getValue().iterator().next();
+                checkRecurrencesConsistency(exceptions, firstRecurrence); // test current data                
+            }
         } else
         {
             orderer().unregisterSortOrderProperty(this.exceptions);
@@ -450,7 +454,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         {
             recurrenceId = new SimpleObjectProperty<>(this, PropertyType.RECURRENCE_IDENTIFIER.toString());
             orderer().registerSortOrderProperty(recurrenceId);
-            recurrenceId.addListener((observable, oldValue, newValue) -> checkRecurrenceIdConsistency());
+//            recurrenceId.addListener((observable, oldValue, newValue) -> checkRecurrenceIdConsistency());
         }
         return recurrenceId;
     }
@@ -530,29 +534,29 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-//    /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener
-//     *  after recurrenceIdProperty() is initialized */
-//    void checkRecurrenceIdConsistency()
-//    {
-//        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
-//        {
-//            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-//            if (getParent() != null)
-//            {
-//                List<VComponentDisplayableBase<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
-//                VComponentDisplayableBase<?> parentComponent = relatedComponents.stream()
-//                        .filter(v -> v.getRecurrenceId() == null)
-//                        .findFirst()
-//                        .orElseThrow(() -> new RuntimeException("no parent component found"));
-//                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
-//                if (recurrenceIdType != dateTimeStartType)
-//                {
-//                    throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
-//                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-//                }
-//            }
-//        }
-//    }
+    /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener
+     *  after recurrenceIdProperty() is initialized */
+    void checkRecurrenceIdConsistency()
+    {
+        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            if (getParent() != null)
+            {
+                List<VComponentDisplayableBase<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
+                VComponentDisplayableBase<?> parentComponent = relatedComponents.stream()
+                        .filter(v -> v.getRecurrenceId() == null)
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("no parent component found"));
+                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
+                if (recurrenceIdType != dateTimeStartType)
+                {
+                    throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+                }
+            }
+        }
+    }
 
     /**
      * RELATED-TO:

@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.component.EqualsTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
 import jfxtras.labs.icalendarfx.component.LocatableTest;
 import jfxtras.labs.icalendarfx.component.ParseIteratorTest;
-import jfxtras.labs.icalendarfx.component.ParseStringTest;
+import jfxtras.labs.icalendarfx.component.ParseContentTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.RecurrenceIDComponentEditTest;
@@ -109,7 +109,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         GeneralComponentTest.class,
         LocatableTest.class,
         ParseIteratorTest.class,
-        ParseStringTest.class,
+        ParseContentTest.class,
         PrimaryTest.class,
         PersonalTest.class,
         RecurrenceIDComponentEditTest.class,

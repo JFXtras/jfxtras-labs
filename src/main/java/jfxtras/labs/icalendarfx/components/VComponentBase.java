@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -155,6 +156,11 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override
     public void parseContent(String content)
     {
+        parseContent(content, false);        
+    }
+    
+    public void parseContent(String content, boolean collectErrorMessages)
+    {
         if (content == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
@@ -162,8 +168,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         content.indexOf(System.lineSeparator());
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines, false);
-        
+        parseContent(unfoldedLines, false);        
     }
 
     @Override
@@ -173,6 +178,14 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
+        
+        // handle exceptions in JavxFx threads by rethrowing
+        Thread t = Thread.currentThread();
+        UncaughtExceptionHandler originalExceptionHandler = t.getUncaughtExceptionHandler();
+        t.setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         List<String> errors = new ArrayList<>();
         while (unfoldedLineIterator.hasNext())
         {
@@ -202,21 +215,33 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     {
                         try
                         {
-                            propertyType.parse(this, unfoldedLine);
-                        } catch (Exception e)
-                        {
-                            if (collectErrorMessages)
+                            try
                             {
-                                if (propertyType.isRequired(this))
+                                propertyType.parse(this, unfoldedLine);
+                            } catch (Exception e)
+                            {
+                                if (collectErrorMessages)
                                 {
-                                    errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                    if (propertyType.isRequired(this))
+                                    {
+                                        errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                    } else
+                                    {
+                                        errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                    }
                                 } else
                                 {
-                                    errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                    throw e;
                                 }
+                            }
+                        } catch (Exception e)
+                        { // exceptions from JavaFX thread
+                            if (propertyType.isRequired(this))
+                            {
+                                errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
                             } else
                             {
-                                throw e;
+                                errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
                             }
                         }
                     } else
@@ -241,6 +266,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             }
         }
+        t.setUncaughtExceptionHandler(originalExceptionHandler); // return original exception handler
+        errors.stream().forEach(System.out::println);
         return (collectErrorMessages) ? errors : null;
     }
 

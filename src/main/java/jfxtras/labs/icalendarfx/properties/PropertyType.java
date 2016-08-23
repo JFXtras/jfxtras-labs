@@ -833,8 +833,14 @@ public enum PropertyType
             {
                 list = castComponent.getExceptionDates();
             }
-            list.add(child);
-            return child;
+
+            boolean isValid = VComponentRepeatable.checkRecurrencesConsistency(list, child);
+            if (isValid)
+            {
+                list.add(child);
+                return child;
+            }
+            return null; // invalid content
         }
 
         @Override

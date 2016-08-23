@@ -16,6 +16,7 @@ import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -25,6 +26,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class ICalendarTestAbstract
@@ -673,20 +675,25 @@ public abstract class ICalendarTestAbstract
     protected static VEvent getGoogleWithExceptions()
     {
         return new VEvent()
-                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptionDates(new ExceptionDates(
-                            ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
-                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
-                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneOffset.UTC)))
+                .withExceptionDates(new ExceptionDates(ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withExceptionDates(new ExceptionDates(ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withExceptionDates(new ExceptionDates(ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))
+                .withUniqueIdentifier("86801l7316n97h75cefk1ruc00@google.com")
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withDescription("")
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withLocation("")
+                .withSequence(0)
+                .withStatus(StatusType.CONFIRMED)
                 .withSummary("test3")
-                .withUniqueIdentifier("86801l7316n97h75cefk1ruc00@google.com");
+                .withTimeTransparency(TimeTransparencyType.OPAQUE)
+                ;
     }
     
     /* Example Google repeatable appointment with 3 parts 
