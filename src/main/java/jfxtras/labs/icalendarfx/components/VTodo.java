@@ -286,7 +286,6 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     
     /** Parse content lines into calendar component object */
-    @Deprecated // use simple factory
     public static VTodo parse(String contentLines)
     {
         VTodo component = new VTodo();

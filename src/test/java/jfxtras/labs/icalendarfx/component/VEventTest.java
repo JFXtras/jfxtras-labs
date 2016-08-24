@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
@@ -57,18 +56,24 @@ public class VEventTest extends ICalendarTestAbstract
     }
         
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd()
     {
-       new VEvent()
+        Thread.setDefaultUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
+        new VEvent()
                 .withDateTimeEnd(LocalDate.of(1997, 3, 1))
                 .withDuration(Duration.ofMinutes(30));
     }
     
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd2()
     {
+        Thread.setDefaultUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
        new VEvent()
              .withDuration(Duration.ofMinutes(30))
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));

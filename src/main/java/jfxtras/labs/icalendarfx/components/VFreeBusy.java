@@ -146,7 +146,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
             orderer().registerSortOrderProperty(dateTimeEnd);
-//            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
+            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
     }
@@ -217,8 +217,11 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        List<String> dtendErrors = VComponentDateTimeEnd.errorsDateTimeEnd(this);
-        errors.addAll(dtendErrors);
+        String dtendError = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        if (dtendError != null)
+        {
+            errors.add(dtendError);
+        }
 //
 //        if (getDateTimeEnd() != null)
 //        {
@@ -243,7 +246,6 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
 //    }
     
     /** Parse content lines into calendar component object */
-    @Deprecated // use simple factory
     public static VFreeBusy parse(String contentLines)
     {
         VFreeBusy component = new VFreeBusy();

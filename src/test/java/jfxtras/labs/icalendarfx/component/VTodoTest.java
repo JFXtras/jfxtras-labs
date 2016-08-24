@@ -2,9 +2,7 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -38,24 +35,6 @@ public class VTodoTest
         VTodo madeComponent = VTodo.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
-    }
-    
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchBothDurationAndDue()
-    {
-       new VTodo()
-                .withDateTimeDue(LocalDate.of(1997, 3, 1))
-                .withDuration(Duration.ofMinutes(30));
-    }
-    
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchBothDurationAndDue2()
-    {
-       new VTodo()
-             .withDuration(Duration.ofMinutes(30))
-             .withDateTimeDue(LocalDate.of(1997, 3, 1));
     }
     
     @Test

@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -89,25 +87,26 @@ public interface VComponentDateTimeEnd<T> extends VComponent
     // From VComponentPrimary
     DateTimeStart getDateTimeStart();
     
-//    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
-//     *  after dateTimeEndProperty() is initialized */
-//    default void checkDateTimeEndConsistency()
-//    {
-//        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
-//        {
-//            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-//            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-//            if (dateTimeEndType != dateTimeStartType)
-//            {
-//                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
-//                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-//            }
-//        }
-//    }
-    
-    static List<String> errorsDateTimeEnd(VComponentDateTimeEnd<?> testObj)
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
+     *  after dateTimeEndProperty() is initialized */
+    default void checkDateTimeEndConsistency()
     {
-        List<String> errors = new ArrayList<>();
+        System.out.println("DTEND check:");
+        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (dateTimeEndType != dateTimeStartType)
+            {
+                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+    }
+    
+    static String errorsDateTimeEnd(VComponentDateTimeEnd<?> testObj)
+    {
+//        List<String> errors = new ArrayList<>();
         if (testObj.getDateTimeEnd() != null)
         {
             if (testObj.getDateTimeStart() != null)
@@ -117,10 +116,10 @@ public interface VComponentDateTimeEnd<T> extends VComponent
                 boolean isDateTimeEndMatch = startType == endType;
                 if (! isDateTimeEndMatch)
                 {
-                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
+                     return "The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType;
                 }
             }
         }
-        return errors;
+        return null;
     }
 }
