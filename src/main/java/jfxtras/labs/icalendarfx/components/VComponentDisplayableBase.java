@@ -873,7 +873,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         super.dateTimeStartListenerHook();
         String reccurenceIDErrorString = checkRecurrenceIdConsistency();
-        System.out.println("check r-id" + " " +reccurenceIDErrorString);
         if (reccurenceIDErrorString != null)
         {
             throw new RuntimeException(reccurenceIDErrorString);

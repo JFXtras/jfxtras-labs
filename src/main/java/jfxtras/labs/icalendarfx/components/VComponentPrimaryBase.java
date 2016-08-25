@@ -86,7 +86,6 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T>
             {
                 if (oldValue == null) // only check consistency when first assignment
                 {
-                    System.out.println("check DTSTART consistency");
                     dateTimeStartListenerHook();
                 }
             });

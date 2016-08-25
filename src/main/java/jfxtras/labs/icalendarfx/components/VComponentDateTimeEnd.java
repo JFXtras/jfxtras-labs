@@ -91,7 +91,6 @@ public interface VComponentDateTimeEnd<T> extends VComponent
      *  after dateTimeEndProperty() is initialized */
     default void checkDateTimeEndConsistency()
     {
-        System.out.println("DTEND check:");
         if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
         {
             DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
