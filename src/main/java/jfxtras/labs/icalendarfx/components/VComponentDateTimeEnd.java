@@ -116,7 +116,7 @@ public interface VComponentDateTimeEnd<T> extends VComponent
                 boolean isDateTimeEndMatch = startType == endType;
                 if (! isDateTimeEndMatch)
                 {
-                     return "The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType;
+                     return "The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType + ")";
                 }
             }
         }

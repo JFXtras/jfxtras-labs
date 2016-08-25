@@ -9,7 +9,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
@@ -101,9 +100,12 @@ public class DaylightSavingsTimeTest
     }
     
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
     public void canCatchDifferentRepeatableTypes()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         DaylightSavingTime builtComponent = new DaylightSavingTime()
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<Temporal> expectedValues = FXCollections.observableSet(

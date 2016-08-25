@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -112,8 +113,14 @@ public interface VComponentRepeatable<T> extends VComponent
                     List<? extends PropertyBaseRecurrence<?>> changeList = change.getAddedSubList();
                     Temporal firstRecurrence = list.get(0).getValue().iterator().next();
                     // check consistency with previous recurrence values
-                    checkRecurrencesConsistency(changeList, firstRecurrence);
-//                    System.out.println("result:" + result);
+                    String errors = changeList.stream()
+                        .map(r -> checkPotentialRecurrencesConsistency(change.getList(), r))
+                        .filter(s -> s != null)
+                        .collect(Collectors.joining(System.lineSeparator()));
+                    if (! errors.isEmpty())
+                    {
+                        throw new DateTimeException(errors);
+                    }
                 }
             }
         };
@@ -130,39 +137,32 @@ public interface VComponentRepeatable<T> extends VComponent
      * @param firstRecurrence - example of Temporal to match against.  If null uses first element in first recurrence in list
      * @return - true is valid, throws exception otherwise
      */
-    default boolean checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list, Temporal firstRecurrence)
+    default String checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list)
     {
-        if ((list == null) || (list.isEmpty()))
+        if ((list == null) || list.isEmpty() || (getDateTimeStart() == null))
         {
-            return true;
+            return null;
         }
-        
-//        Optional<Temporal> firstOptional = list.stream()
-//                .filter(l -> l.getValue() != null) // remove empty properties
-//                .flatMap(p -> p.getValue().stream())
-//                .findAny();
-//        firstRecurrence = (firstOptional.isPresent()) ? firstOptional.get() : firstRecurrence;
-        System.out.println("first:" + firstRecurrence + " " + " " + list.size());
-//        list.stream().forEach(System.out::println);
-        
+//        Temporal firstRecurrence = list.get(0).getValue().iterator().next();
+        Temporal firstRecurrence = getDateTimeStart().getValue();
         if (firstRecurrence == null)
         {
-            return true;
+            return null;
         }
-        DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
-        Optional<DateTimeType> badType = list.stream()
+        DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
+        Optional<DateTimeType> nonMatchingType = list.stream()
                 .flatMap(p -> p.getValue().stream())
                 .map(t -> DateTimeUtilities.DateTimeType.of(t))
-                .peek(t -> System.out.println("ttt:" + firstDateTimeTypeType + " " + t))
-                .filter(y -> ! y.equals(firstDateTimeTypeType))
+//                .peek(t -> System.out.println("ttt:" + firstDateTimeTypeType + " " + t))
+                .filter(y -> ! y.equals(dateTimeStartType))
                 .findAny();
-        System.out.println("bad:" + badType);
-        if (badType.isPresent())
+//        System.out.println("bad:" + badType);
+        if (nonMatchingType.isPresent())
         {
-            throw new DateTimeException("Added recurrences DateTimeType " + badType.get() +
-                    " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);            
+            return list.get(0).getPropertyName() + ": Recurrences DateTimeType " + nonMatchingType.get() +
+                    " doesn't match DTSTART DateTimeType " + dateTimeStartType; 
         }
-        return true;
+        return null;
     }
     
     /**
@@ -178,30 +178,56 @@ public interface VComponentRepeatable<T> extends VComponent
      * @param list - list of recurrence objects to be tested.
      * @return - true is valid, throws exception otherwise
      */
-    static boolean checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list, PropertyBaseRecurrence<?> testObj)
+//    static boolean checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list, PropertyBaseRecurrence<?> testObj)
+//    {
+//        if ((list == null) || (list.isEmpty()))
+//        {
+//            return true;
+//        }
+//        Temporal firstRecurrence = list.get(0).getValue().iterator().next();
+//        if (firstRecurrence == null)
+//        {
+//            return true;
+//        }
+//        DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
+//        Optional<DateTimeType> badType = testObj.getValue().stream()
+//                .map(t -> DateTimeUtilities.DateTimeType.of(t))
+////                .peek(t -> System.out.println("ttt:" + firstDateTimeTypeType + " " + t))
+//                .filter(y -> ! y.equals(firstDateTimeTypeType))
+//                .findAny();
+////        System.out.println("bad:" + badType);
+//        if (badType.isPresent())
+//        {
+//            throw new DateTimeException("Added recurrences DateTimeType " + badType.get() +
+//                    " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);            
+//        }
+//        return true;
+//    }
+    
+    static String checkPotentialRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list, PropertyBaseRecurrence<?> testObj)
     {
         if ((list == null) || (list.isEmpty()))
         {
-            return true;
+            return null;
         }
         Temporal firstRecurrence = list.get(0).getValue().iterator().next();
         if (firstRecurrence == null)
         {
-            return true;
+            return null;
         }
         DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
-        Optional<DateTimeType> badType = testObj.getValue().stream()
+        Optional<DateTimeType> nonMatchingType = testObj.getValue().stream()
                 .map(t -> DateTimeUtilities.DateTimeType.of(t))
-                .peek(t -> System.out.println("ttt:" + firstDateTimeTypeType + " " + t))
+//                .peek(t -> System.out.println("ttt:" + firstDateTimeTypeType + " " + t))
                 .filter(y -> ! y.equals(firstDateTimeTypeType))
                 .findAny();
-        System.out.println("bad:" + badType);
-        if (badType.isPresent())
+//        System.out.println("bad:" + badType);
+        if (nonMatchingType.isPresent())
         {
-            throw new DateTimeException("Added recurrences DateTimeType " + badType.get() +
-                    " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);            
+            return list.get(0).getPropertyName() + ": Added recurrences DateTimeType " + nonMatchingType.get() +
+                    " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType;            
         }
-        return true;
+        return null;
     }
 
     
@@ -334,7 +360,7 @@ public interface VComponentRepeatable<T> extends VComponent
         DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
         if (startType != dateTimeStartType)
         {
-            System.out.println(("Start type " + startType + " must match DTSTART type of " + dateTimeStartType));
+//            System.out.println(("Start type " + startType + " must match DTSTART type of " + dateTimeStartType));
             throw new DateTimeException("Start type " + startType + " must match DTSTART type of " + dateTimeStartType);
         }
         // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
@@ -443,20 +469,25 @@ public interface VComponentRepeatable<T> extends VComponent
     static List<String> errorsRepeatable(VComponentRepeatable<?> testObj)
     {
         List<String> errors = new ArrayList<>();
-        if (testObj.getRecurrenceDates() != null)
-        {
-            testObj.getRecurrenceDates().stream().forEach(rd ->
-            {
-                Temporal r1 = rd.getValue().iterator().next();
-                DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
-                DateTimeType startType = DateTimeUtilities.DateTimeType.of(testObj.getDateTimeStart().getValue());
-                boolean isRecurrenceTypeMatch = startType == recurrenceType;
-                if (! isRecurrenceTypeMatch)
-                {
-                    errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
-                }                
-            });
-        }
+//        String recurrenceDateError = checkRecurrencesConsistency(testObj.getRecurrenceDates());
+        String recurrenceDateError = testObj.checkRecurrencesConsistency(testObj.getRecurrenceDates());
+        System.out.println("test: rerror:" + recurrenceDateError);
+//        testObj.getRecurrenceDates().stream().forEach(System.out::println);
+        if (recurrenceDateError != null) errors.add(recurrenceDateError);
+//        if (testObj.getRecurrenceDates() != null)
+//        {
+//            testObj.getRecurrenceDates().stream().forEach(rd ->
+//            {
+//                Temporal r1 = rd.getValue().iterator().next();
+//                DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+//                DateTimeType startType = DateTimeUtilities.DateTimeType.of(testObj.getDateTimeStart().getValue());
+//                boolean isRecurrenceTypeMatch = startType == recurrenceType;
+//                if (! isRecurrenceTypeMatch)
+//                {
+//                    errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+//                }                
+//            });
+//        }
 
         if (testObj.getRecurrenceRule() != null && testObj.getRecurrenceRule().getValue().getUntil() != null)
         {

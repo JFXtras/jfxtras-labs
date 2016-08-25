@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import jfxtras.labs.icalendarfx.calendar.CalendarScaleTest;
 import jfxtras.labs.icalendarfx.calendar.CopyCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
+import jfxtras.labs.icalendarfx.calendar.OrdererTest;
 import jfxtras.labs.icalendarfx.calendar.ReadICSFileTest;
 import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;

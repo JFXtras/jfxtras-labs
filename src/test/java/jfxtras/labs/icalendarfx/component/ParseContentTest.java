@@ -152,7 +152,6 @@ public class ParseContentTest extends ICalendarTestAbstract
     }
     
     @Test
-    @Ignore
     public void canParseGoogleRepeat()
     {
     String vEventString = "BEGIN:VEVENT" + System.lineSeparator()

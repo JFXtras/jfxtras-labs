@@ -645,29 +645,22 @@ public abstract class ICalendarTestAbstract
     public static VEvent getGoogleRepeatable()
     {
         VEvent v = new VEvent()
-                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 8, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY)))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
+                .withUniqueIdentifier("im8hmpakeigu3d85j3vq9q8bcc@google.com")
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withDescription("")
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withLocation("")
+                .withSequence(0)
+                .withStatus(StatusType.CONFIRMED)
                 .withSummary("test2")
-                .withUniqueIdentifier("im8hmpakeigu3d85j3vq9q8bcc@google.com");
-//        v.propertySortOrder().put("DTSTART", 0);
-//        v.propertySortOrder().put("DTEND", 10);
-//        v.propertySortOrder().put("DTSTAMP", 20);
-//        v.propertySortOrder().put("UID", 30);
-//        v.propertySortOrder().put("CREATED", 40);
-//        v.propertySortOrder().put("DESCRIPTION", 50);
-//        v.propertySortOrder().put("LAST-MODIFIED", 60);
-//        v.propertySortOrder().put("LOCATION", 70);
-//        v.propertySortOrder().put("SEQUENCE", 80);
-//        v.propertySortOrder().put("STATUS", 90);
-//        v.propertySortOrder().put("SUMMARY", 100);
-//        v.propertySortOrder().put("LAST-MODIFIED", 110);
-//        v.propertySortOrder().put("TRANSP", 120);
+                .withTimeTransparency(TimeTransparencyType.OPAQUE)
+                ;
         return v;
     }
     

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx;
+package jfxtras.labs.icalendarfx.calendar;
 
 import static org.junit.Assert.assertEquals;
 

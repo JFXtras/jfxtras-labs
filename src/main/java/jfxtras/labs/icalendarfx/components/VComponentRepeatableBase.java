@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.stream.Stream;
@@ -49,7 +50,9 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
             orderer().unregisterSortOrderProperty(this.recurrenceDates);
         }
         recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-        checkRecurrencesConsistency(recurrenceDates, null);
+        String error = checkRecurrencesConsistency(recurrenceDates);
+//        String error = VComponentRepeatable.checkRecurrencesConsistency(recurrenceDates);
+        if (error != null) throw new DateTimeException(error);
     }
 
     /**

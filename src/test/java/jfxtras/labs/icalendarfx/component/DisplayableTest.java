@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
@@ -68,20 +67,8 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
  * @author David Bal
  *
  */
-public class DisplayableTest // extends FxExceptionPropagatorTest
+public class DisplayableTest
 {
-    
-//    @Override
-//    public Parent getRootNode()
-//    {
-//        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
-//        Settings.setup(resources);
-//        vbox = new VBox();
-//        vbox.setPrefSize(1000, 800);
-//        return vbox;
-//    }
-//    protected VBox vbox = null; // cannot make this final and assign upon construction
-    
     @Test
     public void canBuildDisplayable() throws InstantiationException, IllegalAccessException
     {
@@ -257,7 +244,6 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
                           , LocalDate.of(2016, 2, 12)
                           , LocalDate.of(2016, 2, 9)
                           )));
-        Temporal start = LocalDate.of(2016, 2, 7);
         List<Temporal> madeDates = e
                 .streamRecurrences()
                 .limit(5)
@@ -272,18 +258,23 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
         assertEquals(expectedDates, madeDates);
     }
     
-    @Test (expected = DateTimeException.class)
-    @Ignore // can't catch exception in listener
+    @Test
     public void canHandleDTStartTypeChange()
     {
         VEvent component = new VEvent()
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withExceptionDates("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
-//      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
         component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
+        String expectedError = "DTSTART, EXDATE:";
+        boolean isErrorPresent = component.errors().stream()
+                .filter(s -> s.substring(0, expectedError.length()).equals(expectedError))
+                .findAny()
+                .isPresent();
+        assertTrue(isErrorPresent);
     }
     
-    @Test
+    
+    @Test (expected = DateTimeException.class)
     public void canCatchWrongDateType()
     {
         VEvent component = new VEvent()
@@ -291,50 +282,5 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
         ObservableList<ExceptionDates> exceptions = FXCollections.observableArrayList();
         exceptions.add(ExceptionDates.parse("20160228T093000"));
         component.setExceptionDates(exceptions); // invalid    
-        assertFalse(component.isValid());
-    }
-    
-    @Test //(expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchWrongRecurrenceIdType()
-    {
-        new VEvent()
-                .withDateTimeStart(LocalDate.of(1997, 3, 1))
-                .withRecurrenceId("20160306T080000Z");
-    }
-    
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchWrongRecurrenceIdType2()
-    {
-       new VEvent()
-                .withRecurrenceId("20160306T080000Z")
-                .withDateTimeStart(LocalDate.of(1997, 3, 1));
-    }
-        
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchWrongRecurrenceIdType3()
-    {
-//        TestUtil.runThenWaitForPaintPulse( () -> {
-//            try
-//            {
-            VEvent builtComponent = new VEvent();
-            builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(1997, 3, 1)));
-            builtComponent.setRecurrenceId(new RecurrenceId(LocalDateTime.of(2016, 3, 6, 8, 0)));
-//            } catch (Exception e)
-//            {
-//                System.out.println("got something" + e.getMessage());
-//            }
-//        });
-//        exception.expect(DateTimeException.class);
-    }
-    
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
-    public void canCatchWrongExceptionType1()
-    {
-        new VEvent().withExceptionDates(LocalDate.of(2016, 4, 27),
-                LocalDateTime.of(2016, 4, 27, 12, 0));
     }
 }

@@ -2,8 +2,10 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
@@ -63,26 +64,6 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  */
 public class RepeatableTest //extends Application
 {
-//    // Below Application code inserted as an attempt to catch listener-thrown exceptions - not successful
-//    @Override
-//    public void start(Stage primaryStage) throws Exception {
-//        // noop
-//    }
-//
-//    @BeforeClass
-//    public static void initJFX() {
-//        Thread t = new Thread("JavaFX Init Thread")
-//        {
-//            @Override
-//            public void run() {
-//                Application.launch(RepeatableTest.class, new String[0]);
-//            }
-//        };
-//        t.setDaemon(true);
-//        t.start();
-//    }
-
-
     @Test
     public void canBuildRepeatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
@@ -201,15 +182,20 @@ public class RepeatableTest //extends Application
     }
 
     @Test //(expected = DateTimeException.class)
-    @Ignore // can't catch exception in listener
     // TODO - RELY ON isValid test instead of listener - change test
     public void canHandleDTStartTypeChange()
     {
         VEvent component = new VEvent()
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
-//        Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
+        String errorPrefix = "RDATE:";
+        boolean hasError = component.errors().stream()
+            .anyMatch(s -> s.substring(0, errorPrefix.length()).equals(errorPrefix));
+        assertFalse(hasError);
         component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
+        hasError = component.errors().stream()
+            .anyMatch(s -> s.substring(0, errorPrefix.length()).equals(errorPrefix));
+        assertTrue(hasError);
     }
 
     @Test
@@ -219,18 +205,37 @@ public class RepeatableTest //extends Application
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
         ObservableList<RecurrenceDates> recurrences = FXCollections.observableArrayList();
         recurrences.add(RecurrenceDates.parse(LocalDateTime.class, "20160228T093000"));
-        assertFalse(component.isValid());
+        component.setRecurrenceDates(recurrences);
+        String errorPrefix = "RDATE:";
+        boolean hasError = component.errors().stream()
+            .anyMatch(s -> s.substring(0, errorPrefix.length()).equals(errorPrefix));
+        assertTrue(hasError);
     }
 
-    @Test //(expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    @Test (expected = DateTimeException.class)
     public void canCatchDifferentRepeatableTypes()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         VEvent builtComponent = new VEvent()
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
         builtComponent.getRecurrenceDates().add(new RecurrenceDates(expectedValues));
+    }
+    
+    @Test (expected = DateTimeException.class)
+    public void canCatchDifferentRepeatableTypes2()
+    {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
+        VEvent builtComponent = new VEvent()
+                .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+        builtComponent.getRecurrenceDates().get(0).getValue().add(LocalDateTime.of(1996, 4, 4, 1, 0));
     }
     
     /*
@@ -1369,12 +1374,6 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
         assertEquals(LocalDate.of(2015, 11, 24), e2.recurrenceStreamer().previousValue(LocalDate.of(2015, 12, 31)));
-    }
-    
-    @Test // TODO - FOR CALENDAR
-    public void canHandleExceptions()
-    {
-        
     }
     
     @Test

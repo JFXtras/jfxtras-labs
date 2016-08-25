@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
@@ -153,9 +152,12 @@ public class ByWeekNumberTest
     }
     
     @Test (expected = IllegalArgumentException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchInvalidByWeekNumber()
     {
+        Thread.setDefaultUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         ByWeekNumber element = new ByWeekNumber();
         element.getValue().add(999); // throws exception
     }

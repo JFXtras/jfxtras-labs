@@ -74,9 +74,10 @@ public class DateTimeEndTest
         {
             throw (RuntimeException) e;
         });
-       new VEvent()
+       VEvent v = new VEvent()
                 .withDateTimeEnd("20160306T080000Z")
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
+       v.errors().stream().forEach(System.out::println);
     }
     
     @Test (expected = DateTimeException.class)

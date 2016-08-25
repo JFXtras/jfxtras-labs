@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.util.Pair;
@@ -110,9 +109,12 @@ public class RecurrenceRuleTest
     }
     
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongUntil()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         String content = "19730429T070000";
         Until.parse(content);
     }
@@ -126,9 +128,12 @@ public class RecurrenceRuleTest
     }
     
     @Test (expected = IllegalArgumentException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchNegativeCount()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         Count element = new Count(5);
         assertEquals((Integer) 5, element.getValue());
         element.setValue(0);

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -453,8 +454,9 @@ public class VCalendar extends VParentBase
      * its type such as VEVENT, VTODO, etc.
      * 
      * @param newVComponent - VComponent to add
+     * @return  true if add was successful, false otherwise
      */
-    public void addVComponent(VComponent newVComponent)
+    public boolean addVComponent(VComponent newVComponent)
     {
         if (newVComponent instanceof VEvent)
         {
@@ -475,7 +477,31 @@ public class VCalendar extends VParentBase
         {
             throw new RuntimeException("Unsuppored VComponent type:" + newVComponent.getClass());
         }
+        return true;
     }
+    
+    /** Add a collection of {@link VComponent} to the correct ObservableList based on
+    * its type, such as VEVENT, VTODO, etc.
+     * 
+     * @param newVComponents  collection of {@link VComponent} to add
+     * @return  true if add was successful, false otherwise
+     */
+    public boolean addAllVComponents(Collection<VComponent> newVComponents)
+    {
+        return newVComponents.stream().map(v -> addVComponent(v)).allMatch(b -> true);
+    }
+    
+    /** Add a varargs of {@link VComponent} to the correct ObservableList based on
+    * its type, such as VEVENT, VTODO, etc.
+     * 
+     * @param newVComponents  collection of {@link VComponent} to add
+     * @return  true if add was successful, false otherwise
+     */
+    public boolean addAllVComponents(VComponent... newVComponents)
+    {
+        return addAllVComponents(Arrays.asList(newVComponents));
+    }
+
     
     /** Create a VComponent by parsing component text and add it to the appropriate list 
      * @see #addVComponent(VComponent)*/

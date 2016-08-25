@@ -82,17 +82,20 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T>
         {
             dateTimeStart = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_START.toString());
             orderer().registerSortOrderProperty(dateTimeStart);
-            dateTimeStart.addListener((obs) ->
+            dateTimeStart.addListener((obs, oldValue, newValue) ->
             {
-                System.out.println("check DTSTART consistency");
-                checkDTStartConsistency();
+                if (oldValue == null) // only check consistency when first assignment
+                {
+                    System.out.println("check DTSTART consistency");
+                    dateTimeStartListenerHook();
+                }
             });
         }
         return dateTimeStart;
     }
     
     // hook to be overridden in subclasses
-    void checkDTStartConsistency() { }
+    void dateTimeStartListenerHook() { }
     
     public DateTimeStart getDateTimeStart() { return (dateTimeStart == null) ? null : dateTimeStartProperty().get(); }
     private ObjectProperty<DateTimeStart> dateTimeStart;

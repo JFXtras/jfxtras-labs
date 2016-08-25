@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
 public class ExceptionsTest
@@ -77,9 +77,12 @@ public class ExceptionsTest
     }
 
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions1()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         ExceptionDates e = ExceptionDates.parse("20160228T093000");
         e.getValue().add(LocalDateTime.of(2016, 4, 25, 1, 0));
         e.getValue().add(LocalDate.of(2016, 4, 25));
@@ -87,14 +90,28 @@ public class ExceptionsTest
     }
     
     @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions2()
     {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
         ExceptionDates e = new ExceptionDates();
         e.setValue(FXCollections.observableSet(ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles"))));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 5, 1, 0), ZoneId.of("America/New_York")));
         assertEquals(2, e.getValue().size());
+    }
+    
+    @Test (expected = DateTimeException.class)
+    public void canCatchWrongExceptionType1()
+    {
+        Thread.currentThread().setUncaughtExceptionHandler((t1, e) ->
+        {
+            throw (RuntimeException) e;
+        });
+        new VEvent().withExceptionDates(LocalDate.of(2016, 4, 27),
+                LocalDateTime.of(2016, 4, 27, 12, 0));
     }
     
     @Test
