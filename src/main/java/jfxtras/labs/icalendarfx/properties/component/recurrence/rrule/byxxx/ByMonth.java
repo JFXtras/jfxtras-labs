@@ -175,13 +175,14 @@ public class ByMonth extends ByRuleAbstract<Month, ByMonth>
 //    }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         Month[] monthArray = Arrays.asList(content.split(","))
                 .stream()
                 .map(s -> Month.of(Integer.parseInt(s)))
                 .toArray(size -> new Month[size]);
         setValue(FXCollections.observableArrayList(monthArray));
+        return errors();
     }
     
     public static ByMonth parse(String content)

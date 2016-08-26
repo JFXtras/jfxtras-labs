@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public class DateTimeStartTest

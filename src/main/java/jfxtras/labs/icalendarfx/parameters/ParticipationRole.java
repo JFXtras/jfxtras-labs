@@ -20,10 +20,8 @@ import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleTy
  * @author David Bal
  *
  */
-public class ParticipationRole extends ParameterBase<ParticipationRole, ParticipationRoleType>
+public class ParticipationRole extends ParameterEnumBasedWithUnknown<ParticipationRole, ParticipationRoleType>
 {
-    private String unknownValue; // contains exact string for unknown value
-
     public ParticipationRole()
     {
         super(ParticipationRoleType.REQUIRED_PARTICIPANT); // default value
@@ -37,24 +35,6 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     public ParticipationRole(ParticipationRole source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String value = (getValue() == ParticipationRoleType.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(ParticipationRoleType.enumFromName(content));
-        if (getValue() == ParticipationRoleType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
     }
     
     public enum ParticipationRoleType

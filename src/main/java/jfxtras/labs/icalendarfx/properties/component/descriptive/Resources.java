@@ -8,8 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
  * RESOURCES

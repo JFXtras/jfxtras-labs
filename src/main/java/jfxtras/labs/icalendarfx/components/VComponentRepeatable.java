@@ -159,7 +159,7 @@ public interface VComponentRepeatable<T> extends VComponent
 //        System.out.println("bad:" + badType);
         if (nonMatchingType.isPresent())
         {
-            return list.get(0).getPropertyName() + ": Recurrences DateTimeType " + nonMatchingType.get() +
+            return list.get(0).name() + ": Recurrences DateTimeType " + nonMatchingType.get() +
                     " doesn't match DTSTART DateTimeType " + dateTimeStartType; 
         }
         return null;
@@ -224,7 +224,7 @@ public interface VComponentRepeatable<T> extends VComponent
 //        System.out.println("bad:" + badType);
         if (nonMatchingType.isPresent())
         {
-            return list.get(0).getPropertyName() + ": Added recurrences DateTimeType " + nonMatchingType.get() +
+            return list.get(0).name() + ": Added recurrences DateTimeType " + nonMatchingType.get() +
                     " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType;            
         }
         return null;

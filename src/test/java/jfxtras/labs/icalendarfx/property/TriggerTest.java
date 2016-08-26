@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 
 public class TriggerTest

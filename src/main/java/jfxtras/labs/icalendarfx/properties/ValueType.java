@@ -1,7 +1,6 @@
-package jfxtras.labs.icalendarfx.parameters;
+package jfxtras.labs.icalendarfx.properties;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,33 +19,17 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.StringConverters;
 
 public enum ValueType
 {
-    BINARY ("BINARY", Arrays.asList(String.class))
-    {
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                     return (T) string;            
-                }
-            };
-        }
-    },
+    BINARY ("BINARY", Arrays.asList(String.class)),
     BOOLEAN ("BOOLEAN", Arrays.asList(Boolean.class))
     {
         @Override
@@ -63,7 +46,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                         return (T) (Boolean) Boolean.parseBoolean(string);            
+                     return (T) (Boolean) Boolean.parseBoolean(string);            
                 }
             };
         }
@@ -73,29 +56,30 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    try
-                    {
-                        return (T) new URI(string);
-                    } catch (URISyntaxException e)
-                    {
-                        // do nada
-//                        throw e;
-//                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            };
+            return (StringConverter<T>) StringConverters.uriConverterNoQuotes();
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    try
+//                    {
+//                        return (T) new URI(string);
+//                    } catch (URISyntaxException e)
+//                    {
+//                        // do nada
+////                        throw e;
+////                        e.printStackTrace();
+//                    }
+//                    return null;
+//                }
+//            };
         }
     },
     DATE ("DATE", Arrays.asList(LocalDate.class))
@@ -178,20 +162,21 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) new Double(Double.parseDouble(string));
-                }
-            };
+            return (StringConverter<T>) new DoubleStringConverter();
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) new Double(Double.parseDouble(string));
+//                }
+//            };
         }
     },
     INTEGER ("INTEGER", Arrays.asList(Integer.class))
@@ -199,20 +184,21 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) new Integer(Integer.parseInt(string));
-                }
-            };
+            return (StringConverter<T>) new IntegerStringConverter();
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) new Integer(Integer.parseInt(string));
+//                }
+//            };
         }
     },
     PERIOD ("PERIOD", Arrays.asList(List.class))
@@ -342,27 +328,28 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    try
-                    {
-                        return (T) new URI(string);
-                    } catch (URISyntaxException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            };
+            return (StringConverter<T>) StringConverters.uriConverterNoQuotes();
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    try
+//                    {
+//                        return (T) new URI(string);
+//                    } catch (URISyntaxException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
+//                    return null;
+//                }
+//            };
         }
     },
     UTC_OFFSET ("UTC-OFFSET", Arrays.asList(ZoneOffset.class))
@@ -387,26 +374,8 @@ public enum ValueType
         }
     },
     UNKNOWN ("UNKNOWN", Arrays.asList(Object.class))
-    {
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) string;
-                }
-            };
-        }
-    };
+    ;
+    
     final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
     final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', '\n'};
 
@@ -442,7 +411,24 @@ public enum ValueType
     }
 
     /** return default String converter associated with property value type */
-    abstract public <T> StringConverter<T> getConverter();
+    public <T> StringConverter<T> getConverter()
+    {
+        return (StringConverter<T>) new DefaultStringConverter();
+//        return new StringConverter<T>()
+//        {
+//            @Override
+//            public String toString(T object)
+//            {
+//                return object.toString();
+//            }
+//
+//            @Override
+//            public T fromString(String string)
+//            {
+//                 return (T) string;            
+//            }
+//        };
+    }
 //    abstract public <VCalendarElement> StringConverter<VCalendarElement> getConverter();
     public <T> List<String> createErrorList(T value)
     {

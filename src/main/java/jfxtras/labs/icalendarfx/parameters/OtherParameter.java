@@ -6,7 +6,7 @@ package jfxtras.labs.icalendarfx.parameters;
  * @author David Bal
  *
  */
-public class OtherParameter extends ParameterText<OtherParameter>
+public class OtherParameter extends ParameterBase<OtherParameter, String>
 {
     final String name;
     public String getName() { return name; }

@@ -13,8 +13,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 

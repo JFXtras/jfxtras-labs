@@ -18,9 +18,9 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
  * @see Attendee
  * @see Organizer
  */
-public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
+public class CalendarUser extends ParameterEnumBasedWithUnknown<CalendarUser, CalendarUserType>
 {
-    private String unknownValue;
+//    private String unknownValue;
 
     public CalendarUser()
     {
@@ -35,25 +35,6 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     public CalendarUser(CalendarUser source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String value = (getValue() == CalendarUserType.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(CalendarUserType.valueOfWithUnknown(content));
-        if (getValue() == CalendarUserType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
     }
     
     public enum CalendarUserType

@@ -17,7 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
  * @see Attendee
  * @see Organizer
  */
-public class CommonName extends ParameterText<CommonName>
+public class CommonName extends ParameterBase<CommonName, String>
 {
     public CommonName()
     {

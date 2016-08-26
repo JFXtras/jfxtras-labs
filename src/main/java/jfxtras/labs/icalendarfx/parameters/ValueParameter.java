@@ -1,5 +1,9 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.List;
+
+import jfxtras.labs.icalendarfx.properties.ValueType;
+
 /**
  * VALUE
  * Value Date Types
@@ -33,20 +37,14 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     }
     
     @Override
-    public String toContent()
-    {
-        String value = (getValue() == ValueType.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         setValue(ValueType.enumFromName(content));
         if (getValue() == ValueType.UNKNOWN)
         {
             unknownValue = content;
         }
+        return errors();
     } 
 
     public static ValueParameter parse(String content)

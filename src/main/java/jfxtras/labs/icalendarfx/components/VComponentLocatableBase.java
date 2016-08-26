@@ -401,7 +401,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         } else
         {
             throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponent.getClass().getSimpleName() +
-                    " found inside " + componentName() + " component");
+                    " found inside " + name() + " component");
         }        
     }
     

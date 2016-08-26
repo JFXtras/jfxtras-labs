@@ -17,10 +17,8 @@ import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
  * @author David Bal
  *
  */
-public class Relationship extends ParameterBase<Relationship, RelationshipType>
+public class Relationship extends ParameterEnumBasedWithUnknown<Relationship, RelationshipType>
 {
-    private String unknownValue; // contains exact string for unknown value
-
     public Relationship()
     {
         super(RelationshipType.PARENT); // default value
@@ -34,24 +32,6 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
     public Relationship(Relationship source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String value = (getValue() == RelationshipType.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(RelationshipType.valueOfWithUnknown(content));
-        if (getValue() == RelationshipType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
     }
     
     public enum RelationshipType

@@ -30,7 +30,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public class AlternateText extends ParameterURI<AlternateText>
+public class AlternateText extends ParameterBase<AlternateText, URI>
 {
     public AlternateText(URI value)
     {

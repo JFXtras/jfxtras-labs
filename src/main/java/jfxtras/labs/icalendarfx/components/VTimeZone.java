@@ -453,7 +453,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         } else
         {
             throw new IllegalArgumentException("Unsuported subcomponent type:" + subcomponent.getClass().getSimpleName() +
-                  " found inside " + componentName() + " component");
+                  " found inside " + name() + " component");
         }
     }
     

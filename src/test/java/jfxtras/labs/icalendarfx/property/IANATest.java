@@ -33,6 +33,6 @@ public class IANATest
         System.out.println(madeProperty.getValue().getClass());
         assertEquals(expectedProperty, madeProperty);
         assertEquals(12, madeProperty.getValue());
-        assertEquals("TESTPROP2", madeProperty.getPropertyName());
+        assertEquals("TESTPROP2", madeProperty.name());
     }
 }

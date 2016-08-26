@@ -11,10 +11,9 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
@@ -51,7 +50,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     {
         if (timeZoneIdentifier == null)
         {
-            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyParameter.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
             orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
@@ -65,14 +64,14 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
             timeZoneIdentifierProperty().set(timeZoneIdentifier);
         } else
         {
-            throw new DateTimeException(PropertyParameter.TIME_ZONE_IDENTIFIER.toString() + " can't be set for date-time of type " + getValue().getClass().getSimpleName());
+            throw new DateTimeException(ParameterType.TIME_ZONE_IDENTIFIER.toString() + " can't be set for date-time of type " + getValue().getClass().getSimpleName());
         }
     }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(value)); }
     public void setTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
     public U withTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(zone); return (U) this; }
-    public U withTimeZoneIdentifier(String content) { PropertyParameter.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
+    public U withTimeZoneIdentifier(String content) { ParameterType.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
     
     /*
      * CONSTRUCTORS
@@ -165,14 +164,14 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
             {
                 if (getValueType().getValue() != ValueType.DATE)
                 {
-                    errors.add(getPropertyName() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
+                    errors.add(name() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
                             + ").  For that value, the required value type is " + ValueType.DATE);
                 }
             } else if (getValue() instanceof LocalDateTime || getValue() instanceof ZonedDateTime)
             {
                 if (getValueType().getValue() != ValueType.DATE_TIME)
                 {
-                    errors.add(getPropertyName() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
+                    errors.add(name() + "'s value (" + getValue() + ") doesn't match its value type (" + getValueType().getValue()
                             + ").  For that value, the required value type is " + ValueType.DATE_TIME);
                 }                
             }

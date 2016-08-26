@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DateTimeException;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -68,9 +69,10 @@ public class Until extends RRuleElementBase<Temporal, Until>
     }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         setValue(DateTimeUtilities.temporalFromString(content));
+        return errors();
     }
 
     public static Until parse(String content)

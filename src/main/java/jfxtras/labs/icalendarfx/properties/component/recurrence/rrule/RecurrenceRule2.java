@@ -84,6 +84,9 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
+    private static final String NAME = "RRULE";
+    @Override public String name() { return NAME; }
+    
     /** 
      * BYxxx Rules
      * RFC 5545, iCalendar 3.3.10 Page 42
@@ -517,11 +520,9 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     
     /** Parse component from content line */
     @Override
-    public void parseContent(String contentLine)
+    public List<String> parseContent(String contentLine)
     {
         ICalendarUtilities.contentToParameterListPair(contentLine)
-//        ICalendarUtilities.propertyLineToParameterMap(contentLine)
-//                .entrySet()
                 .stream()
                 .forEach(entry ->
                 {
@@ -534,6 +535,7 @@ public class RecurrenceRule2 extends VParentBase implements VChild
                         throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
                     }
                 });
+        return errors();
     }
 
     /**

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 
@@ -541,12 +541,12 @@ public final class DateTimeUtilities
 //        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(string);
         StringBuilder builder = new StringBuilder(50);
         String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        if (map.get(PropertyParameter.TIME_ZONE_IDENTIFIER.toString()) != null)
+        if (map.get(ParameterType.TIME_ZONE_IDENTIFIER.toString()) != null)
         {
             if (value.charAt(value.length()-1) != 'Z')
             {
                 builder.append("[");
-                builder.append(map.get(PropertyParameter.TIME_ZONE_IDENTIFIER.toString()));
+                builder.append(map.get(ParameterType.TIME_ZONE_IDENTIFIER.toString()));
                 builder.append("]");
             }
         }

@@ -12,11 +12,11 @@ import jfxtras.labs.icalendarfx.parameters.Encoding;
 import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
@@ -107,7 +107,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
    {
        if (formatType == null)
        {
-           formatType = new SimpleObjectProperty<>(this, PropertyParameter.FORMAT_TYPE.toString());
+           formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
            orderer().registerSortOrderProperty(formatType);
        }
        return formatType;
@@ -142,7 +142,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
    {
        if (encoding == null)
        {
-           encoding = new SimpleObjectProperty<>(this, PropertyParameter.INLINE_ENCODING.toString());
+           encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
            orderer().registerSortOrderProperty(encoding);
        }
        return encoding;

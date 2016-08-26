@@ -43,12 +43,6 @@ public class Range extends ParameterBase<Range, RangeType>
         super(source);
     }  
     
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(RangeType.enumFromName(content));
-    }
-    
     public enum RangeType
     {
         THIS_AND_FUTURE ("THISANDFUTURE"),

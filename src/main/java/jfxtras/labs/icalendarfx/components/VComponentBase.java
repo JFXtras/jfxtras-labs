@@ -119,7 +119,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     
     final private String componentName;
     @Override
-    public String componentName() { return componentName; }
+    public String name() { return componentName; }
 
     /*
      * CONSTRUCTORS
@@ -154,12 +154,12 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     }
     
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
-        parseContent(content, false);        
+        return parseContent(content, false);        
     }
     
-    public void parseContent(String content, boolean collectErrorMessages)
+    public List<String> parseContent(String content, boolean useRequestStatus)
     {
         if (content == null)
         {
@@ -168,11 +168,11 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         content.indexOf(System.lineSeparator());
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines, false);        
+        return parseContent(unfoldedLines, useRequestStatus);        
     }
 
     @Override
-    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean collectErrorMessages)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useRequestStatus)
     {
         if (unfoldedLineIterator == null)
         {
@@ -186,7 +186,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         {
             throw (RuntimeException) e;
         });
-        List<String> errors = new ArrayList<>();
+        List<String> statusMessages = new ArrayList<>();
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
@@ -195,7 +195,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             // Parse subcomponent
             if (propertyName.equals("BEGIN"))
             {
-                boolean isMainComponent = unfoldedLine.substring(nameEndIndex+1).equals(componentName());
+                boolean isMainComponent = unfoldedLine.substring(nameEndIndex+1).equals(name());
                 if  (! isMainComponent)
                 {
                     String subcomponentName = unfoldedLine.substring(nameEndIndex+1);
@@ -220,14 +220,14 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                                 propertyType.parse(this, unfoldedLine);
                             } catch (Exception e)
                             {
-                                if (collectErrorMessages)
+                                if (useRequestStatus)
                                 {
                                     if (propertyType.isRequired(this))
                                     {
-                                        errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                        statusMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
                                     } else
                                     {
-                                        errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                        statusMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
                                     }
                                 } else
                                 {
@@ -238,17 +238,17 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                         { // exceptions from JavaFX thread
                             if (propertyType.isRequired(this))
                             {
-                                errors.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                statusMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
                             } else
                             {
-                                errors.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                statusMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
                             }
                         }
                     } else
                     {
-                        if (collectErrorMessages)
+                        if (useRequestStatus)
                         {
-                            errors.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
+                            statusMessages.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                         } else
                         {
                             throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
@@ -256,9 +256,9 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     }
                 } else
                 {
-                    if (collectErrorMessages)
+                    if (useRequestStatus)
                     {
-                        errors.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
+                        statusMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                     } else
                     {
                         throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
@@ -266,9 +266,13 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 }
             }
         }
+        if (statusMessages.isEmpty())
+        {
+            statusMessages.add("2.0;Success");
+        }
         t.setUncaughtExceptionHandler(originalExceptionHandler); // return original exception handler
-        errors.stream().forEach(System.out::println);
-        return (collectErrorMessages) ? errors : null;
+        statusMessages.stream().forEach(System.out::println);
+        return statusMessages;
     }
 
     /**

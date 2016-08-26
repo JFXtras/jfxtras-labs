@@ -34,12 +34,6 @@ public class AlarmTriggerRelationship extends ParameterBase<AlarmTriggerRelation
         super(source);
     }
     
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(AlarmTriggerRelationshipType.valueOf(content.toUpperCase()));
-    }
-    
     public enum AlarmTriggerRelationshipType
     {
         START,

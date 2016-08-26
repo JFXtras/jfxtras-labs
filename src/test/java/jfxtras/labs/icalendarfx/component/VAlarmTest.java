@@ -26,7 +26,7 @@ public class VAlarmTest
                 .withDuration(Period.ofDays(-2))
                 .withTrigger(Duration.ofMinutes(-15))
                 .withRepeatCount(new RepeatCount(2));
-        String componentName = builtComponent.componentName();
+        String componentName = builtComponent.name();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "ACTION:DISPLAY" + System.lineSeparator() +

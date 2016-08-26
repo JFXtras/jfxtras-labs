@@ -45,12 +45,6 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
         super(source);
     }
     
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(EncodingType.enumFromName(content));
-    }
-    
     public enum EncodingType
     {
         EIGHT_BIT ("8BIT"),

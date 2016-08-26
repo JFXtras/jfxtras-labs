@@ -54,8 +54,10 @@ public class VCalendar extends VParentBase
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
-    private static final String FIRST_CONTENT_LINE = "BEGIN:VCALENDAR";
-    private static final String LAST_CONTENT_LINE = "END:VCALENDAR";
+    private static final String NAME = "VCALENDAR";
+    @Override public String name() { return NAME; }
+    private static final String FIRST_CONTENT_LINE = "BEGIN:" + NAME;
+    private static final String LAST_CONTENT_LINE = "END:" + NAME;
     
     /*
      * Calendar properties
@@ -843,12 +845,19 @@ public class VCalendar extends VParentBase
     }
     
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        parseContent(unfoldedLines);
+        return parseContent(unfoldedLines);
     }
+    
+//    public List<String> parseContent(String content)
+//    {
+//        List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+//        parseContent(unfoldedLines);
+//    }
     
 //    /** Parse folded content lines into calendar object */
 //    public void parseContent(List<String> unfoldedLineIterator)
@@ -883,17 +892,17 @@ public class VCalendar extends VParentBase
 //    }
 
     /** Parse unfolded content lines into calendar object */
-    public void parseContent(Iterator<String> unfoldedLineIterator)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator)
     {
         boolean useResourceStatus = false;
-        parseContent(unfoldedLineIterator, useResourceStatus);
+        return parseContent(unfoldedLineIterator, useResourceStatus);
     }
 
     
     /** Parse unfolded content lines into calendar object */
-    public void parseContent(Iterator<String> unfoldedLineIterator, boolean useResourceStatus)
+    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useResourceStatus)
     {
-//        List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
         String firstLine = unfoldedLineIterator.next();
         if (! firstLine.equals("BEGIN:VCALENDAR"))
         {
@@ -911,14 +920,16 @@ public class VCalendar extends VParentBase
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
 //                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
                 VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
-                newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
+                List<String> myErrors = newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
                 addVComponent(newComponent);
+                errors.addAll(myErrors);
             } else
             { // parse calendar property
+                VChild child = null;
                 CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
                 if (elementType != null)
                 {
-                    elementType.parse(this, unfoldedLine);
+                    child = elementType.parse(this, unfoldedLine);
                 } else if (unfoldedLine.contains(":"))
                 {
                     //non-standard
@@ -926,14 +937,16 @@ public class VCalendar extends VParentBase
                     boolean isIANA = IANAProperty.isIANAProperty(propertyName);
                     if (isNonStandard)
                     {
-                        CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);
+                        child = CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);
                     } else if (isIANA)
                     {
-                        CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
+                        child = CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
                     }
-                } // else ignore unknown line
+                }
+                if (child != null) errors.addAll(child.errors());
             }
         }
+        return errors;
     }
 
 //    // multi threaded

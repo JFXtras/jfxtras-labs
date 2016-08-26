@@ -22,9 +22,8 @@ import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -106,7 +105,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     /** The name of the property, such as DESCRIPTION
      * Remains the default value unless set by a non-standard property*/
     @Override
-    public String getPropertyName()
+    public String name()
     {
         return propertyName.get();
     }
@@ -176,7 +175,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     public ValueParameter getValueType() { return valueType.get(); }
     @Override
     public ObjectProperty<ValueParameter> valueTypeProperty() { return valueType; }
-    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, PropertyParameter.VALUE_DATA_TYPES.toString());
+    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, ParameterType.VALUE_DATA_TYPES.toString());
     @Override
     public void setValueType(ValueParameter valueType)
     {
@@ -273,7 +272,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     {        
         return (child) ->
         {
-            PropertyParameter type = PropertyParameter.enumFromClass(child.getClass());
+            ParameterType type = ParameterType.enumFromClass(child.getClass());
             type.copyParameter((Parameter<?>) child, this);
             return null;
         };
@@ -294,8 +293,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
      * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
      */ 
-    @Override
-    public StringConverter<T> getConverter()
+    protected StringConverter<T> getConverter()
     {
         if (converter == null)
         {
@@ -305,8 +303,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         return converter;
     }
     private StringConverter<T> converter;
-    @Override
-    public void setConverter(StringConverter<T> converter) { this.converter = converter; }
+    protected void setConverter(StringConverter<T> converter) { this.converter = converter; }
     private boolean isCustomConverter()
     {
         return converter != null;
@@ -345,7 +342,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         copyChildrenFrom(source);
         T valueCopy = copyValue(source.getValue());
         setValue(valueCopy);
-        setPropertyName(source.getPropertyName());
+        setPropertyName(source.name());
     }
     
     // constructor with only value parameter
@@ -369,7 +366,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     
     /** Parse content line into calendar property */
     @Override
-    public void parseContent(String contentLine)
+    public List<String> parseContent(String contentLine)
     {
         // perform tests, make changes if necessary
         final String propertyValue;
@@ -416,7 +413,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         list.stream()
             .forEach(entry ->
             {
-                PropertyParameter parameterType = PropertyParameter.enumFromName(entry.getKey());
+                ParameterType parameterType = ParameterType.enumFromName(entry.getKey());
                 boolean isAllowed = propertyType().allowedParameters().contains(parameterType);
                 if (parameterType != null && isAllowed)
                 {
@@ -446,7 +443,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    PropertyParameter.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
+                    ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
         
@@ -454,6 +451,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         {
             throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
         }
+        return errors();
     }
     
     @Override
@@ -462,7 +460,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         List<String> errors = new ArrayList<>();
         if (getValue() == null)
         {
-            errors.add(getPropertyName() + " value is null.  The property MUST have a value."); 
+            errors.add(name() + " value is null.  The property MUST have a value."); 
         }
         final ValueType valueType;
         if (getValueType() != null)
@@ -471,7 +469,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             boolean isValueTypeOK = isValueTypeValid(valueType);
             if (! isValueTypeOK)
             {
-                errors.add(getPropertyName() + " value type " + getValueType().getValue() + " is not supported.  Supported types include:" +
+                errors.add(name() + " value type " + getValueType().getValue() + " is not supported.  Supported types include:" +
                         propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
             }
         } else
@@ -519,7 +517,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         if (! parametersEquals) return false;
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
         boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
-        boolean nameEquals = getPropertyName().equals(testObj.getPropertyName());
+        boolean nameEquals = name().equals(testObj.name());
         return valueEquals && parametersEquals && nameEquals;
     }
 

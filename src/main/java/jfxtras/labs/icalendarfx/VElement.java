@@ -11,6 +11,17 @@ import java.util.List;
 public interface VElement
 {
     /**
+     * <p>Returns the name of the component as it would appear in the iCalendar content line.</p>
+     * <p>Examples:
+     * <ul>
+     * <li>VEVENT
+     * <li>VJOURNAL
+     * </ul>
+     * </p>
+     * @return - the component name
+     */
+    String name();
+    /**
      * Returns iCalendar content text.
      * 
      * @return the content string
@@ -23,7 +34,7 @@ public interface VElement
      * @param content  calendar content string to parse
      * @throws IllegalArgumentException  if calendar content is not valid, such as null
      */
-    void parseContent(String content) throws IllegalArgumentException;
+    List<String> parseContent(String content) throws IllegalArgumentException;
     
     /**
      * Checks element to determine if necessary properties are set.

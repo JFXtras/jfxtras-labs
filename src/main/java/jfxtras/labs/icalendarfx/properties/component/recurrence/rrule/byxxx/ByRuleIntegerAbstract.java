@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -76,12 +77,13 @@ public abstract class ByRuleIntegerAbstract<U> extends ByRuleAbstract<Integer, U
     }
     
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         Integer[] monthDayArray = Arrays.asList(content.split(","))
                 .stream()
                 .map(s -> Integer.parseInt(s))
                 .toArray(size -> new Integer[size]);
         setValue(FXCollections.observableArrayList(monthDayArray));
+        return errors();
     }
 }

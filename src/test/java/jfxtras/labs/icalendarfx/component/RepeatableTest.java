@@ -117,7 +117,7 @@ public class RepeatableTest //extends Application
         
         for (VComponentRepeatable<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentName();            
+            String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "RDATE;VALUE=DATE:20160504,20160508,20160509" + System.lineSeparator() +
                     "RDATE;VALUE=DATE:20160415,20160416,20160417" + System.lineSeparator() +

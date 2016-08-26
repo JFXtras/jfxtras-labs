@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;

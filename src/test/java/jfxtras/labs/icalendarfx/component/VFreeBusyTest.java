@@ -20,7 +20,7 @@ public class VFreeBusyTest
                 .withContact("CONTACT:Harry Potter\\, Hogwarts\\, by owl")
                 .withDateTimeEnd(LocalDate.of(2016, 4, 26))
                 .withFreeBusyTime("FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M");
-        String componentName = builtComponent.componentName();
+        String componentName = builtComponent.name();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "CONTACT:Harry Potter\\, Hogwarts\\, by owl" + System.lineSeparator() +

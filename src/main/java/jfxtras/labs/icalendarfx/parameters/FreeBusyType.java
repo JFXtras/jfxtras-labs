@@ -21,10 +21,8 @@ import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
  * @author David Bal
  * @see FreeBusyTime
  */
-public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
+public class FreeBusyType extends ParameterEnumBasedWithUnknown<FreeBusyType, FreeBusyTypeEnum>
 {
-    private String unknownValue; // contains exact string for unknown value
-
     /** set BUSY as default FreeBusy type value */
     public FreeBusyType()
     {
@@ -39,24 +37,6 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     public FreeBusyType(FreeBusyType source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String value = (getValue() == FreeBusyTypeEnum.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(FreeBusyTypeEnum.enumFromName(content));
-        if (getValue() == FreeBusyTypeEnum.UNKNOWN)
-        {
-            unknownValue = content;
-        }
     }
     
     public enum FreeBusyTypeEnum

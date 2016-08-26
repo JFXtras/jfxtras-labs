@@ -10,8 +10,8 @@ import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 

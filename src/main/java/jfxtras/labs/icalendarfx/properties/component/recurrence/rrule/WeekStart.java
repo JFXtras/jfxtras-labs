@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Week Start
@@ -47,12 +48,13 @@ public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
     }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         DayOfWeek dayOfWeek = Arrays.stream(DayOfWeek.values())
             .filter(d -> d.toString().substring(0, 2).equals(content))
             .findAny()
             .get();
         setValue(dayOfWeek);
+        return errors();
     }
 }

@@ -20,10 +20,8 @@ import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStat
  * @author David Bal
  *
  */
-public class ParticipationStatus extends ParameterBase<ParticipationStatus, ParticipationStatusType>
+public class ParticipationStatus extends ParameterEnumBasedWithUnknown<ParticipationStatus, ParticipationStatusType>
 {
-    private String unknownValue; // contains exact string for unknown value
-
     /** Set NEEDS-ACTION as default value */
     public ParticipationStatus()
     {
@@ -35,36 +33,9 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
         super(value);
     }
     
-    public ParticipationStatus(String content)
-    {
-        super(ParticipationStatusType.enumFromName(content));
-        if (getValue() == ParticipationStatusType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-    }
-
     public ParticipationStatus(ParticipationStatus source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String value = (getValue() == ParticipationStatusType.UNKNOWN) ? unknownValue : getValue().toString();
-        return valueToContent(value);
-    }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(ParticipationStatusType.enumFromName(content));
-        if (getValue() == ParticipationStatusType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
     }
     
     public enum ParticipationStatusType

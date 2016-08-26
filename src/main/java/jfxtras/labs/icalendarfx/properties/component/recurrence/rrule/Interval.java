@@ -47,9 +47,10 @@ public class Interval extends RRuleElementBase<Integer, Interval>
     }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         setValue(Integer.parseInt(content));
+        return errors();
     }
 
     public static Interval parse(String content)

@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
+import java.util.List;
+
 /**
  * COUNT:
  * RFC 5545 iCalendar 3.3.10, page 41
@@ -36,9 +38,10 @@ public class Count extends RRuleElementBase<Integer, Count>
     }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         setValue(Integer.parseInt(content));
+        return errors();
     }
 
     public static Count parse(String content)

@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.properties;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
@@ -19,13 +18,13 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  */
 public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
 {    
-    /**
-     * Property Name
-     * 
-     * The name of the property, such as DESCRIPTION
-     * Remains the default value from {@link #PropertyEnum} unless set by a non-standard property
-     * */
-    String getPropertyName();
+//    /**
+//     * Property Name
+//     * 
+//     * The name of the property, such as DESCRIPTION
+//     * Remains the default value from {@link #PropertyEnum} unless set by a non-standard property
+//     * */
+//    String name();
     /**
      * The value of the property.
      * 
@@ -57,6 +56,7 @@ public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
     /** Set the value type */
     void setValueType(ValueParameter value);
 
+    // TODO - make non-standard parameter as regular parameter
     /**
      * Non-standard parameters
      * 
@@ -77,62 +77,23 @@ public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
      */
     PropertyType propertyType();
 
-    /**
-     * Get the property's value string converter.  There is a default converter in ValueType associated
-     * with the default value type of the property.  For most value types that converter is
-     * acceptable.  However, for the TEXT value type it often needs to be replaced.
-     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
-     * ZoneId.  A different converter is required to make the conversion to ZoneId.
-     * 
-     * @return the string converter for this property
-     */
-    StringConverter<T> getConverter();
-    /**
-     * Set the property's value string converter.  There is a default converter in ValueType associated
-     * with the default value type of the property.  For most value types that converter is
-     * acceptable.  However, for the TEXT value type it often needs to be replaced.
-     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
-     * ZoneId.  A different converter is required to make the conversion to ZoneId.
-     * This method can replace the default converter. 
-     */
-    void setConverter(StringConverter<T> converter);
-    
 //    /**
-//     * List of all parameter enums found in property.
-//     * The list is unmodifiable.
+//     * Get the property's value string converter.  There is a default converter in ValueType associated
+//     * with the default value type of the property.  For most value types that converter is
+//     * acceptable.  However, for the TEXT value type it often needs to be replaced.
+//     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+//     * ZoneId.  A different converter is required to make the conversion to ZoneId.
 //     * 
-//     * @return - the list of parameter enums
+//     * @return the string converter for this property
 //     */
-//    List<ParameterType> parameterEnums();
-    
+//    StringConverter<T> getConverter();
 //    /**
-//     * List of all properties found in component.
-//     * The list is unmodifiable.
-//     * 
-//     * @return - the list of parameters
+//     * Set the property's value string converter.  There is a default converter in ValueType associated
+//     * with the default value type of the property.  For most value types that converter is
+//     * acceptable.  However, for the TEXT value type it often needs to be replaced.
+//     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+//     * ZoneId.  A different converter is required to make the conversion to ZoneId.
+//     * This method can replace the default converter. 
 //     */
-//    @Deprecated
-//    default List<Object> parameters()
-//    {
-//        return Collections.unmodifiableList(
-//                parameterEnums().stream()
-//                    .map(e -> e.getParameter(this))
-//                    .collect(Collectors.toList()));
-//    }
-    
-//    /**
-//     * Converts the property's value to a string for the content line
-//     * 
-//     * @return - string representation of property value consistent with iCalendar standards
-//     */
-//    @Override
-//    String toContent();
-//    
-//    /** Parse content line into calendar property */
-//    public void parseContent(String contentLine);
-    
-//    /**
-//     * tests if property's value and parameters are valid
-//     */
-//    default boolean isValid() { return getValue() != null; }
+//    void setConverter(StringConverter<T> converter);
 }

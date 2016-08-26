@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -196,9 +197,10 @@ public class Frequency extends RRuleElementBase<FrequencyType, Frequency>
     }
 
     @Override
-    public void parseContent(String content)
+    public List<String> parseContent(String content)
     {
         setValue(FrequencyType.valueOf(content.toUpperCase()));
+        return errors();
     }
     
     public static Frequency parse(String content)

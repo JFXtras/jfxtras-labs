@@ -63,7 +63,7 @@ public class DescribableTest
         
         for (VComponentDescribable<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentName();            
+            String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW" + System.lineSeparator() +
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
@@ -92,7 +92,7 @@ public class DescribableTest
         
         for (VComponentDescribable2<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentName();
+            String componentName = builtComponent.name();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "DESCRIPTION:Sample description" + System.lineSeparator() +
                     "END:" + componentName;

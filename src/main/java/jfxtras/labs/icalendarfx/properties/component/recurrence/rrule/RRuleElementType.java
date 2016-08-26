@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.VElement;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMinute;
@@ -506,7 +506,7 @@ public enum RRuleElementType
         RRuleElementType p = enumFromClassMap.get(myClass);
         if (p == null)
         {
-            throw new IllegalArgumentException(PropertyParameter.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+            throw new IllegalArgumentException(ParameterType.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
         }
         return p;
     }

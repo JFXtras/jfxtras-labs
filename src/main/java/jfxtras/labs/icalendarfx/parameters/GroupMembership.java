@@ -17,7 +17,7 @@ import java.util.List;
  * @author David Bal
  *
  */
-public class GroupMembership extends ParameterURIList<GroupMembership>
+public class GroupMembership extends ParameterBase<GroupMembership, List<URI>>
 {
     public GroupMembership(List<URI> values)
     {

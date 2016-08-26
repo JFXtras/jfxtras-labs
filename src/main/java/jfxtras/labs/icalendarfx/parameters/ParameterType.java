@@ -6,7 +6,16 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
+import jfxtras.labs.icalendarfx.parameters.CalendarUser.CalendarUserType;
+import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
+import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
+import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleType;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
+import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
+import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyAltText;
@@ -19,7 +28,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyDateTime;
 import jfxtras.labs.icalendarfx.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
+import jfxtras.labs.icalendarfx.utilities.StringConverters;
 
 /**
  * For each VComponent property parameter (RFC 5545, 3.2, page 13) contains the following: <br>
@@ -33,7 +44,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCa
  * @author David Bal
  *
  */
-public enum PropertyParameter
+public enum ParameterType
 {
     // in properties COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES
     ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateText.class) {
@@ -50,15 +61,12 @@ public enum PropertyParameter
             PropertyAltText<?> castProperty = (PropertyAltText<?>) parent;
             return castProperty.getAlternateText();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBaseAltText<?,?> castSource = (PropertyBaseAltText<?,?>) source;
-//            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
-//            AlternateText parameter = new AlternateText(castSource.getAlternateText());
-//            castDestination.setAlternateText(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriConverterWithQuotes();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -84,15 +92,6 @@ public enum PropertyParameter
             return castProperty.getCommonName();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
-//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-//            CommonName parameter = new CommonName(castSource.getCommonName());
-//            castDestination.setCommonName(parameter);
-//        }
-
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -117,15 +116,25 @@ public enum PropertyParameter
             return castProperty.getCalendarUser();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            CalendarUser parameter = new CalendarUser(castSource.getCalendarUser());
-//            castDestination.setCalendarUser(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((CalendarUserType) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) CalendarUserType.valueOfWithUnknown(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -149,15 +158,12 @@ public enum PropertyParameter
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getDelegators();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            Delegators parameter = new Delegators(castSource.getDelegators());
-//            castDestination.setDelegators(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriListConverter();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -183,14 +189,11 @@ public enum PropertyParameter
             return castProperty.getDelegatees();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            Delegatees parameter = new Delegatees(castSource.getDelegatees());
-//            castDestination.setDelegatees(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriListConverter();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -215,15 +218,12 @@ public enum PropertyParameter
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
-//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-//            DirectoryEntryReference parameter = new DirectoryEntryReference(castSource.getDirectoryEntryReference());
-//            castDestination.setDirectoryEntryReference(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriConverterWithQuotes();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -248,15 +248,25 @@ public enum PropertyParameter
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getEncoding();
         }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((EncodingType) object).toString();
+                }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
-//            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
-//            Encoding parameter = new Encoding(castSource.getEncoding());
-//            castDestination.setEncoding(parameter);
-//        }
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) EncodingType.enumFromName(string);
+                }
+            };
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -282,15 +292,6 @@ public enum PropertyParameter
             return castProperty.getFormatType();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
-//            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
-//            FormatType parameter = new FormatType(castSource.getFormatType());
-//            castDestination.setFormatType(parameter);
-//        }
-
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -315,15 +316,25 @@ public enum PropertyParameter
             return castProperty.getFreeBusyType();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyFreeBusy<?> castSource = (PropertyFreeBusy<?>) source;
-//            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
-//            FreeBusyType parameter = new FreeBusyType(castSource.getFreeBusyType());
-//            castDestination.setFreeBusyType(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((FreeBusyTypeEnum) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) FreeBusyTypeEnum.enumFromName(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -347,15 +358,6 @@ public enum PropertyParameter
             PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?,?>) parent;
             return castProperty.getLanguage();
         }
-        
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBaseLanguage<?,?> castSource = (PropertyBaseLanguage<?,?>) source;
-//            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
-//            Language parameter = new Language(castSource.getLanguage());
-//            castDestination.setLanguage(parameter);
-//        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -379,15 +381,12 @@ public enum PropertyParameter
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getGroupMembership();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
-//            castDestination.setGroupMembership(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriListConverter();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -449,15 +448,25 @@ public enum PropertyParameter
             return castProperty.getParticipationStatus();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            ParticipationStatus parameter = new ParticipationStatus(castSource.getParticipationStatus());
-//            castDestination.setParticipationStatus(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((ParticipationStatusType) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) ParticipationStatusType.enumFromName(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -481,15 +490,25 @@ public enum PropertyParameter
             return castProperty.getRange();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyRecurrenceID<?> castSource = (PropertyRecurrenceID<?>) source;
-//            PropertyRecurrenceID<?> castDestination = (PropertyRecurrenceID<?>) destination;
-//            Range parameter = new Range(castSource.getRange());
-//            castDestination.setRange(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((RangeType) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) RangeType.enumFromName(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -513,15 +532,25 @@ public enum PropertyParameter
             return castProperty.getAlarmTrigger();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAlarmTrigger<?> castSource = (PropertyAlarmTrigger<?>) source;
-//            PropertyAlarmTrigger<?> castDestination = (PropertyAlarmTrigger<?>) destination;
-//            AlarmTriggerRelationship parameter = new AlarmTriggerRelationship(castSource.getAlarmTrigger());
-//            castDestination.setAlarmTrigger(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((AlarmTriggerRelationshipType) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) AlarmTriggerRelationshipType.valueOf(string.toUpperCase());
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -545,15 +574,26 @@ public enum PropertyParameter
             return castProperty.getRelationship();
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyRelationship<?> castSource = (PropertyRelationship<?>) source;
-//            PropertyRelationship<?> castDestination = (PropertyRelationship<?>) destination;
-//            Relationship parameter = new Relationship(castSource.getRelationship());
-//            castDestination.setRelationship(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((RelationshipType) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) RelationshipType.valueOfWithUnknown(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -576,15 +616,25 @@ public enum PropertyParameter
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getParticipationRole();
         }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((ParticipationRoleType) object).toString();
+                }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            ParticipationRole parameter = new ParticipationRole(castSource.getParticipationRole());
-//            castDestination.setParticipationRole(parameter);
-//        }
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) ParticipationRoleType.enumFromName(string);
+                }
+            };
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -608,16 +658,13 @@ public enum PropertyParameter
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getRSVP();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            RSVP parameter = new RSVP(castSource.getRSVP());
-//            castDestination.setRSVP(parameter);
-//        }
-
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.booleanConverter();
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -640,15 +687,12 @@ public enum PropertyParameter
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) parent;
             return castProperty.getSentBy();
         }
-
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
-//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-//            SentBy parameter = new SentBy(castSource.getSentBy());
-//            castDestination.setSentBy(parameter);
-//        }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.uriConverterWithQuotes();
+        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -672,18 +716,27 @@ public enum PropertyParameter
             PropertyDateTime<?> castProperty = (PropertyDateTime<?>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
-//            return parameter;
         }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyDateTime<?> castSource = (PropertyDateTime<?>) source;
-//            PropertyDateTime<?> castDestination = (PropertyDateTime<?>) destination;
-//            TimeZoneIdentifierParameter parameter = new TimeZoneIdentifierParameter(castSource.getTimeZoneIdentifier());
-//            castDestination.setTimeZoneIdentifier(parameter);
-//        }
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((ZoneId) object).toString();
+                }
 
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) ZoneId.of(string);
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -714,16 +767,26 @@ public enum PropertyParameter
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
             return castProperty.getValueType();
         }
+        
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ((ValueType) object).toString();
+                }
 
-//        @Override
-//        public void copyParameter(Property<?> source, Property<?> destination)
-//        {
-//            PropertyBase<?,?> castSource = (PropertyBase<?,?>) source;
-//            PropertyBase<?,?> castDestination = (PropertyBase<?,?>) destination;
-//            ValueParameter parameter = new ValueParameter(castSource.getValueType());
-//            castDestination.setValueType(parameter);
-//        }
-
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) ValueType.valueOf(string.toUpperCase());
+                }
+            };
+        }
+        
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
@@ -734,28 +797,28 @@ public enum PropertyParameter
     };
     
     // Map to match up name to enum
-    private static Map<String, PropertyParameter> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, PropertyParameter> makeEnumFromNameMap()
+    private static Map<String, ParameterType> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, ParameterType> makeEnumFromNameMap()
     {
-        Map<String, PropertyParameter> map = new HashMap<>();
-        PropertyParameter[] values = PropertyParameter.values();
+        Map<String, ParameterType> map = new HashMap<>();
+        ParameterType[] values = ParameterType.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static PropertyParameter enumFromName(String propertyName)
+    public static ParameterType enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends Parameter<?>>, PropertyParameter> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends Parameter<?>>, PropertyParameter> makeEnumFromClassMap()
+    private static Map<Class<? extends Parameter<?>>, ParameterType> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends Parameter<?>>, ParameterType> makeEnumFromClassMap()
     {
-        Map<Class<? extends Parameter<?>>, PropertyParameter> map = new HashMap<>();
-        PropertyParameter[] values = PropertyParameter.values();
+        Map<Class<? extends Parameter<?>>, ParameterType> map = new HashMap<>();
+        ParameterType[] values = ParameterType.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].myClass, values[i]);
@@ -763,12 +826,12 @@ public enum PropertyParameter
         return map;
     }
     /** get enum from map */
-    public static PropertyParameter enumFromClass(Class<? extends VElement> myClass)
+    public static ParameterType enumFromClass(Class<? extends VElement> myClass)
     {
-        PropertyParameter p = enumFromClassMap.get(myClass);
+        ParameterType p = enumFromClassMap.get(myClass);
         if (p == null)
         {
-            throw new IllegalArgumentException(PropertyParameter.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+            throw new IllegalArgumentException(ParameterType.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
         }
         return p;
     }
@@ -777,7 +840,7 @@ public enum PropertyParameter
     private Class<? extends Parameter<?>> myClass;
     @Override  public String toString() { return name; }
 //    private Class<? extends Property> propertyClasses[];
-    PropertyParameter(String name, Class<? extends Parameter<?>> myClass)
+    ParameterType(String name, Class<? extends Parameter<?>> myClass)
     {
         this.name = name;
         this.myClass = myClass;
@@ -816,17 +879,24 @@ public enum PropertyParameter
     // TODO - MAY BE OBSOLETE WITH USE OF ORDERER - ONLY BEING USED TO DOUBLE-CHECK EXISTANCE OF ALL PARAMETERS WHEN COPYING
     abstract public Object getParameter(Property<?> parent);
     
-//    /** copies the associated parameter from the source property to the destination property */
-//    @Deprecated
-//    public void copyParameter(Property<?>  source, Property<?> destination)
-//    {
-//        throw new RuntimeException("not implemented");        
-//    }
+    /** return default String converter associated with property value type */
+    public <T> StringConverter<T> getConverter()
+    {
+        return (StringConverter<T>) new StringConverter<String>()
+        {
+            @Override
+            public String toString(String object)
+            {
+                return object.toString();
+            }
 
+            @Override
+            public String fromString(String string)
+            {
+                return StringConverters.removeDoubleQuote(string);
+            }
+        };
+    }
     
     abstract public void copyParameter(Parameter<?> child, Property<?> destination);
-//    {
-//        // TODO Auto-generated method stub
-//        throw new RuntimeException("not implemented");
-//    }
 }

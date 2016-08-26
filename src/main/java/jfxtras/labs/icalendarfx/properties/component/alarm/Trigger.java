@@ -9,11 +9,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
  * TRIGGER
@@ -49,7 +49,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
    {
        if (relationship == null)
        {
-           relationship = new SimpleObjectProperty<>(this, PropertyParameter.ALARM_TRIGGER_RELATIONSHIP.toString());
+           relationship = new SimpleObjectProperty<>(this, ParameterType.ALARM_TRIGGER_RELATIONSHIP.toString());
            orderer().registerSortOrderProperty(relationship);
        }
        return relationship;

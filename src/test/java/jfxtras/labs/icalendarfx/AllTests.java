@@ -18,8 +18,8 @@ import jfxtras.labs.icalendarfx.component.DisplayableTest;
 import jfxtras.labs.icalendarfx.component.EqualsTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
 import jfxtras.labs.icalendarfx.component.LocatableTest;
-import jfxtras.labs.icalendarfx.component.ParseIteratorTest;
 import jfxtras.labs.icalendarfx.component.ParseContentTest;
+import jfxtras.labs.icalendarfx.component.ParseIteratorTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.RecurrenceIDComponentEditTest;
@@ -33,10 +33,13 @@ import jfxtras.labs.icalendarfx.component.VFreeBusyTest;
 import jfxtras.labs.icalendarfx.component.VJournalTest;
 import jfxtras.labs.icalendarfx.component.VTimeZoneTest;
 import jfxtras.labs.icalendarfx.component.VTodoTest;
+import jfxtras.labs.icalendarfx.parameter.AlternateTextRepresentationTest;
+import jfxtras.labs.icalendarfx.parameter.CommonNameTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
 import jfxtras.labs.icalendarfx.parameter.DirectoryEntryReferenceTest;
 import jfxtras.labs.icalendarfx.parameter.ParseDateTest;
 import jfxtras.labs.icalendarfx.parameter.ParseParameterTest;
+import jfxtras.labs.icalendarfx.parameter.ParticipationRoleTest;
 import jfxtras.labs.icalendarfx.property.ActionTest;
 import jfxtras.labs.icalendarfx.property.AttachmentTest;
 import jfxtras.labs.icalendarfx.property.AttendeeTest;
@@ -63,6 +66,7 @@ import jfxtras.labs.icalendarfx.property.PriorityTest;
 import jfxtras.labs.icalendarfx.property.RecurrenceIdTest;
 import jfxtras.labs.icalendarfx.property.RecurrenceRuleTest;
 import jfxtras.labs.icalendarfx.property.RecurrencesTest;
+import jfxtras.labs.icalendarfx.property.RelatedToTest;
 import jfxtras.labs.icalendarfx.property.RepeatCountTest;
 import jfxtras.labs.icalendarfx.property.RequestStatusTest;
 import jfxtras.labs.icalendarfx.property.ResourcesTest;
@@ -153,6 +157,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         RecurrenceRuleTest.class,
         RecurrenceRuleParseTest.class,
         RecurrencesTest.class,
+        RelatedToTest.class,
         RepeatCountTest.class,
         RequestStatusTest.class,
         ResourcesTest.class,
@@ -169,10 +174,13 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         URLTest.class,
         
         // parameter tests
+        AlternateTextRepresentationTest.class,
+        CommonNameTest.class,
         DelegateesTest.class,
         DirectoryEntryReferenceTest.class,
         ParseDateTest.class,
         ParseParameterTest.class,
+        ParticipationRoleTest.class,
         
         // Recurrence Rule tests
         RecurrenceRuleParseTest.class,

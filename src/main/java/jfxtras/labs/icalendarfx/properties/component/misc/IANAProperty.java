@@ -69,7 +69,7 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
     @Override
     public boolean isValid()
     {
-        return REGISTERED_IANA_PROPERTY_NAMES.contains(getPropertyName()) && super.isValid();
+        return REGISTERED_IANA_PROPERTY_NAMES.contains(name()) && super.isValid();
     }
     
     public static IANAProperty parse(String value)

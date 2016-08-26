@@ -8,7 +8,7 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public enum CalendarProperty
 {
     CALENDAR_SCALE ("CALSCALE",
-            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER),
              CalendarScale.class)
     {
         @Override
@@ -47,7 +47,7 @@ public enum CalendarProperty
     },
     // Miscellaneous
     IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
-            Arrays.asList(PropertyParameter.values()), // all parameters allowed
+            Arrays.asList(ParameterType.values()), // all parameters allowed
             IANAProperty.class) // property class
     {
 
@@ -85,7 +85,7 @@ public enum CalendarProperty
 
     },
     METHOD ("METHOD",
-            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER),
             Method.class)
     {
         @Override
@@ -113,7 +113,7 @@ public enum CalendarProperty
     },
     // Miscellaneous
     NON_STANDARD ("X-", // property name (begins with X- prefix)
-            Arrays.asList(PropertyParameter.values()), // all parameters allowed
+            Arrays.asList(ParameterType.values()), // all parameters allowed
             NonStandardProperty.class) // property class
     {
 
@@ -152,7 +152,7 @@ public enum CalendarProperty
     },
     
     PRODUCT_IDENTIFIER ("PRODID",
-            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER),
             ProductIdentifier.class)
     {
         @Override
@@ -179,7 +179,7 @@ public enum CalendarProperty
         }
     },
     VERSION ("VERSION",
-            Arrays.asList(PropertyParameter.VALUE_DATA_TYPES, PropertyParameter.OTHER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.OTHER),
             Version.class)
     {
         @Override
@@ -248,10 +248,10 @@ public enum CalendarProperty
     @Override
     public String toString() { return name; }
     
-    private List<PropertyParameter> allowedParameters;
-    public List<PropertyParameter> allowedParameters() { return allowedParameters; }
+    private List<ParameterType> allowedParameters;
+    public List<ParameterType> allowedParameters() { return allowedParameters; }
 
-    CalendarProperty(String name, List<PropertyParameter> allowedParameters, Class<? extends VElement> myClass)
+    CalendarProperty(String name, List<ParameterType> allowedParameters, Class<? extends VElement> myClass)
     {
         this.name = name;
         this.allowedParameters = allowedParameters;

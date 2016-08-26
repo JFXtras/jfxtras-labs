@@ -82,17 +82,17 @@ import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
  */
 public interface VComponent extends VParent, VChild
 {
-    /**
-     * <p>Returns the name of the component as it would appear in the iCalendar content line.</p>
-     * <p>Examples:
-     * <ul>
-     * <li>VEVENT
-     * <li>VJOURNAL
-     * </ul>
-     * </p>
-     * @return - the component enum
-     */
-    String componentName();
+//    /**
+//     * <p>Returns the name of the component as it would appear in the iCalendar content line.</p>
+//     * <p>Examples:
+//     * <ul>
+//     * <li>VEVENT
+//     * <li>VJOURNAL
+//     * </ul>
+//     * </p>
+//     * @return - the component enum
+//     */
+//    String name();
     
     /**
      * <p>Returns content line for a calendar component.  See RFC 5545 3.4

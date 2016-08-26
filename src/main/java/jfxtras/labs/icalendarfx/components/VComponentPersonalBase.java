@@ -423,19 +423,13 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useRequestStatus)
     {
-        List<String> statusErrors = super.parseContent(unfoldedLineIterator, useRequestStatus);
-        if (statusErrors != null)
-        {
-            if (statusErrors.isEmpty())
-            {
-                withRequestStatus("2.0;Success");
-            } else
-            { // Set REQUEST-STATUS for each message
-                setRequestStatus(FXCollections.observableArrayList());
-                statusErrors.stream().forEach(e -> getRequestStatus().add(RequestStatus.parse(e)));
-            }
+        List<String> statusMessages = super.parseContent(unfoldedLineIterator, useRequestStatus);
+        if (useRequestStatus)
+        { // Set REQUEST-STATUS for each message
+            setRequestStatus(FXCollections.observableArrayList());
+            statusMessages.stream().forEach(e -> getRequestStatus().add(RequestStatus.parse(e)));
         }
-        return statusErrors;
+        return statusMessages;
     }
     
     @Override

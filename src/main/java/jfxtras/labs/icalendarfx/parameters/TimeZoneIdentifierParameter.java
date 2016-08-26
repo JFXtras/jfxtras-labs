@@ -32,12 +32,6 @@ public class TimeZoneIdentifierParameter extends ParameterBase<TimeZoneIdentifie
     {
         super(source);
     }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(ZoneId.of(content));
-    }    
 
     public static TimeZoneIdentifierParameter parse(String content)
     {

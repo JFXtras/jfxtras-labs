@@ -6,8 +6,8 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 

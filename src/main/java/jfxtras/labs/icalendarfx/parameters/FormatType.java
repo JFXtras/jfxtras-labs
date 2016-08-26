@@ -16,7 +16,7 @@ import javafx.beans.property.StringProperty;
  *   
  *   @see Attachment
  */
-public class FormatType extends ParameterText<FormatType>
+public class FormatType extends ParameterBase<FormatType, String>
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }
@@ -34,11 +34,11 @@ public class FormatType extends ParameterText<FormatType>
     {
         if (typeName == null)
         {
-            typeName = new SimpleStringProperty(this, PropertyParameter.FORMAT_TYPE.toString() + "_TYPE_NAME");
+            typeName = new SimpleStringProperty(this, ParameterType.FORMAT_TYPE.toString() + "_TYPE_NAME");
         }
         if (subtypeName == null)
         {
-            subtypeName = new SimpleStringProperty(this, PropertyParameter.FORMAT_TYPE.toString() + "_SUBTYPE_NAME");
+            subtypeName = new SimpleStringProperty(this, ParameterType.FORMAT_TYPE.toString() + "_SUBTYPE_NAME");
         }
 
         int slashIndex = value.indexOf('/');

@@ -86,7 +86,7 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
     @Override
     public boolean isValid()
     {
-        if (! getPropertyName().substring(0, 2).equals("X-"))
+        if (! name().substring(0, 2).equals("X-"))
         {
             return false;
         }

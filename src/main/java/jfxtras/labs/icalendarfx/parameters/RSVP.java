@@ -30,12 +30,6 @@ public class RSVP extends ParameterBase<RSVP, Boolean>
     {
         super(source);
     }
-    
-    @Override
-    public void parseContent(String content)
-    {
-        setValue(Boolean.parseBoolean(content));
-    }
 
     public static RSVP parse(String content)
     {

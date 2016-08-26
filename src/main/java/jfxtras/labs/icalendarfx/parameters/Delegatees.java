@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
  * @author David Bal
  * @see Attendee
  */
-public class Delegatees extends ParameterURIList<GroupMembership>
+public class Delegatees extends ParameterBase<Delegatees, List<URI>>
 {
     public Delegatees(List<URI> list)
     {

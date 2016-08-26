@@ -25,7 +25,7 @@ public class VTodoTest
                 .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")
                 .withPercentComplete(35);
         
-        String componentName = builtComponent.componentName();
+        String componentName = builtComponent.name();
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "COMPLETED:19960401T150000Z" + System.lineSeparator() +
                 "DUE;TZID=America/Los_Angeles:19960401T050000" + System.lineSeparator() +

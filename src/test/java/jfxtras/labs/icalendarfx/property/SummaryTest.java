@@ -25,6 +25,7 @@ public class SummaryTest
     {
         String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
         Summary madeProperty = Summary.parse(content);
+        System.out.println(madeProperty.toContent());
         assertEquals(content, madeProperty.toContent());
         Summary expectedProperty = Summary.parse("Department Party")
                 .withAlternateText("cid:part1.0001@example.org")

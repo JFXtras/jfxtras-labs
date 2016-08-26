@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.CommonName;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
-import jfxtras.labs.icalendarfx.parameters.PropertyParameter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.SentBy;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
 import jfxtras.labs.icalendarfx.properties.PropertyCalendarUser;
@@ -52,7 +52,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (commonName == null)
         {
-            commonName = new SimpleObjectProperty<>(this, PropertyParameter.COMMON_NAME.toString());
+            commonName = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
             orderer().registerSortOrderProperty(commonName);
         }
         return commonName;
@@ -83,7 +83,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (directoryEntryReference == null)
         {
-            directoryEntryReference = new SimpleObjectProperty<>(this, PropertyParameter.COMMON_NAME.toString());
+            directoryEntryReference = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
             orderer().registerSortOrderProperty(directoryEntryReference);
         }
         return directoryEntryReference;
@@ -120,7 +120,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (sentBy == null)
         {
-            sentBy = new SimpleObjectProperty<>(this, PropertyParameter.SENT_BY.toString());
+            sentBy = new SimpleObjectProperty<>(this, ParameterType.SENT_BY.toString());
             orderer().registerSortOrderProperty(sentBy);
         }
         return sentBy;

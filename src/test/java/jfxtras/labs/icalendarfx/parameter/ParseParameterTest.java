@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
 import jfxtras.labs.icalendarfx.parameters.CalendarUser;
-import jfxtras.labs.icalendarfx.parameters.CommonName;
 import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
@@ -14,20 +13,11 @@ import jfxtras.labs.icalendarfx.parameters.GroupMembership;
 
 public class ParseParameterTest
 {
-    @Test // tests String as value
-    public void canParseCommonName()
-    {
-        CommonName parameter = CommonName.parse("David Bal");
-        String expectedContent = "CN=David Bal";
-        assertEquals(expectedContent, parameter.toContent());
-    }
-    
     @Test // tests enum as value
     public void canParseCalendarUser()
     {
         CalendarUser parameter = CalendarUser.parse("GROUP");
         String expectedContent = "CUTYPE=GROUP";
-        System.out.println(parameter.toContent());
         assertEquals(expectedContent, parameter.toContent());
     }
     

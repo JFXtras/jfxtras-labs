@@ -419,7 +419,7 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
 //    }
     
     @Override
-    public void parseContent(String dayPairs)
+    public List<String> parseContent(String dayPairs)
     {
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
         Pattern p = Pattern.compile("(-?[0-9]+)?([A-Z]{2})");
@@ -445,6 +445,7 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
             }
         }
         setValue(FXCollections.observableArrayList(dayPairsList));
+        return errors();
     }
 
     public static ByDay parse(String content)

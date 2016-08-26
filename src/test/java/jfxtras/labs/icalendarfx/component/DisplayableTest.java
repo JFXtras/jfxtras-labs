@@ -137,7 +137,7 @@ public class DisplayableTest
         
         for (VComponentDisplayableBase<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentName();
+            String componentName = builtComponent.name();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "CATEGORIES:group03,group04,group05" + System.lineSeparator() +

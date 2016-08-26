@@ -1,12 +1,11 @@
 package jfxtras.labs.icalendarfx.parameters;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VParent;
 
 /**
@@ -24,39 +23,66 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
+    final private String name;
     @Override
-    public T getValue() { return value.get(); }
+    public String name() { return name; }
+
+    /*
+     * PARAMETER VALUE
+     */
     @Override
-    public ObjectProperty<T> valueProperty() { return value; }
+    public T getValue()
+    {
+        return value.get();
+    }
+    @Override
+    public ObjectProperty<T> valueProperty()
+    {
+        return value;
+    }
     private ObjectProperty<T> value;
     @Override
-    public void setValue(T value) { this.value.set(value); }
-    public U withValue(T value) { setValue(value); return (U) this; }
+    public void setValue(T value)
+    {
+        this.value.set(value);
+    }
+    public U withValue(T value)
+    {
+        setValue(value);
+        return (U) this;
+    }
 
     @Override
     public String toContent()
     {
-        final String value;
-        if (getValue() instanceof Collection) // TODO - OVERRIDE IN LIST-BASED SUBCLASS INSTEAD OF instanceof
-        {
-            value = ((Collection<?>) getValue()).stream()
-                    .map(obj -> addDoubleQuotesIfNecessary(obj.toString()))
-                    .collect(Collectors.joining(","));
-        } else if (getValue() instanceof Boolean)
-        {
-            value = getValue().toString().toUpperCase();
-        } else
-        {
-            value = addDoubleQuotesIfNecessary(getValue().toString());
-        }
-        return valueToContent(value);
-//        return (getValue() != null) ? parameterType().toString() + "=" + value : null;
+        String string = valueAsString();
+        String content = (getValue() != null) ? parameterType().toString() + "=" + string : null;
+        return content;
     }
     
-    String valueToContent(String value)
+    @Override
+    public List<String> parseContent(String content)
     {
-        return (getValue() != null) ? parameterType().toString() + "=" + value : null;
+        T value = getConverter().fromString(content);
+        setValue(value);
+        return errors();
     }
+    
+    String valueAsString()
+    {
+        return getConverter().toString(getValue());
+    }
+    
+    /**
+     * STRING CONVERTER
+     * 
+     * Get the parameter value string converter.
+     */ 
+    private StringConverter<T> getConverter()
+    {
+        return converter;
+    }
+    final private StringConverter<T> converter;
     
     /**
      * PARAMETER TYPE
@@ -64,8 +90,8 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
      *  The enumerated type of the parameter.
      */
     @Override
-    public PropertyParameter parameterType() { return parameterType; }
-    final private PropertyParameter parameterType;
+    public ParameterType parameterType() { return parameterType; }
+    final private ParameterType parameterType;
 
     @Override
     public String toString()
@@ -102,7 +128,9 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
      */
     ParameterBase()
     {
-        parameterType = PropertyParameter.enumFromClass(getClass());
+        parameterType = ParameterType.enumFromClass(getClass());
+        name = parameterType.toString();
+        converter = parameterType.getConverter();
         value = new SimpleObjectProperty<>(this, parameterType.toString());
     }
 
@@ -134,66 +162,68 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
      * STATIC UTILITY METHODS
      */
 
-    /**
-     * Remove leading and trailing double quotes
-     * 
-     * @param input - string with or without double quotes at front and end
-     * @return - string stripped of leading and trailing double quotes
-     */
-    static String removeDoubleQuote(String input)
-    {
-        final char quote = '\"';
-        StringBuilder builder = new StringBuilder(input);
-        if (builder.charAt(0) == quote)
-        {
-            builder.deleteCharAt(0);
-        }
-        if (builder.charAt(builder.length()-1) == quote)
-        {
-            builder.deleteCharAt(builder.length()-1);
-        }
-        return builder.toString();
-    }
-    
-    /**
-     * Add Double Quotes to front and end of string if text contains \ : ;
-     * 
-     * @param text
-     * @return
-     */
-    static String addDoubleQuotesIfNecessary(String text)
-    {
-        boolean hasDQuote = text.contains("\"");
-        boolean hasColon = text.contains(":");
-        boolean hasSemiColon = text.contains(";");
-        if (hasDQuote || hasColon || hasSemiColon)
-        {
-            return "\"" + text + "\""; // add double quotes
-        } else
-        {
-            return text;
-        }
-    }
-    
-    /**
-     * Remove parameter name and equals sign, if present, otherwise return input string
-     * 
-     * @param input - parameter content with or without name and equals sign
-     * @param name - name of parameter
-     * @return - nameless string
-     * 
-     * example input:
-     * ALTREP="CID:part3.msg.970415T083000@example.com"
-     * output:
-     * "CID:part3.msg.970415T083000@example.com"
-     */
-    @Deprecated // may find a use with component line parsing
-    static String extractValue(String content, String name)
-    {
-        if (content.substring(0, name.length()).equals(name))
-        {
-            return content.substring(name.length()+1);
-        }
-        return content;
-    }
+//    /**
+//     * Remove leading and trailing double quotes
+//     * 
+//     * @param input - string with or without double quotes at front and end
+//     * @return - string stripped of leading and trailing double quotes
+//     */
+//    @Deprecated
+//    static String removeDoubleQuote(String input)
+//    {
+//        final char quote = '\"';
+//        StringBuilder builder = new StringBuilder(input);
+//        if (builder.charAt(0) == quote)
+//        {
+//            builder.deleteCharAt(0);
+//        }
+//        if (builder.charAt(builder.length()-1) == quote)
+//        {
+//            builder.deleteCharAt(builder.length()-1);
+//        }
+//        return builder.toString();
+//    }
+//    
+//    /**
+//     * Add Double Quotes to front and end of string if text contains \ : ;
+//     * 
+//     * @param text
+//     * @return
+//     */
+//    @Deprecated
+//    static String addDoubleQuotesIfNecessary(String text)
+//    {
+//        boolean hasDQuote = text.contains("\"");
+//        boolean hasColon = text.contains(":");
+//        boolean hasSemiColon = text.contains(";");
+//        if (hasDQuote || hasColon || hasSemiColon)
+//        {
+//            return "\"" + text + "\""; // add double quotes
+//        } else
+//        {
+//            return text;
+//        }
+//    }
+//    
+//    /**
+//     * Remove parameter name and equals sign, if present, otherwise return input string
+//     * 
+//     * @param input - parameter content with or without name and equals sign
+//     * @param name - name of parameter
+//     * @return - nameless string
+//     * 
+//     * example input:
+//     * ALTREP="CID:part3.msg.970415T083000@example.com"
+//     * output:
+//     * "CID:part3.msg.970415T083000@example.com"
+//     */
+//    @Deprecated // may find a use with component line parsing
+//    static String extractValue(String content, String name)
+//    {
+//        if (content.substring(0, name.length()).equals(name))
+//        {
+//            return content.substring(name.length()+1);
+//        }
+//        return content;
+//    }
 }

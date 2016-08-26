@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 public class NonStandardTest
