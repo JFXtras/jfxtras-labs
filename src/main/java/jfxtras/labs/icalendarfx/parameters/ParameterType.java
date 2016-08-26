@@ -99,6 +99,12 @@ public enum ParameterType
             CommonName parameterCopy = new CommonName((CommonName) child);
             castDestination.setCommonName(parameterCopy);
         }
+
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+        }
     },
     // in property ATTENDEE
     CALENDAR_USER_TYPE ("CUTYPE", CalendarUser.class) {
@@ -299,6 +305,12 @@ public enum ParameterType
             FormatType parameterCopy = new FormatType((FormatType) child);
             castDestination.setFormatType(parameterCopy);
         }
+
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+        }
     },
     // in property FREEBUSY
     FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyType.class) {
@@ -366,6 +378,12 @@ public enum ParameterType
             Language parameterCopy = new Language((Language) child);
             castDestination.setLanguage(parameterCopy);
         }
+
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+        }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
         @Override
@@ -431,6 +449,12 @@ public enum ParameterType
                 list = destination.getOtherParameters();
             }
             list.add(new OtherParameter((OtherParameter) child));
+        }
+
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
         }
     },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
@@ -880,23 +904,7 @@ public enum ParameterType
     abstract public Object getParameter(Property<?> parent);
     
     /** return default String converter associated with property value type */
-    public <T> StringConverter<T> getConverter()
-    {
-        return (StringConverter<T>) new StringConverter<String>()
-        {
-            @Override
-            public String toString(String object)
-            {
-                return object.toString();
-            }
-
-            @Override
-            public String fromString(String string)
-            {
-                return StringConverters.removeDoubleQuote(string);
-            }
-        };
-    }
+    abstract public <T> StringConverter<T> getConverter();
     
     abstract public void copyParameter(Parameter<?> child, Property<?> destination);
 }

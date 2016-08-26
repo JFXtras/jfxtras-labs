@@ -29,7 +29,13 @@ import jfxtras.labs.icalendarfx.utilities.StringConverters;
 
 public enum ValueType
 {
-    BINARY ("BINARY", Arrays.asList(String.class)),
+    BINARY ("BINARY", Arrays.asList(String.class)) {
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) new DefaultStringConverter();
+        }
+    },
     BOOLEAN ("BOOLEAN", Arrays.asList(Boolean.class))
     {
         @Override
@@ -373,7 +379,13 @@ public enum ValueType
             };
         }
     },
-    UNKNOWN ("UNKNOWN", Arrays.asList(Object.class))
+    UNKNOWN ("UNKNOWN", Arrays.asList(Object.class)) {
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) new DefaultStringConverter();
+        }
+    }
     ;
     
     final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
@@ -411,24 +423,24 @@ public enum ValueType
     }
 
     /** return default String converter associated with property value type */
-    public <T> StringConverter<T> getConverter()
-    {
-        return (StringConverter<T>) new DefaultStringConverter();
-//        return new StringConverter<T>()
-//        {
-//            @Override
-//            public String toString(T object)
-//            {
-//                return object.toString();
-//            }
-//
-//            @Override
-//            public T fromString(String string)
-//            {
-//                 return (T) string;            
-//            }
-//        };
-    }
+    abstract public <T> StringConverter<T> getConverter();
+//    {
+//        return (StringConverter<T>) new DefaultStringConverter();
+////        return new StringConverter<T>()
+////        {
+////            @Override
+////            public String toString(T object)
+////            {
+////                return object.toString();
+////            }
+////
+////            @Override
+////            public T fromString(String string)
+////            {
+////                 return (T) string;            
+////            }
+////        };
+//    }
 //    abstract public <VCalendarElement> StringConverter<VCalendarElement> getConverter();
     public <T> List<String> createErrorList(T value)
     {

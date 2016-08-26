@@ -9,7 +9,8 @@ package jfxtras.labs.icalendarfx.parameters;
 public class OtherParameter extends ParameterBase<OtherParameter, String>
 {
     final String name;
-    public String getName() { return name; }
+    @Override
+    public String name() { return name; }
     
     public OtherParameter(String content)
     {
@@ -34,6 +35,6 @@ public class OtherParameter extends ParameterBase<OtherParameter, String>
     @Override
     public String toContent()
     {
-        return (getValue() != null) ? getName() + "=" + getValue() : null;
+        return (getValue() != null) ? name() + "=" + getValue() : null;
     }
 }

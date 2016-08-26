@@ -12,6 +12,24 @@ import javafx.util.StringConverter;
 
 public class StringConverters
 {
+    public static StringConverter<String> defaultStringConverterWithQuotes()
+    {
+        return new StringConverter<String>()
+        {
+            @Override
+            public String toString(String object)
+            {
+                return addDoubleQuotesIfNecessary(object);
+            }
+
+            @Override
+            public String fromString(String string)
+            {
+                return StringConverters.removeDoubleQuote(string);
+            }
+        };
+    }
+    
     public static StringConverter<URI> uriConverterNoQuotes()
     {
         return new StringConverter<URI>()
