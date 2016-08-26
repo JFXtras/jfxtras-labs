@@ -191,7 +191,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         {
             String unfoldedLine = unfoldedLineIterator.next();
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
-            String propertyName = unfoldedLine.substring(0, nameEndIndex);
+            String propertyName = (nameEndIndex > 0) ? unfoldedLine.substring(0, nameEndIndex) : "";
             // Parse subcomponent
             if (propertyName.equals("BEGIN"))
             {
@@ -261,7 +261,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                         statusMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                     } else
                     {
-                        throw new RuntimeException(propertyName + " is not implemented"); // shouldn't get here - unknown property should be used
+                        // unknown line
+                        throw new IllegalArgumentException("Unknown property can't be processed:" + unfoldedLine);
                     }
                 }
             }

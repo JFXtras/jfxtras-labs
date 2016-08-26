@@ -16,6 +16,7 @@ import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTrigger
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 
+@Deprecated
 public class ParseIteratorTest extends ICalendarTestAbstract
 {
 

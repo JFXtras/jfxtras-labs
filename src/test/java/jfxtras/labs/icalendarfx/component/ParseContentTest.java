@@ -116,86 +116,86 @@ public class ParseContentTest extends ICalendarTestAbstract
     @Test
     public void canParseWholeDay1()
     {
-    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
-                          + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
-                          + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
-                          + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                          + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
-                          + "END:VEVENT";
-    VEvent vEvent = VEvent.parse(vEventString);
-    VEvent expectedVEvent = getWholeDayDaily1();
-    assertEquals(expectedVEvent, vEvent);
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                              + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
+                              + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
+                              + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                              + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                              + "END:VEVENT";
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getWholeDayDaily1();
+        assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
     public void canParseGoogleIndividual()
     {
-    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
-            + "DTSTART:20160214T123000Z" + System.lineSeparator()
-            + "DTEND:20160214T150000Z" + System.lineSeparator()
-            + "DTSTAMP:20160214T022532Z" + System.lineSeparator()
-            + "UID:vpqej26mlpg3adcncqqs7t7a34@google.com" + System.lineSeparator()
-            + "CREATED:20160214T022513Z" + System.lineSeparator()
-            + "DESCRIPTION:" + System.lineSeparator()
-            + "LAST-MODIFIED:20160214T022513Z" + System.lineSeparator()
-            + "LOCATION:" + System.lineSeparator()
-            + "SEQUENCE:0" + System.lineSeparator()
-            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
-            + "SUMMARY:test1" + System.lineSeparator()
-            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
-            + "END:VEVENT";
-    VEvent vEvent = VEvent.parse(vEventString);
-    VEvent expectedVEvent = getGoogleIndividual();
-    vEvent.equals(expectedVEvent);
-    assertEquals(expectedVEvent, vEvent);
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTSTART:20160214T123000Z" + System.lineSeparator()
+                + "DTEND:20160214T150000Z" + System.lineSeparator()
+                + "DTSTAMP:20160214T022532Z" + System.lineSeparator()
+                + "UID:vpqej26mlpg3adcncqqs7t7a34@google.com" + System.lineSeparator()
+                + "CREATED:20160214T022513Z" + System.lineSeparator()
+                + "DESCRIPTION:" + System.lineSeparator()
+                + "LAST-MODIFIED:20160214T022513Z" + System.lineSeparator()
+                + "LOCATION:" + System.lineSeparator()
+                + "SEQUENCE:0" + System.lineSeparator()
+                + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+                + "SUMMARY:test1" + System.lineSeparator()
+                + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+                + "END:VEVENT";
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getGoogleIndividual();
+        vEvent.equals(expectedVEvent);
+        assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
     public void canParseGoogleRepeat()
     {
-    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
-            + "DTSTART;TZID=America/Los_Angeles:20160214T080000" + System.lineSeparator()
-            + "DTEND;TZID=America/Los_Angeles:20160214T110000" + System.lineSeparator()
-            + "RRULE:FREQ=WEEKLY;BYDAY=SU,TU,FR" + System.lineSeparator()
-            + "DTSTAMP:20160214T022532Z" + System.lineSeparator()
-            + "UID:im8hmpakeigu3d85j3vq9q8bcc@google.com" + System.lineSeparator()
-            + "CREATED:20160214T022525Z" + System.lineSeparator()
-            + "DESCRIPTION:" + System.lineSeparator()
-            + "LAST-MODIFIED:20160214T022525Z" + System.lineSeparator()
-            + "LOCATION:" + System.lineSeparator()
-            + "SEQUENCE:0" + System.lineSeparator()
-            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
-            + "SUMMARY:test2" + System.lineSeparator()
-            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
-            + "END:VEVENT";
-    VEvent vEvent = VEvent.parse(vEventString);
-    VEvent expectedVEvent = getGoogleRepeatable();
-    assertEquals(expectedVEvent, vEvent);
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTSTART;TZID=America/Los_Angeles:20160214T080000" + System.lineSeparator()
+                + "DTEND;TZID=America/Los_Angeles:20160214T110000" + System.lineSeparator()
+                + "RRULE:FREQ=WEEKLY;BYDAY=SU,TU,FR" + System.lineSeparator()
+                + "DTSTAMP:20160214T022532Z" + System.lineSeparator()
+                + "UID:im8hmpakeigu3d85j3vq9q8bcc@google.com" + System.lineSeparator()
+                + "CREATED:20160214T022525Z" + System.lineSeparator()
+                + "DESCRIPTION:" + System.lineSeparator()
+                + "LAST-MODIFIED:20160214T022525Z" + System.lineSeparator()
+                + "LOCATION:" + System.lineSeparator()
+                + "SEQUENCE:0" + System.lineSeparator()
+                + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+                + "SUMMARY:test2" + System.lineSeparator()
+                + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+                + "END:VEVENT";
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getGoogleRepeatable();
+        assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
     public void canParseGoogleRepeatWithExDates()
     {
-    String content = "BEGIN:VEVENT" + System.lineSeparator()
-            + "DTSTART;TZID=America/Los_Angeles:20160207T123000" + System.lineSeparator()
-            + "DTEND;TZID=America/Los_Angeles:20160207T153000" + System.lineSeparator()
-            + "RRULE:FREQ=DAILY;UNTIL=20160512T193000Z" + System.lineSeparator()
-            + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
-            + "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
-            + "EXDATE;TZID=America/Los_Angeles:20160209T123000" + System.lineSeparator()
-            + "DTSTAMP:20160214T072231Z" + System.lineSeparator()
-            + "UID:86801l7316n97h75cefk1ruc00@google.com" + System.lineSeparator()
-            + "CREATED:20160214T022525Z" + System.lineSeparator()
-            + "DESCRIPTION:" + System.lineSeparator()
-            + "LAST-MODIFIED:20160214T022525Z" + System.lineSeparator()
-            + "LOCATION:" + System.lineSeparator()
-            + "SEQUENCE:0" + System.lineSeparator()
-            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
-            + "SUMMARY:test3" + System.lineSeparator()
-            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
-            + "END:VEVENT";
-    VEvent vEvent = VEvent.parse(content);
-    VEvent expectedVEvent = getGoogleWithExceptions();
-    assertEquals(expectedVEvent, vEvent);
+        String content = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTSTART;TZID=America/Los_Angeles:20160207T123000" + System.lineSeparator()
+                + "DTEND;TZID=America/Los_Angeles:20160207T153000" + System.lineSeparator()
+                + "RRULE:FREQ=DAILY;UNTIL=20160512T193000Z" + System.lineSeparator()
+                + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
+                + "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
+                + "EXDATE;TZID=America/Los_Angeles:20160209T123000" + System.lineSeparator()
+                + "DTSTAMP:20160214T072231Z" + System.lineSeparator()
+                + "UID:86801l7316n97h75cefk1ruc00@google.com" + System.lineSeparator()
+                + "CREATED:20160214T022525Z" + System.lineSeparator()
+                + "DESCRIPTION:" + System.lineSeparator()
+                + "LAST-MODIFIED:20160214T022525Z" + System.lineSeparator()
+                + "LOCATION:" + System.lineSeparator()
+                + "SEQUENCE:0" + System.lineSeparator()
+                + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+                + "SUMMARY:test3" + System.lineSeparator()
+                + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+                + "END:VEVENT";
+        VEvent vEvent = VEvent.parse(content);
+        VEvent expectedVEvent = getGoogleWithExceptions();
+        assertEquals(expectedVEvent, vEvent);
     }
 }

@@ -2035,6 +2035,7 @@ public enum PropertyType
     public static PropertyType enumFromName(String propertyName)
     {
         final PropertyType prop;
+        if (propertyName.length() < 3) return null; // minimum property name is 3 characters
         if (propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString()))
         {
             prop = PropertyType.NON_STANDARD;

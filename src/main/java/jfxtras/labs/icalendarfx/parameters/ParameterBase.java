@@ -60,17 +60,18 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
         return content;
     }
     
+    // convert value to string, is overridden for enum-based parameters to handle UNKNOWN value
+    String valueAsString()
+    {
+        return getConverter().toString(getValue());
+    }
+    
     @Override
     public List<String> parseContent(String content)
     {
         T value = getConverter().fromString(content);
         setValue(value);
         return errors();
-    }
-    
-    String valueAsString()
-    {
-        return getConverter().toString(getValue());
     }
     
     /**
@@ -153,77 +154,8 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
         List<String> errors = new ArrayList<>();
         if (getValue() == null)
         {
-            errors.add(parameterType() + " value is null.  The parameter MUST have a value."); 
+            errors.add(name() + " value is null.  The parameter MUST have a value."); 
         }
         return errors;
     }
-    
-    /*
-     * STATIC UTILITY METHODS
-     */
-
-//    /**
-//     * Remove leading and trailing double quotes
-//     * 
-//     * @param input - string with or without double quotes at front and end
-//     * @return - string stripped of leading and trailing double quotes
-//     */
-//    @Deprecated
-//    static String removeDoubleQuote(String input)
-//    {
-//        final char quote = '\"';
-//        StringBuilder builder = new StringBuilder(input);
-//        if (builder.charAt(0) == quote)
-//        {
-//            builder.deleteCharAt(0);
-//        }
-//        if (builder.charAt(builder.length()-1) == quote)
-//        {
-//            builder.deleteCharAt(builder.length()-1);
-//        }
-//        return builder.toString();
-//    }
-//    
-//    /**
-//     * Add Double Quotes to front and end of string if text contains \ : ;
-//     * 
-//     * @param text
-//     * @return
-//     */
-//    @Deprecated
-//    static String addDoubleQuotesIfNecessary(String text)
-//    {
-//        boolean hasDQuote = text.contains("\"");
-//        boolean hasColon = text.contains(":");
-//        boolean hasSemiColon = text.contains(";");
-//        if (hasDQuote || hasColon || hasSemiColon)
-//        {
-//            return "\"" + text + "\""; // add double quotes
-//        } else
-//        {
-//            return text;
-//        }
-//    }
-//    
-//    /**
-//     * Remove parameter name and equals sign, if present, otherwise return input string
-//     * 
-//     * @param input - parameter content with or without name and equals sign
-//     * @param name - name of parameter
-//     * @return - nameless string
-//     * 
-//     * example input:
-//     * ALTREP="CID:part3.msg.970415T083000@example.com"
-//     * output:
-//     * "CID:part3.msg.970415T083000@example.com"
-//     */
-//    @Deprecated // may find a use with component line parsing
-//    static String extractValue(String content, String name)
-//    {
-//        if (content.substring(0, name.length()).equals(name))
-//        {
-//            return content.substring(name.length()+1);
-//        }
-//        return content;
-//    }
 }
