@@ -272,7 +272,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             statusMessages.add("2.0;Success");
         }
         t.setUncaughtExceptionHandler(originalExceptionHandler); // return original exception handler
-        statusMessages.stream().forEach(System.out::println);
         return statusMessages;
     }
 

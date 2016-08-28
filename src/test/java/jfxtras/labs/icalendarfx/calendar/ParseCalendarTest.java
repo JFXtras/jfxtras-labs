@@ -219,4 +219,22 @@ public class ParseCalendarTest extends ICalendarTestAbstract
 //        errors.forEach(System.out::println);
 //        assertEquals(content, vCalendar.toContent());
     }
+    
+    @Test
+    public void canCatchParseWithBadLine()
+    {
+            String content = "BEGIN:VCALENDAR" + System.lineSeparator() +
+            "X-CUSTOM-PROP:THE DATA" + System.lineSeparator() +
+            "IGNORE THIS LINE" + System.lineSeparator() +
+            "END:VCALENDAR";
+            VCalendar v = VCalendar.parse(content);
+//            VCalendar v = new VCalendar();
+//            boolean useRequestStatus = true;
+//            v.parseContent(content, useRequestStatus);
+            
+            VCalendar expected = new VCalendar()
+                    .withNonStandard("X-CUSTOM-PROP:THE DATA")
+                    ;
+            assertEquals(expected, v);
+    }
 }

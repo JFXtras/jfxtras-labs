@@ -254,83 +254,111 @@ public class VCalendar extends VParentBase
     }
 
     /**
-     * <p>Defines a non-standard property that begins with a "X-" prefix<br>
-     * 3.8.8.2.  Non-Standard Properties</p>
-     * 
-     * <p>Example:<br>
-     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.<br>
-     *  org/mysubj.au
-     * </p>
+     * Provides a framework for defining non-standard properties.
      */
-    public ObservableList<NonStandardProperty> getNonStandardProperties() { return nonStandardProps; }
-    private ObservableList<NonStandardProperty> nonStandardProps;
-    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps)
+    public ObjectProperty<ObservableList<NonStandardProperty>> nonStandardProperty()
+    {
+        if (nonStandardProps == null)
+        {
+            nonStandardProps = new SimpleObjectProperty<>(this, PropertyType.NON_STANDARD.toString());
+        }
+        return nonStandardProps;
+    }
+    private ObjectProperty<ObservableList<NonStandardProperty>> nonStandardProps;
+    public ObservableList<NonStandardProperty> getNonStandard()
+    {
+        return (nonStandardProps == null) ? null : nonStandardProps.get();
+    }
+    public void setNonStandard(ObservableList<NonStandardProperty> nonStandardProps)
     {
         if (nonStandardProps != null)
         {
             orderer().registerSortOrderProperty(nonStandardProps);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.nonStandardProps);
+            orderer().unregisterSortOrderProperty(nonStandardProperty().get());
         }
-        this.nonStandardProps = nonStandardProps;
+        nonStandardProperty().set(nonStandardProps);
     }
-    public VCalendar withNonStandardProperty(String...nonStandardProps)
-    {
-        Arrays.stream(nonStandardProps).forEach(c -> PropertyType.NON_STANDARD.parse(this, c));
-        return this;
-    }
-    public VCalendar withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return this; }
-    public VCalendar withNonStandardProperty(NonStandardProperty...nonStandardProps)
-    {
-        if (getNonStandardProperties() == null)
-        {
-            setNonStandardProperties(FXCollections.observableArrayList(nonStandardProps));
-        } else
-        {
-            getNonStandardProperties().addAll(nonStandardProps);
-        }
-        return this;
-    }
-
     /**
-     * <p>Defines an IANA-registered property<br>
-     * 3.8.8.1.  IANA Properties</p>
+     * Sets the value of the {@link #nonStandardProperty()} by parsing a vararg of
+     * iCalendar content text representing individual {@link NonStandardProperty} objects.
      * 
-     * <p>Examples:<br>
-     * <ul>
-     * <li>NON-SMOKING;VALUE=BOOLEAN:TRUE
-     * <li>DRESSCODE:CASUAL
-     * </ul>
+     * @return - this class for chaining
      */
-    public ObservableList<IANAProperty> getIANAProperties() { return ianaProps; }
-    private ObservableList<IANAProperty> ianaProps;
-    public void setIANAProperties(ObservableList<IANAProperty> ianaProps)
+    public VCalendar withNonStandard(String...nonStandardProps)
+    {
+        List<NonStandardProperty> a = Arrays.stream(nonStandardProps)
+                .map(c -> NonStandardProperty.parse(c))
+                .collect(Collectors.toList());
+        setNonStandard(FXCollections.observableArrayList(a));
+        return this;
+    }
+    /**
+     * Sets the value of the {@link #nonStandardProperty()}
+     * 
+     * @return - this class for chaining
+     */
+    public VCalendar withNonStandard(ObservableList<NonStandardProperty> nonStandardProps)
+    {
+        setNonStandard(nonStandardProps);
+        return this;
+    }
+    /**
+     * Sets the value of the {@link #nonStandardProperty()} from a vararg of {@link NonStandardProperty} objects.
+     * 
+     * @return - this class for chaining
+     */    
+    public VCalendar withNonStandard(NonStandardProperty...nonStandardProps)
+    {
+        setNonStandard(FXCollections.observableArrayList(nonStandardProps));
+        return this;
+    }
+    
+    /**
+     *<p>Allows other properties registered
+     * with IANA to be specified in any calendar components.</p>
+     */
+    public ObjectProperty<ObservableList<IANAProperty>> ianaProperty()
+    {
+        if (ianaProps == null)
+        {
+            ianaProps = new SimpleObjectProperty<>(this, PropertyType.IANA_PROPERTY.toString());
+        }
+        return ianaProps;
+    }
+    public ObservableList<IANAProperty> getIana()
+    {
+        return (ianaProps == null) ? null : ianaProps.get();
+    }
+    private ObjectProperty<ObservableList<IANAProperty>> ianaProps;
+    public void setIana(ObservableList<IANAProperty> ianaProps)
     {
         if (ianaProps != null)
         {
             orderer().registerSortOrderProperty(ianaProps);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.ianaProps);
+            orderer().unregisterSortOrderProperty(ianaProperty().get());
         }
-        this.ianaProps = ianaProps;
+        ianaProperty().set(ianaProps);
     }
-    public VCalendar withIANAProperty(String...ianaProps)
+    public VCalendar withIANA(String...ianaProps)
     {
-        Arrays.stream(ianaProps).forEach(c -> PropertyType.IANA_PROPERTY.parse(this, c));
+        List<IANAProperty> a = Arrays.stream(ianaProps)
+                .map(c -> IANAProperty.parse(c))
+                .collect(Collectors.toList());
+        setIana(FXCollections.observableArrayList(a));
         return this;
     }
-    public VCalendar withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return this; }
-    public VCalendar withIANAProperty(IANAProperty...ianaProps)
+    public VCalendar withIANA(ObservableList<IANAProperty> ianaProps)
     {
-        if (getIANAProperties() == null)
-        {
-            setIANAProperties(FXCollections.observableArrayList(ianaProps));
-        } else
-        {
-            getIANAProperties().addAll(ianaProps);
-        }
+        setIana(ianaProps);
+        return this;
+    }
+    public VCalendar withIANA(IANAProperty...ianaProps)
+    {
+        setIana(FXCollections.observableArrayList(ianaProps));
         return this;
     }
     

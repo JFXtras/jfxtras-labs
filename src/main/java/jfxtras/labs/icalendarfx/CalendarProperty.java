@@ -55,13 +55,13 @@ public enum CalendarProperty
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
             final ObservableList<IANAProperty> list;
-            if (vCalendar.getIANAProperties() == null)
+            if (vCalendar.getIana() == null)
             {
                 list = FXCollections.observableArrayList();
-                vCalendar.setIANAProperties(list);
+                vCalendar.setIana(list);
             } else
             {
-                list = vCalendar.getIANAProperties();
+                list = vCalendar.getIana();
             }
             IANAProperty child = IANAProperty.parse(contentLine);
             list.add(child);
@@ -72,13 +72,13 @@ public enum CalendarProperty
         public void copyChild(VChild child, VCalendar destination)
         {
             final ObservableList<IANAProperty> list;
-            if (destination.getIANAProperties() == null)
+            if (destination.getIana() == null)
             {
                 list = FXCollections.observableArrayList();
-                destination.setIANAProperties(list);
+                destination.setIana(list);
             } else
             {
-                list = destination.getIANAProperties();
+                list = destination.getIana();
             }
             list.add(new IANAProperty((IANAProperty) child));
         }
@@ -121,13 +121,13 @@ public enum CalendarProperty
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
             final ObservableList<NonStandardProperty> list;
-            if (vCalendar.getNonStandardProperties() == null)
+            if (vCalendar.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                vCalendar.setNonStandardProperties(list);
+                vCalendar.setNonStandard(list);
             } else
             {
-                list = vCalendar.getNonStandardProperties();
+                list = vCalendar.getNonStandard();
             }
             NonStandardProperty child = NonStandardProperty.parse(contentLine);
             list.add(child);
@@ -138,13 +138,13 @@ public enum CalendarProperty
         public void copyChild(VChild child, VCalendar destination)
         {
             final ObservableList<NonStandardProperty> list;
-            if (destination.getNonStandardProperties() == null)
+            if (destination.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                destination.setNonStandardProperties(list);
+                destination.setNonStandard(list);
             } else
             {
-                list = destination.getNonStandardProperties();
+                list = destination.getNonStandard();
             }
             list.add(new NonStandardProperty((NonStandardProperty) child));
         }

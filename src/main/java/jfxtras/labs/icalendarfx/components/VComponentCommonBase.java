@@ -27,7 +27,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public abstract class VComponentCommonBase<T> extends VComponentBase
 {
     /**
-     * This class of property provides a framework for defining non-standard properties.
+     * Provides a framework for defining non-standard properties.
      */
     public ObjectProperty<ObservableList<NonStandardProperty>> nonStandardProperty()
     {
@@ -72,7 +72,7 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
      * 
      * @return - this class for chaining
      */
-    public T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps)
+    public T withNonStandard(ObservableList<NonStandardProperty> nonStandardProps)
     {
         setNonStandard(nonStandardProps);
         return (T) this;
@@ -82,7 +82,7 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
      * 
      * @return - this class for chaining
      */    
-    public T withNonStandardProperty(NonStandardProperty...nonStandardProps)
+    public T withNonStandard(NonStandardProperty...nonStandardProps)
     {
         setNonStandard(FXCollections.observableArrayList(nonStandardProps));
         return (T) this;
@@ -116,7 +116,7 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
         }
         ianaProperty().set(ianaProps);
     }
-    public T withIANAProperty(String...ianaProps)
+    public T withIANA(String...ianaProps)
     {
         List<IANAProperty> a = Arrays.stream(ianaProps)
                 .map(c -> IANAProperty.parse(c))
@@ -124,12 +124,12 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
         setIana(FXCollections.observableArrayList(a));
         return (T) this;
     }
-    public T withIANAProperty(ObservableList<IANAProperty> ianaProps)
+    public T withIANA(ObservableList<IANAProperty> ianaProps)
     {
         setIana(ianaProps);
         return (T) this;
     }
-    public T withIANAProperty(IANAProperty...ianaProps)
+    public T withIANA(IANAProperty...ianaProps)
     {
         setIana(FXCollections.observableArrayList(ianaProps));
         return (T) this;
