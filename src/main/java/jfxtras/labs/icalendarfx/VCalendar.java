@@ -930,7 +930,7 @@ public class VCalendar extends VParentBase
     /** Parse unfolded content lines into calendar object */
     public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useResourceStatus)
     {
-        List<String> errors = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
         String firstLine = unfoldedLineIterator.next();
         if (! firstLine.equals("BEGIN:VCALENDAR"))
         {
@@ -950,7 +950,10 @@ public class VCalendar extends VParentBase
                 VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
                 List<String> myErrors = newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
                 addVComponent(newComponent);
-                errors.addAll(myErrors);
+                messages.addAll(myErrors);
+            } else if (propertyName.equals("END"))
+            {
+                break;
             } else
             { // parse calendar property
                 VChild child = null;
@@ -969,12 +972,19 @@ public class VCalendar extends VParentBase
                     } else if (isIANA)
                     {
                         child = CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
+                    } else
+                    {
+                        // ignore unknown properties
+                        messages.add("Unknown property is ignored:" + unfoldedLine);
                     }
+                } else
+                {
+                    messages.add("Unknown line is ignored:" + unfoldedLine);                    
                 }
-                if (child != null) errors.addAll(child.errors());
+                if (child != null) messages.addAll(child.errors());
             }
         }
-        return errors;
+        return messages;
     }
 
 //    // multi threaded

@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class ParseCalendarTest extends ICalendarTestAbstract
@@ -142,33 +141,16 @@ public class ParseCalendarTest extends ICalendarTestAbstract
     }
     
     @Test
-    public void canParseInvalidCalendar2()
+    public void canIgnoreUnrecognizedLine()
     {
         String content = 
        "BEGIN:VCALENDAR" + System.lineSeparator() +
        "Ignore this line" + System.lineSeparator() +       
        "END:VCALENDAR";
         VCalendar v = VCalendar.parse(content);
+        VCalendar expected = new VCalendar();
+        assertEquals(expected, v);
         assertEquals(29, v.toContent().length());
-    }
-
-    @Test
-    public void canParseEmptyCalendar1()
-    {
-        SimpleVComponentFactory.emptyVComponent("VEVENT");
-    }
-    
-    @Test
-    public void canParseEmptyCalendar2()
-    {
-        String content = "BEGIN:VEVENT" + System.lineSeparator() +
-        "UID:19970610T172345Z-AF23B2@example.com" + System.lineSeparator() +
-        "DTSTAMP:19970610T172345Z" + System.lineSeparator() +
-        "DTSTART:19970714T170000Z" + System.lineSeparator() +
-        "DTEND:19970715T040000Z" + System.lineSeparator() +
-        "SUMMARY:Bastille Day Party" + System.lineSeparator() +
-        "END:VEVENT";
-        SimpleVComponentFactory.emptyVComponent(content);
     }
     
     @Test // has errors
@@ -221,20 +203,41 @@ public class ParseCalendarTest extends ICalendarTestAbstract
     }
     
     @Test
-    public void canCatchParseWithBadLine()
+    public void canIgnoreBadLine()
     {
             String content = "BEGIN:VCALENDAR" + System.lineSeparator() +
             "X-CUSTOM-PROP:THE DATA" + System.lineSeparator() +
             "IGNORE THIS LINE" + System.lineSeparator() +
             "END:VCALENDAR";
-            VCalendar v = VCalendar.parse(content);
-//            VCalendar v = new VCalendar();
-//            boolean useRequestStatus = true;
-//            v.parseContent(content, useRequestStatus);
-            
+            VCalendar v = VCalendar.parse(content);            
             VCalendar expected = new VCalendar()
                     .withNonStandard("X-CUSTOM-PROP:THE DATA")
                     ;
             assertEquals(expected, v);
+    }
+    
+    @Test
+    public void canGetErrorMessageFromBadLine()
+    {
+            String content = "BEGIN:VCALENDAR" + System.lineSeparator() +
+            "X-CUSTOM-PROP:THE DATA" + System.lineSeparator() +
+            "IGNORE THIS LINE" + System.lineSeparator() +
+            "UNKNOWN-PROP:SOMETHING" + System.lineSeparator() +
+            "END:VCALENDAR";
+            VCalendar v = new VCalendar();
+            List<String> messages = v.parseContent(content);
+            List<String> expectedMessages = Arrays.asList("Unknown line is ignored:IGNORE THIS LINE", "Unknown property is ignored:UNKNOWN-PROP:SOMETHING");
+            assertEquals(expectedMessages, messages);
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canHandleInvalidCalendarProperty()
+    {
+        String content = 
+       "BEGIN:VCALENDAR" + System.lineSeparator() +
+       "CALSCALE:INVALID" + System.lineSeparator() +
+       "END:VCALENDAR";
+
+        VCalendar.parse(content);
     }
 }

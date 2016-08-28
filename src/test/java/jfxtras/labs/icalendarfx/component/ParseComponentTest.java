@@ -5,9 +5,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
+import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class ParseContentTest extends ICalendarTestAbstract
+public class ParseComponentTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */
     @Test
@@ -198,4 +200,29 @@ public class ParseContentTest extends ICalendarTestAbstract
         VEvent expectedVEvent = getGoogleWithExceptions();
         assertEquals(expectedVEvent, vEvent);
     }
+    
+
+    @Test
+    public void canParseEmptyVevent()
+    {
+        VComponent vEvent = SimpleVComponentFactory.emptyVComponent("VEVENT");
+        VComponent vExpected = new VEvent();
+        assertEquals(vExpected, vEvent);
+    }
+    
+    @Test
+    public void canParseEmptyVevent2()
+    {
+        String content = "BEGIN:VEVENT" + System.lineSeparator() +
+        "UID:19970610T172345Z-AF23B2@example.com" + System.lineSeparator() +
+        "DTSTAMP:19970610T172345Z" + System.lineSeparator() +
+        "DTSTART:19970714T170000Z" + System.lineSeparator() +
+        "DTEND:19970715T040000Z" + System.lineSeparator() +
+        "SUMMARY:Bastille Day Party" + System.lineSeparator() +
+        "END:VEVENT";
+        VComponent vEvent = SimpleVComponentFactory.emptyVComponent(content);
+        VComponent vExpected = new VEvent();
+        assertEquals(vExpected, vEvent);
+    }
+
 }

@@ -18,4 +18,10 @@ public class CalendarScaleTest
         CalendarScale property2 = CalendarScale.parse(expectedContent);
         assertEquals(property, property2);
     }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canCatchInvlidCalendarScale()
+    {
+        CalendarScale.parse("INVALID");;
+    }
 }
