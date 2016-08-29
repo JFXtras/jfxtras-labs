@@ -4,7 +4,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
-import jfxtras.labs.icalendarfx.parameters.OtherParameter;
+import jfxtras.labs.icalendarfx.parameters.IANAParameter;
+import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
 /**
@@ -56,15 +57,37 @@ public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
     /** Set the value type */
     void setValueType(ValueParameter value);
 
-    // TODO - make non-standard parameter as regular parameter
     /**
-     * Non-standard parameters
+     * <h2>Non-Standard Parameters</h2>
      * 
-     * other-param, 3.2 RFC 5545 page 14
-     * the parameter name and value are combined into one object
+     * <p>x-param     = x-name "=" param-value *("," param-value)<br>
+     ; A non-standard, experimental parameter.</p>
      */
-    ObservableList<OtherParameter> getOtherParameters();
-    void setOtherParameters(ObservableList<OtherParameter> otherParameters);
+    ObjectProperty<ObservableList<NonStandardParameter>> nonStandardParameter();
+    ObservableList<NonStandardParameter> getNonStandard();
+    void setNonStandard(ObservableList<NonStandardParameter> nonStandardParams);
+    
+    /**
+     * IANA Registered Parameters
+     * 
+     *<p>Allows other properties registered
+     * with IANA to be specified in any calendar components.</p>
+     */
+    ObjectProperty<ObservableList<IANAParameter>> IANAParameter();
+    ObservableList<IANAParameter> getIana();
+    void setIana(ObservableList<IANAParameter> ianaParams);
+    
+//    // TODO - make non-standard parameter as regular parameter
+//    /**
+//     * Non-standard parameters
+//     * 
+//     * other-param, 3.2 RFC 5545 page 14
+//     * the parameter name and value are combined into one object
+//     */
+//    @Deprecated
+//    ObservableList<OtherParameter> getOtherParameters();
+//    @Deprecated
+//    void setOtherParameters(ObservableList<OtherParameter> otherParameters);
     
     /**
      * Returns the enumerated type for the property as it would appear in the iCalendar content line

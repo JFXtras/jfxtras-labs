@@ -43,6 +43,7 @@ public class Description extends PropertyBaseAltText<String,Description>
     public static Description parse(String propertyContent)
     {
         Description property = new Description();
+        System.out.println("propertyContent:" + propertyContent);
         property.parseContent(propertyContent);
         return property;
     }

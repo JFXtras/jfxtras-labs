@@ -69,7 +69,24 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
     @Override
     public List<String> parseContent(String content)
     {
-        T value = getConverter().fromString(content);
+//        System.out.println("parameter content:"+ content);
+//        // verify left side of equals is a parameter name, or assume content is parameter value
+//        int equalsIndex = content.indexOf('=');
+//        final String valueString;
+//        if (equalsIndex > 0)
+//        {
+//            String name = content.substring(0, equalsIndex);
+//            boolean hasName1 = ParameterType.enumFromName(name.toUpperCase()) != null;
+//            boolean hasName2 = IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.contains(name.toUpperCase());
+//            System.out.println("hasName:" + hasName1 + " " + hasName2 + " " + name);
+//            valueString = (hasName1 || hasName2) ? content.substring(equalsIndex+1) : content;    
+//        } else
+//        {
+//            valueString = content;
+//        }
+        String valueString = Parameter.extractValue(content);
+        T value = getConverter().fromString(valueString);
+        System.out.println("valueString:" + valueString + " " + value);
         setValue(value);
         return errors();
     }

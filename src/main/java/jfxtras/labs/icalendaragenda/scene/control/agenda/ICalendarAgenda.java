@@ -484,6 +484,7 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE: // Create VComponent
                             {
+                                System.out.println("appointment:" + appointment.getDescription().equals(""));
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                                 getVCalendar().addVComponent(newVComponent);
                                 break;

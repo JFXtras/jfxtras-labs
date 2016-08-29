@@ -343,7 +343,13 @@ public class VCalendar extends VParentBase
         }
         ianaProperty().set(ianaProps);
     }
-    public VCalendar withIANA(String...ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()} by parsing a vararg of
+     * iCalendar content text representing individual {@link IANAProperty} objects.
+     * 
+     * @return - this class for chaining
+     */
+    public VCalendar withIana(String...ianaProps)
     {
         List<IANAProperty> a = Arrays.stream(ianaProps)
                 .map(c -> IANAProperty.parse(c))
@@ -351,12 +357,22 @@ public class VCalendar extends VParentBase
         setIana(FXCollections.observableArrayList(a));
         return this;
     }
-    public VCalendar withIANA(ObservableList<IANAProperty> ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()}
+     * 
+     * @return - this class for chaining
+     */
+    public VCalendar withIana(ObservableList<IANAProperty> ianaProps)
     {
         setIana(ianaProps);
         return this;
     }
-    public VCalendar withIANA(IANAProperty...ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()} from a vararg of {@link IANAProperty} objects.
+     * 
+     * @return - this class for chaining
+     */ 
+    public VCalendar withIana(IANAProperty...ianaProps)
     {
         setIana(FXCollections.observableArrayList(ianaProps));
         return this;

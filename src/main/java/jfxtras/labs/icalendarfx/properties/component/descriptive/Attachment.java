@@ -28,8 +28,8 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
    <p>Purpose:  This property provides the capability to associate a
       document object with a calendar component.</p>
 
-   <p>Value Type:  The default value type for this property is URI.  The
-      value type can also be set to BINARY to indicate inline binary
+   <p>Value Type:  The default {@link ValueType value type} for this property is {@link ValueType.UNIFORM_RESOURCE_IDENTIFIER URI}.  The
+      value type can also be set to {@link ValueType.Binary BINARY} to indicate inline binary
       encoded content information.</p>
 
    <p>Property Parameters:  {@link IANAProperty IANA}, {@link NonStandardProperty non-standard},

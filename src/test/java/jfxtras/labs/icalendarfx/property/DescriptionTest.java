@@ -33,17 +33,17 @@ public class DescriptionTest
         assertEquals(foldedContent, expectedDescription.toContent());
     }
     
-    @Test
-    public void canParseDescriptionWithOtherParameters()
-    {
-        String contentLine = "DESCRIPTION;MYPARAMETER=some value;IGNORE ME;PARAMETER2=other value:Example description";        
-        Description madeDescription = Description.parse(contentLine);
-        Description expectedDescription = Description.parse("Example description")
-                .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
-        assertEquals(expectedDescription, madeDescription);
-        String foldedContent = ICalendarUtilities.foldLine("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description").toString();
-        assertEquals(foldedContent, expectedDescription.toContent());
-    }
+//    @Test
+//    public void canParseDescriptionWithOtherParameters()
+//    {
+//        String contentLine = "DESCRIPTION;MYPARAMETER=some value;IGNORE ME;PARAMETER2=other value:Example description";        
+//        Description madeDescription = Description.parse(contentLine);
+//        Description expectedDescription = Description.parse("Example description")
+//                .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
+//        assertEquals(expectedDescription, madeDescription);
+//        String foldedContent = ICalendarUtilities.foldLine("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description").toString();
+//        assertEquals(foldedContent, expectedDescription.toContent());
+//    }
     
     @Test
     public void canParseEmptyDescription()

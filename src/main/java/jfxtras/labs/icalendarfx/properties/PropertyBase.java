@@ -20,7 +20,8 @@ import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
-import jfxtras.labs.icalendarfx.parameters.OtherParameter;
+import jfxtras.labs.icalendarfx.parameters.IANAParameter;
+import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -221,51 +222,192 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     };
     
     /**
-     * OTHER PARAMETER
-     * other-param, 3.2 RFC 5545 page 14
-     * Has custom name and String value
+     * <h2>NON-STANDARD PARAMETERS</h2>
+     * 
+     * <p>x-param     = x-name "=" param-value *("," param-value)<br>
+     ; A non-standard, experimental parameter.</p>
      */
     @Override
-    public ObservableList<OtherParameter> getOtherParameters() { return otherParameters; }
-    private ObservableList<OtherParameter> otherParameters;
+    public ObjectProperty<ObservableList<NonStandardParameter>> nonStandardParameter()
+    {
+        if (nonStandardParams == null)
+        {
+            nonStandardParams = new SimpleObjectProperty<>(this, ParameterType.NON_STANDARD.toString());
+        }
+        return nonStandardParams;
+    }
+    private ObjectProperty<ObservableList<NonStandardParameter>> nonStandardParams;
     @Override
-    public void setOtherParameters(ObservableList<OtherParameter> otherParameters)
+    public ObservableList<NonStandardParameter> getNonStandard()
     {
-        if (otherParameters != null)
-        {
-            orderer().registerSortOrderProperty(otherParameters);
-        } else
-        {
-            orderer().unregisterSortOrderProperty(this.otherParameters);
-        }
-        this.otherParameters = otherParameters;
+        return (nonStandardParams == null) ? null : nonStandardParams.get();
     }
-    public U withOtherParameters(ObservableList<OtherParameter> otherParameters) { setOtherParameters(otherParameters); return (U) this; }
-    public U withOtherParameters(String...otherParameters)
+    @Override
+    public void setNonStandard(ObservableList<NonStandardParameter> nonStandardParams)
     {
-        final ObservableList<OtherParameter> list;
-        if (getOtherParameters() == null)
+        if (nonStandardParams != null)
         {
-            list = FXCollections.observableArrayList();
-            setOtherParameters(list);
+            orderer().registerSortOrderProperty(nonStandardParams);
         } else
         {
-            list = getOtherParameters();
+            orderer().unregisterSortOrderProperty(nonStandardParameter().get());
         }
-        Arrays.asList(otherParameters).forEach(p -> list.add(new OtherParameter(p)));
+        nonStandardParameter().set(nonStandardParams);
+    }
+    /**
+     * Sets the value of the {@link #NonStandardParameter()} by parsing a vararg of
+     * iCalendar content text representing individual {@link NonStandardParameter} objects.
+     * 
+     * @return - this class for chaining
+     */
+    public U withNonStandard(String...nonStandardParams)
+    {
+        List<NonStandardParameter> a = Arrays.stream(nonStandardParams)
+                .map(c -> NonStandardParameter.parse(c))
+                .collect(Collectors.toList());
+        setNonStandard(FXCollections.observableArrayList(a));
         return (U) this;
     }
-    public U withOtherParameters(OtherParameter...otherParameters)
+    /**
+     * Sets the value of the {@link #NonStandardParameter()}
+     * 
+     * @return - this class for chaining
+     */
+    public U withNonStandard(ObservableList<NonStandardParameter> nonStandardParams)
     {
-        if (getOtherParameters() == null)
-        {
-            setOtherParameters(FXCollections.observableArrayList(otherParameters));
-        } else
-        {
-            getOtherParameters().addAll(otherParameters);
-        }
+        setNonStandard(nonStandardParams);
         return (U) this;
     }
+    /**
+     * Sets the value of the {@link #NonStandardParameter()} from a vararg of {@link NonStandardParameter} objects.
+     * 
+     * @return - this class for chaining
+     */    
+    public U withNonStandard(NonStandardParameter...nonStandardParams)
+    {
+        setNonStandard(FXCollections.observableArrayList(nonStandardParams));
+        return (U) this;
+    }
+    
+    /**
+     *<p>Allows other properties registered
+     * with IANA to be specified in any calendar components.</p>
+     */
+    @Override
+    public ObjectProperty<ObservableList<IANAParameter>> IANAParameter()
+    {
+        if (ianaParams == null)
+        {
+            ianaParams = new SimpleObjectProperty<>(this, ParameterType.IANA_PARAMETER.toString());
+        }
+        return ianaParams;
+    }
+    @Override
+    public ObservableList<IANAParameter> getIana()
+    {
+        return (ianaParams == null) ? null : ianaParams.get();
+    }
+    private ObjectProperty<ObservableList<IANAParameter>> ianaParams;
+    @Override
+    public void setIana(ObservableList<IANAParameter> ianaParams)
+    {
+        if (ianaParams != null)
+        {
+            orderer().registerSortOrderProperty(ianaParams);
+        } else
+        {
+            orderer().unregisterSortOrderProperty(IANAParameter().get());
+        }
+        IANAParameter().set(ianaParams);
+    }
+    /**
+     * Sets the value of the {@link #IANAParameter()} by parsing a vararg of
+     * iCalendar content text representing individual {@link IANAParameter} objects.
+     * 
+     * @return - this class for chaining
+     */
+    public U withIana(String...ianaParams)
+    {
+        List<IANAParameter> a = Arrays.stream(ianaParams)
+                .map(c -> IANAParameter.parse(c))
+                .collect(Collectors.toList());
+        setIana(FXCollections.observableArrayList(a));
+        return (U) this;
+    }
+    /**
+     * Sets the value of the {@link #nonStandardProperty()}
+     * 
+     * @return - this class for chaining
+     */
+    public U withIana(ObservableList<IANAParameter> ianaParams)
+    {
+        setIana(ianaParams);
+        return (U) this;
+    }
+    /**
+     * Sets the value of the {@link #IANAParameter()} from a vararg of {@link IANAParameter} objects.
+     * 
+     * @return - this class for chaining
+     */    
+    public U withIana(IANAParameter...ianaParams)
+    {
+        setIana(FXCollections.observableArrayList(ianaParams));
+        return (U) this;
+    }
+    
+//
+//    
+//    /**
+//     * OTHER PARAMETER
+//     * other-param, 3.2 RFC 5545 page 14
+//     * Has custom name and String value
+//     */
+//    @Override
+//    @Deprecated
+//    public ObservableList<OtherParameter> getOtherParameters() { return otherParameters; }
+//    private ObservableList<OtherParameter> otherParameters;
+//    @Override
+//    @Deprecated
+//    public void setOtherParameters(ObservableList<OtherParameter> otherParameters)
+//    {
+//        if (otherParameters != null)
+//        {
+//            orderer().registerSortOrderProperty(otherParameters);
+//        } else
+//        {
+//            orderer().unregisterSortOrderProperty(this.otherParameters);
+//        }
+//        this.otherParameters = otherParameters;
+//    }
+//    @Deprecated
+//    public U withOtherParameters(ObservableList<OtherParameter> otherParameters) { setOtherParameters(otherParameters); return (U) this; }
+//    @Deprecated
+//    public U withOtherParameters(String...otherParameters)
+//    {
+//        final ObservableList<OtherParameter> list;
+//        if (getOtherParameters() == null)
+//        {
+//            list = FXCollections.observableArrayList();
+//            setOtherParameters(list);
+//        } else
+//        {
+//            list = getOtherParameters();
+//        }
+//        Arrays.asList(otherParameters).forEach(p -> list.add(new OtherParameter(p)));
+//        return (U) this;
+//    }
+//    @Deprecated
+//    public U withOtherParameters(OtherParameter...otherParameters)
+//    {
+//        if (getOtherParameters() == null)
+//        {
+//            setOtherParameters(FXCollections.observableArrayList(otherParameters));
+//        } else
+//        {
+//            getOtherParameters().addAll(otherParameters);
+//        }
+//        return (U) this;
+//    }
     
     @Override
     public Callback<VChild, Void> copyChildCallback()
@@ -371,6 +513,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         // perform tests, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
+//        System.out.println("content222:" + contentLine + " " + this.getClass().getSimpleName());
         indices.add(contentLine.indexOf(':'));
         indices.add(contentLine.indexOf(';'));
         Optional<Integer> hasPropertyName = indices
@@ -382,11 +525,11 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             int endNameIndex = hasPropertyName.get();
             String propertyName = (endNameIndex > 0) ? contentLine.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isMatch = propertyName.equals(propertyType.toString());
-            boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
-            boolean isIANA = propertyType.equals(PropertyType.IANA_PROPERTY);
-            if (isMatch || isNonStandard || isIANA)
+            boolean isNonStandardProperty = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
+            boolean isIANAProperty = propertyType.equals(PropertyType.IANA_PROPERTY);
+            if (isMatch || isNonStandardProperty || isIANAProperty)
             {
-                if (isNonStandard || isIANA)
+                if (isNonStandardProperty || isIANAProperty)
                 {
                     setPropertyName(contentLine.substring(0,endNameIndex));
                 }
@@ -420,7 +563,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     Object existingParemeter = parameterType.getParameter(this);
                     if (existingParemeter == null || existingParemeter instanceof List)
                     {
-                        parameterType.parse(this, entry.getValue());
+                        System.out.println("paraType:" + parameterType);
+                        parameterType.parse(this, entry.getKey() + "=" + entry.getValue());
                     } else
                     {
                         throw new IllegalArgumentException(parameterType + " can only occur once in a calendar component");
@@ -443,7 +587,13 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
+                    if (IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.contains(entry.getKey()))
+                    {
+                        ParameterType.IANA_PARAMETER.parse(this, entry.getKey() + "=" + entry.getValue());
+                    } else
+                    {
+                        // ignore unrecognized parameter (RFC 5545, 3.2 Property Parameters, page 14)
+                    }
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
         

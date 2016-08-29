@@ -127,4 +127,46 @@ public class GeneralPropertyTest
         String contentLines = "SUMMARY;LANGUAGE=en;LANGUAGE=fr:TEST SUMMARY";
         Summary.parse(contentLines);
     }
+    
+    @Test
+    public void canCheckEqualityEmptyProperty()
+    {
+        Summary p1 = new Summary();
+        Summary p2 = new Summary();
+        assertEquals(p1, p2);
+        assertEquals("SUMMARY:", p2.toContent());
+        assertEquals(p1.toContent(), p2.toContent());
+    }
+    
+    @Test // property with non-standard parameters
+    public void canHandleNonStandardParameters()
+    {
+        String content = "SUMMARY;X-PARAM1=VALUE1;X-PARAM2=VALUE2:Department Party";
+        Summary madeProperty = Summary.parse(content);
+        assertEquals(content, madeProperty.toContent());
+        Summary expectedProperty = new Summary()
+                .withValue("Department Party")
+                .withNonStandard("X-PARAM1=VALUE1", "X-PARAM2=VALUE2");
+        assertEquals(expectedProperty, madeProperty);
+    }
+    
+    @Test // property with non-standard parameters
+    public void canHandleIANAParameters()
+    {
+        String content = "SUMMARY;TESTPARAM1=VALUE1;TESTPARAM2=VALUE2:Department Party";
+        Summary madeProperty = Summary.parse(content);
+        assertEquals(content, madeProperty.toContent());
+        Summary expectedProperty = new Summary()
+                .withValue("Department Party")
+                .withIana("TESTPARAM1=VALUE1", "TESTPARAM2=VALUE2");
+        assertEquals(expectedProperty, madeProperty);
+    }
+    
+    @Test
+    public void canIgnoreUnrecognizedParameter()
+    {
+        String content = "SUMMARY;IGNORE-THIS-PARAMETER=VALUE1:test value";
+        Summary madeProperty = Summary.parse(content);
+        assertEquals("SUMMARY:test value", madeProperty.toContent());
+    }
 }

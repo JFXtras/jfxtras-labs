@@ -79,11 +79,6 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
      * CONSTRUCTORS
      */
     VComponentDescribableBase() { }
-    
-//    VComponentDescribableBase(String contentLines)
-//    {
-//        super(contentLines);
-//    }
 
     public VComponentDescribableBase(VComponentDescribableBase<T> source)
     {

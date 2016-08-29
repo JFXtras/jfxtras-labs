@@ -273,6 +273,7 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
+                    if (object == null) return "";
                     // Add escape characters
                     String line = object.toString();
                     StringBuilder builder = new StringBuilder(line.length()+20); 

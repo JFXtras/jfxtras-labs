@@ -116,7 +116,13 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
         }
         ianaProperty().set(ianaProps);
     }
-    public T withIANA(String...ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()} by parsing a vararg of
+     * iCalendar content text representing individual {@link IANAProperty} objects.
+     * 
+     * @return - this class for chaining
+     */
+    public T withIana(String...ianaProps)
     {
         List<IANAProperty> a = Arrays.stream(ianaProps)
                 .map(c -> IANAProperty.parse(c))
@@ -124,12 +130,22 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
         setIana(FXCollections.observableArrayList(a));
         return (T) this;
     }
-    public T withIANA(ObservableList<IANAProperty> ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()}
+     * 
+     * @return - this class for chaining
+     */
+    public T withIana(ObservableList<IANAProperty> ianaProps)
     {
         setIana(ianaProps);
         return (T) this;
     }
-    public T withIANA(IANAProperty...ianaProps)
+    /**
+     * Sets the value of the {@link #IANAProperty()} from a vararg of {@link IANAProperty} objects.
+     * 
+     * @return - this class for chaining
+     */    
+    public T withIana(IANAProperty...ianaProps)
     {
         setIana(FXCollections.observableArrayList(ianaProps));
         return (T) this;

@@ -37,9 +37,11 @@ import jfxtras.labs.icalendarfx.parameter.AlternateTextRepresentationTest;
 import jfxtras.labs.icalendarfx.parameter.CommonNameTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
 import jfxtras.labs.icalendarfx.parameter.DirectoryEntryReferenceTest;
+import jfxtras.labs.icalendarfx.parameter.NonstandardParameterTest;
 import jfxtras.labs.icalendarfx.parameter.ParseDateTest;
 import jfxtras.labs.icalendarfx.parameter.ParseParameterTest;
 import jfxtras.labs.icalendarfx.parameter.ParticipationRoleTest;
+import jfxtras.labs.icalendarfx.parameter.RelationshipTypeTest;
 import jfxtras.labs.icalendarfx.property.ActionTest;
 import jfxtras.labs.icalendarfx.property.AttachmentTest;
 import jfxtras.labs.icalendarfx.property.AttendeeTest;
@@ -130,7 +132,6 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         VTodoTest.class,
        
        // property tests
-        GeneralPropertyTest.class,
         ActionTest.class,
         AttachmentTest.class,
         AttendeeTest.class,
@@ -148,6 +149,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         DurationTest.class,
         ExceptionsTest.class,
         FreeBusyTimeTest.class,
+        GeneralPropertyTest.class,
         IANATest.class,
         LocationTest.class,
         NonStandardTest.class,
@@ -178,9 +180,11 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CommonNameTest.class,
         DelegateesTest.class,
         DirectoryEntryReferenceTest.class,
+        NonstandardParameterTest.class,
         ParseDateTest.class,
         ParseParameterTest.class,
         ParticipationRoleTest.class,
+        RelationshipTypeTest.class,
         
         // Recurrence Rule tests
         RecurrenceRuleParseTest.class,

@@ -1,19 +1,24 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * Parameter with custom name and value
+ * Some other IANA-registered iCalendar parameter.
  * 
  * @author David Bal
  *
  */
-@Deprecated
-public class OtherParameter extends ParameterBase<OtherParameter, String>
+public class IANAParameter extends ParameterBase<IANAParameter, String>
 {
+    public static final List<String> REGISTERED_IANA_PARAMETER_NAMES = 
+            Arrays.asList("TESTPARAM1", "TESTPARAM2");
+    
     final String name;
     @Override
     public String name() { return name; }
     
-    public OtherParameter(String content)
+    public IANAParameter(String content)
     {
         super();
         int equalsIndex = content.indexOf('=');
@@ -22,15 +27,15 @@ public class OtherParameter extends ParameterBase<OtherParameter, String>
         setValue(value);
     }
 
-    public OtherParameter(OtherParameter source)
+    public IANAParameter(IANAParameter source)
     {
         super(source);
         this.name = source.name;
     }
 
-    public static OtherParameter parse(String content)
+    public static IANAParameter parse(String content)
     {
-        return new OtherParameter(content);
+        return new IANAParameter(content);
     }
     
     @Override

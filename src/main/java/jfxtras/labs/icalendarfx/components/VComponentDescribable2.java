@@ -42,7 +42,10 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
     default void setDescription(Description description) { descriptionProperty().set(description); }
     default void setDescription(String description)
     {
-        if (getDescription() == null)
+        if (description == null)
+        {
+            descriptionProperty().set(null);
+        } else if (getDescription() == null)
         {
             setDescription(Description.parse(description));
         } else
@@ -57,14 +60,8 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
      */
     default T withDescription(Description description)
     {
-        if (getDescription() == null)
-        {
-            setDescription(description);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDescription(description);
+        return (T) this;
     }
     /**
      * Sets the value of the {@link Description} by parsing iCalendar text
@@ -73,16 +70,7 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
      */
     default T withDescription(String description)
     {
-        if (getDescription() == null)
-        {
-            if (description != null)
-            {
-                setDescription(description);
-            }
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDescription(description);
+        return (T) this;
     }
 }

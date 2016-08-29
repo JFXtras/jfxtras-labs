@@ -198,6 +198,7 @@ public class ParseCalendarTest extends ICalendarTestAbstract
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
         Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
         List<String> errors = vCalendar.parseContent(unfoldedLines, true);
+        assertEquals(2, errors.size());
 //        errors.forEach(System.out::println);
 //        assertEquals(content, vCalendar.toContent());
     }

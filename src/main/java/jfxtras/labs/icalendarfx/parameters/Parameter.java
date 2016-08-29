@@ -52,4 +52,38 @@ public interface Parameter<T> extends Comparable<Parameter<T>>, VChild
      */
     @Override
     String toContent();
+    
+    /*
+     * Utility methods
+     */    
+    static String extractValue(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        final String valueString;
+        if (equalsIndex > 0)
+        {
+            String name = content.substring(0, equalsIndex);
+            boolean hasName1 = ParameterType.enumFromName(name.toUpperCase()) != null;
+            boolean hasName2 = IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.contains(name.toUpperCase());
+            valueString = (hasName1 || hasName2) ? content.substring(equalsIndex+1) : content;    
+        } else
+        {
+            valueString = content;
+        }
+        return valueString;
+    }
+    
+    static String extractName(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        if (equalsIndex > 0)
+        {
+            String name = content.substring(0, equalsIndex);
+            boolean hasName1 = ParameterType.enumFromName(name.toUpperCase()) != null;
+            boolean hasName2 = IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.contains(name.toUpperCase());
+            return (hasName1 || hasName2) ? name : null;
+        }
+        return null;
+    }
+    
 }

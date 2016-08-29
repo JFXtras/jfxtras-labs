@@ -36,6 +36,7 @@ public class RelatedToTest
     {
         String expectedContent = "RELATED-TO;RELTYPE=CUSTOM RELATIONSHIP:fc3577e0-8155-4fa2-a085-a15bdc50a5b4";
         RelatedTo madeProperty = RelatedTo.parse(expectedContent);
+        System.out.println(madeProperty.toContent());
         assertEquals(expectedContent, madeProperty.toContent());
         RelatedTo expectedProperty = RelatedTo.parse("fc3577e0-8155-4fa2-a085-a15bdc50a5b4")
                 .withRelationship("CUSTOM RELATIONSHIP");

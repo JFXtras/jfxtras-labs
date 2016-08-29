@@ -137,13 +137,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 400));
     }
     
-//    /** Parse content lines into calendar component */
-//    VComponentBase(String contentLines)
-//    {
-//        this();
-//        parseContent(contentLines);
-//    }
-    
     /**
      * Creates a deep copy of a component
      */

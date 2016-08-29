@@ -1,19 +1,18 @@
 package jfxtras.labs.icalendarfx.parameters;
 
 /**
- * Parameter with custom name and value
+ * A non-standard, experimental parameter.
  * 
  * @author David Bal
  *
  */
-@Deprecated
-public class OtherParameter extends ParameterBase<OtherParameter, String>
+public class NonStandardParameter extends ParameterBase<NonStandardParameter, String>
 {
     final String name;
     @Override
     public String name() { return name; }
     
-    public OtherParameter(String content)
+    public NonStandardParameter(String content)
     {
         super();
         int equalsIndex = content.indexOf('=');
@@ -22,15 +21,15 @@ public class OtherParameter extends ParameterBase<OtherParameter, String>
         setValue(value);
     }
 
-    public OtherParameter(OtherParameter source)
+    public NonStandardParameter(NonStandardParameter source)
     {
         super(source);
         this.name = source.name;
     }
 
-    public static OtherParameter parse(String content)
+    public static NonStandardParameter parse(String content)
     {
-        return new OtherParameter(content);
+        return new NonStandardParameter(content);
     }
     
     @Override

@@ -68,16 +68,30 @@ public interface VComponentDateTimeEnd<T> extends VComponent
             getDateTimeEnd().setValue(temporal);
         }
     }
-    default T withDateTimeEnd(Temporal dtEnd)
+    /**
+     * Sets the value of {@link #DateTimeEnd()}.
+     * 
+     * @return - this class for chaining
+     */    default T withDateTimeEnd(Temporal dtEnd)
     {
         setDateTimeEnd(dtEnd);
         return (T) this;
     }
+    /**
+     * Sets the value of {@link #DateTimeEnd()} by parsing iCalendar text.
+     * 
+     * @return - this class for chaining
+     */
     default T withDateTimeEnd(String dtEnd)
     {
         setDateTimeEnd(dtEnd);
         return (T) this;
     }
+    /**
+     * Sets the value of {@link #DateTimeEnd()}.
+     * 
+     * @return - this class for chaining
+     */
     default T withDateTimeEnd(DateTimeEnd dtEnd)
     {
         setDateTimeEnd(dtEnd);
@@ -88,7 +102,7 @@ public interface VComponentDateTimeEnd<T> extends VComponent
     DateTimeStart getDateTimeStart();
     
     /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
-     *  after dateTimeEndProperty() is initialized */
+     *  after dateTimeEndProperty() is initialized.  Intended for internal use only. */
     default void checkDateTimeEndConsistency()
     {
         if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
@@ -103,9 +117,14 @@ public interface VComponentDateTimeEnd<T> extends VComponent
         }
     }
     
+    /**
+     * Creates error string if {@link DateTimeEnd} value has an error, null otherwise.
+     * 
+     * @param testObj  {@link VComponentDateTimeEnd} to be tested.
+     * @return  Error string or null if no error.
+     */
     static String errorsDateTimeEnd(VComponentDateTimeEnd<?> testObj)
     {
-//        List<String> errors = new ArrayList<>();
         if (testObj.getDateTimeEnd() != null)
         {
             if (testObj.getDateTimeStart() != null)

@@ -29,6 +29,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
 import jfxtras.labs.icalendarfx.properties.ValueType;
+import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
 import jfxtras.labs.icalendarfx.utilities.StringConverters;
 
@@ -355,6 +356,50 @@ public enum ParameterType
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
+    IANA_PARAMETER (IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.get(0),
+            IANAParameter.class) {
+        @Override
+        public void parse(Property<?> property, String content)
+        {
+            final ObservableList<IANAParameter> list;
+            if (property.getIana() == null)
+            {
+                list = FXCollections.observableArrayList();
+                property.setIana(list);
+            } else
+            {
+                list = property.getIana();
+            }
+            list.add(IANAParameter.parse(content));
+        }
+
+        @Override
+        public Object getParameter(Property<?> parent)
+        {
+            return parent.getIana();
+        }
+
+        @Override
+        public void copyParameter(Parameter<?> child, Property<?> destination)
+        {
+            final ObservableList<IANAParameter> list;
+            if (destination.getIana() == null)
+            {
+                list = FXCollections.observableArrayList();
+                destination.setIana(list);
+            } else
+            {
+                list = destination.getIana();
+            }
+            list.add(new IANAParameter((IANAParameter) child));
+        }
+
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+        }
+    },
     // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
     LANGUAGE ("LANGUAGE", Language.class) {
         @Override
@@ -414,41 +459,42 @@ public enum ParameterType
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
-    OTHER ("OTHER", OtherParameter.class) {
+    NON_STANDARD ("X-", // parameter name begins with X- prefix
+            NonStandardParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            final ObservableList<OtherParameter> list;
-            if (property.getOtherParameters() == null)
+            final ObservableList<NonStandardParameter> list;
+            if (property.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                property.setOtherParameters(list);
+                property.setNonStandard(list);
             } else
             {
-                list = property.getOtherParameters();
+                list = property.getNonStandard();
             }
-            list.add(OtherParameter.parse(content));
+            list.add(NonStandardParameter.parse(content));
         }
 
         @Override
         public Object getParameter(Property<?> parent)
         {
-            return parent.getOtherParameters();
+            return parent.getNonStandard();
         }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            final ObservableList<OtherParameter> list;
-            if (destination.getOtherParameters() == null)
+            final ObservableList<NonStandardParameter> list;
+            if (destination.getNonStandard() == null)
             {
                 list = FXCollections.observableArrayList();
-                destination.setOtherParameters(list);
+                destination.setNonStandard(list);
             } else
             {
-                list = destination.getOtherParameters();
+                list = destination.getNonStandard();
             }
-            list.add(new OtherParameter((OtherParameter) child));
+            list.add(new NonStandardParameter((NonStandardParameter) child));
         }
 
         @Override
@@ -457,6 +503,50 @@ public enum ParameterType
             return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
         }
     },
+//    @Deprecated
+//    OTHER ("OTHER", OtherParameter.class) {
+//        @Override
+//        public void parse(Property<?> property, String content)
+//        {
+//            final ObservableList<OtherParameter> list;
+//            if (property.getOtherParameters() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                property.setOtherParameters(list);
+//            } else
+//            {
+//                list = property.getOtherParameters();
+//            }
+//            list.add(OtherParameter.parse(content));
+//        }
+//
+//        @Override
+//        public Object getParameter(Property<?> parent)
+//        {
+//            return parent.getOtherParameters();
+//        }
+//
+//        @Override
+//        public void copyParameter(Parameter<?> child, Property<?> destination)
+//        {
+//            final ObservableList<OtherParameter> list;
+//            if (destination.getOtherParameters() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                destination.setOtherParameters(list);
+//            } else
+//            {
+//                list = destination.getOtherParameters();
+//            }
+//            list.add(new OtherParameter((OtherParameter) child));
+//        }
+//
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+//        }
+//    },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -773,16 +863,37 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
-            ValueType valueType = castProperty.propertyType().allowedValueTypes().get(0);
-            if (valueType.toString().equals(content))
+            int equalsIndex = content.indexOf('=');
+            final String valueString;
+            if (equalsIndex > 0)
             {
-                castProperty.setValueType(new ValueParameter(valueType));
+                String name = content.substring(0, equalsIndex);
+                boolean isNameValid = name.equals(this.toString());
+                valueString = (isNameValid) ? content.substring(equalsIndex+1) : content;    
             } else
             {
-                castProperty.setValueType(ValueParameter.parse(content)); // unknown value type
-//                throw new IllegalArgumentException("Value type: " + content + " is not valid");
+                valueString = content;
             }
+            ValueType valueType = ValueType.enumFromName(valueString.toUpperCase());
+            System.out.println("222content:" + content + " " + valueString + " " + valueType + property.propertyType());
+            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
+            boolean isValidType = castProperty.propertyType().allowedValueTypes().contains(valueType);
+            if (valueType == null || isValidType)
+            {
+                castProperty.setValueType(ValueParameter.parse(valueString));
+            } else
+            {
+                throw new IllegalArgumentException("Property type " + property.getClass().getSimpleName() + " doesn't allow value type " + valueType);
+            }
+//            ValueType valueType = castProperty.propertyType().allowedValueTypes().get(0);
+//            System.out.println("222content:" + valueType);
+//            if (valueType.toString().equals(content))
+//            {
+//                castProperty.setValueType(new ValueParameter(valueType));
+//            } else
+//            {
+//                castProperty.setValueType(ValueParameter.parse(content)); // unknown value type
+//            }
         }
 
         @Override
@@ -832,9 +943,23 @@ public enum ParameterType
         }
         return map;
     }
-    public static ParameterType enumFromName(String propertyName)
+    public static ParameterType enumFromName(String parameterName)
     {
-        return enumFromNameMap.get(propertyName.toUpperCase());
+        final ParameterType prop;
+        // minimum property name is 2 characters
+        boolean isLongEnough = parameterName.length() > 2;
+        boolean isNonStanderd = (isLongEnough) ? parameterName.substring(0, ParameterType.NON_STANDARD.toString().length()).equals(ParameterType.NON_STANDARD.toString()) : false;
+        if (isNonStanderd)
+        {
+            prop = ParameterType.NON_STANDARD;
+        } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(parameterName))
+        {
+            prop = ParameterType.IANA_PARAMETER;            
+        } else
+        {
+            prop = enumFromNameMap.get(parameterName);   
+        }
+        return prop;
     }
     
     // Map to match up class to enum
