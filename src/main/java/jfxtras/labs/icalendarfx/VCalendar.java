@@ -976,6 +976,7 @@ public class VCalendar extends VParentBase
                 CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
                 if (elementType != null)
                 {
+                    System.out.println("unfoldedLine:" + unfoldedLine + " " + elementType);
                     child = elementType.parse(this, unfoldedLine);
                 } else if (unfoldedLine.contains(":"))
                 {

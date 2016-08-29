@@ -356,7 +356,7 @@ public enum ParameterType
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
-    IANA_PARAMETER ("",  // name specified in IANAParameter registeredIANAParameters
+    IANA_PARAMETER (null,  // name specified in IANAParameter registeredIANAParameters
             IANAParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -503,50 +503,6 @@ public enum ParameterType
             return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
         }
     },
-//    @Deprecated
-//    OTHER ("OTHER", OtherParameter.class) {
-//        @Override
-//        public void parse(Property<?> property, String content)
-//        {
-//            final ObservableList<OtherParameter> list;
-//            if (property.getOtherParameters() == null)
-//            {
-//                list = FXCollections.observableArrayList();
-//                property.setOtherParameters(list);
-//            } else
-//            {
-//                list = property.getOtherParameters();
-//            }
-//            list.add(OtherParameter.parse(content));
-//        }
-//
-//        @Override
-//        public Object getParameter(Property<?> parent)
-//        {
-//            return parent.getOtherParameters();
-//        }
-//
-//        @Override
-//        public void copyParameter(Parameter<?> child, Property<?> destination)
-//        {
-//            final ObservableList<OtherParameter> list;
-//            if (destination.getOtherParameters() == null)
-//            {
-//                list = FXCollections.observableArrayList();
-//                destination.setOtherParameters(list);
-//            } else
-//            {
-//                list = destination.getOtherParameters();
-//            }
-//            list.add(new OtherParameter((OtherParameter) child));
-//        }
-//
-//        @Override
-//        public <T> StringConverter<T> getConverter()
-//        {
-//            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
-//        }
-//    },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -978,12 +934,10 @@ public enum ParameterType
     private String name;
     private Class<? extends Parameter<?>> myClass;
     @Override  public String toString() { return name; }
-//    private Class<? extends Property> propertyClasses[];
     ParameterType(String name, Class<? extends Parameter<?>> myClass)
     {
         this.name = name;
         this.myClass = myClass;
-//        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
     }
 
     /*

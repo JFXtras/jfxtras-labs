@@ -8,6 +8,7 @@ import jfxtras.labs.icalendarfx.calendar.CalendarScaleTest;
 import jfxtras.labs.icalendarfx.calendar.CopyCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.OrdererTest;
+import jfxtras.labs.icalendarfx.calendar.ParseCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.ReadICSFileTest;
 import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
@@ -101,6 +102,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CalendarScaleTest.class,
         CopyCalendarTest.class,
         GeneralCalendarTest.class,
+        ParseCalendarTest.class,
         ReadICSFileTest.class,
         VCalendarRecurrenceIDTest.class,
                 

@@ -25,14 +25,6 @@ public enum CalendarProperty
         @Override
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
-//            final String line;
-//            if (contentLines.size() == 1)
-//            {
-//                line = contentLines.get(0);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only have one line of content");
-//            }
             CalendarScale property = CalendarScale.parse(contentLine);
             vCalendar.setCalendarScale(property);
             return property;
@@ -46,7 +38,7 @@ public enum CalendarProperty
         }
     },
     // Miscellaneous
-    IANA_PROPERTY ("", // name specified in IANAProperty registeredIANAProperties
+    IANA_PROPERTY (null, // name specified in IANAProperty registeredIANAProperties
             Arrays.asList(ParameterType.values()), // all parameters allowed
             IANAProperty.class) // property class
     {
@@ -91,14 +83,6 @@ public enum CalendarProperty
         @Override
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
-//            final String line;
-//            if (contentLines.size() == 1)
-//            {
-//                line = contentLines.get(0);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only have one line of content");
-//            }
             Method property = Method.parse(contentLine);
             vCalendar.setMethod(property);
             return property;
@@ -158,14 +142,6 @@ public enum CalendarProperty
         @Override
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
-//            final String line;
-//            if (contentLines.size() == 1)
-//            {
-//                line = contentLines.get(0);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only have one line of content");
-//            }
             ProductIdentifier property = ProductIdentifier.parse(contentLine);
             vCalendar.setProductIdentifier(property);
             return property;
@@ -185,14 +161,6 @@ public enum CalendarProperty
         @Override
         public VChild parse(VCalendar vCalendar, String contentLine)
         {
-//            final String line;
-//            if (contentLines.size() == 1)
-//            {
-//                return PropertyType.VERSION.parse(vCalendar, contentLines.get(0));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only have one line of content");
-//            }
             Version property = Version.parse(contentLine);
             vCalendar.setVersion(property);
             return property;

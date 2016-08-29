@@ -320,13 +320,6 @@ public enum PropertyType
             Classification child = Classification.parse(propertyContent);
             castComponent.setClassification(child);
             return child;
-//            if (castComponent.getClassification() == null)
-//            {
-//                castComponent.setClassification(Classification.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -475,14 +468,6 @@ public enum PropertyType
             DateTimeCompleted child = DateTimeCompleted.parse(propertyContent);
             castComponent.setDateTimeCompleted(child);
             return child;
-//            if (castComponent.getDateTimeCompleted() == null)
-//            {
-//                
-//                castComponent.setDateTimeCompleted(child);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -513,14 +498,6 @@ public enum PropertyType
             DateTimeCreated child = DateTimeCreated.parse(propertyContent);
             castComponent.setDateTimeCreated(child);
             return child;
-//            if (castComponent.getDateTimeCreated() == null)
-//            {
-//                DateTimeCreated child = DateTimeCreated.parse(propertyContent);
-//                castComponent.setDateTimeCreated(child);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -551,14 +528,6 @@ public enum PropertyType
             DateTimeDue child = DateTimeDue.parse(propertyContent);
             castComponent.setDateTimeDue(child);
             return child;
-//            if (castComponent.getDateTimeDue() == null)
-//            {
-//                DateTimeDue child = DateTimeDue.parse(propertyContent);
-//                castComponent.setDateTimeDue(child);
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -589,13 +558,6 @@ public enum PropertyType
             DateTimeEnd child = DateTimeEnd.parse(propertyContent);
             castComponent.setDateTimeEnd(child);
             return child;
-//            if (castComponent.getDateTimeEnd() == null)
-//            {
-//                castComponent.setDateTimeEnd(DateTimeEnd.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -629,13 +591,6 @@ public enum PropertyType
             DateTimeStamp child = DateTimeStamp.parse(propertyContent);
             castComponent.setDateTimeStamp(child);
             return child;
-//            if (castComponent.getDateTimeStamp() == null)
-//            {
-//                castComponent.setDateTimeStamp(DateTimeStamp.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -668,13 +623,6 @@ public enum PropertyType
             DateTimeStart child = DateTimeStart.parse(propertyContent);
             castComponent.setDateTimeStart(child);
             return child;
-//            if (castComponent.getDateTimeStart() == null)
-//            {
-//                castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -878,13 +826,6 @@ public enum PropertyType
             FreeBusyTime child = FreeBusyTime.parse(propertyContent);
             castComponent.setFreeBusyTime(child);
             return child;
-//            if (castComponent.getFreeBusyTime() == null)
-//            {
-//                castComponent.setFreeBusyTime(FreeBusyTime.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -915,13 +856,6 @@ public enum PropertyType
             GeographicPosition child = GeographicPosition.parse(propertyContent);
             castComponent.setGeographicPosition(child);
             return child;
-//            if (castComponent.getGeographicPosition() == null)
-//            {
-//                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -933,7 +867,7 @@ public enum PropertyType
         }
     },
     // Miscellaneous
-    IANA_PROPERTY ("", // name specified in IANAProperty registeredIANAProperties
+    IANA_PROPERTY (null, // name specified in IANAProperty registeredIANAProperties
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
             Arrays.asList(ParameterType.values()), // all parameters allowed
             IANAProperty.class) // property class
@@ -999,13 +933,6 @@ public enum PropertyType
             LastModified child = LastModified.parse(propertyContent);
             castComponent.setDateTimeLastModified(child);
             return child;
-//            if (castComponent.getDateTimeLastModified() == null)
-//            {
-//                castComponent.setDateTimeLastModified(LastModified.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1037,13 +964,6 @@ public enum PropertyType
             Location child = Location.parse(propertyContent);
             castComponent.setLocation(child);
             return child;
-//            if (castComponent.getLocation() == null)
-//            {
-//                castComponent.setLocation(Location.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1146,13 +1066,6 @@ public enum PropertyType
             Organizer child = Organizer.parse(propertyContent);
             castComponent.setOrganizer(child);
             return child;
-//            if (castComponent.getOrganizer() == null)
-//            {
-//                castComponent.setOrganizer(Organizer.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
         
         @Override
@@ -1183,13 +1096,6 @@ public enum PropertyType
             PercentComplete child = PercentComplete.parse(propertyContent);
             castComponent.setPercentComplete(child);
             return child;
-//            if (castComponent.getPercentComplete() == null)
-//            {
-//                castComponent.setPercentComplete(PercentComplete.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
         
         @Override
@@ -1220,13 +1126,6 @@ public enum PropertyType
             Priority child = Priority.parse(propertyContent);
             castComponent.setPriority(child);
             return child;
-//            if (castComponent.getPriority() == null)
-//            {
-//                castComponent.setPriority(Priority.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1329,13 +1228,6 @@ public enum PropertyType
             RecurrenceId child = RecurrenceId.parse(propertyContent);
             castComponent.setRecurrenceId(child);
             return child;
-//            if (castComponent.getRecurrenceId() == null)
-//            {
-//                castComponent.setRecurrenceId(RecurrenceId.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1366,13 +1258,6 @@ public enum PropertyType
             RecurrenceRule child = RecurrenceRule.parse(propertyContent);
             castComponent.setRecurrenceRule(child);
             return child;
-//            if (castComponent.getRecurrenceRule() == null)
-//            {
-//                castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1450,13 +1335,6 @@ public enum PropertyType
             RepeatCount child = RepeatCount.parse(propertyContent);
             castComponent.setRepeatCount(child);
             return child;
-//            if (castComponent.getRepeatCount() == null)
-//            {
-//                castComponent.setRepeatCount(RepeatCount.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1582,13 +1460,6 @@ public enum PropertyType
             Sequence child = Sequence.parse(propertyContent);
             castComponent.setSequence(child);
             return child;
-//            if (castComponent.getSequence() == null)
-//            {
-//                castComponent.setSequence(Sequence.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1619,13 +1490,6 @@ public enum PropertyType
             Status child = Status.parse(propertyContent);
             castComponent.setStatus(child);
             return child;            
-//            if (castComponent.getStatus() == null)
-//            {
-//                castComponent.setStatus(Status.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1657,13 +1521,6 @@ public enum PropertyType
             Summary child = Summary.parse(propertyContent);
             castComponent.setSummary(child);
             return child;
-//            if (castComponent.getSummary() == null)
-//            {
-//                castComponent.setSummary(Summary.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1694,13 +1551,6 @@ public enum PropertyType
             TimeTransparency child = TimeTransparency.parse(propertyContent);
             castComponent.setTimeTransparency(child);
             return child;
-//            if (castComponent.getTimeTransparency() == null)
-//            {
-//                castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
@@ -1943,13 +1793,6 @@ public enum PropertyType
             UniqueIdentifier child = UniqueIdentifier.parse(propertyContent);
             castComponent.setUniqueIdentifier(child);
             return child;
-//            if (castComponent.getUniqueIdentifier() == null)
-//            {
-//                castComponent.setUniqueIdentifier(UniqueIdentifier.parse(propertyContent));
-//            } else
-//            {
-//                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-//            }
         }
 
         @Override
