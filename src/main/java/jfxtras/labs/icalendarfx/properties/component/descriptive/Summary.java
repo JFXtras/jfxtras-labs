@@ -5,13 +5,10 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
-import jfxtras.labs.icalendarfx.parameters.Encoding;
-import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
+import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
-import jfxtras.labs.icalendarfx.parameters.OtherParameter;
-import jfxtras.labs.icalendarfx.parameters.ValueParameter;
+import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
-import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
@@ -43,13 +40,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
   <ul>
   <li>summary
     <ul>
-    <li>"{@link Summary SUMMARY} summparam ":" text CRLF
-      <ul>
-      <li>";" {@link Encoding ENCODING} "=" {@link EncodingType#BASE64 BASE64}
-      <li>";" {@link ValueParameter VALUE} "=" {@link ValueType#BINARY BINARY}
-      <li>":" binary
-      <li>CRLF
-      </ul>
+    <li>"SUMMARY" summparam ":" text CRLF
     </ul>
   <li>summparam
     <ul>
@@ -58,9 +49,13 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
       <li>";" {@link AlternateText altrepparam}
       <li>";" {@link Language languageparam}
       </ul>
-    <li>The following are OPTIONAL, and MAY occur more than once.
+      <li>The following are OPTIONAL, and MAY occur more than once.
       <ul>
-      <li>";" {@link OtherParameter}
+        <li>other-param
+          <ul>
+          <li>";" {@link NonStandardParameter}
+          <li>";" {@link IANAParameter}
+          </ul>
       </ul>
     </ul>
   </ul>
@@ -70,24 +65,27 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
   <li>SUMMARY:Department Party
   </ul>
   </p>
-  <h2>RFC 5545                       iCalendar                  September 2009</h2>
+  RFC 5545                       iCalendar                  September 2009
  */
 public class Summary extends PropertyBaseAltText<String, Summary>
 {
+    /** Create deep copy of source Summary */
     public Summary(Summary source)
     {
         super(source);
     }
     
+    /** Create default Summary with no value set */
     public Summary()
     {
         super();
     }
-
-    public static Summary parse(String propertyContent)
+    
+    /** Create new Summary by parsing unfolded calendar content */
+    public static Summary parse(String unfoldedContent)
     {
         Summary property = new Summary();
-        property.parseContent(propertyContent);
+        property.parseContent(unfoldedContent);
         return property;
     }
 }

@@ -462,14 +462,14 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     
     /** Parse content line into calendar property */
     @Override
-    public List<String> parseContent(String contentLine)
+    public List<String> parseContent(String unfoldedContent)
     {
         // perform tests, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
 //        System.out.println("content222:" + contentLine + " " + this.getClass().getSimpleName());
-        indices.add(contentLine.indexOf(':'));
-        indices.add(contentLine.indexOf(';'));
+        indices.add(unfoldedContent.indexOf(':'));
+        indices.add(unfoldedContent.indexOf(';'));
         Optional<Integer> hasPropertyName = indices
                 .stream()
                 .filter(v -> v > 0)
@@ -477,7 +477,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         if (hasPropertyName.isPresent())
         {
             int endNameIndex = hasPropertyName.get();
-            String propertyName = (endNameIndex > 0) ? contentLine.subSequence(0, endNameIndex).toString().toUpperCase() : null;
+            String propertyName = (endNameIndex > 0) ? unfoldedContent.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isMatch = propertyName.equals(propertyType.toString());
             boolean isNonStandardProperty = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
             boolean isIANAProperty = propertyType.equals(PropertyType.IANA_PROPERTY);
@@ -485,14 +485,14 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             {
                 if (isNonStandardProperty || isIANAProperty)
                 {
-                    setPropertyName(contentLine.substring(0,endNameIndex));
+                    setPropertyName(unfoldedContent.substring(0,endNameIndex));
                 }
-                propertyValue = contentLine.substring(endNameIndex, contentLine.length()); // strip off property name
+                propertyValue = unfoldedContent.substring(endNameIndex, unfoldedContent.length()); // strip off property name
             } else
             {
                 if (PropertyType.enumFromName(propertyName) == null)
                 {
-                    propertyValue = ":" + contentLine; // doesn't match a known property name, assume its all a property value
+                    propertyValue = ":" + unfoldedContent; // doesn't match a known property name, assume its all a property value
                 } else
                 {
                     throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
@@ -502,7 +502,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             }
         } else
         {
-            propertyValue = ":" + contentLine;
+            propertyValue = ":" + unfoldedContent;
         }
         
         // parse parameters
