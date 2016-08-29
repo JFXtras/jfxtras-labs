@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.List;
+
 /**
  * A non-standard, experimental parameter.
  * 
@@ -30,6 +32,17 @@ public class NonStandardParameter extends ParameterBase<NonStandardParameter, St
     public static NonStandardParameter parse(String content)
     {
         return new NonStandardParameter(content);
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = super.errors();
+        if (name() != null && ! name().substring(0, 2).equals("X-"))
+        {
+            errors.add(name() + " is not a proper non-standard parameter name.  It must begin with X-");
+        }
+        return errors;
     }
     
     @Override

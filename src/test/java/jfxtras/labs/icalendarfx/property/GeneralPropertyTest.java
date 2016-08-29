@@ -3,11 +3,13 @@ package jfxtras.labs.icalendarfx.property;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -154,6 +156,7 @@ public class GeneralPropertyTest
     public void canHandleIANAParameters()
     {
         String content = "SUMMARY;TESTPARAM1=VALUE1;TESTPARAM2=VALUE2:Department Party";
+        IANAParameter.setRegisteredIANAParameters(Arrays.asList("TESTPARAM1", "TESTPARAM2"));
         Summary madeProperty = Summary.parse(content);
         assertEquals(content, madeProperty.toContent());
         Summary expectedProperty = new Summary()

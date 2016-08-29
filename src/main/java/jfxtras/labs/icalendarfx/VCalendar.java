@@ -981,7 +981,7 @@ public class VCalendar extends VParentBase
                 {
                     //non-standard
                     boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
-                    boolean isIANA = IANAProperty.isIANAProperty(propertyName);
+                    boolean isIANA = (IANAProperty.getRegisteredIANAPropertys() != null) ? IANAProperty.getRegisteredIANAPropertys().contains(propertyName) : false;
                     if (isNonStandard)
                     {
                         child = CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);

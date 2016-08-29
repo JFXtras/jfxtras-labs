@@ -933,7 +933,7 @@ public enum PropertyType
         }
     },
     // Miscellaneous
-    IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
+    IANA_PROPERTY ("", // name specified in IANAProperty registeredIANAProperties
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
             Arrays.asList(ParameterType.values()), // all parameters allowed
             IANAProperty.class) // property class
@@ -2039,7 +2039,7 @@ public enum PropertyType
         if (propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString()))
         {
             prop = PropertyType.NON_STANDARD;
-        } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
+        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(propertyName))
         {
             prop = PropertyType.IANA_PROPERTY;            
         } else

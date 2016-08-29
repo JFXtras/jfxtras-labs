@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.parameters;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,13 +10,23 @@ import java.util.List;
  */
 public class IANAParameter extends ParameterBase<IANAParameter, String>
 {
-    public static final List<String> REGISTERED_IANA_PARAMETER_NAMES = 
-            Arrays.asList("TESTPARAM1", "TESTPARAM2");
+    public static List<String> getRegisteredIANAParameters()
+    {
+        return registeredIANAParameters2;
+    }
+    public static void setRegisteredIANAParameters(List<String> registeredIANAParameters)
+    {
+        registeredIANAParameters2 = registeredIANAParameters;
+    }
+    private static List<String> registeredIANAParameters2;
     
     final String name;
     @Override
     public String name() { return name; }
     
+    /*
+     * CONSTRUCTORS
+     */
     public IANAParameter(String content)
     {
         super();
@@ -42,5 +51,19 @@ public class IANAParameter extends ParameterBase<IANAParameter, String>
     public String toContent()
     {
         return (getValue() != null) ? name() + "=" + getValue() : null;
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = super.errors();
+        if (getRegisteredIANAParameters() == null)
+        {
+            errors.add("There are no registered IANA parameter names");
+        } else if (name() != null && ! getRegisteredIANAParameters().contains(name()))
+        {
+            errors.add(name() + " is not a registereed IANA parameter name");
+        }
+        return errors;
     }
 }

@@ -46,7 +46,7 @@ public enum CalendarProperty
         }
     },
     // Miscellaneous
-    IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
+    IANA_PROPERTY ("", // name specified in IANAProperty registeredIANAProperties
             Arrays.asList(ParameterType.values()), // all parameters allowed
             IANAProperty.class) // property class
     {

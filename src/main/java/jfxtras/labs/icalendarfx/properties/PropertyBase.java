@@ -126,12 +126,12 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             }
         } else if (propertyType().equals(PropertyType.IANA_PROPERTY))
         {
-            if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
+            if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(name))
             {
                 propertyName.set(name);
             } else
             {
-                throw new RuntimeException(name + " is not an IANA-registered property name.  Registered names are in IANAProperty.REGISTERED_IANA_PROPERTY_NAMES");
+                throw new RuntimeException(name + " is not an IANA-registered property name.  The name can be registered by adding it to the IANAProperty.registeredIANAPropertys list");
             }
         } else if (propertyType().toString().equals(name)) // let setting name to default value have no operation
         {
@@ -255,6 +255,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         nonStandardParameter().set(nonStandardParams);
     }
     /**
+     * NON-STANDARD PARAMETERS
+     * 
      * Sets the value of the {@link #NonStandardParameter()} by parsing a vararg of
      * iCalendar content text representing individual {@link NonStandardParameter} objects.
      * 
@@ -290,6 +292,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     }
     
     /**
+     * IANA PARAMETERS
+     * 
      *<p>Allows other properties registered
      * with IANA to be specified in any calendar components.</p>
      */
@@ -354,61 +358,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         setIana(FXCollections.observableArrayList(ianaParams));
         return (U) this;
     }
-    
-//
-//    
-//    /**
-//     * OTHER PARAMETER
-//     * other-param, 3.2 RFC 5545 page 14
-//     * Has custom name and String value
-//     */
-//    @Override
-//    @Deprecated
-//    public ObservableList<OtherParameter> getOtherParameters() { return otherParameters; }
-//    private ObservableList<OtherParameter> otherParameters;
-//    @Override
-//    @Deprecated
-//    public void setOtherParameters(ObservableList<OtherParameter> otherParameters)
-//    {
-//        if (otherParameters != null)
-//        {
-//            orderer().registerSortOrderProperty(otherParameters);
-//        } else
-//        {
-//            orderer().unregisterSortOrderProperty(this.otherParameters);
-//        }
-//        this.otherParameters = otherParameters;
-//    }
-//    @Deprecated
-//    public U withOtherParameters(ObservableList<OtherParameter> otherParameters) { setOtherParameters(otherParameters); return (U) this; }
-//    @Deprecated
-//    public U withOtherParameters(String...otherParameters)
-//    {
-//        final ObservableList<OtherParameter> list;
-//        if (getOtherParameters() == null)
-//        {
-//            list = FXCollections.observableArrayList();
-//            setOtherParameters(list);
-//        } else
-//        {
-//            list = getOtherParameters();
-//        }
-//        Arrays.asList(otherParameters).forEach(p -> list.add(new OtherParameter(p)));
-//        return (U) this;
-//    }
-//    @Deprecated
-//    public U withOtherParameters(OtherParameter...otherParameters)
-//    {
-//        if (getOtherParameters() == null)
-//        {
-//            setOtherParameters(FXCollections.observableArrayList(otherParameters));
-//        } else
-//        {
-//            getOtherParameters().addAll(otherParameters);
-//        }
-//        return (U) this;
-//    }
-    
+
     @Override
     public Callback<VChild, Void> copyChildCallback()
     {        
@@ -459,7 +409,11 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     {
         orderer().registerSortOrderProperty(valueTypeProperty());
         propertyType = PropertyType.enumFromClass(getClass());
-        setPropertyName(propertyType.toString());
+        // test propertyType.toString()
+        if (propertyType != PropertyType.IANA_PROPERTY && propertyType != PropertyType.NON_STANDARD)
+        {
+            setPropertyName(propertyType.toString());
+        }
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         valueTypeProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
         setContentLineGenerator(new SingleLineContent(
@@ -563,7 +517,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     Object existingParemeter = parameterType.getParameter(this);
                     if (existingParemeter == null || existingParemeter instanceof List)
                     {
-                        System.out.println("paraType:" + parameterType);
                         parameterType.parse(this, entry.getKey() + "=" + entry.getValue());
                     } else
                     {
@@ -587,7 +540,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    if (IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.contains(entry.getKey()))
+                    if ((IANAParameter.getRegisteredIANAParameters() != null) && IANAParameter.getRegisteredIANAParameters().contains(entry.getKey()))
                     {
                         ParameterType.IANA_PARAMETER.parse(this, entry.getKey() + "=" + entry.getValue());
                     } else
@@ -599,7 +552,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         
         if (! isValid())
         {
-            throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
+            throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line:" + System.lineSeparator()
+                    + errors().stream().collect(Collectors.joining(System.lineSeparator())));
         }
         return errors();
     }

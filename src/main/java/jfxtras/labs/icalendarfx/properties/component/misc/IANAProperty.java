@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.properties.component.misc;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,15 +41,19 @@ import java.util.List;
  */
 public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {
-    public static final List<String> REGISTERED_IANA_PROPERTY_NAMES = 
-            Arrays.asList("TESTPROP1", "TESTPROP2");
-    
-    /** Returns true if name is a registered IANA property, false otherwise */
-    public static boolean isIANAProperty(String name)
+    public static List<String> getRegisteredIANAPropertys()
     {
-        return REGISTERED_IANA_PROPERTY_NAMES.contains(name);
+        return registeredIANAProperties2;
     }
-      
+    public static void setRegisteredIANAPropertys(List<String> registeredIANAProperties)
+    {
+        registeredIANAProperties2 = registeredIANAProperties;
+    }
+    private static List<String> registeredIANAProperties2;
+
+    /*
+     * CONSTRUCTORS
+     */
     public IANAProperty(Object value)
     {
         super(value);
@@ -67,9 +70,17 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
     }
     
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        return REGISTERED_IANA_PROPERTY_NAMES.contains(name()) && super.isValid();
+        List<String> errors = super.errors();
+        if (getRegisteredIANAPropertys() == null)
+        {
+            errors.add("There are no registered IANA property names");
+        } else if (name() != null && ! getRegisteredIANAPropertys().contains(name()))
+        {
+            errors.add(name() + " is not a registereed IANA property name");
+        }
+        return errors;
     }
     
     public static IANAProperty parse(String value)

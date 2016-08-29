@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.misc;
 
+import java.util.List;
+
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -84,13 +86,14 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
     }
     
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        if (! name().substring(0, 2).equals("X-"))
+        List<String> errors = super.errors();
+        if (name() != null && ! name().substring(0, 2).equals("X-"))
         {
-            return false;
+            errors.add(name() + " is not a proper non-standard property name.  It must begin with X-");
         }
-        return super.isValid();
+        return errors;
     }
     
     public static NonStandardProperty parse(String value)

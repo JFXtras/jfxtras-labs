@@ -43,6 +43,7 @@ public class BaseTest
     @Test
     public void canBuildBase() throws InstantiationException, IllegalAccessException
     {
+        IANAProperty.setRegisteredIANAPropertys(Arrays.asList("TESTPROP2"));
         List<VComponentBase> components = Arrays.asList(
                 new VEvent()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))

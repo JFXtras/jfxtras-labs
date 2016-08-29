@@ -356,7 +356,7 @@ public enum ParameterType
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
-    IANA_PARAMETER (IANAParameter.REGISTERED_IANA_PARAMETER_NAMES.get(0),
+    IANA_PARAMETER ("",  // name specified in IANAParameter registeredIANAParameters
             IANAParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -875,7 +875,6 @@ public enum ParameterType
                 valueString = content;
             }
             ValueType valueType = ValueType.enumFromName(valueString.toUpperCase());
-            System.out.println("222content:" + content + " " + valueString + " " + valueType + property.propertyType());
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
             boolean isValidType = castProperty.propertyType().allowedValueTypes().contains(valueType);
             if (valueType == null || isValidType)
@@ -885,15 +884,6 @@ public enum ParameterType
             {
                 throw new IllegalArgumentException("Property type " + property.getClass().getSimpleName() + " doesn't allow value type " + valueType);
             }
-//            ValueType valueType = castProperty.propertyType().allowedValueTypes().get(0);
-//            System.out.println("222content:" + valueType);
-//            if (valueType.toString().equals(content))
-//            {
-//                castProperty.setValueType(new ValueParameter(valueType));
-//            } else
-//            {
-//                castProperty.setValueType(ValueParameter.parse(content)); // unknown value type
-//            }
         }
 
         @Override
@@ -952,7 +942,7 @@ public enum ParameterType
         if (isNonStanderd)
         {
             prop = ParameterType.NON_STANDARD;
-        } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(parameterName))
+        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(parameterName))
         {
             prop = ParameterType.IANA_PARAMETER;            
         } else
