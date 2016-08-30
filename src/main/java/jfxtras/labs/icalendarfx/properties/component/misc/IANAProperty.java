@@ -41,10 +41,12 @@ import java.util.List;
  */
 public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {
+    /** get list of registered IANA property names */
     public static List<String> getRegisteredIANAPropertys()
     {
         return registeredIANAProperties2;
     }
+    /** set list of registered IANA property names */
     public static void setRegisteredIANAPropertys(List<String> registeredIANAProperties)
     {
         registeredIANAProperties2 = registeredIANAProperties;
@@ -54,16 +56,19 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
     /*
      * CONSTRUCTORS
      */
+    /** Create IANAProperty with its value set to the parameter value */
     public IANAProperty(Object value)
     {
         super(value);
     }
     
+    /** Create deep copy of source IANAProperty */
     public IANAProperty(IANAProperty source)
     {
         super(source);
     }
     
+    /** Create default IANAProperty with no value set */
     public IANAProperty()
     {
         super();
@@ -83,10 +88,11 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
         return errors;
     }
     
-    public static IANAProperty parse(String value)
+    /** Create new Description by parsing unfolded calendar content */
+    public static IANAProperty parse(String unfoldedContent)
     {
         IANAProperty property = new IANAProperty();
-        property.parseContent(value);
+        property.parseContent(unfoldedContent);
         return property;
     }
 }

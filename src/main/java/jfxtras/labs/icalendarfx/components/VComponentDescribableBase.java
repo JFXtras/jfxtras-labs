@@ -8,22 +8,30 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 /**
+ * <p>{@link VComponent} with the following properties
+ * <ul>
+ * <li>{@link Attachment ATTACH}
+ * <li>{@link Summary SUMMARY}
+ * </ul>
+ * </p>
  * 
  * @author David Bal
  *
  * @param <T> - concrete subclass
- * 
- * Components
- * @see VEvent
- * @see VTodo
- * @see VAlarm
- * @see VJournal
  * 
  */
 public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<T> implements VComponentDescribable<T>
 {
     /**
      * This property provides the capability to associate a document object with a calendar component.
+     * 
+     *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
+     *<li>ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/<br>
+     *  reports/r-960812.ps
+     *</ul>
+     *</p>
      */
     @Override
     public ObjectProperty<ObservableList<Attachment<?>>> attachmentsProperty()
@@ -54,13 +62,13 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
     }
     
     /**
-     * SUMMARY
-     * RFC 5545 iCalendar 3.8.1.12. page 93
+     *<p>This property defines a short summary or subject for the calendar component</p>
      * 
-     * This property defines a short summary or subject for the calendar component.
-     * 
-     * Example:
-     * SUMMARY:Department Party
+     *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>SUMMARY:Department Party
+     *</ul>
+     *</p>
      */
     @Override public ObjectProperty<Summary> summaryProperty()
     {
@@ -78,9 +86,12 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
     /*
      * CONSTRUCTORS
      */
-    VComponentDescribableBase() { }
+    VComponentDescribableBase()
+    {
+        super();
+    }
 
-    public VComponentDescribableBase(VComponentDescribableBase<T> source)
+    VComponentDescribableBase(VComponentDescribableBase<T> source)
     {
         super(source);
     }

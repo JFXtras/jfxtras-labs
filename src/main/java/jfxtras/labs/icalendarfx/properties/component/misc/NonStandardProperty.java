@@ -9,6 +9,9 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.parameters.IANAParameter;
+import jfxtras.labs.icalendarfx.parameters.Language;
+import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 
 /**
    <h2>3.8.8.2.  Non-Standard Properties</h2>
@@ -21,8 +24,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
    <p>Value Type:  The default value type is TEXT.  The value type can be
       set to any value type.</p>
 
-   <p>Property Parameters:  IANA, non-standard, and language property
-      parameters can be specified on this property.</p>
+   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
+      {@link Language language} parameters can be specified on this property.</p>
 
    <p>Conformance:  This property can be specified in any calendar
       component ({@link VEvent}, {@link VTodo}, {@link VJournal}. {@link VAlarm},
@@ -70,16 +73,19 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class NonStandardProperty extends UnknownProperty<Object, NonStandardProperty>
 {
+    /** Create NonStandardProperty with property value set to the input parameter */
     public NonStandardProperty(Object value)
     {
         super(value);
     }
-    
+
+    /** Create deep copy of source NonStandardProperty */
     public NonStandardProperty(NonStandardProperty source)
     {
         super(source);
     }
     
+    /** Create default NonStandardProperty with no value set */
     public NonStandardProperty()
     {
         super();
@@ -96,10 +102,11 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
         return errors;
     }
     
-    public static NonStandardProperty parse(String value)
+    /** Create new Description by parsing unfolded calendar content */
+    public static NonStandardProperty parse(String unfoldedContent)
     {
         NonStandardProperty property = new NonStandardProperty();
-        property.parseContent(value);
+        property.parseContent(unfoldedContent);
         return property;
     }
 }

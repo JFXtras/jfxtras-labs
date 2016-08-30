@@ -30,6 +30,8 @@ public class NonStandardTest
     {
         String content = "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au";
         NonStandardProperty madeProperty = NonStandardProperty.parse(content);
+        System.out.println(madeProperty.toContent());
+//        System.out.println(madeProperty.toContent());
         assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("http://www.example.org/mysubj.au")
                 .withValueType(ValueType.UNIFORM_RESOURCE_IDENTIFIER)

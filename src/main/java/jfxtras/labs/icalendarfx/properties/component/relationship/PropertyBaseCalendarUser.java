@@ -5,7 +5,7 @@ import java.net.URI;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.CommonName;
-import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
+import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.SentBy;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
@@ -77,9 +77,9 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
      *  c=US???(cn=Jim%20Dolittle)":mailto:jimdo@example.com
      */
     @Override
-    public DirectoryEntryReference getDirectoryEntryReference() { return (directoryEntryReference == null) ? null : directoryEntryReference.get(); }
+    public DirectoryEntry getDirectoryEntryReference() { return (directoryEntryReference == null) ? null : directoryEntryReference.get(); }
     @Override
-    public ObjectProperty<DirectoryEntryReference> directoryEntryReferenceProperty()
+    public ObjectProperty<DirectoryEntry> directoryEntryReferenceProperty()
     {
         if (directoryEntryReference == null)
         {
@@ -88,18 +88,18 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
         }
         return directoryEntryReference;
     }
-    private ObjectProperty<DirectoryEntryReference> directoryEntryReference;
+    private ObjectProperty<DirectoryEntry> directoryEntryReference;
     @Override
-    public void setDirectoryEntryReference(DirectoryEntryReference directoryEntryReference)
+    public void setDirectoryEntryReference(DirectoryEntry directoryEntryReference)
     {
         if (directoryEntryReference != null)
         {
             directoryEntryReferenceProperty().set(directoryEntryReference);
         }
     }
-    public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(DirectoryEntryReference.parse(content)); }
-    public U withDirectoryEntryReference(DirectoryEntryReference directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (U) this; }
-    public U withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntryReference(uri)); return (U) this; }
+    public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(DirectoryEntry.parse(content)); }
+    public U withDirectoryEntryReference(DirectoryEntry directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (U) this; }
+    public U withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntry(uri)); return (U) this; }
     public U withDirectoryEntryReference(String content) { setDirectoryEntryReference(content); return (U) this; }
 
     /**

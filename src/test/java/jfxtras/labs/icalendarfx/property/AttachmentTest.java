@@ -67,10 +67,6 @@ public class AttachmentTest
                 .withFormatType("text/plain")
                 .withEncoding(EncodingType.BASE64)
                 .withValueType(ValueType.BINARY);
-//        expectedProperty.parameterSortOrder().put(ParameterType.FORMAT_TYPE, 0);
-//        expectedProperty.parameterSortOrder().put(ParameterType.INLINE_ENCODING, 1);
-//        expectedProperty.parameterSortOrder().put(ParameterType.VALUE_DATA_TYPES, 2);
-
         assertEquals(expectedProperty, madeProperty);
         assertEquals(contentLine, expectedProperty.toContent());
     }

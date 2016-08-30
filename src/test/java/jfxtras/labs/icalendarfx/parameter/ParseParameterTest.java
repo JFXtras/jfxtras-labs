@@ -7,7 +7,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
 import jfxtras.labs.icalendarfx.parameters.CalendarUser;
 import jfxtras.labs.icalendarfx.parameters.Delegatees;
-import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
+import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
 
@@ -50,7 +50,7 @@ public class ParseParameterTest
     @Test // tests list as value
     public void canParseDirectory()
     {
-        DirectoryEntryReference parameter = DirectoryEntryReference.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntry parameter = DirectoryEntry.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         String expectedContent = "DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
         assertEquals(expectedContent, parameter.toContent());
     }

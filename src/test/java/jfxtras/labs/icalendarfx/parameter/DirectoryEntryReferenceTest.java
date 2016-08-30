@@ -4,15 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
+import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 
 public class DirectoryEntryReferenceTest
 {
     @Test
     public void canCopyDirectory()
     {
-        DirectoryEntryReference parameter = DirectoryEntryReference.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
-        DirectoryEntryReference parameter2 = new DirectoryEntryReference(parameter);
+        DirectoryEntry parameter = DirectoryEntry.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntry parameter2 = new DirectoryEntry(parameter);
         assertEquals(parameter, parameter2);
     }
 }

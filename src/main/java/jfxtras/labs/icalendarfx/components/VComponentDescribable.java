@@ -23,8 +23,16 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 public interface VComponentDescribable<T> extends VComponent
 {
     /**
-     * This property provides the capability to associate a
-     * document object with a calendar component.
+     * <p>This property provides the capability to associate a
+     * document object with a calendar component.</p>
+     * 
+     *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
+     *<li>ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/<br>
+     *   reports/r-960812.ps
+     *</ul>
+     *</p>
      */
     ObjectProperty<ObservableList<Attachment<?>>> attachmentsProperty();
     ObservableList<Attachment<?>> getAttachments();
@@ -65,12 +73,14 @@ public interface VComponentDescribable<T> extends VComponent
     }
     
     /**
-     * SUMMARY:
-     * RFC 5545 iCalendar 3.8.1.12. page 83
-     * This property defines a short summary or subject for the calendar component 
-     * Example:
-     * SUMMARY:Department Party
-     * */
+     *<p>This property defines a short summary or subject for the calendar component</p>
+     * 
+     *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>SUMMARY:Department Party
+     *</ul>
+     *</p>
+     */
     ObjectProperty<Summary> summaryProperty();
     Summary getSummary();
     default void setSummary(String summary)

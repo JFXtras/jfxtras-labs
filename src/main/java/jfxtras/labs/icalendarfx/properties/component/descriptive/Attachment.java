@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
 import java.net.URI;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -169,23 +170,27 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
     * CONSTRUCTORS
     */
    
+   /** Create a Binary Attachment by setting property value to String input parameter */
    public Attachment(Class<T> clazz, String contentLine)
    {
        super(clazz, contentLine);
        clazz.cast(getValue()); // ensure value class type matches parameterized type
    }
    
+   /** Create deep copy of source Attachment */
    public Attachment(Attachment<T> source)
    {
        super(source);
    }
    
+   /** Create new Attendee with property value set to input parameter<br> 
+    * Note: This constructor has no type checking.  Use {@link #Attachment(Class, String)} constructor for type checking */
    public Attachment(T value)
    {
        super(value);
-//       clazz.cast(getValue()); // ensure value class type matches parameterized type
    }
    
+   /** Create default Attachment with no value set */
    Attachment()
    {
        super();
@@ -206,53 +211,26 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
        }
    }
 
-   
-//   @Override
-//   public void setValue(T value)
-//   {
-//       System.out.println(value + " " + value.getClass());
-//       if (value instanceof URI)
-//       {
-////           setValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER); // default value
-//       } else if (value instanceof String)
-//       {
-//           System.out.println("set to binary:");
-//           setValueParameter(ValueType.BINARY);           
-//       } else
-//       {
-//           throw new IllegalArgumentException("Only parameterized types of URI and String supported.");
-//       }
-//       super.setValue(value);
-//   }
-
-   
    @Override
-   public boolean isValid()
+   public List<String> errors()
    {
-//       boolean isEncodingNull = getEncoding() == null;
-//       boolean isValueTypeNull = getValueParameter() == null;
-//       System.out.println("attachment isValid:" + isEncodingNull + " " + isValueTypeNull);
-//       if (isEncodingNull && isValueTypeNull)
-//       {
-//           return true;
-//       }
-//       if (isEncodingNull || isValueTypeNull)
-//       { // both ENCODING and VALUE must be set or not set, only one is not allowed
-//           return false;
-//       }
+       List<String> errors = super.errors();
        boolean isBase64Type = (getEncoding() == null) ? false : getEncoding().getValue() != EncodingType.BASE64;
        boolean isBinaryValue = (getValueType() == null) ? false : getValueType().getValue() != ValueType.BINARY;
        if (isBinaryValue && ! isBase64Type)
-       { // invalid ValueType
-           return false;
+       { /* If the value type parameter is ";VALUE=BINARY", then the inline
+           encoding parameter MUST be specified with the value
+           ";ENCODING=BASE64". */
+           errors.add("If value is BINARY then encoding MUST be BASE64 not:" + getEncoding().getValue());
        }
-       return true && super.isValid();
+       return errors;
    }
    
-    public static <U> Attachment<U> parse(String string)
-    {
-        Attachment<U> property = new Attachment<U>();
-        property.parseContent(string);
-        return property;
-    }
+   /** Create new Attachment by parsing unfolded calendar content */
+   public static <U> Attachment<U> parse(String string)
+   {
+       Attachment<U> property = new Attachment<U>();
+       property.parseContent(string);
+       return property;
+   }
 }

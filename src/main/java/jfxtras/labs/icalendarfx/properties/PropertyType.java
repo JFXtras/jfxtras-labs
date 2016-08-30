@@ -1002,6 +1002,7 @@ public enum PropertyType
     NON_STANDARD ("X-", // property name begins with X- prefix
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
             Arrays.asList(ParameterType.values()), // all parameters allowed
+//            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER, ParameterType.LANGUAGE), // allowed parameters (RFC 5545 says only IANA, non-standard, and language property parameters can be specified on this property, but examples of other parameters are in RFC 5545, so I am allowing all parameters)
             NonStandardProperty.class) // property class
     {
         @Override

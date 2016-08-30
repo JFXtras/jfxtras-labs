@@ -39,10 +39,30 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
+/**
+ * <p>{@link VComponent} with the following properties
+ * <ul>
+ * <li>{@link Attachment ATTACH}
+ * <li>{@link Summary SUMMARY}
+ * </ul>
+ * </p>
+ * 
+ * @author David Bal
+ *
+ * @param <T> concrete subclass
+ */
 public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>
 {
     /**
      * This property provides the capability to associate a document object with a calendar component.
+     * 
+     *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
+     *<li>ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/<br>
+     *  reports/r-960812.ps
+     *</ul>
+     *</p>
      */
     @Override
     public ObjectProperty<ObservableList<Attachment<?>>> attachmentsProperty()

@@ -15,7 +15,8 @@ public interface VElement
      * <p>Examples:
      * <ul>
      * <li>VEVENT
-     * <li>VJOURNAL
+     * <li>SUMMARY
+     * <li>LANGUAGE
      * </ul>
      * </p>
      * @return - the component name

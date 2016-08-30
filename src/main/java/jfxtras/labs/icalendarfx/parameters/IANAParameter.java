@@ -10,10 +10,12 @@ import java.util.List;
  */
 public class IANAParameter extends ParameterBase<IANAParameter, String>
 {
+    /** get list of registered IANA parameter names */
     public static List<String> getRegisteredIANAParameters()
     {
         return registeredIANAParameters2;
     }
+    /** set list of registered IANA parameter names */
     public static void setRegisteredIANAParameters(List<String> registeredIANAParameters)
     {
         registeredIANAParameters2 = registeredIANAParameters;

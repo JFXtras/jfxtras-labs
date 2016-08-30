@@ -24,6 +24,12 @@ public interface VComponentDateTimeEnd<T> extends VComponent
     /**
      *<p>This property specifies the date and time that a calendar
      * component ends.</p>
+     * 
+     *  *<p>Example:  The following is an example of this property:
+     *<ul>
+     *<li>DTEND:19960401T150000Z
+     *<li>DTEND;VALUE=DATE:19980704
+     *</ul>
      */
     ObjectProperty<DateTimeEnd> dateTimeEndProperty();
     DateTimeEnd getDateTimeEnd();

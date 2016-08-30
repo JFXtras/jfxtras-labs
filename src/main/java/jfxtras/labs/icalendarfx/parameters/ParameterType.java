@@ -211,12 +211,12 @@ public enum ParameterType
         }
     },
     // in properties ATTENDEE, ORGANIZER
-    DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
+    DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntry.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
-            castProperty.setDirectoryEntryReference(DirectoryEntryReference.parse(content));
+            castProperty.setDirectoryEntryReference(DirectoryEntry.parse(content));
         }
 
         @Override
@@ -236,7 +236,7 @@ public enum ParameterType
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            DirectoryEntryReference parameterCopy = new DirectoryEntryReference((DirectoryEntryReference) child);
+            DirectoryEntry parameterCopy = new DirectoryEntry((DirectoryEntry) child);
             castDestination.setDirectoryEntryReference(parameterCopy);
         }
     },

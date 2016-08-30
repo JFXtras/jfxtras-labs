@@ -24,11 +24,12 @@ public interface VComponentAttendee<T> extends VComponent
      * 
      * <p>Examples:
      * <ul>
-     * <l1>ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":<br>
+     * <li>ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":<br>
      *  mailto:joecool@example.com
-     * <l1>ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe<br>
+     * <li>ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe<br>
      *  :mailto:jdoe@example.com
      *  </ul>
+     *  </p>
      */
     ObjectProperty<ObservableList<Attendee>> attendeesProperty();
     ObservableList<Attendee> getAttendees();

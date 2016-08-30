@@ -28,6 +28,12 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
 {
     /**
      * Provides a framework for defining non-standard properties.
+     * 
+     * <p>Example:
+     * <ul>
+     * <l1>X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
+        org/mysubj.au
+     *  </ul>
      */
     public ObjectProperty<ObservableList<NonStandardProperty>> nonStandardProperty()
     {
@@ -91,6 +97,13 @@ public abstract class VComponentCommonBase<T> extends VComponentBase
     /**
      *<p>Allows other properties registered
      * with IANA to be specified in any calendar components.</p>
+     * 
+     *<p>Example:  The following are examples of properties that might be registered to IANA:
+     *<ul>
+     *<li>DRESSCODE:CASUAL
+     *<li>NON-SMOKING;VALUE=BOOLEAN:TRUE
+     *</ul>
+     *</p>
      */
     public ObjectProperty<ObservableList<IANAProperty>> ianaProperty()
     {

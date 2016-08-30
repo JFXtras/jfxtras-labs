@@ -9,8 +9,6 @@ import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
-import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
 <h2>3.8.1.12.  Summary</h2>
@@ -22,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
    <p>Value Type:  TEXT</p>
 
-   <p>Property Parameters:  {@link IANAProperty IANA}, {@link NonStandardProperty non-standard},
+   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
       {@link AlternateText alternate text representation}, and {@link Language language property}
       parameters can be specified on this property.</p>
 
@@ -46,8 +44,8 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
     <ul>
     <li>The following are OPTIONAL, but MUST NOT occur more than once.
       <ul>
-      <li>";" {@link AlternateText altrepparam}
-      <li>";" {@link Language languageparam}
+      <li>";" {@link AlternateText Alternate text representation}
+      <li>";" {@link Language Language for text}
       </ul>
       <li>The following are OPTIONAL, and MAY occur more than once.
       <ul>
@@ -75,6 +73,13 @@ public class Summary extends PropertyBaseAltText<String, Summary>
         super(source);
     }
     
+    /** Create Summary with property value set to parameter value*/
+    public Summary(String value)
+    {
+        super();
+        setValue(value);
+    }
+
     /** Create default Summary with no value set */
     public Summary()
     {

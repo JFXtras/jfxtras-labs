@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.CommonName;
-import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
+import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 import jfxtras.labs.icalendarfx.parameters.SentBy;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -61,9 +61,9 @@ public interface PropertyCalendarUser<T> extends PropertyLanguage<T>
      * ORGANIZER;DIR="ldap://example.com:6666/o=ABC%20Industries,
      *  c=US???(cn=Jim%20Dolittle)":mailto:jimdo@example.com
      */
-    DirectoryEntryReference getDirectoryEntryReference();
-    ObjectProperty<DirectoryEntryReference> directoryEntryReferenceProperty();
-    void setDirectoryEntryReference(DirectoryEntryReference directoryEntryReference);
+    DirectoryEntry getDirectoryEntryReference();
+    ObjectProperty<DirectoryEntry> directoryEntryReferenceProperty();
+    void setDirectoryEntryReference(DirectoryEntry directoryEntryReference);
     
     /**
      * SENT-BY
