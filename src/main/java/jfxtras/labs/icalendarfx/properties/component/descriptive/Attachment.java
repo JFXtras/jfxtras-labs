@@ -22,8 +22,6 @@ import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
-   <h2>3.8.1.1.  Attachment</h2>
-
    <p>Property Name:  ATTACH</p>
 
    <p>Purpose:  This property provides the capability to associate a
@@ -90,7 +88,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
         reports/r-960812.ps
   </ul>
   </p>
-  <h2>RFC 5545                       iCalendar                  September 2009</h2>
+  3.8.1.1.  Attachment  RFC 5545                       iCalendar                  September 2009
  * 
  * @author David Bal
  */

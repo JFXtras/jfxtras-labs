@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 
 /**
- * <h2>RFC 5545, 3.6. Calendar Components<h2>
+ * <h2>RFC 5545, 3.6. Calendar Components</h2>
  * 
  * <p>The body of the iCalendar object consists of a sequence of calendar
  * properties and one or more calendar components.  The calendar
@@ -63,37 +63,25 @@ import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
  *  </ul>
  *</ul>
  *
- * <P>An iCalendar object MUST include the "PRODID" and "VERSION" calendar
- * properties.  In addition, it MUST include at least one calendar
- * component.  Special forms of iCalendar objects are possible to
- * publish just busy time (i.e., only a "VFREEBUSY" calendar component)
- * or time zone (i.e., only a "VTIMEZONE" calendar component)
- * information.  In addition, a complex iCalendar object that is used to
- * capture a complete snapshot of the contents of a calendar is possible
- * (e.g., composite of many different calendar components).  More
- * commonly, an iCalendar object will consist of just a single "VEVENT",
- * "VTODO", or "VJOURNAL" calendar component.  Applications MUST ignore
- * x-comp and iana-comp values they don't recognize.  Applications that
- * support importing iCalendar objects SHOULD support all of the
- * component types defined in this document, and SHOULD NOT silently
- * drop any components as that can lead to user data loss.</P
+ * <P>An iCalendar object MUST include the {@link ProductIdentifier PRODID} and {@link Version VERSION} calendar
+   properties.  In addition, it MUST include at least one calendar
+   component.  Special forms of iCalendar objects are possible to
+   publish just busy time (i.e., only a {@link VFreeBusy VFREEBUSY} calendar component)
+   or time zone (i.e., only a {@link VTimeZone VTIMEZONE} calendar component)
+   information.  In addition, a complex iCalendar object that is used to
+   capture a complete snapshot of the contents of a calendar is possible
+   (e.g., composite of many different calendar components).  More
+   commonly, an iCalendar object will consist of just a single {@link VEvent VEVENT},
+   {@link VTodo VTODO}, or {@link VJournal VJOURNAL} calendar component.  Applications MUST ignore
+   x-comp and iana-comp values they don't recognize.  Applications that
+   support importing iCalendar objects SHOULD support all of the
+   component types defined in this document, and SHOULD NOT silently
+   drop any components as that can lead to user data loss.</P
  * 
  * @author David Bal
  */
 public interface VComponent extends VParent, VChild
-{
-//    /**
-//     * <p>Returns the name of the component as it would appear in the iCalendar content line.</p>
-//     * <p>Examples:
-//     * <ul>
-//     * <li>VEVENT
-//     * <li>VJOURNAL
-//     * </ul>
-//     * </p>
-//     * @return - the component enum
-//     */
-//    String name();
-    
+{   
     /**
      * <p>Returns content line for a calendar component.  See RFC 5545 3.4
      * Contains component properties with their values and any parameters.</p>
@@ -108,6 +96,7 @@ public interface VComponent extends VParent, VChild
      *  SUMMARY:Bastille Day Party<br>
      *  END:VEVENT
      *  </ul>
+     *  </p>
      * 
      * @return - the component content lines
      */
