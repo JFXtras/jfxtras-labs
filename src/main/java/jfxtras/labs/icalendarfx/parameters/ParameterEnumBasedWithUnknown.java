@@ -5,24 +5,30 @@ import java.util.List;
 public abstract class ParameterEnumBasedWithUnknown<U,T> extends ParameterBase<U,T>
 {
     private String unknownValue; // contains exact string for unknown value
-
+ //   private List<String> registeredIANAValues;
+    // TODO - MAKE FINAL
+    
     /*
      * CONSTRUCTORS
      */
-    public ParameterEnumBasedWithUnknown()
+    public ParameterEnumBasedWithUnknown() //List<String> registeredIANAValues)
     {
         super();
+//        this.registeredIANAValues = registeredIANAValues;
     }
   
-    public ParameterEnumBasedWithUnknown(T value)
+    public ParameterEnumBasedWithUnknown(T value) //, List<String> registeredIANAValues)
     {
-        super(value);
+        this();
+//        this(registeredIANAValues);
+        setValue(value);
     }
     
     public ParameterEnumBasedWithUnknown(ParameterEnumBasedWithUnknown<U,T> source)
     {
         super(source);
         unknownValue = source.unknownValue;
+//        this.registeredIANAValues = source.registeredIANAValues;
     }
         
     @Override

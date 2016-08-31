@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.parameters;
 
-import java.util.List;
-
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
@@ -17,9 +15,9 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
  * @author David Bal
  *
  */
-public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
+public class ValueParameter extends ParameterEnumBasedWithUnknown<ValueParameter, ValueType>
 {
-    private String unknownValue;
+//    private String unknownValue;
     
     public ValueParameter(ValueParameter source)
     {
@@ -36,16 +34,16 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         super();
     }
     
-    @Override
-    public List<String> parseContent(String content)
-    {
-        setValue(ValueType.enumFromName(content));
-        if (getValue() == ValueType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-        return errors();
-    } 
+//    @Override
+//    public List<String> parseContent(String content)
+//    {
+//        setValue(ValueType.enumFromName(content));
+//        if (getValue() == ValueType.UNKNOWN)
+//        {
+//            unknownValue = content;
+//        }
+//        return errors();
+//    } 
 
     public static ValueParameter parse(String content)
     {

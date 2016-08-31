@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendarfx.utilities.UnfoldingBufferedReader;
 
 /**
  * iCalendar Object
@@ -50,6 +52,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
+// TODO - add RFC 5546 METHODS
 public class VCalendar extends VParentBase
 {
     // version of this project, not associated with the iCalendar specification version
@@ -935,7 +938,7 @@ public class VCalendar extends VParentBase
 //        }
 //    }
 
-    /** Parse unfolded content lines into calendar object */
+    /** Parse unfolded content line iterator into calendar object */
     public List<String> parseContent(Iterator<String> unfoldedLineIterator)
     {
         boolean useResourceStatus = false;
@@ -1077,20 +1080,19 @@ public class VCalendar extends VParentBase
 //        }
 //    }
     
-    /**
-     * Creates a new VCalendar from an ics file
-     * 
-     * @param icsFilePath  path of ics file to parse
-     * @return  Created VCalendar
-     * @throws IOException
-     */
-    public static VCalendar parseICalendarFile(Path icsFilePath) throws IOException
+    public static VCalendar parse(Reader reader) throws IOException
     {
-        BufferedReader br = Files.newBufferedReader(icsFilePath);
-        List<String> lines = br.lines().collect(Collectors.toList());
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
+        // TODO - MAKE UNFOLDING READER BASED ON BUFFERED PUSHBACK LINE READER
+        // readLine will get unfolded lines
+        UnfoldingBufferedReader unfoldingReader = new UnfoldingBufferedReader(reader);
+        Iterator<String> unfoldedLineIterator = unfoldingReader.lines().iterator();
+//        List<String> lines = br.lines().collect(Collectors.toList());
+        // try using buffered reader with mark and reset for pushback
+//        Iterator<String> unfoldedLineIterator = ICalendarUtilities.unfoldLines(lines).iterator();
         VCalendar vCalendar = new VCalendar();
-        vCalendar.parseContent(unfoldedLines);
+        // Maybe make parseContent use Stream<String> as input 
+        vCalendar.parseContent(unfoldedLineIterator);
+        unfoldingReader.close();
         return vCalendar;
     }
     
@@ -1101,6 +1103,19 @@ public class VCalendar extends VParentBase
      * @return  Created VCalendar
      * @throws IOException
      */
+    public static VCalendar parse(Path icsFilePath) throws IOException
+    {
+        return parse(Files.newBufferedReader(icsFilePath));
+    }
+    
+    /**
+     * Creates a new VCalendar from an ics file
+     * 
+     * @param icsFilePath  path of ics file to parse
+     * @return  Created VCalendar
+     * @throws IOException
+     */
+    @Deprecated // RFC 5546 Methods will make this obsolete
     public static VCalendar parseICalendarFile(Path icsFilePath, boolean useResourceStatus) throws IOException
     {
         BufferedReader br = Files.newBufferedReader(icsFilePath);

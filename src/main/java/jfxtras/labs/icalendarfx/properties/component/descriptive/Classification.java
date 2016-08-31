@@ -26,6 +26,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.
  */
 public class Classification extends PropertyBase<ClassificationType, Classification>
 {
+    // TODO - ADD X-VALUE, registered IANA values
     private final static StringConverter<ClassificationType> CONVERTER = new StringConverter<ClassificationType>()
     {
         @Override

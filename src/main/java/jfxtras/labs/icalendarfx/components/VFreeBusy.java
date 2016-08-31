@@ -90,12 +90,6 @@ A "VFREEBUSY" calendar component is a grouping of
  */
 public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VComponentDateTimeEnd<VFreeBusy>
 {
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VFREEBUSY;
-//    }
-    
     /**
      * CONTACT:
      * RFC 5545 iCalendar 3.8.4.2. page 109

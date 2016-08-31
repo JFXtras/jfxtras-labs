@@ -62,6 +62,7 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
    |        | not directly related to the request itself.              |
    +--------+----------------------------------------------------------+
     */
+    // TODO - APPLY RULES FROM RFC 5546 TO CREATE CORRECT STATUS CODES
     public Double getStatusCode() { return statusCode.get(); }
     ObjectProperty<Double> statusCodeProperty() { return statusCode; }
     private ObjectProperty<Double> statusCode = new SimpleObjectProperty<Double>(this, "statcode");

@@ -38,6 +38,8 @@ public class NonStandardTest
                 .withFormatType("audio/basic")
                 .withPropertyName("X-ABC-MMSUBJ");
 
+        System.out.println(madeProperty.getValueType().getValue());
+        System.out.println(expectedProperty.getValueType().getValue());
         assertEquals(expectedProperty, madeProperty);
         assertEquals(ValueType.UNIFORM_RESOURCE_IDENTIFIER, madeProperty.getValueType().getValue());
         assertEquals(new URI("http://www.example.org/mysubj.au"), madeProperty.getValue());

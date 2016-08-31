@@ -62,12 +62,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
  */
 public class VJournal extends VComponentDisplayableBase<VJournal>
 {
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VJOURNAL;
-//    }
-
     /**
      * DESCRIPTION:
      * RFC 5545 iCalendar 3.8.1.12. page 84
@@ -80,7 +74,6 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
      *  
      *  VJournal can have multiple description properties.
      */
-//    public ObservableList<Description> getDescriptions() { return descriptions; }
     public ObjectProperty<ObservableList<Description>> descriptionsProperty()
     {
         if (descriptions == null)

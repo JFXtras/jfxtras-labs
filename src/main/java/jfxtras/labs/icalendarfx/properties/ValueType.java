@@ -407,10 +407,12 @@ public enum ValueType
         }
         return map;
     }
+
     /** get enum from name */
     public static ValueType enumFromName(String propertyName)
     {
-        return enumFromNameMap.get(propertyName.toUpperCase());
+        ValueType type = enumFromNameMap.get(propertyName.toUpperCase());
+        return (type == null) ? UNKNOWN : type;
     }
     
     private String name;
@@ -425,24 +427,7 @@ public enum ValueType
 
     /** return default String converter associated with property value type */
     abstract public <T> StringConverter<T> getConverter();
-//    {
-//        return (StringConverter<T>) new DefaultStringConverter();
-////        return new StringConverter<T>()
-////        {
-////            @Override
-////            public String toString(T object)
-////            {
-////                return object.toString();
-////            }
-////
-////            @Override
-////            public T fromString(String string)
-////            {
-////                 return (T) string;            
-////            }
-////        };
-//    }
-//    abstract public <VCalendarElement> StringConverter<VCalendarElement> getConverter();
+
     public <T> List<String> createErrorList(T value)
     {
         // most values are valid by default, which is denoted by an empty list.  RRULE is an exception and needs to call its errors() method.

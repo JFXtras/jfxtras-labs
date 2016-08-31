@@ -40,7 +40,7 @@ public class ReadICSFileTest
         Path icsFilePath = Paths.get(url.getFile());
         BufferedReader br = Files.newBufferedReader(icsFilePath);
         List<String> expectedLines = ICalendarUtilities.unfoldLines(br.lines().iterator());
-        VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath);
+        VCalendar vCalendar = VCalendar.parse(icsFilePath);
         List<String> lines = ICalendarUtilities.unfoldLines(vCalendar.toContent());
         assertEquals(expectedLines, lines);
     }

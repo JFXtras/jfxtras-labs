@@ -863,7 +863,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) ValueType.valueOf(string.toUpperCase());
+                    return (T) ValueType.enumFromName(string.toUpperCase());
                 }
             };
         }

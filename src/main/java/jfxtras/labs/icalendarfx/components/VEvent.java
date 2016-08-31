@@ -114,17 +114,6 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     @Override
     public DateTimeEnd getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
     private ObjectProperty<DateTimeEnd> dateTimeEnd;
-//    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
-//     *  after dateTimeEndProperty() is initialized */
-//    @Override
-//    public void checkDateTimeEndConsistency()
-//    {
-//        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
-//        if ((getDateTimeEnd() != null) && (getDuration() != null))
-//        {
-//            throw new DateTimeException("DURATION and DTEND can't both be set");
-//        }
-//    }
     
     @Override
     void dateTimeStartListenerHook()
@@ -173,24 +162,45 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return timeTransparency;
     }
     private ObjectProperty<TimeTransparency> timeTransparency;
-    public TimeTransparency getTimeTransparency() { return timeTransparencyProperty().get(); }
-    public void setTimeTransparency(String timeTransparency) { setTimeTransparency(TimeTransparency.parse(timeTransparency)); }
-    public void setTimeTransparency(TimeTransparency timeTransparency) { timeTransparencyProperty().set(timeTransparency); }
-    public void setTimeTransparency(TimeTransparencyType timeTransparency) { setTimeTransparency(new TimeTransparency(timeTransparency)); }
-    public VEvent withTimeTransparency(TimeTransparency timeTransparency) { setTimeTransparency(timeTransparency); return this; }
-    public VEvent withTimeTransparency(TimeTransparencyType timeTransparencyType) { setTimeTransparency(timeTransparencyType); return this; }
-    public VEvent withTimeTransparency(String timeTransparency) { PropertyType.TIME_TRANSPARENCY.parse(this, timeTransparency); return this; }
+    public TimeTransparency getTimeTransparency()
+    {
+        return timeTransparencyProperty().get();
+    }
+    public void setTimeTransparency(String timeTransparency)
+    {
+        setTimeTransparency(TimeTransparency.parse(timeTransparency));
+    }
+    public void setTimeTransparency(TimeTransparency timeTransparency)
+    {
+        timeTransparencyProperty().set(timeTransparency);
+    }
+    public void setTimeTransparency(TimeTransparencyType timeTransparency)
+    {
+        setTimeTransparency(new TimeTransparency(timeTransparency));
+    }
+    public VEvent withTimeTransparency(TimeTransparency timeTransparency)
+    {
+        setTimeTransparency(timeTransparency);
+        return this;
+    }
+    public VEvent withTimeTransparency(TimeTransparencyType timeTransparencyType)
+    {
+        setTimeTransparency(timeTransparencyType);
+        return this;
+    }
+    public VEvent withTimeTransparency(String timeTransparency)
+    {
+        PropertyType.TIME_TRANSPARENCY.parse(this, timeTransparency);
+        return this;
+    }
     
     /*
      * CONSTRUCTORS
      */
-    public VEvent() { super(); }
-
-////    @Deprecated
-//    public VEvent(String contentLines)
-//    {
-//        super(contentLines);
-//    }
+    public VEvent()
+    {
+        super();
+    }
     
     /** Copy constructor */
     public VEvent(VEvent source)
@@ -292,27 +302,11 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return Collections.unmodifiableList(errors);
     }
     
-    /** Parse content lines into calendar component object */
-    public static VEvent parse(String contentLines)
+    /** Parse folded content lines into calendar component object */
+    public static VEvent parse(String foldedContent)
     {
         VEvent component = new VEvent();
-        component.parseContent(contentLines);
+        component.parseContent(foldedContent);
         return component;
     }
-
-//    /** Parse content lines into calendar component object */
-//    @Deprecated // use simple factory
-//    public static VEvent parse(Iterator<String> contentLines)
-//    {
-//        VEvent component = new VEvent();
-//        component.parseContent(contentLines);
-//        return component;
-//    }
-    
-//    @Override
-//    public void checkDateTimeStartConsistency()
-//    {
-//        // TODO Auto-generated method stub
-//        throw new RuntimeException("not implemented");        
-//    }
 }

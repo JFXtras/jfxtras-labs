@@ -3,6 +3,8 @@ package jfxtras.labs.icalendarfx.calendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -129,9 +131,9 @@ public class ParseCalendarTest extends ICalendarTestAbstract
     }
     
     @Test (expected = NullPointerException.class)
-    public void canParseNullCalendar()
+    public void canParseNullCalendar() throws IOException
     {
-        VCalendar.parse(null);
+        VCalendar.parse((Reader) null);
     }
     
     @Test (expected = IllegalArgumentException.class)

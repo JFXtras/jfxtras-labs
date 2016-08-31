@@ -264,12 +264,6 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  */
 public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VComponentLastModified<VTimeZone>
 {
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VTIMEZONE;
-//    }
- 
     /**
      * STANDARD or DAYLIGHT
      * Subcomponent of VTimeZone
