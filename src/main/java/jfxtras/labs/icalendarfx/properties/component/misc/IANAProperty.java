@@ -39,6 +39,7 @@ import java.util.List;
  * 
  * @author David Bal
  */
+@Deprecated
 public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {
     /** get list of registered IANA property names */

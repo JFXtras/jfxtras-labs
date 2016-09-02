@@ -8,6 +8,7 @@ import java.util.List;
  * @author David Bal
  *
  */
+@Deprecated
 public class IANAParameter extends ParameterBase<IANAParameter, String>
 {
     /** get list of registered IANA parameter names */

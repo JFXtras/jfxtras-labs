@@ -7,7 +7,7 @@ import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
+import jfxtras.labs.icalendarfx.properties.PropBaseUTC;
 
 /**
  * LAST-MODIFIED
@@ -34,7 +34,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
  * @see StandardTime
  * @see DaylightSavingTime
  */
-public class LastModified extends PropertyBaseUTC<LastModified>
+public class LastModified extends PropBaseUTC<LastModified>
 {    
     public LastModified(ZonedDateTime temporal)
     {

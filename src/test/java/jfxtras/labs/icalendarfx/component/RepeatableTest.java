@@ -30,8 +30,8 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
-import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
+import jfxtras.labs.icalendarfx.components.VPrimaryBase;
+import jfxtras.labs.icalendarfx.components.VRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -67,7 +67,7 @@ public class RepeatableTest //extends Application
     @Test
     public void canBuildRepeatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        List<VComponentRepeatable<?>> components = Arrays.asList(
+        List<VRepeatable<?>> components = Arrays.asList(
                 new VEvent()
                     .withRecurrenceDates("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrenceDates(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
@@ -115,7 +115,7 @@ public class RepeatableTest //extends Application
               , LocalDate.of(2016, 5, 9) // 1st RDATE
                 ));
         
-        for (VComponentRepeatable<?> builtComponent : components)
+        for (VRepeatable<?> builtComponent : components)
         {
             String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -130,7 +130,7 @@ public class RepeatableTest //extends Application
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());
             
-            ((VComponentPrimaryBase<?>) builtComponent).setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 13)));
+            ((VPrimaryBase<?>) builtComponent).setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 13)));
             List<Temporal> madeDates = builtComponent                    
                     .streamRecurrences()
                     .limit(12)

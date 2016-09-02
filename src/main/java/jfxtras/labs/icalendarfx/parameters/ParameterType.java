@@ -17,17 +17,17 @@ import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStat
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendarfx.properties.Property;
-import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
-import jfxtras.labs.icalendarfx.properties.PropertyAltText;
-import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
-import jfxtras.labs.icalendarfx.properties.PropertyAttendee;
+import jfxtras.labs.icalendarfx.properties.PropAlarmTrigger;
+import jfxtras.labs.icalendarfx.properties.PropAltText;
+import jfxtras.labs.icalendarfx.properties.PropAttachment;
+import jfxtras.labs.icalendarfx.properties.PropAttendee;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
-import jfxtras.labs.icalendarfx.properties.PropertyDateTime;
-import jfxtras.labs.icalendarfx.properties.PropertyFreeBusy;
-import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
-import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
+import jfxtras.labs.icalendarfx.properties.PropDateTime;
+import jfxtras.labs.icalendarfx.properties.PropFreeBusy;
+import jfxtras.labs.icalendarfx.properties.PropRecurrenceID;
+import jfxtras.labs.icalendarfx.properties.PropRelationship;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
@@ -52,14 +52,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyBaseAltText<?,?> castProperty = (PropertyBaseAltText<?, ?>) property;
+            PropBaseAltText<?,?> castProperty = (PropBaseAltText<?, ?>) property;
             castProperty.setAlternateText(AlternateText.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAltText<?> castProperty = (PropertyAltText<?>) parent;
+            PropAltText<?> castProperty = (PropAltText<?>) parent;
             return castProperty.getAlternateText();
         }
         
@@ -72,7 +72,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
+            PropBaseAltText<?,?> castDestination = (PropBaseAltText<?,?>) destination;
             AlternateText parameterCopy = new AlternateText((AlternateText) child);
             castDestination.setAlternateText(parameterCopy);
         }
@@ -112,14 +112,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setCalendarUser(CalendarUser.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getCalendarUser();
         }
 
@@ -137,7 +137,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) CalendarUserType.valueOfWithUnknown(string);
+                    return (T) CalendarUserType.valueOfWithUnknown(string.toUpperCase());
                 }
             };
         }
@@ -145,7 +145,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             CalendarUser parameterCopy = new CalendarUser((CalendarUser) child);
             castDestination.setCalendarUser(parameterCopy);
         }
@@ -155,14 +155,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setDelegators(Delegators.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getDelegators();
         }
         
@@ -175,7 +175,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             Delegators parameterCopy = new Delegators((Delegators) child);
             castDestination.setDelegators(parameterCopy);
         }
@@ -185,14 +185,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setDelegatees(Delegatees.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getDelegatees();
         }
 
@@ -205,7 +205,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             Delegatees parameterCopy = new Delegatees((Delegatees) child);
             castDestination.setDelegatees(parameterCopy);
         }
@@ -235,7 +235,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             DirectoryEntry parameterCopy = new DirectoryEntry((DirectoryEntry) child);
             castDestination.setDirectoryEntryReference(parameterCopy);
         }
@@ -245,14 +245,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+            PropAttachment<?> castProperty = (PropAttachment<?>) property;
             castProperty.setEncoding(Encoding.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+            PropAttachment<?> castProperty = (PropAttachment<?>) parent;
             return castProperty.getEncoding();
         }
         
@@ -270,7 +270,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) EncodingType.enumFromName(string);
+                    return (T) EncodingType.enumFromName(string.toUpperCase());
                 }
             };
         }
@@ -278,7 +278,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+            PropAttachment<?> castDestination = (PropAttachment<?>) destination;
             Encoding parameterCopy = new Encoding((Encoding) child);
             castDestination.setEncoding(parameterCopy);
         }
@@ -288,21 +288,21 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+            PropAttachment<?> castProperty = (PropAttachment<?>) property;
             castProperty.setFormatType(FormatType.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+            PropAttachment<?> castProperty = (PropAttachment<?>) parent;
             return castProperty.getFormatType();
         }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+            PropAttachment<?> castDestination = (PropAttachment<?>) destination;
             FormatType parameterCopy = new FormatType((FormatType) child);
             castDestination.setFormatType(parameterCopy);
         }
@@ -318,14 +318,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyFreeBusy<?> castProperty = (PropertyFreeBusy<?>) property;
+            PropFreeBusy<?> castProperty = (PropFreeBusy<?>) property;
             castProperty.setFreeBusyType(FreeBusyType.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyFreeBusy<?> castProperty = (PropertyFreeBusy<?>) parent;
+            PropFreeBusy<?> castProperty = (PropFreeBusy<?>) parent;
             return castProperty.getFreeBusyType();
         }
 
@@ -343,7 +343,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) FreeBusyTypeEnum.enumFromName(string);
+                    return (T) FreeBusyTypeEnum.enumFromName(string.toUpperCase());
                 }
             };
         }
@@ -351,11 +351,12 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
+            PropFreeBusy<?> castDestination = (PropFreeBusy<?>) destination;
             FreeBusyType parameterCopy = new FreeBusyType((FreeBusyType) child);
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
+    @Deprecated
     IANA_PARAMETER (null,  // name specified in IANAParameter registeredIANAParameters
             IANAParameter.class) {
         @Override
@@ -405,21 +406,21 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?, ?>) property;
+            PropBaseLanguage<?,?> castProperty = (PropBaseLanguage<?, ?>) property;
             castProperty.setLanguage(Language.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?,?>) parent;
+            PropBaseLanguage<?,?> castProperty = (PropBaseLanguage<?,?>) parent;
             return castProperty.getLanguage();
         }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
+            PropBaseLanguage<?,?> castDestination = (PropBaseLanguage<?,?>) destination;
             Language parameterCopy = new Language((Language) child);
             castDestination.setLanguage(parameterCopy);
         }
@@ -434,14 +435,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setGroupMembership(GroupMembership.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getGroupMembership();
         }
         
@@ -454,7 +455,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
+            PropFreeBusy<?> castDestination = (PropFreeBusy<?>) destination;
             FreeBusyType parameterCopy = new FreeBusyType((FreeBusyType) child);
             castDestination.setFreeBusyType(parameterCopy);
         }
@@ -507,14 +508,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setParticipationStatus(ParticipationStatus.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getParticipationStatus();
         }
 
@@ -532,7 +533,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) ParticipationStatusType.enumFromName(string);
+                    return (T) ParticipationStatusType.enumFromName(string.toUpperCase());
                 }
             };
         }
@@ -540,7 +541,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             ParticipationStatus parameterCopy = new ParticipationStatus((ParticipationStatus) child);
             castDestination.setParticipationStatus(parameterCopy);
         }
@@ -549,14 +550,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyRecurrenceID<?> castProperty = (PropertyRecurrenceID<?>) property;
+            PropRecurrenceID<?> castProperty = (PropRecurrenceID<?>) property;
             castProperty.setRange(Range.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyRecurrenceID<?> castProperty = (PropertyRecurrenceID<?>) parent;
+            PropRecurrenceID<?> castProperty = (PropRecurrenceID<?>) parent;
             return castProperty.getRange();
         }
 
@@ -574,7 +575,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) RangeType.enumFromName(string);
+                    return (T) RangeType.enumFromName(string.toUpperCase());
                 }
             };
         }
@@ -582,7 +583,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyRecurrenceID<?> castDestination = (PropertyRecurrenceID<?>) destination;
+            PropRecurrenceID<?> castDestination = (PropRecurrenceID<?>) destination;
             Range parameterCopy = new Range((Range) child);
             castDestination.setRange(parameterCopy);
         }
@@ -591,14 +592,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAlarmTrigger<?> castProperty = (PropertyAlarmTrigger<?>) property;
+            PropAlarmTrigger<?> castProperty = (PropAlarmTrigger<?>) property;
             castProperty.setAlarmTrigger(AlarmTriggerRelationship.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAlarmTrigger<?> castProperty = (PropertyAlarmTrigger<?>) parent;
+            PropAlarmTrigger<?> castProperty = (PropAlarmTrigger<?>) parent;
             return castProperty.getAlarmTrigger();
         }
 
@@ -624,7 +625,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAlarmTrigger<?> castDestination = (PropertyAlarmTrigger<?>) destination;
+            PropAlarmTrigger<?> castDestination = (PropAlarmTrigger<?>) destination;
             AlarmTriggerRelationship parameterCopy = new AlarmTriggerRelationship((AlarmTriggerRelationship) child);
             castDestination.setAlarmTrigger(parameterCopy);
         }
@@ -633,14 +634,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyRelationship<?> castProperty = (PropertyRelationship<?>) property;
+            PropRelationship<?> castProperty = (PropRelationship<?>) property;
             castProperty.setRelationship(Relationship.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyRelationship<?> castProperty = (PropertyRelationship<?>) parent;
+            PropRelationship<?> castProperty = (PropRelationship<?>) parent;
             return castProperty.getRelationship();
         }
 
@@ -659,7 +660,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) RelationshipType.valueOfWithUnknown(string);
+                    return (T) RelationshipType.valueOfWithUnknown(string.toUpperCase());
                 }
             };
         }
@@ -667,7 +668,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyRelationship<?> castDestination = (PropertyRelationship<?>) destination;
+            PropRelationship<?> castDestination = (PropRelationship<?>) destination;
             Relationship parameterCopy = new Relationship((Relationship) child);
             castDestination.setRelationship(parameterCopy);
         }
@@ -676,14 +677,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setParticipationRole(ParticipationRole.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getParticipationRole();
         }
         
@@ -701,7 +702,7 @@ public enum ParameterType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) ParticipationRoleType.enumFromName(string);
+                    return (T) ParticipationRoleType.enumFromName(string.toUpperCase());
                 }
             };
         }
@@ -709,7 +710,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             ParticipationRole parameterCopy = new ParticipationRole((ParticipationRole) child);
             castDestination.setParticipationRole(parameterCopy);
         }
@@ -718,14 +719,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            PropAttendee<?> castProperty = (PropAttendee<?>) property;
             castProperty.setRSVP(RSVP.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            PropAttendee<?> castProperty = (PropAttendee<?>) parent;
             return castProperty.getRSVP();
         }
         
@@ -738,7 +739,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            PropAttendee<?> castDestination = (PropAttendee<?>) destination;
             RSVP parameterCopy = new RSVP((RSVP) child);
             castDestination.setRSVP(parameterCopy);
         }
@@ -776,14 +777,14 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyDateTime<?> castProperty = (PropertyDateTime<?>) property;
+            PropDateTime<?> castProperty = (PropDateTime<?>) property;
             castProperty.setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyDateTime<?> castProperty = (PropertyDateTime<?>) parent;
+            PropDateTime<?> castProperty = (PropDateTime<?>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }
@@ -810,7 +811,7 @@ public enum ParameterType
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyDateTime<?> castDestination = (PropertyDateTime<?>) destination;
+            PropDateTime<?> castDestination = (PropDateTime<?>) destination;
             TimeZoneIdentifierParameter parameterCopy = new TimeZoneIdentifierParameter((TimeZoneIdentifierParameter) child);
             castDestination.setTimeZoneIdentifier(parameterCopy);
         }

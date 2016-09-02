@@ -8,8 +8,8 @@ import jfxtras.labs.icalendarfx.parameters.CommonName;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.SentBy;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
-import jfxtras.labs.icalendarfx.properties.PropertyCalendarUser;
+import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
+import jfxtras.labs.icalendarfx.properties.PropCalendarUser;
 
 /**
  * Abstract class for properties with a CAL-ADDRESS value.
@@ -33,7 +33,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyCalendarUser;
  * @see Organizer
  * @see Attendee
  */
-public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage<T,U> implements PropertyCalendarUser<T>
+public abstract class PropertyBaseCalendarUser<T,U> extends PropBaseLanguage<T,U> implements PropCalendarUser<T>
 {
     /**
      * CN

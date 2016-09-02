@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.content;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.Orderer;
+import jfxtras.labs.icalendarfx.utilities.Orderer;
 
 public class SingleLineContent extends ContentLineBase
 {

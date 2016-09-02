@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
@@ -67,7 +67,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
   </ul>
   </p>
  */
-public class Categories extends PropertyBaseLanguage<ObservableList<String>, Categories>
+public class Categories extends PropBaseLanguage<ObservableList<String>, Categories>
 {
     private final static StringConverter<ObservableList<String>> CONVERTER = new StringConverter<ObservableList<String>>()
     {

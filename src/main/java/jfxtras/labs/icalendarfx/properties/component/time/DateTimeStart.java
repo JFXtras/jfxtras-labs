@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.PropBaseDateTime;
 
 /**
  * DTSTART
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * @see VTodo
  * @see VFreeBusy
  */
-public class DateTimeStart extends PropertyBaseDateTime<Temporal, DateTimeStart>
+public class DateTimeStart extends PropBaseDateTime<Temporal, DateTimeStart>
 {
    public DateTimeStart(Temporal temporal)
     {

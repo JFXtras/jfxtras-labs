@@ -77,8 +77,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class VEvent extends VComponentLocatableBase<VEvent> implements VComponentDateTimeEnd<VEvent>,
-    VComponentDescribable2<VEvent>, VComponentRepeatable<VEvent>
+public class VEvent extends VLocatableBase<VEvent> implements VDateTimeEnd<VEvent>,
+    VDescribable2<VEvent>, VRepeatable<VEvent>
 {
     /**
      * DTEND
@@ -119,7 +119,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     void dateTimeStartListenerHook()
     {
         super.dateTimeStartListenerHook();
-        String dtendError = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        String dtendError = VDateTimeEnd.errorsDateTimeEnd(this);
         if (dtendError != null)
         {
             throw new DateTimeException(dtendError);
@@ -250,7 +250,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         // TODO - GET ERRORS FROM CHILDREN?
         // REMOVE DTEND LISTENERS??  WHAT ABOUT RDATE AND EXDATE LISTENERS???
         List<String> errors = super.errors();
-        String dtendError = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        String dtendError = VDateTimeEnd.errorsDateTimeEnd(this);
         if (dtendError != null)
         {
             errors.add(dtendError);

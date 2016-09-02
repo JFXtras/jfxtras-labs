@@ -11,7 +11,7 @@ import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
+import jfxtras.labs.icalendarfx.properties.PropAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
@@ -34,7 +34,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
  * The property can be specified in following components:
  * @see VAlarm
  */
-public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyAlarmTrigger<T>
+public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropAlarmTrigger<T>
 {
     /**
     * RELATED: Alarm Trigger Relationship

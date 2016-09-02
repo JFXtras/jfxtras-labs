@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 
 /**
  * METHOD
@@ -20,16 +22,38 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Method extends PropertyBase<String, Method> implements VElement
+public class Method extends PropertyBase<MethodType, Method> implements VElement
 {
+    private final static StringConverter<MethodType> CONVERTER = new StringConverter<MethodType>()
+    {
+        @Override
+        public String toString(MethodType object)
+        {
+            return object.toString();
+        }
+
+        @Override
+        public MethodType fromString(String string)
+        {
+            return MethodType.valueOf(string.toUpperCase());
+        }
+    };
+    
     public Method(Method source)
     {
         super(source);
+    }
+
+    public Method(MethodType methodType)
+    {
+       super(methodType);
+       setConverter(CONVERTER);
     }
     
     public Method()
     {
        super();
+       setConverter(CONVERTER);
     }
     
     public static Method parse(String string)
@@ -37,5 +61,18 @@ public class Method extends PropertyBase<String, Method> implements VElement
         Method property = new Method();
         property.parseContent(string);
         return property;
-    } 
+    }
+    
+    /** Method types from RFC 5546 */
+    public enum MethodType
+    {
+        PUBLISH,
+        REQUEST,
+        REPLY,
+        ADD,
+        CANCEL,
+        REFRESH,
+        COUNTER,
+        DECLINECOUNTER;
+    }
 }

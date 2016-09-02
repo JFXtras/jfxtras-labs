@@ -8,7 +8,7 @@ import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.PropBaseDateTime;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
@@ -71,7 +71,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
  *<li>DTEND;VALUE=DATE:19980704
  *</ul>
  */
-public class DateTimeEnd extends PropertyBaseDateTime<Temporal, DateTimeEnd>
+public class DateTimeEnd extends PropBaseDateTime<Temporal, DateTimeEnd>
 {    
    public DateTimeEnd(Temporal temporal)
     {

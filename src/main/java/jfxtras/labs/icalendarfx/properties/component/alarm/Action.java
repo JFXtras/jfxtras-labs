@@ -40,7 +40,7 @@ public class Action extends PropertyBase<ActionType, Action>
         @Override
         public ActionType fromString(String string)
         {
-            return ActionType.valueOf2(string);
+            return ActionType.valueOf2(string.toUpperCase());
         }
     };
     

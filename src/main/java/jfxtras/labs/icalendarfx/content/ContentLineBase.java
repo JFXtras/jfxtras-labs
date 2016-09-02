@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.content;
 
-import jfxtras.labs.icalendarfx.Orderer;
+import jfxtras.labs.icalendarfx.utilities.Orderer;
 
 public abstract class ContentLineBase implements ContentLineStrategy
 {

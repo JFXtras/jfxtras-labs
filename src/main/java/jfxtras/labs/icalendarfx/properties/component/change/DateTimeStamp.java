@@ -6,7 +6,7 @@ import java.time.temporal.Temporal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
+import jfxtras.labs.icalendarfx.properties.PropBaseUTC;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see VTodo
  * @see VJournal
  */
-public class DateTimeStamp extends PropertyBaseUTC<DateTimeStamp>
+public class DateTimeStamp extends PropBaseUTC<DateTimeStamp>
 {    
     public DateTimeStamp(ZonedDateTime temporal)
     {

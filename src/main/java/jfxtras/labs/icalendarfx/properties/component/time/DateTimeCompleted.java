@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
+import jfxtras.labs.icalendarfx.properties.PropBaseUTC;
 
 /**
  * COMPLETED
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DateTimeCompleted extends PropertyBaseUTC<DateTimeCompleted>
+public class DateTimeCompleted extends PropBaseUTC<DateTimeCompleted>
 {
     public DateTimeCompleted(ZonedDateTime temporal)
     {

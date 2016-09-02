@@ -16,7 +16,7 @@ import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleTy
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus;
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.parameters.RSVP;
-import jfxtras.labs.icalendarfx.properties.PropertyAttendee;
+import jfxtras.labs.icalendarfx.properties.PropAttendee;
 
 /**
  * Abstract class for Attendee and unknown properties
@@ -28,7 +28,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyAttendee;
  * @see Attendee
  * @see Organizer
  */
-public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser<T,U> implements PropertyAttendee<T>
+public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser<T,U> implements PropAttendee<T>
 {
     /**
      * CUTYPE

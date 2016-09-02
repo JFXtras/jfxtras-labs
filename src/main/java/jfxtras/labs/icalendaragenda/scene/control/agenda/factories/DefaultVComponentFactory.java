@@ -5,13 +5,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayableBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
- * Default factory to create a {@link VComponentDisplayableBase} from {@link Appointment}
+ * Default factory to create a {@link VDisplayableBase} from {@link Appointment}
  * 
  * @author David Bal
  *
@@ -19,9 +19,9 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 public class DefaultVComponentFactory extends VComponentFactory<Appointment>
 {
     @Override
-    public VComponentDisplayableBase<?> createVComponent(Appointment appointment)
+    public VDisplayableBase<?> createVComponent(Appointment appointment)
     {
-        final VComponentDisplayableBase<?> newVComponent;
+        final VDisplayableBase<?> newVComponent;
         ZonedDateTime dtCreated = ZonedDateTime.now(ZoneId.of("Z"));
         String summary = ((appointment.getSummary() == null) || appointment.getSummary().isEmpty()) ? null : appointment.getSummary();
         String description = ((appointment.getDescription() == null) || appointment.getDescription().isEmpty()) ? null : appointment.getDescription();

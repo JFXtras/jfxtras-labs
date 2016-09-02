@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayableBase;
 
 public abstract class VComponentFactory<R>
 {
@@ -10,5 +10,5 @@ public abstract class VComponentFactory<R>
      * @param recurrence - recurrence as basis for VComponent
      * @return - new VComponent
      */
-    abstract public VComponentDisplayableBase<?> createVComponent(R recurrence);
+    abstract public VDisplayableBase<?> createVComponent(R recurrence);
 }

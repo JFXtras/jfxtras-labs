@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
+import jfxtras.labs.icalendarfx.properties.PropRelationship;
 
 /**
  * RELATED-TO
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
  * @see VTodo
  * @see VJournal
  */
-public class RelatedTo extends PropertyBase<String, RelatedTo> implements PropertyRelationship<String>
+public class RelatedTo extends PropertyBase<String, RelatedTo> implements PropRelationship<String>
 {
     /**
      * RELTYPE

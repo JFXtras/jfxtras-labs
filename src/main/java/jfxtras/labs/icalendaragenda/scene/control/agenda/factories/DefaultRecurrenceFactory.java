@@ -6,8 +6,8 @@ import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Optional;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
-import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VLocatableBase;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -30,17 +30,17 @@ public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
         this.appointmentGroups = appointmentGroups;
     }
 
-    /** Make {@link AppointmentImplTemporal} from {@link VComponentDisplayableBase} */
+    /** Make {@link AppointmentImplTemporal} from {@link VDisplayableBase} */
     @Override
-    Appointment makeRecurrence(VComponentDisplayableBase<?> vComponent, Temporal startTemporal)
+    Appointment makeRecurrence(VDisplayableBase<?> vComponent, Temporal startTemporal)
     {
         Boolean isWholeDay = vComponent.getDateTimeStart().getValue() instanceof LocalDate;
         final String description;
         final Temporal endTemporal;
         final String location;
-        if (vComponent instanceof VComponentLocatableBase<?>)
+        if (vComponent instanceof VLocatableBase<?>)
         { // VTODO and VEVENT
-            VComponentLocatableBase<?> VComponentLocatableBase = (VComponentLocatableBase<?>) vComponent;
+            VLocatableBase<?> VComponentLocatableBase = (VLocatableBase<?>) vComponent;
             description = (VComponentLocatableBase.getDescription() != null) ? VComponentLocatableBase.getDescription().getValue() : null;
             location = (VComponentLocatableBase.getLocation() != null) ? VComponentLocatableBase.getLocation().getValue() : null;
             TemporalAmount adjustment = VComponentLocatableBase.getActualDuration();

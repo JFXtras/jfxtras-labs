@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDescribable;
-import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
+import jfxtras.labs.icalendarfx.components.VDescribable;
+import jfxtras.labs.icalendarfx.components.VDescribable2;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -37,7 +37,7 @@ public class DescribableTest
     @Test
     public void canBuildDescribable() throws InstantiationException, IllegalAccessException
     {
-        List<VComponentDescribable<?>> components = Arrays.asList(
+        List<VDescribable<?>> components = Arrays.asList(
                 new VEvent()
                     .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
                             Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
@@ -61,7 +61,7 @@ public class DescribableTest
                             .withLanguage("en-USA"))
                 );
         
-        for (VComponentDescribable<?> builtComponent : components)
+        for (VDescribable<?> builtComponent : components)
         {
             String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -81,7 +81,7 @@ public class DescribableTest
     @Test
     public void canBuildDescribable2() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        List<VComponentDescribable2<?>> components = Arrays.asList(
+        List<VDescribable2<?>> components = Arrays.asList(
                 new VEvent()
                     .withDescription("Sample description"),
                 new VTodo()
@@ -90,7 +90,7 @@ public class DescribableTest
                     .withDescription("Sample description")
                 );
         
-        for (VComponentDescribable2<?> builtComponent : components)
+        for (VDescribable2<?> builtComponent : components)
         {
             String componentName = builtComponent.name();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

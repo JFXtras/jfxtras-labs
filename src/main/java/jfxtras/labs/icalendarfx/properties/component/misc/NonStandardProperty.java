@@ -25,7 +25,9 @@ import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
       set to any value type.</p>
 
    <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
-      {@link Language language} parameters can be specified on this property.</p>
+      {@link Language language} parameters can be specified on this property.
+      Note: Contradicting above RFC 5545 text, based on examples (even one
+      below), it seems that this property can contain all parameters - David Bal.</p>
 
    <p>Conformance:  This property can be specified in any calendar
       component ({@link VEvent}, {@link VTodo}, {@link VJournal}. {@link VAlarm},

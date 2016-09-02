@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
+import jfxtras.labs.icalendarfx.components.VRepeatable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -29,9 +29,9 @@ public class RecurrenceRuleCache
     private RecurrenceRule2 rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     public int cacheStart = 0; // start index where cache values are stored (starts in middle)
     public int cacheEnd = 0; // end index where cache values are stored
-    private VComponentRepeatable<?> component; // the VComponent
+    private VRepeatable<?> component; // the VComponent
     
-    public RecurrenceRuleCache(VComponentRepeatable<?> component)
+    public RecurrenceRuleCache(VRepeatable<?> component)
     {
         this.component = component;
     }

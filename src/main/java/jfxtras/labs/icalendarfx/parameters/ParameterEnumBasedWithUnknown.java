@@ -4,9 +4,7 @@ import java.util.List;
 
 public abstract class ParameterEnumBasedWithUnknown<U,T> extends ParameterBase<U,T>
 {
-    private String unknownValue; // contains exact string for unknown value
- //   private List<String> registeredIANAValues;
-    // TODO - MAKE FINAL
+    private String nonStandardValue; // contains exact string for unknown value
     
     /*
      * CONSTRUCTORS
@@ -14,27 +12,24 @@ public abstract class ParameterEnumBasedWithUnknown<U,T> extends ParameterBase<U
     public ParameterEnumBasedWithUnknown() //List<String> registeredIANAValues)
     {
         super();
-//        this.registeredIANAValues = registeredIANAValues;
     }
   
     public ParameterEnumBasedWithUnknown(T value) //, List<String> registeredIANAValues)
     {
         this();
-//        this(registeredIANAValues);
         setValue(value);
     }
     
     public ParameterEnumBasedWithUnknown(ParameterEnumBasedWithUnknown<U,T> source)
     {
         super(source);
-        unknownValue = source.unknownValue;
-//        this.registeredIANAValues = source.registeredIANAValues;
+        nonStandardValue = source.nonStandardValue;
     }
         
     @Override
     String valueAsString()
     {
-        return (getValue().toString().equals("UNKNOWN")) ? unknownValue : super.valueAsString();
+        return (getValue().toString().equals("UNKNOWN")) ? nonStandardValue : super.valueAsString();
     }
     
     @Override
@@ -44,7 +39,7 @@ public abstract class ParameterEnumBasedWithUnknown<U,T> extends ParameterBase<U
         if (getValue().toString().equals("UNKNOWN"))
         {
             String valueString = Parameter.extractValue(content);
-            unknownValue = valueString;
+            nonStandardValue = valueString;
         }
         return errors();
     }

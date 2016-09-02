@@ -8,7 +8,7 @@ import jfxtras.labs.icalendarfx.parameters.AlternateText;
 import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
@@ -72,7 +72,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
   </p>
   RFC 5545                       iCalendar                  September 2009
  */
-public class Description extends PropertyBaseAltText<String,Description>
+public class Description extends PropBaseAltText<String,Description>
 {
     /** Create deep copy of source Description */
     public Description(Description source)

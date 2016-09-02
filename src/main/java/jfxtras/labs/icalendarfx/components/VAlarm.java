@@ -216,8 +216,8 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
  * @see VTodo
  */
 // TODO - add to isValid tests to verify audioprop / dispprop / emailprop
-public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,
-        VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
+public class VAlarm extends VDescribableBase<VAlarm> implements VDescribable2<VAlarm>,
+        VAttendee<VAlarm>, VDuration<VAlarm>
 {
     /**
      * <p>Defines the action to be invoked when an alarm is triggered.<br>

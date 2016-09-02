@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 
 /**
@@ -28,7 +28,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
  * @see VEvent
  * @see VTodo
  */
-public class Resources extends PropertyBaseAltText<ObservableList<String>, Resources>
+public class Resources extends PropBaseAltText<ObservableList<String>, Resources>
 {
     private final static StringConverter<ObservableList<String>> CONVERTER = new StringConverter<ObservableList<String>>()
     {

@@ -83,6 +83,7 @@ import jfxtras.labs.icalendarfx.property.TimeZoneURLTest;
 import jfxtras.labs.icalendarfx.property.TriggerTest;
 import jfxtras.labs.icalendarfx.property.URLTest;
 import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
+import jfxtras.labs.icalendarfx.property.calendar.MethodTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByDayTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByMonthTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByWeekNumberTest;
@@ -102,6 +103,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CalendarScaleTest.class,
         CopyCalendarTest.class,
         GeneralCalendarTest.class,
+        MethodTest.class,
         ParseCalendarTest.class,
         ReadICSFileTest.class,
         VCalendarRecurrenceIDTest.class,

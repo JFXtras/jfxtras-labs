@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.content.ContentLineStrategy;
+import jfxtras.labs.icalendarfx.utilities.Orderer;
+import jfxtras.labs.icalendarfx.utilities.OrdererBase;
 
 /**
  * <p>Base class for parent calendar components.</p>

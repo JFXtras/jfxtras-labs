@@ -13,7 +13,6 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 public enum CalendarProperty
@@ -37,45 +36,45 @@ public enum CalendarProperty
             destination.setCalendarScale(calendarScale);
         }
     },
-    // Miscellaneous
-    IANA_PROPERTY (null, // name specified in IANAProperty registeredIANAProperties
-            Arrays.asList(ParameterType.values()), // all parameters allowed
-            IANAProperty.class) // property class
-    {
-
-        @Override
-        public VChild parse(VCalendar vCalendar, String contentLine)
-        {
-            final ObservableList<IANAProperty> list;
-            if (vCalendar.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                vCalendar.setIana(list);
-            } else
-            {
-                list = vCalendar.getIana();
-            }
-            IANAProperty child = IANAProperty.parse(contentLine);
-            list.add(child);
-            return child;
-        }
-
-        @Override
-        public void copyChild(VChild child, VCalendar destination)
-        {
-            final ObservableList<IANAProperty> list;
-            if (destination.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                destination.setIana(list);
-            } else
-            {
-                list = destination.getIana();
-            }
-            list.add(new IANAProperty((IANAProperty) child));
-        }
-
-    },
+//    // Miscellaneous
+//    IANA_PROPERTY (null, // name specified in IANAProperty registeredIANAProperties
+//            Arrays.asList(ParameterType.values()), // all parameters allowed
+//            IANAProperty.class) // property class
+//    {
+//
+//        @Override
+//        public VChild parse(VCalendar vCalendar, String contentLine)
+//        {
+//            final ObservableList<IANAProperty> list;
+//            if (vCalendar.getIana() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                vCalendar.setIana(list);
+//            } else
+//            {
+//                list = vCalendar.getIana();
+//            }
+//            IANAProperty child = IANAProperty.parse(contentLine);
+//            list.add(child);
+//            return child;
+//        }
+//
+//        @Override
+//        public void copyChild(VChild child, VCalendar destination)
+//        {
+//            final ObservableList<IANAProperty> list;
+//            if (destination.getIana() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                destination.setIana(list);
+//            } else
+//            {
+//                list = destination.getIana();
+//            }
+//            list.add(new IANAProperty((IANAProperty) child));
+//        }
+//
+//    },
     METHOD ("METHOD",
             Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
             Method.class)

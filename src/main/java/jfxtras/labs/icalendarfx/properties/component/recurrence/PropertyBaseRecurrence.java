@@ -13,7 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.PropBaseDateTime;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -28,7 +28,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @see ExceptionDates
  * @see RecurrenceDates
  */
-public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<ObservableSet<Temporal>, U>
+public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<ObservableSet<Temporal>, U>
 {
     private ZoneId zone;
     private DateTimeType myType;

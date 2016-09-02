@@ -8,7 +8,7 @@ import jfxtras.labs.icalendarfx.parameters.AlternateText;
 import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 
 /**
 <h2>3.8.1.12.  Summary</h2>
@@ -65,7 +65,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
   </p>
   RFC 5545                       iCalendar                  September 2009
  */
-public class Summary extends PropertyBaseAltText<String, Summary>
+public class Summary extends PropBaseAltText<String, Summary>
 {
     /** Create deep copy of source Summary */
     public Summary(Summary source)

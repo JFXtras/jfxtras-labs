@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Iterator;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.VChild;
@@ -12,6 +11,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
+import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
 
 /**
  * <h2>RFC 5545, 3.6. Calendar Components</h2>
@@ -111,5 +111,5 @@ public interface VComponent extends VParent, VChild
      * @param collectErrorMessages  true causes return List to contain error messages, false causes empty list
      * @return  list of error messages if collectErrorMessages is true, otherwise empty list
      */
-    List<String> parseContent(Iterator<String> contentLines, boolean collectErrorMessages);
+    List<String> parseContent(UnfoldingStringIterator contentLines, boolean collectErrorMessages);
 }

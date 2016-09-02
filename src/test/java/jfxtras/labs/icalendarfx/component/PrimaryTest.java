@@ -11,7 +11,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentPrimaryBase;
+import jfxtras.labs.icalendarfx.components.VPrimaryBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -40,7 +40,7 @@ public class PrimaryTest
     @Test
     public void canBuildPrimary() throws InstantiationException, IllegalAccessException
     {
-        List<VComponentPrimaryBase<?>> components = Arrays.asList(
+        List<VPrimaryBase<?>> components = Arrays.asList(
                 new VEvent()
                     .withDateTimeStart("20160306T080000")
                     .withComments("This is a test comment", "Another comment")
@@ -67,7 +67,7 @@ public class PrimaryTest
                     .withComments("COMMENT:My third comment")
                 );
         
-        for (VComponentPrimaryBase<?> builtComponent : components)
+        for (VPrimaryBase<?> builtComponent : components)
         {
             String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

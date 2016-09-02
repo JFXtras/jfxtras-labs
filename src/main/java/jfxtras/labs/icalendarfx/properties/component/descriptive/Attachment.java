@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
+import jfxtras.labs.icalendarfx.properties.PropAttachment;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
@@ -92,7 +92,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * 
  * @author David Bal
  */
-public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>
+public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropAttachment<T>
 {
     /**
     * FMTTYPE: Format type parameter

@@ -8,12 +8,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
 
 public class ReadICSFileTest
 {
@@ -23,8 +26,12 @@ public class ReadICSFileTest
         String fileName = "Yahoo_Sample_Calendar.ics";
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());
+//        VCalendar vCalendar = VCalendar.parse(icsFilePath);
+//        System.out.println(vCalendar.toContent());
         boolean useResourceStatus = true;
         VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath, useResourceStatus);
+        System.out.println(vCalendar.toContent());
+        // HAS REQUEST-STATUS IN LINES - NEED TO REMOVE
         assertEquals(8584, vCalendar.toContent().length());
         assertEquals(7, vCalendar.getVEvents().size());
         assertEquals(1, vCalendar.getVTimeZones().size());
@@ -39,9 +46,17 @@ public class ReadICSFileTest
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());
         BufferedReader br = Files.newBufferedReader(icsFilePath);
-        List<String> expectedLines = ICalendarUtilities.unfoldLines(br.lines().iterator());
+//        Iterator<String> unfoldedLineIterator = br.lines().iterator();
+//        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(br.lines().iterator());
+        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(br.lines().iterator());
+        List<String> expectedLines = new ArrayList<>();
+        unfoldedLineIterator.forEachRemaining(line -> expectedLines.add(line));
         VCalendar vCalendar = VCalendar.parse(icsFilePath);
-        List<String> lines = ICalendarUtilities.unfoldLines(vCalendar.toContent());
-        assertEquals(expectedLines, lines);
+        Iterator<String> contentIterator = Arrays.stream(vCalendar.toContent().split(System.lineSeparator())).iterator();
+        UnfoldingStringIterator unfoldedContentLineIterator = new UnfoldingStringIterator(contentIterator);
+        List<String> contentLines = new ArrayList<>();
+        unfoldedContentLineIterator.forEachRemaining(line -> contentLines.add(line));
+        assertEquals(expectedLines, contentLines);
+        assertEquals(13217, expectedLines.size());
     }
 }

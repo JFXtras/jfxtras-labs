@@ -21,7 +21,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayableBase;
 import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -33,14 +33,14 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
- * Handles revising one or all recurrences of a {@link VComponentDisplayableBase}
+ * Handles revising one or all recurrences of a {@link VDisplayableBase}
  * 
  * @author David Bal
  *
  * @param <T> concrete implementation of this class
- * @param <U> concrete {@link VComponentDisplayableBase} class
+ * @param <U> concrete {@link VDisplayableBase} class
  */
-public abstract class ReviserDisplayable<T, U extends VComponentDisplayableBase<U>> implements Reviser
+public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> implements Reviser
 {
     public ReviserDisplayable(U vComponent)
     {
@@ -50,13 +50,13 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayableBase<
     /*
      * VCOMPONENT EDITED
      */
-    /** Gets the value of the edited {@link VComponentDisplayableBase} */
+    /** Gets the value of the edited {@link VDisplayableBase} */
     public U getVComponentEdited() { return vComponentEdited; }
     private U vComponentEdited;
-    /** Sets the value of the edited {@link VComponentDisplayableBase} */
+    /** Sets the value of the edited {@link VDisplayableBase} */
     public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
     /**
-     * Sets the value of the edited {@link VComponentDisplayableBase}
+     * Sets the value of the edited {@link VDisplayableBase}
      * 
      * @return - this class for chaining
      * @see VCalendar
@@ -66,13 +66,13 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayableBase<
     /*
      * VCOMPONENT ORIGINAL
      */
-    /** Gets the value of the original {@link VComponentDisplayableBase} */
+    /** Gets the value of the original {@link VDisplayableBase} */
     public U getVComponentOriginal() { return vComponentOriginal; }
     private U vComponentOriginal;
-    /** Sets the value of the original {@link VComponentDisplayableBase} */
+    /** Sets the value of the original {@link VDisplayableBase} */
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
     /**
-     * Sets the value of the edited {@link VComponentDisplayableBase}
+     * Sets the value of the edited {@link VDisplayableBase}
      * 
      * @return - this class for chaining
      * @see VCalendar
@@ -297,6 +297,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayableBase<
                     vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     vComponentEditedCopy.toContent());
         }
+        // TODO - NEED TO MAKE VCALENDAR WITH METHOD TO PUBLISH - LET VCALENDAR HANDLE REMOVE AND ADD BACK OF VCOMPONENTS
         getVComponents().remove(getVComponentEdited());
         getVComponents().addAll(revisedVComponents);
         return Collections.unmodifiableList(revisedVComponents);
@@ -584,7 +585,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayableBase<
      * to match the {@link UniqueIdentifier} of the revised VComponent */
     private void thisAndFutureIgnoreRecurrences(List<U> revisedVComponents, U vComponentEditedCopy)
     {
-        List<VComponentDisplayableBase<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
+        List<VDisplayableBase<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
         if (! recurrenceChildren.isEmpty())
         {
             recurrenceChildren.stream().forEach(c -> 

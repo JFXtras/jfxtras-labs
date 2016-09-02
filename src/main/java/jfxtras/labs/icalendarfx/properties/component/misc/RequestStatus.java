@@ -11,7 +11,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
 
 /**
  * REQUEST-STATUS
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @see VJournal
  * @see VFreeBusy
  */
-public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
+public class RequestStatus extends PropBaseLanguage<String, RequestStatus>
 {
     /** Hierarchical, numeric return status code
      * 

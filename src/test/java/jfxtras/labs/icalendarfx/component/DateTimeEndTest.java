@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
+import jfxtras.labs.icalendarfx.components.VDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -33,14 +33,14 @@ public class DateTimeEndTest
     @Test
     public void canBuildLastModified() throws InstantiationException, IllegalAccessException
     {
-        List<VComponentDateTimeEnd<?>> components = Arrays.asList(
+        List<VDateTimeEnd<?>> components = Arrays.asList(
                 new VEvent()
                         .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z")),
                 new VFreeBusy()
                         .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z"))
                 );
         
-        for (VComponentDateTimeEnd<?> builtComponent : components)
+        for (VDateTimeEnd<?> builtComponent : components)
         {
             String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

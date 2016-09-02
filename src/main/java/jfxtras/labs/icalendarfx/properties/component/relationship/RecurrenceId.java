@@ -10,8 +10,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.Range;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
-import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendarfx.properties.PropBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.PropRecurrenceID;
 
 /**
  * RECURRENCE-ID
@@ -40,7 +40,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
  * @see VTodo
  * @see VJournal
  */
-public class RecurrenceId extends PropertyBaseDateTime<Temporal, RecurrenceId> implements PropertyRecurrenceID<Temporal>
+public class RecurrenceId extends PropBaseDateTime<Temporal, RecurrenceId> implements PropRecurrenceID<Temporal>
 {
     /**
      * RANGE

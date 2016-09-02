@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentLastModified;
+import jfxtras.labs.icalendarfx.components.VLastModified;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
@@ -33,7 +33,7 @@ public class LastModifiedTest
     @Test
     public void canBuildLastModified() throws InstantiationException, IllegalAccessException
     {
-        List<VComponentLastModified<?>> components = Arrays.asList(
+        List<VLastModified<?>> components = Arrays.asList(
                 new VEvent()
                         .withDateTimeLastModified("20160306T080000Z"),
                 new VTodo()
@@ -44,7 +44,7 @@ public class LastModifiedTest
                         .withDateTimeLastModified("20160306T080000Z")
                 );
         
-        for (VComponentLastModified<?> builtComponent : components)
+        for (VLastModified<?> builtComponent : components)
         {
             String componentName = builtComponent.name();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

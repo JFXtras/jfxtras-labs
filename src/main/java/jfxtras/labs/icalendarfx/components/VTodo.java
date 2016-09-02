@@ -58,7 +58,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @author David Bal
  *
  */
-public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentDescribable2<VTodo>
+public class VTodo extends VLocatableBase<VTodo> implements VDescribable2<VTodo>
 {    
     /**
      * COMPLETED: Date-Time Completed

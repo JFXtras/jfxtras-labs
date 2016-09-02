@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 
 /**
  * LOCATION
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @see VEvent
  * @see VTodo
  */
-public class Location extends PropertyBaseAltText<String, Location>
+public class Location extends PropBaseAltText<String, Location>
 {    
     public Location(Location source)
     {

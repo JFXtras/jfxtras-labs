@@ -88,7 +88,7 @@ A "VFREEBUSY" calendar component is a grouping of
  * @author David Bal
  *
  */
-public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VComponentDateTimeEnd<VFreeBusy>
+public class VFreeBusy extends VPersonalBase<VFreeBusy> implements VDateTimeEnd<VFreeBusy>
 {
     /**
      * CONTACT:
@@ -211,7 +211,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        String dtendError = VComponentDateTimeEnd.errorsDateTimeEnd(this);
+        String dtendError = VDateTimeEnd.errorsDateTimeEnd(this);
         if (dtendError != null)
         {
             errors.add(dtendError);

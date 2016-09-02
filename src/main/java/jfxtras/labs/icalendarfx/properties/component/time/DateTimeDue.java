@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
+import jfxtras.labs.icalendarfx.properties.PropBaseDateTime;
 
 /**
  * DUE
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DateTimeDue extends PropertyBaseDateTime<Temporal, DateTimeDue>
+public class DateTimeDue extends PropBaseDateTime<Temporal, DateTimeDue>
 {    
    public DateTimeDue(Temporal temporal)
     {

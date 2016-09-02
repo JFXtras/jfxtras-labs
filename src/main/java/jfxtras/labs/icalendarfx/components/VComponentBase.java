@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.components;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javafx.util.Callback;
@@ -13,7 +12,8 @@ import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;;
 
 /**
  * <p>Base class implementation of a {@link VComponent}</p>
@@ -93,17 +93,19 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         }
         content.indexOf(System.lineSeparator());
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        return parseContent(unfoldedLines, useRequestStatus);        
+        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(contentLines.iterator());
+        return parseContent(unfoldedLineIterator, useRequestStatus);
     }
 
     @Override
-    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useRequestStatus)
+    public List<String> parseContent(UnfoldingStringIterator unfoldedLineIterator, boolean collectErrorMessages)
     {
         if (unfoldedLineIterator == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
+        // apply UnfoldingStringIterator decorator
+//        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(unfoldingLineIterator);
         
         // handle exceptions in JavxFx threads by rethrowing
         Thread t = Thread.currentThread();
@@ -125,7 +127,10 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 if  (! isMainComponent)
                 {
                     String subcomponentName = unfoldedLine.substring(nameEndIndex+1);
-                    VComponent subcomponent = SimpleVComponentFactory.newVComponent(subcomponentName, unfoldedLineIterator);
+                    VComponent subcomponent = SimpleVComponentFactory.emptyVComponent(subcomponentName);
+                    List<String> subMessages = subcomponent.parseContent(unfoldedLineIterator, collectErrorMessages);
+                    statusMessages.addAll(subMessages);
+//                    VComponent subcomponent = SimpleVComponentFactory.newVComponent(subcomponentName, unfoldedLineIterator);
                     addSubcomponent(subcomponent);
                 }
             } else if (propertyName.equals("END"))
@@ -146,7 +151,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                                 propertyType.parse(this, unfoldedLine);
                             } catch (Exception e)
                             {
-                                if (useRequestStatus)
+                                if (collectErrorMessages)
                                 {
                                     if (propertyType.isRequired(this))
                                     {
@@ -172,7 +177,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                         }
                     } else
                     {
-                        if (useRequestStatus)
+                        if (collectErrorMessages)
                         {
                             statusMessages.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                         } else
@@ -182,7 +187,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                     }
                 } else
                 {
-                    if (useRequestStatus)
+                    if (collectErrorMessages)
                     {
                         statusMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                     } else

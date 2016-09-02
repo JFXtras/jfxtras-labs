@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
+import jfxtras.labs.icalendarfx.properties.PropBaseUTC;
 
 /**
  * CREATED
@@ -27,7 +27,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
  * @see VTodo
  * @see VJournal
  */
-public class DateTimeCreated extends PropertyBaseUTC<DateTimeCreated>
+public class DateTimeCreated extends PropBaseUTC<DateTimeCreated>
 {
     public DateTimeCreated(ZonedDateTime temporal)
     {

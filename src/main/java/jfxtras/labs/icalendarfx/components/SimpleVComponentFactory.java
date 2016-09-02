@@ -1,11 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import jfxtras.labs.icalendarfx.CalendarComponent;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * <p>Parses calendar content text to a {@link VComponent}</p>
@@ -18,76 +13,76 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 public class SimpleVComponentFactory
 {
-    /** Create new VComponent from component name and parsing iCalendar content text */
-    public static VComponent newVComponent(String componentName, Iterator<String> contentIterator)
-    {
-        final VComponent myComponent;
-        CalendarComponent component = CalendarComponent.enumFromName(componentName.toString());
-        if (component == null)
-        {
-            throw new IllegalArgumentException(componentName + " is not a valid calendar component name.");            
-        }
-        switch (component)
-        {
-        case DAYLIGHT_SAVING_TIME:
-            myComponent = new DaylightSavingTime();
-            break;
-        case STANDARD_TIME:
-            myComponent = new StandardTime();
-            break;
-        case VALARM:
-            myComponent = new VAlarm();
-            break;
-        case VEVENT:
-            myComponent = new VEvent();
-            break;
-        case VFREEBUSY:
-            myComponent = new VFreeBusy();
-            break;
-        case VJOURNAL:
-            myComponent = new VJournal();
-            break;
-        case VTIMEZONE:
-            myComponent = new VTimeZone();
-            break;
-        case VTODO:
-            myComponent = new VTodo();
-            break;
-        default:
-            throw new IllegalArgumentException("Unsupported component:" + component);
-        }
-        boolean collectErrorList = false;
-        myComponent.parseContent(contentIterator, collectErrorList);
-        return myComponent;
-    }
-    
-    /** Create new VComponent by parsing iCalendar content text */
-    public static VComponent newVComponent(Iterator<String> contentIterator)
-    {
-        final VComponent myComponent;
-        String line = contentIterator.next();
-        int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
-        String propertyName = line.substring(0, nameEndIndex);
-        
-        // Parse component
-        if ("BEGIN".contentEquals(propertyName))
-        {
-            // make new component
-            String componentName = line.substring(nameEndIndex+1, line.length());
-            myComponent = newVComponent(componentName, contentIterator);
-        } else
-        {
-            throw new IllegalArgumentException("First content line MUST start with \"BEGIN\" not:" + line);
-        }        
-        return myComponent;
-    }
-    
-    public static VComponent parseVComponent(String contentText)
-    {
-        List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        return newVComponent(unfoldedLines);
-    }
+//    /** Create new VComponent from component name and parsing iCalendar content text */
+//    public static VComponent newVComponent(String componentName, Iterator<String> contentIterator)
+//    {
+//        final VComponent myComponent;
+//        CalendarComponent component = CalendarComponent.enumFromName(componentName.toString());
+//        if (component == null)
+//        {
+//            throw new IllegalArgumentException(componentName + " is not a valid calendar component name.");            
+//        }
+//        switch (component)
+//        {
+//        case DAYLIGHT_SAVING_TIME:
+//            myComponent = new DaylightSavingTime();
+//            break;
+//        case STANDARD_TIME:
+//            myComponent = new StandardTime();
+//            break;
+//        case VALARM:
+//            myComponent = new VAlarm();
+//            break;
+//        case VEVENT:
+//            myComponent = new VEvent();
+//            break;
+//        case VFREEBUSY:
+//            myComponent = new VFreeBusy();
+//            break;
+//        case VJOURNAL:
+//            myComponent = new VJournal();
+//            break;
+//        case VTIMEZONE:
+//            myComponent = new VTimeZone();
+//            break;
+//        case VTODO:
+//            myComponent = new VTodo();
+//            break;
+//        default:
+//            throw new IllegalArgumentException("Unsupported component:" + component);
+//        }
+//        boolean collectErrorList = false;
+//        myComponent.parseContent(contentIterator, collectErrorList);
+//        return myComponent;
+//    }
+//    
+//    /** Create new VComponent by parsing iCalendar content text */
+//    public static VComponent newVComponent(Iterator<String> contentIterator)
+//    {
+//        final VComponent myComponent;
+//        String line = contentIterator.next();
+//        int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
+//        String propertyName = line.substring(0, nameEndIndex);
+//        
+//        // Parse component
+//        if ("BEGIN".contentEquals(propertyName))
+//        {
+//            // make new component
+//            String componentName = line.substring(nameEndIndex+1, line.length());
+//            myComponent = newVComponent(componentName, contentIterator);
+//        } else
+//        {
+//            throw new IllegalArgumentException("First content line MUST start with \"BEGIN\" not:" + line);
+//        }        
+//        return myComponent;
+//    }
+//    
+//    public static VComponent parseVComponent(String contentText)
+//    {
+//        List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+//        return newVComponent(unfoldedLines);
+//    }
     
     /**
      * 
@@ -110,6 +105,15 @@ public class SimpleVComponentFactory
         }
         switch (component)
         {
+        case DAYLIGHT_SAVING_TIME:
+            myComponent = new DaylightSavingTime();
+            break;
+        case STANDARD_TIME:
+            myComponent = new StandardTime();
+            break;
+        case VALARM:
+            myComponent = new VAlarm();
+            break;
         case VEVENT:
             myComponent = new VEvent();
             break;

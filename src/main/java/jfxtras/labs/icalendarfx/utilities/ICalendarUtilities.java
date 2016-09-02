@@ -256,7 +256,7 @@ public final class ICalendarUtilities
      * @param propertyLine - name-stripped property line
      * @return - map where key=parameter names as, value=parameter value
      */
-    // TODO - CONSIDER USING STREAMTOKENIZER AND READER
+    // TODO - CONSIDER USING STREAMTOKENIZER instead
     public static List<Pair<String,String>> contentToParameterListPair(String propertyLine)
     {
         List<Pair<String,String>> parameters = new ArrayList<>();
@@ -449,132 +449,132 @@ public final class ICalendarUtilities
      * @param componentString  text of calendar component content lines
      * @return  {@code List<String>} of unfolded content lines, empty list if content lines is null
      */
-    @Deprecated // use unfolding reader instead
-    public static List<String> unfoldLines(String componentString)
-    {
-        List<String> propertyLines = new ArrayList<>();
-        if (componentString != null)
-        {
-//            String storedLine = "";
-            Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-            return unfoldLines(lineIterator);
-
+//    @Deprecated // use unfolding reader instead
+//    public static List<String> unfoldLines(String componentString)
+//    {
+//        List<String> propertyLines = new ArrayList<>();
+//        if (componentString != null)
+//        {
+////            String storedLine = "";
+//            Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
+//            return unfoldLines(lineIterator);
+//
+////            while (lineIterator.hasNext())
+////            {
+////                // unwrap lines by storing previous line, adding to it if next is a continuation
+////                // when no more continuation lines are found loop back and start with last storedLine
+////                String startLine;
+////                if (storedLine.isEmpty())
+////                {
+////                    startLine = lineIterator.next();
+////                } else
+////                {
+////                    startLine = storedLine;
+////                    storedLine = "";
+////                }
+////                StringBuilder builder = new StringBuilder(startLine);
+////                while (lineIterator.hasNext())
+////                {
+////                    String anotherLine = lineIterator.next();
+////                    if (anotherLine.isEmpty()) continue; // ignore blank lines
+////                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+////                    { // unwrap anotherLine into line
+////                        builder.append(anotherLine.substring(1, anotherLine.length()));
+////                    } else
+////                    {
+////                        storedLine = anotherLine; // save for next iteration
+////                        break;  // no continuation line, exit while loop
+////                    }
+////                }
+////                String line = builder.toString();
+////                propertyLines.add(line);
+////            }
+//        }
+////        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
+//        return propertyLines;
+//    }
+    
+//    public static List<String> unfoldLines(List<String> foldedContent)
+//    {
+//        List<String> unfoldedContent = new ArrayList<>();
+//        if (foldedContent != null)
+//        {
+////            String storedLine = "";
+//            Iterator<String> lineIterator = foldedContent.iterator();
+//            return unfoldLines(lineIterator);
+////            while (lineIterator.hasNext())
+////            {
+////                // unwrap lines by storing previous line, adding to it if next is a continuation
+////                // when no more continuation lines are found loop back and start with last storedLine
+////                CharSequence startLine;
+////                if (storedLine.length() == 0)
+////                {
+////                    startLine = lineIterator.next();
+////                } else
+////                {
+////                    startLine = storedLine;
+////                    storedLine = "";
+////                }
+////                StringBuilder builder = new StringBuilder(startLine);
+////                while (lineIterator.hasNext())
+////                {
+////                    String anotherLine = lineIterator.next();
+////                    if (anotherLine.length() == 0) continue; // ignore blank lines
+////                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+////                    { // unwrap anotherLine into line
+////                        builder.append(anotherLine.subSequence(1, anotherLine.length()));
+////                    } else
+////                    {
+////                        storedLine = anotherLine; // save for next iteration
+////                        break;  // no continuation line, exit while loop
+////                    }
+////                }
+////                String unfoldedLine = builder.toString();
+////                unfoldedContent.add(unfoldedLine);
+////            }
+//        }
+////        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
+//        return unfoldedContent;
+//    }
+    
+//    public static List<String> unfoldLines(Iterator<String> lineIterator)
+//    {
+//        List<String> propertyLines = new ArrayList<>();
+//        String bufferedLine = "";
+//        while (lineIterator.hasNext())
+//        {
+//            // unwrap lines by storing previous line, adding to it if next is a continuation
+//            // when no more continuation lines are found loop back and start with last storedLine
+//            String startLine;
+//            if (bufferedLine.isEmpty())
+//            {
+//                startLine = lineIterator.next();
+//            } else
+//            {
+//                startLine = bufferedLine;
+//                bufferedLine = "";
+//            }
+//            StringBuilder builder = new StringBuilder(startLine);
 //            while (lineIterator.hasNext())
 //            {
-//                // unwrap lines by storing previous line, adding to it if next is a continuation
-//                // when no more continuation lines are found loop back and start with last storedLine
-//                String startLine;
-//                if (storedLine.isEmpty())
-//                {
-//                    startLine = lineIterator.next();
+//                String anotherLine = lineIterator.next();
+//                if (anotherLine.isEmpty()) continue; // ignore blank lines
+//                // Space or tab characters at index 0 indicate a fold
+//                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//                { // unwrap anotherLine into line
+//                    builder.append(anotherLine.substring(1, anotherLine.length()));
 //                } else
 //                {
-//                    startLine = storedLine;
-//                    storedLine = "";
+//                    bufferedLine = anotherLine; // save for next iteration
+//                    break;  // no continuation line, exit while loop
 //                }
-//                StringBuilder builder = new StringBuilder(startLine);
-//                while (lineIterator.hasNext())
-//                {
-//                    String anotherLine = lineIterator.next();
-//                    if (anotherLine.isEmpty()) continue; // ignore blank lines
-//                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-//                    { // unwrap anotherLine into line
-//                        builder.append(anotherLine.substring(1, anotherLine.length()));
-//                    } else
-//                    {
-//                        storedLine = anotherLine; // save for next iteration
-//                        break;  // no continuation line, exit while loop
-//                    }
-//                }
-//                String line = builder.toString();
-//                propertyLines.add(line);
 //            }
-        }
-//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
-        return propertyLines;
-    }
-    
-    public static List<String> unfoldLines(List<String> foldedContent)
-    {
-        List<String> unfoldedContent = new ArrayList<>();
-        if (foldedContent != null)
-        {
-//            String storedLine = "";
-            Iterator<String> lineIterator = foldedContent.iterator();
-            return unfoldLines(lineIterator);
-//            while (lineIterator.hasNext())
-//            {
-//                // unwrap lines by storing previous line, adding to it if next is a continuation
-//                // when no more continuation lines are found loop back and start with last storedLine
-//                CharSequence startLine;
-//                if (storedLine.length() == 0)
-//                {
-//                    startLine = lineIterator.next();
-//                } else
-//                {
-//                    startLine = storedLine;
-//                    storedLine = "";
-//                }
-//                StringBuilder builder = new StringBuilder(startLine);
-//                while (lineIterator.hasNext())
-//                {
-//                    String anotherLine = lineIterator.next();
-//                    if (anotherLine.length() == 0) continue; // ignore blank lines
-//                    if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-//                    { // unwrap anotherLine into line
-//                        builder.append(anotherLine.subSequence(1, anotherLine.length()));
-//                    } else
-//                    {
-//                        storedLine = anotherLine; // save for next iteration
-//                        break;  // no continuation line, exit while loop
-//                    }
-//                }
-//                String unfoldedLine = builder.toString();
-//                unfoldedContent.add(unfoldedLine);
-//            }
-        }
-//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
-        return unfoldedContent;
-    }
-    
-    public static List<String> unfoldLines(Iterator<String> lineIterator)
-    {
-        List<String> propertyLines = new ArrayList<>();
-        String bufferedLine = "";
-        while (lineIterator.hasNext())
-        {
-            // unwrap lines by storing previous line, adding to it if next is a continuation
-            // when no more continuation lines are found loop back and start with last storedLine
-            String startLine;
-            if (bufferedLine.isEmpty())
-            {
-                startLine = lineIterator.next();
-            } else
-            {
-                startLine = bufferedLine;
-                bufferedLine = "";
-            }
-            StringBuilder builder = new StringBuilder(startLine);
-            while (lineIterator.hasNext())
-            {
-                String anotherLine = lineIterator.next();
-                if (anotherLine.isEmpty()) continue; // ignore blank lines
-                // Space or tab characters at index 0 indicate a fold
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
-                } else
-                {
-                    bufferedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
-                }
-            }
-            String line = builder.toString();
-            propertyLines.add(line);
-        }
-        if (! bufferedLine.isEmpty()) propertyLines.add(bufferedLine);
-        return propertyLines;
-    }
+//            String line = builder.toString();
+//            propertyLines.add(line);
+//        }
+//        if (! bufferedLine.isEmpty()) propertyLines.add(bufferedLine);
+//        return propertyLines;
+//    }
     
     /**
      * 

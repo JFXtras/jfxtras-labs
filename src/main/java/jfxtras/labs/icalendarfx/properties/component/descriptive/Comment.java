@@ -6,7 +6,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 
 /**
  * COMMENT
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @see StandardTime
  * @see DaylightSavingTime
  */
-public class Comment extends PropertyBaseAltText<String, Comment>
+public class Comment extends PropBaseAltText<String, Comment>
 {   
     public Comment(Comment source)
     {

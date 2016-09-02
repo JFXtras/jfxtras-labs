@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 /** BufferedReader that unfolds lines via the {@link #readLine()} method. */
+@Deprecated
 public class UnfoldingBufferedReader extends BufferedReader
 {
     String lastLine;

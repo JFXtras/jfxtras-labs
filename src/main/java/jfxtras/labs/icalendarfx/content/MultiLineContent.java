@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.content;
 
 import java.util.stream.Collectors;
 
-import jfxtras.labs.icalendarfx.Orderer;
+import jfxtras.labs.icalendarfx.utilities.Orderer;
 
 public class MultiLineContent extends ContentLineBase
 {

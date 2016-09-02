@@ -23,25 +23,28 @@ import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
-import jfxtras.labs.icalendarfx.components.VComponentPersonalBase;
+import jfxtras.labs.icalendarfx.components.VDisplayableBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VPersonalBase;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
+import jfxtras.labs.icalendarfx.method.AbstractMethodProcessFactory;
+import jfxtras.labs.icalendarfx.method.DefaultMethodProcessFactory;
+import jfxtras.labs.icalendarfx.method.Processable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
-import jfxtras.labs.icalendarfx.utilities.UnfoldingBufferedReader;
+import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
 
 /**
  * iCalendar Object
@@ -52,7 +55,6 @@ import jfxtras.labs.icalendarfx.utilities.UnfoldingBufferedReader;
  * @author David Bal
  *
  */
-// TODO - add RFC 5546 METHODS
 public class VCalendar extends VParentBase
 {
     // version of this project, not associated with the iCalendar specification version
@@ -318,69 +320,69 @@ public class VCalendar extends VParentBase
         return this;
     }
     
-    /**
-     *<p>Allows other properties registered
-     * with IANA to be specified in any calendar components.</p>
-     */
-    public ObjectProperty<ObservableList<IANAProperty>> ianaProperty()
-    {
-        if (ianaProps == null)
-        {
-            ianaProps = new SimpleObjectProperty<>(this, PropertyType.IANA_PROPERTY.toString());
-        }
-        return ianaProps;
-    }
-    public ObservableList<IANAProperty> getIana()
-    {
-        return (ianaProps == null) ? null : ianaProps.get();
-    }
-    private ObjectProperty<ObservableList<IANAProperty>> ianaProps;
-    public void setIana(ObservableList<IANAProperty> ianaProps)
-    {
-        if (ianaProps != null)
-        {
-            orderer().registerSortOrderProperty(ianaProps);
-        } else
-        {
-            orderer().unregisterSortOrderProperty(ianaProperty().get());
-        }
-        ianaProperty().set(ianaProps);
-    }
-    /**
-     * Sets the value of the {@link #IANAProperty()} by parsing a vararg of
-     * iCalendar content text representing individual {@link IANAProperty} objects.
-     * 
-     * @return - this class for chaining
-     */
-    public VCalendar withIana(String...ianaProps)
-    {
-        List<IANAProperty> a = Arrays.stream(ianaProps)
-                .map(c -> IANAProperty.parse(c))
-                .collect(Collectors.toList());
-        setIana(FXCollections.observableArrayList(a));
-        return this;
-    }
-    /**
-     * Sets the value of the {@link #IANAProperty()}
-     * 
-     * @return - this class for chaining
-     */
-    public VCalendar withIana(ObservableList<IANAProperty> ianaProps)
-    {
-        setIana(ianaProps);
-        return this;
-    }
-    /**
-     * Sets the value of the {@link #IANAProperty()} from a vararg of {@link IANAProperty} objects.
-     * 
-     * @return - this class for chaining
-     */ 
-    public VCalendar withIana(IANAProperty...ianaProps)
-    {
-        setIana(FXCollections.observableArrayList(ianaProps));
-        return this;
-    }
-    
+//    /**
+//     *<p>Allows other properties registered
+//     * with IANA to be specified in any calendar components.</p>
+//     */
+//    public ObjectProperty<ObservableList<IANAProperty>> ianaProperty()
+//    {
+//        if (ianaProps == null)
+//        {
+//            ianaProps = new SimpleObjectProperty<>(this, PropertyType.IANA_PROPERTY.toString());
+//        }
+//        return ianaProps;
+//    }
+//    public ObservableList<IANAProperty> getIana()
+//    {
+//        return (ianaProps == null) ? null : ianaProps.get();
+//    }
+//    private ObjectProperty<ObservableList<IANAProperty>> ianaProps;
+//    public void setIana(ObservableList<IANAProperty> ianaProps)
+//    {
+//        if (ianaProps != null)
+//        {
+//            orderer().registerSortOrderProperty(ianaProps);
+//        } else
+//        {
+//            orderer().unregisterSortOrderProperty(ianaProperty().get());
+//        }
+//        ianaProperty().set(ianaProps);
+//    }
+//    /**
+//     * Sets the value of the {@link #IANAProperty()} by parsing a vararg of
+//     * iCalendar content text representing individual {@link IANAProperty} objects.
+//     * 
+//     * @return - this class for chaining
+//     */
+//    public VCalendar withIana(String...ianaProps)
+//    {
+//        List<IANAProperty> a = Arrays.stream(ianaProps)
+//                .map(c -> IANAProperty.parse(c))
+//                .collect(Collectors.toList());
+//        setIana(FXCollections.observableArrayList(a));
+//        return this;
+//    }
+//    /**
+//     * Sets the value of the {@link #IANAProperty()}
+//     * 
+//     * @return - this class for chaining
+//     */
+//    public VCalendar withIana(ObservableList<IANAProperty> ianaProps)
+//    {
+//        setIana(ianaProps);
+//        return this;
+//    }
+//    /**
+//     * Sets the value of the {@link #IANAProperty()} from a vararg of {@link IANAProperty} objects.
+//     * 
+//     * @return - this class for chaining
+//     */ 
+//    public VCalendar withIana(IANAProperty...ianaProps)
+//    {
+//        setIana(FXCollections.observableArrayList(ianaProps));
+//        return this;
+//    }
+//    
     /*
      * Calendar Components
      */
@@ -550,7 +552,6 @@ public class VCalendar extends VParentBase
     {
         return addAllVComponents(Arrays.asList(newVComponents));
     }
-
     
     /** Create a VComponent by parsing component text and add it to the appropriate list 
      * @see #addVComponent(VComponent)*/
@@ -561,6 +562,78 @@ public class VCalendar extends VParentBase
         addVComponent(vComponent);
     }
     
+    /** Convenience method that returns all {@link VComponent VComponents} regardless of type (e.g.
+     * {@link VEvent}, {@link VTodo}, etc.) 
+     * @return  unmodifiable list of all {@link VComponent VComponents}
+     */
+    public List<VComponent> getAllVComponents()
+    {
+        List<VComponent> vComponents = new ArrayList<>();
+        vComponents.addAll(getVEvents());
+        vComponents.addAll(getVTodos());
+        vComponents.addAll(getVJournals());
+        vComponents.addAll(getVFreeBusies());
+        vComponents.addAll(getVTimeZones());
+        return Collections.unmodifiableList(vComponents);
+    }
+    
+    /** Convenience method that returns all {@link VComponent VComponents} regardless of type (e.g.
+     * {@link VEvent}, {@link VTodo}, etc.) 
+     * @return  unmodifiable list of all {@link VComponent VComponents}
+     */
+    public List<? extends VComponent> getVComponents(Class<? extends VComponent> vComponentClass)
+    {
+        if (vComponentClass.equals(VEvent.class))
+        {
+            return getVEvents();
+        } else if (vComponentClass.equals(VTodo.class))
+        {
+            return getVTodos();            
+        } else if (vComponentClass.equals(VJournal.class))
+        {
+            return getVJournals();            
+        } else if (vComponentClass.equals(VFreeBusy.class))
+        {
+            return getVFreeBusies();            
+        } else if (vComponentClass.equals(VTimeZone.class))
+        {
+            return getVTimeZones();            
+        } else
+        {
+            throw new RuntimeException("Unsuppored VComponent type:" + vComponentClass);
+        }
+    }
+    
+    
+    /** set AbstractMethodProcessFactory to handle processing input VCalendar based on {@link Method} */
+    public void setMethodProcessFactory(AbstractMethodProcessFactory methodProcessFactory)
+    {
+        this.methodProcessFactory = methodProcessFactory;
+    }
+    /** get AbstractMethodProcessFactory to handle processing input VCalendar based on {@link Method} */
+    public AbstractMethodProcessFactory getMethodProcessFactory()
+    {
+        return methodProcessFactory;
+    }
+    private AbstractMethodProcessFactory methodProcessFactory;
+    
+    /**
+     * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
+     * based on the methods in {@link #getMethodProcessFactory()}
+     * 
+     * @param inputVCalendar  iTIP VCalendar to process with {@link Method} populated
+     */
+    public void processVCalendar(VCalendar inputVCalendar)
+    {
+        if (inputVCalendar.getMethod() == null)
+        {
+            throw new IllegalArgumentException("VCalendar to be process MUST have the METHOD property populated");
+        }
+        MethodType method = inputVCalendar.getMethod().getValue();
+        Processable methodProcess = methodProcessFactory.getMethodProcess(method);
+        methodProcess.process(this, inputVCalendar);
+    }
+    
     /**
      * Parse component text to new VComponent with {@link RequestStatus REQUEST-STATUS} properties containing 
      * the result of the process, such as success message or error report.
@@ -568,11 +641,13 @@ public class VCalendar extends VParentBase
      * @param contentText  iCalendar content lines
      * @return  the created VComponent with {@link RequestStatus REQUEST-STATUS} populated to indicate success or failuer.
      */
+    @Deprecated // replace with addVCalendar
     public VComponent importVComponent(String contentText)
     {
-        VComponentPersonalBase<?> vComponent = (VComponentPersonalBase<?>) SimpleVComponentFactory.emptyVComponent(contentText);
+        VPersonalBase<?> vComponent = (VPersonalBase<?>) SimpleVComponentFactory.emptyVComponent(contentText);
         List<String> contentLines = Arrays.asList(contentText.split(System.lineSeparator()));
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
+        UnfoldingStringIterator unfoldedLines = new UnfoldingStringIterator(contentLines.iterator());
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
         boolean useRequestStatus = true;
         vComponent.parseContent(unfoldedLines, useRequestStatus);
 //        requestStatusErrors.stream().forEach(System.out::println);
@@ -695,6 +770,7 @@ public class VCalendar extends VParentBase
      * @param contentText  iCalendar content lines
      * @return  list of error messages if import failed, null if successful
      */
+    @Deprecated
     public List<String> importVComponent(VComponent newVComponent)
     {
         throw new RuntimeException("not implemented");
@@ -734,15 +810,15 @@ public class VCalendar extends VParentBase
      * Note: if you only want child components you need to filter the list to only include components
      * that have a RECURRENCE-ID
      */
-    private Map<String, List<VComponentDisplayableBase<?>>> uidComponentsMap = new HashMap<>(); // public for testing
-    public Map<String, List<VComponentDisplayableBase<?>>> uidComponentsMap() { return Collections.unmodifiableMap(uidComponentsMap); }
+    private Map<String, List<VDisplayableBase<?>>> uidComponentsMap = new HashMap<>(); // public for testing
+    public Map<String, List<VDisplayableBase<?>>> uidComponentsMap() { return Collections.unmodifiableMap(uidComponentsMap); }
     
     /**
      * RecurrenceID listener
      * notifies parents when a child component with recurrenceID is created or removed
      * also maintains {@link #uidToComponentMap}
      */
-    private ListChangeListener<VComponentDisplayableBase<?>> displayableListChangeListener = (ListChangeListener.Change<? extends VComponentDisplayableBase<?>> change) ->
+    private ListChangeListener<VDisplayableBase<?>> displayableListChangeListener = (ListChangeListener.Change<? extends VDisplayableBase<?>> change) ->
     {
         while (change.next())
         {
@@ -773,7 +849,7 @@ public class VCalendar extends VParentBase
                     if (vComponent.getUniqueIdentifier() != null)
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();
-                        final List<VComponentDisplayableBase<?>> relatedComponents;
+                        final List<VDisplayableBase<?>> relatedComponents;
                         if (uidComponentsMap.get(uid) == null)
                         {
                             relatedComponents = new ArrayList<>();
@@ -792,7 +868,7 @@ public class VCalendar extends VParentBase
                     change.getRemoved().forEach(vComponent -> 
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();
-                        List<VComponentDisplayableBase<?>> relatedComponents = uidComponentsMap.get(uid);
+                        List<VDisplayableBase<?>> relatedComponents = uidComponentsMap.get(uid);
                         if (relatedComponents != null)
                         {
                             relatedComponents.remove(vComponent);
@@ -851,6 +927,7 @@ public class VCalendar extends VParentBase
     
     public VCalendar()
     {
+        setMethodProcessFactory(new DefaultMethodProcessFactory());
         addListeners();
         setContentLineGenerator(new MultiLineContent(
                 orderer(),
@@ -894,49 +971,9 @@ public class VCalendar extends VParentBase
     @Override
     public List<String> parseContent(String content)
     {
-        List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        return parseContent(unfoldedLines);
+        Iterator<String> lineIterator = Arrays.asList(content.split(System.lineSeparator())).iterator();
+        return parseContent(lineIterator);
     }
-    
-//    public List<String> parseContent(String content)
-//    {
-//        List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
-//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-//        parseContent(unfoldedLines);
-//    }
-    
-//    /** Parse folded content lines into calendar object */
-//    public void parseContent(List<String> unfoldedLineIterator)
-//    {
-////        List<String> errors = new ArrayList<>();
-//        String firstLine = unfoldedLineIterator.next();
-//        if (! firstLine.equals("BEGIN:VCALENDAR"))
-//        {
-//            throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
-//        }
-//        while (unfoldedLineIterator.hasNext())
-//        {
-//            String unfoldedLine = unfoldedLineIterator.next();
-//            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
-//            String propertyName = (nameEndIndex > 0) ? unfoldedLine.substring(0, nameEndIndex) : "";
-//            
-//            // Parse component
-//            if (propertyName.equals("BEGIN"))
-//            {
-//                String componentName = unfoldedLine.substring(nameEndIndex+1);
-//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
-//                addVComponent(newComponent);
-//            } else
-//            {
-//                CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
-//                if (elementType != null)
-//                {
-//                    elementType.parse(this, unfoldedLine);
-//                }
-//            }
-//        }
-//    }
 
     /** Parse unfolded content line iterator into calendar object */
     public List<String> parseContent(Iterator<String> unfoldedLineIterator)
@@ -944,20 +981,22 @@ public class VCalendar extends VParentBase
         boolean useResourceStatus = false;
         return parseContent(unfoldedLineIterator, useResourceStatus);
     }
-
     
     /** Parse unfolded content lines into calendar object */
-    public List<String> parseContent(Iterator<String> unfoldedLineIterator, boolean useResourceStatus)
+    public List<String> parseContent(Iterator<String> lineIterator, boolean useResourceStatus)
     {
         List<String> messages = new ArrayList<>();
-        String firstLine = unfoldedLineIterator.next();
+        String firstLine = lineIterator.next();
         if (! firstLine.equals("BEGIN:VCALENDAR"))
         {
             throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
         }
+        // wrap lineIterator in UnfoldingStringIterator decorator
+        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(lineIterator);
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
+//            System.out.println("unfoldedLine:" + unfoldedLine);
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(unfoldedLine);
             String propertyName = (nameEndIndex > 0) ? unfoldedLine.substring(0, nameEndIndex) : "";
             
@@ -965,7 +1004,6 @@ public class VCalendar extends VParentBase
             if (propertyName.equals("BEGIN"))
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
-//                VComponent newComponent = SimpleVComponentFactory.newVComponent(componentName, unfoldedLineIterator);
                 VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
                 List<String> myErrors = newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
                 addVComponent(newComponent);
@@ -979,19 +1017,18 @@ public class VCalendar extends VParentBase
                 CalendarProperty elementType = CalendarProperty.enumFromName(propertyName);
                 if (elementType != null)
                 {
-                    System.out.println("unfoldedLine:" + unfoldedLine + " " + elementType);
                     child = elementType.parse(this, unfoldedLine);
                 } else if (unfoldedLine.contains(":"))
                 {
-                    //non-standard
+                    //non-standard - check for X- prefix
                     boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
-                    boolean isIANA = (IANAProperty.getRegisteredIANAPropertys() != null) ? IANAProperty.getRegisteredIANAPropertys().contains(propertyName) : false;
+//                    boolean isIANA = (IANAProperty.getRegisteredIANAPropertys() != null) ? IANAProperty.getRegisteredIANAPropertys().contains(propertyName) : false;
                     if (isNonStandard)
                     {
                         child = CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);
-                    } else if (isIANA)
-                    {
-                        child = CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
+//                    } else if (isIANA)
+//                    {
+//                        child = CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
                     } else
                     {
                         // ignore unknown properties
@@ -1082,17 +1119,13 @@ public class VCalendar extends VParentBase
     
     public static VCalendar parse(Reader reader) throws IOException
     {
-        // TODO - MAKE UNFOLDING READER BASED ON BUFFERED PUSHBACK LINE READER
-        // readLine will get unfolded lines
-        UnfoldingBufferedReader unfoldingReader = new UnfoldingBufferedReader(reader);
-        Iterator<String> unfoldedLineIterator = unfoldingReader.lines().iterator();
-//        List<String> lines = br.lines().collect(Collectors.toList());
-        // try using buffered reader with mark and reset for pushback
-//        Iterator<String> unfoldedLineIterator = ICalendarUtilities.unfoldLines(lines).iterator();
+        BufferedReader br = new BufferedReader(reader);
+        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(br.lines().iterator());
+//        UnfoldingBufferedReader unfoldingReader = new UnfoldingBufferedReader(reader);
+//        Iterator<String> unfoldedLineIterator = unfoldingReader.lines().iterator();
         VCalendar vCalendar = new VCalendar();
-        // Maybe make parseContent use Stream<String> as input 
         vCalendar.parseContent(unfoldedLineIterator);
-        unfoldingReader.close();
+//        unfoldingReader.close();
         return vCalendar;
     }
     
@@ -1115,14 +1148,13 @@ public class VCalendar extends VParentBase
      * @return  Created VCalendar
      * @throws IOException
      */
-    @Deprecated // RFC 5546 Methods will make this obsolete
     public static VCalendar parseICalendarFile(Path icsFilePath, boolean useResourceStatus) throws IOException
     {
         BufferedReader br = Files.newBufferedReader(icsFilePath);
         List<String> lines = br.lines().collect(Collectors.toList());
-        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
         VCalendar vCalendar = new VCalendar();
-        vCalendar.parseContent(unfoldedLines, useResourceStatus);
+        vCalendar.parseContent(lines.iterator(), useResourceStatus);
         return vCalendar;
     }
 

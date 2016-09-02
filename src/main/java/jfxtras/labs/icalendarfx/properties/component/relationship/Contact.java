@@ -4,7 +4,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 
 /**
  * CONTACT
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @see VJournal
  * @see VFreeBusy
  */
-public class Contact extends PropertyBaseAltText<String, Contact>
+public class Contact extends PropBaseAltText<String, Contact>
 {   
     public Contact(Contact source)
     {

@@ -29,7 +29,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
  * @author David Bal
  *
  */
-public abstract class StandardOrDaylight<T> extends VComponentRepeatableBase<T>
+public abstract class StandardOrDaylight<T> extends VRepeatableBase<T>
 {
     /**
      * <p>This property specifies the customary designation for a time zone description.<br>

@@ -18,14 +18,14 @@ import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
-import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
-import jfxtras.labs.icalendarfx.properties.PropertyAltText;
-import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
-import jfxtras.labs.icalendarfx.properties.PropertyAttendee;
-import jfxtras.labs.icalendarfx.properties.PropertyDateTime;
-import jfxtras.labs.icalendarfx.properties.PropertyFreeBusy;
-import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
-import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
+import jfxtras.labs.icalendarfx.properties.PropAlarmTrigger;
+import jfxtras.labs.icalendarfx.properties.PropAltText;
+import jfxtras.labs.icalendarfx.properties.PropAttachment;
+import jfxtras.labs.icalendarfx.properties.PropAttendee;
+import jfxtras.labs.icalendarfx.properties.PropDateTime;
+import jfxtras.labs.icalendarfx.properties.PropFreeBusy;
+import jfxtras.labs.icalendarfx.properties.PropRecurrenceID;
+import jfxtras.labs.icalendarfx.properties.PropRelationship;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseAttendee;
 
 /**
@@ -36,8 +36,8 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseAt
  * @author David Bal
  *
  */
-public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropertyAttendee<T>, PropertyAltText<T>,
-    PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>, PropertyAlarmTrigger<T>, PropertyRelationship<T>
+public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropAttendee<T>, PropAltText<T>,
+    PropAttachment<T>, PropFreeBusy<T>, PropRecurrenceID<T>, PropDateTime<T>, PropAlarmTrigger<T>, PropRelationship<T>
 {
     private String propertyName;
     // TODO - MOVE PROPERTY NAME HERE

@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.timezone;
 
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
 
 /**
  * TZNAME
@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @see DaylightSavingsTime
  * @see StandardTime
  */
-public class TimeZoneName extends PropertyBaseLanguage<String, TimeZoneName>
+public class TimeZoneName extends PropBaseLanguage<String, TimeZoneName>
 {
 //    public TimeZoneName(CharSequence contentLine)
 //    {
