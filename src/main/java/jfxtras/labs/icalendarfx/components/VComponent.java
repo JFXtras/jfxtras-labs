@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.util.List;
+import java.util.Map;
 
 import jfxtras.labs.icalendarfx.VChild;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
@@ -111,5 +113,5 @@ public interface VComponent extends VParent, VChild
      * @param collectErrorMessages  true causes return List to contain error messages, false causes empty list
      * @return  list of error messages if collectErrorMessages is true, otherwise empty list
      */
-    List<String> parseContent(UnfoldingStringIterator contentLines, boolean collectErrorMessages);
+    Map<VElement, List<String>> parseContent(UnfoldingStringIterator contentLines, boolean collectErrorMessages);
 }

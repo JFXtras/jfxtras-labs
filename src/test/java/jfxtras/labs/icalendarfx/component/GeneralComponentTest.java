@@ -45,8 +45,8 @@ public class GeneralComponentTest
         assertEquals(line, builtComponent.getComments().get(0).getValue());
     }
     
-    @Test (expected = IllegalArgumentException.class)
-    public void canCatchSecondAssignmentException()
+    @Test //(expected = IllegalArgumentException.class)
+    public void canIgnoreSecondAssignment()
     {
         String componentName = "VEVENT";
         String content = "BEGIN:" + componentName + System.lineSeparator() +
@@ -54,6 +54,10 @@ public class GeneralComponentTest
                 "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
                 "END:" + componentName;
         VEvent v = VEvent.parse(content);
+        String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
+                "CLASS:PUBLIC" + System.lineSeparator() +
+                "END:" + componentName;
+        assertEquals(expectedContent, v.toContent());
     }
     
     @Test
@@ -111,15 +115,5 @@ public class GeneralComponentTest
         DateTimeStart dtStart = new DateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 30));
         vevent.setDateTimeStart(dtStart);
         assertEquals(dtStart, vevent.childrenUnmodifiable().get(1));
-    }
-    
-    @Test (expected = IllegalArgumentException.class)
-    public void canCatchDuplicateProperty()
-    {
-        String contentLines = "BEGIN:VEVENT" + System.lineSeparator()
-        + "SUMMARY:test summary1" + System.lineSeparator()
-        + "SUMMARY:test summary2" + System.lineSeparator()
-        + "END:VEVENT";
-        VEvent.parse(contentLines);
     }
 }

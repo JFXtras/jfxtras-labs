@@ -51,7 +51,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  *
  * @param <T> concrete subclass
  */
-public abstract class VDisplayableBase<T> extends VPersonalBase<T> implements VRepeatable<T>, VDescribable<T>, VLastModified<T>
+public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepeatable<T>, VDescribable<T>, VLastModified<T>
 {
     /**
      * This property provides the capability to associate a document object with a calendar component.

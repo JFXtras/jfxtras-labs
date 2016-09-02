@@ -27,7 +27,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public abstract class VPrimaryBase<T> extends VCommonBase<T>
+public abstract class VPrimary<T> extends VCommon<T>
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -169,9 +169,9 @@ public abstract class VPrimaryBase<T> extends VCommonBase<T>
     /*
      * CONSTRUCTORS
      */
-    VPrimaryBase() { super(); }
+    VPrimary() { super(); }
 
-    public VPrimaryBase(VPrimaryBase<T> source)
+    public VPrimary(VPrimary<T> source)
     {
         super(source);
     }
@@ -179,7 +179,7 @@ public abstract class VPrimaryBase<T> extends VCommonBase<T>
     /**
      * Sorts VComponents by DTSTART date/time
      */
-    public final static Comparator<? super VPrimaryBase<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
+    public final static Comparator<? super VPrimary<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
     {
         Temporal t1 = v1.getDateTimeStart().getValue();
         Temporal t2 = v2.getDateTimeStart().getValue();

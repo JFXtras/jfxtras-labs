@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  *
  * @param <T> concrete subclass
  */
-public abstract class VCommonBase<T> extends VComponentBase
+public abstract class VCommon<T> extends VComponentBase
 {
     /**
      * Provides a framework for defining non-standard properties.
@@ -167,12 +167,12 @@ public abstract class VCommonBase<T> extends VComponentBase
     /*
      * CONSTRUCTORS
      */
-    VCommonBase()
+    VCommon()
     {
         super();
     }
     
-    VCommonBase(VCommonBase<T> source)
+    VCommon(VCommon<T> source)
     {
         super(source);
     }

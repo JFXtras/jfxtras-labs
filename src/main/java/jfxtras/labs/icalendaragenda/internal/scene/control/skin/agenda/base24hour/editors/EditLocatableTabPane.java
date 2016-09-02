@@ -8,7 +8,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
-import jfxtras.labs.icalendarfx.components.VLocatableBase;
+import jfxtras.labs.icalendarfx.components.VLocatable;
 import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * @param <T> subclass of {@link VComponentLocatable}
  * @param <U> subclass of {@link EditDescriptiveVBox} associated with the subclass of {@link VComponentLocatable}
  */
-public abstract class EditLocatableTabPane<T extends VLocatableBase<T>> extends EditDisplayableTabPane<T, EditDescriptiveLocatableVBox<T>>
+public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends EditDisplayableTabPane<T, EditDescriptiveLocatableVBox<T>>
 {
     public EditLocatableTabPane( )
     {

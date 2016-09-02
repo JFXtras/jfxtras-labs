@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.VElement;
 
 public class ParseCalendarTest extends ICalendarTestAbstract
 {
@@ -155,7 +157,6 @@ public class ParseCalendarTest extends ICalendarTestAbstract
     }
     
     @Test // has errors
-    @Ignore // success is there twice - FIX THIS
     public void canParseBadVCalendar1()
     {
         String content = 
@@ -200,9 +201,13 @@ public class ParseCalendarTest extends ICalendarTestAbstract
         List<String> contentLines = Arrays.asList(content.split(System.lineSeparator()));
 //        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(contentLines.iterator());
 //        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(contentLines).iterator();
-        List<String> errors = vCalendar.parseContent(contentLines.iterator(), true);
-        errors.forEach(System.out::println);
-        assertEquals(2, errors.size());
+        Map<VElement, List<String>> errorMap = vCalendar.parseContent(contentLines.iterator(), true);
+        List<String> errors = errorMap
+                .entrySet()
+                .stream()
+                .flatMap(e -> e.getValue().stream().map(v -> e.getKey().name() + ":" + v))
+                .collect(Collectors.toList());
+        assertEquals(3, errors.size());
 //        assertEquals(content, vCalendar.toContent());
     }
     
@@ -230,7 +235,7 @@ public class ParseCalendarTest extends ICalendarTestAbstract
             "END:VCALENDAR";
             VCalendar v = new VCalendar();
             List<String> messages = v.parseContent(content);
-            List<String> expectedMessages = Arrays.asList("Unknown line is ignored:IGNORE THIS LINE", "Unknown property is ignored:UNKNOWN-PROP:SOMETHING");
+            List<String> expectedMessages = Arrays.asList("VCALENDAR:Unknown line is ignored:IGNORE THIS LINE", "VCALENDAR:Unknown property is ignored:UNKNOWN-PROP:SOMETHING");
             assertEquals(expectedMessages, messages);
     }
     

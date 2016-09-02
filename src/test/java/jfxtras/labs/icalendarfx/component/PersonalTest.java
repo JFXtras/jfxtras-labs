@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VPersonalBase;
+import jfxtras.labs.icalendarfx.components.VPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -43,7 +43,7 @@ public class PersonalTest
     @Test
     public void canBuildPersonal() throws InstantiationException, IllegalAccessException
     {
-        List<VPersonalBase<?>> components = Arrays.asList(
+        List<VPersonal<?>> components = Arrays.asList(
                 new VEvent()
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
@@ -76,7 +76,7 @@ public class PersonalTest
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics")
                 );
         
-        for (VPersonalBase<?> builtComponent : components)
+        for (VPersonal<?> builtComponent : components)
         {
             String componentName = builtComponent.name().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

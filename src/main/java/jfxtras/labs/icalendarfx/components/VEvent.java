@@ -77,7 +77,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class VEvent extends VLocatableBase<VEvent> implements VDateTimeEnd<VEvent>,
+public class VEvent extends VLocatable<VEvent> implements VDateTimeEnd<VEvent>,
     VDescribable2<VEvent>, VRepeatable<VEvent>
 {
     /**
@@ -306,7 +306,8 @@ public class VEvent extends VLocatableBase<VEvent> implements VDateTimeEnd<VEven
     public static VEvent parse(String foldedContent)
     {
         VEvent component = new VEvent();
-        component.parseContent(foldedContent);
+        List<String> messages = component.parseContent(foldedContent);
+        messages.forEach(System.out::println);
         return component;
     }
 }

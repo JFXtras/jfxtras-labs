@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 
-import jfxtras.labs.icalendarfx.components.VLocatableBase;
+import jfxtras.labs.icalendarfx.components.VLocatable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @param <T> concrete implementation of this class
  * @param <U> concrete {@link VComponentLocatable} class
  */
-public abstract class ReviserLocatable<T, U extends VLocatableBase<U>> extends ReviserDisplayable<T, U>
+public abstract class ReviserLocatable<T, U extends VLocatable<U>> extends ReviserDisplayable<T, U>
 {
     public ReviserLocatable(U component)
     {

@@ -3,11 +3,15 @@ package jfxtras.labs.icalendarfx.components;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarComponent;
 import jfxtras.labs.icalendarfx.VChild;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
@@ -82,10 +86,14 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override
     public List<String> parseContent(String content)
     {
-        return parseContent(content, false);        
+        return parseContent(content, false)
+                .entrySet()
+                .stream()
+                .flatMap(e -> e.getValue().stream().map(v -> e.getKey().name() + ":" + v))
+                .collect(Collectors.toList());
     }
     
-    public List<String> parseContent(String content, boolean useRequestStatus)
+    public Map<VElement, List<String>> parseContent(String content, boolean useRequestStatus)
     {
         if (content == null)
         {
@@ -98,23 +106,22 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     }
 
     @Override
-    public List<String> parseContent(UnfoldingStringIterator unfoldedLineIterator, boolean collectErrorMessages)
+    public Map<VElement, List<String>> parseContent(UnfoldingStringIterator unfoldedLineIterator, boolean useRequestStatus)
     {
         if (unfoldedLineIterator == null)
         {
             throw new IllegalArgumentException("Calendar component content string can't be null");
         }
-        // apply UnfoldingStringIterator decorator
-//        UnfoldingStringIterator unfoldedLineIterator = new UnfoldingStringIterator(unfoldingLineIterator);
+        Map<VElement, List<String>> messageMap = new HashMap<>();
+        List<String> myMessages = new ArrayList<>();
         
-        // handle exceptions in JavxFx threads by rethrowing
+        // handle exceptions in JavxFx threads by re-throwing
         Thread t = Thread.currentThread();
         UncaughtExceptionHandler originalExceptionHandler = t.getUncaughtExceptionHandler();
         t.setUncaughtExceptionHandler((t1, e) ->
         {
             throw (RuntimeException) e;
         });
-        List<String> statusMessages = new ArrayList<>();
         while (unfoldedLineIterator.hasNext())
         {
             String unfoldedLine = unfoldedLineIterator.next();
@@ -128,9 +135,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 {
                     String subcomponentName = unfoldedLine.substring(nameEndIndex+1);
                     VComponent subcomponent = SimpleVComponentFactory.emptyVComponent(subcomponentName);
-                    List<String> subMessages = subcomponent.parseContent(unfoldedLineIterator, collectErrorMessages);
-                    statusMessages.addAll(subMessages);
-//                    VComponent subcomponent = SimpleVComponentFactory.newVComponent(subcomponentName, unfoldedLineIterator);
+                    Map<VElement, List<String>> subMessages = subcomponent.parseContent(unfoldedLineIterator, useRequestStatus);
+                    messageMap.putAll(subMessages);
                     addSubcomponent(subcomponent);
                 }
             } else if (propertyName.equals("END"))
@@ -151,59 +157,43 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                                 propertyType.parse(this, unfoldedLine);
                             } catch (Exception e)
                             {
-                                if (collectErrorMessages)
+                                if (propertyType.isRequired(this))
                                 {
-                                    if (propertyType.isRequired(this))
-                                    {
-                                        statusMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
-                                    } else
-                                    {
-                                        statusMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
-                                    }
+                                    myMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
                                 } else
                                 {
-                                    throw e;
+                                    myMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
                                 }
                             }
                         } catch (Exception e)
                         { // exceptions from JavaFX thread
                             if (propertyType.isRequired(this))
                             {
-                                statusMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                myMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
                             } else
                             {
-                                statusMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                myMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
                             }
                         }
                     } else
                     {
-                        if (collectErrorMessages)
-                        {
-                            statusMessages.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
-                        } else
-                        {
-                            throw new IllegalArgumentException(propertyType + " can only occur once in a calendar component");
-                        }
+                        myMessages.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                     }
                 } else
                 {
-                    if (collectErrorMessages)
-                    {
-                        statusMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
-                    } else
-                    {
-                        // unknown line
-                        throw new IllegalArgumentException("Unknown property can't be processed:" + unfoldedLine);
-                    }
+                    myMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
                 }
             }
         }
-        if (statusMessages.isEmpty())
+        if (myMessages.isEmpty())
         {
-            statusMessages.add("2.0;Success");
+            myMessages.add("2.0;Success");
         }
+//        System.out.println(System.identityHashCode(this) + " " + this.name() + " " + myMessages);
+        messageMap.put(this, myMessages);
         t.setUncaughtExceptionHandler(originalExceptionHandler); // return original exception handler
-        return statusMessages;
+        // TODO - Log status messages if not using RequestStatus
+        return messageMap;
     }
 
     /**

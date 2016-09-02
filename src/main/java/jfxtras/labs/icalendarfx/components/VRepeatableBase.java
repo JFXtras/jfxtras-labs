@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCa
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public abstract class VRepeatableBase<T> extends VPrimaryBase<T> implements VRepeatable<T>
+public abstract class VRepeatableBase<T> extends VPrimary<T> implements VRepeatable<T>
 {
     /**
      * RDATE

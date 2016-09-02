@@ -88,7 +88,7 @@ A "VFREEBUSY" calendar component is a grouping of
  * @author David Bal
  *
  */
-public class VFreeBusy extends VPersonalBase<VFreeBusy> implements VDateTimeEnd<VFreeBusy>
+public class VFreeBusy extends VPersonal<VFreeBusy> implements VDateTimeEnd<VFreeBusy>
 {
     /**
      * CONTACT:

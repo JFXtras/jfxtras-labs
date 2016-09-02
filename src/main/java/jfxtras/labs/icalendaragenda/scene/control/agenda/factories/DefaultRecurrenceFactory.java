@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import jfxtras.labs.icalendarfx.components.VDisplayableBase;
-import jfxtras.labs.icalendarfx.components.VLocatableBase;
+import jfxtras.labs.icalendarfx.components.VLocatable;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -38,9 +38,9 @@ public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
         final String description;
         final Temporal endTemporal;
         final String location;
-        if (vComponent instanceof VLocatableBase<?>)
+        if (vComponent instanceof VLocatable<?>)
         { // VTODO and VEVENT
-            VLocatableBase<?> VComponentLocatableBase = (VLocatableBase<?>) vComponent;
+            VLocatable<?> VComponentLocatableBase = (VLocatable<?>) vComponent;
             description = (VComponentLocatableBase.getDescription() != null) ? VComponentLocatableBase.getDescription().getValue() : null;
             location = (VComponentLocatableBase.getLocation() != null) ? VComponentLocatableBase.getLocation().getValue() : null;
             TemporalAmount adjustment = VComponentLocatableBase.getActualDuration();

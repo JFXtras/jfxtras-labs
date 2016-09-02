@@ -262,7 +262,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  * @author David Bal
  *
  */
-public class VTimeZone extends VCommonBase<VTimeZone> implements VLastModified<VTimeZone>
+public class VTimeZone extends VCommon<VTimeZone> implements VLastModified<VTimeZone>
 {
     /**
      * STANDARD or DAYLIGHT

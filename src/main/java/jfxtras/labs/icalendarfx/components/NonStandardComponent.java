@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class NonStandardComponent<T> extends VLocatableBase<T> implements VDateTimeEnd<T>,
+public abstract class NonStandardComponent<T> extends VLocatable<T> implements VDateTimeEnd<T>,
 VDescribable2<T>, VRepeatable<T>
 {
 

@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
-public abstract class VLocatableBase<T> extends VDisplayableBase<T> implements VDescribable2<T>, VDuration<T>
+public abstract class VLocatable<T> extends VDisplayableBase<T> implements VDescribable2<T>, VDuration<T>
 {
     /**
      * DESCRIPTION
@@ -363,7 +363,7 @@ public abstract class VLocatableBase<T> extends VDisplayableBase<T> implements V
         return (T) this;
     }
     
-    static void copyVAlarms(VLocatableBase<?> source, VLocatableBase<?> destination)
+    static void copyVAlarms(VLocatable<?> source, VLocatable<?> destination)
     {
         VAlarm[] collect = source.getVAlarms()
                 .stream()
@@ -376,9 +376,9 @@ public abstract class VLocatableBase<T> extends VDisplayableBase<T> implements V
     /*
      * CONSTRUCTORS
      */
-    public VLocatableBase() { super(); }
+    public VLocatable() { super(); }
     
-    public VLocatableBase(VLocatableBase<T> source)
+    public VLocatable(VLocatable<T> source)
     {
         super(source);
     }
@@ -410,7 +410,7 @@ public abstract class VLocatableBase<T> extends VDisplayableBase<T> implements V
     public void copyChildrenFrom(VParent source)
     {
         super.copyChildrenFrom(source);
-        VLocatableBase<?> castSource = (VLocatableBase<?>) source;
+        VLocatable<?> castSource = (VLocatable<?>) source;
         if (castSource.getVAlarms() != null)
         {
             if (getVAlarms() == null)
@@ -435,7 +435,7 @@ public abstract class VLocatableBase<T> extends VDisplayableBase<T> implements V
     @Override // include VAlarms
     public boolean equals(Object obj)
     {
-        VLocatableBase<?> testObj = (VLocatableBase<?>) obj;
+        VLocatable<?> testObj = (VLocatable<?>) obj;
         final boolean isVAlarmsEqual;
         if (getVAlarms() != null)
         {

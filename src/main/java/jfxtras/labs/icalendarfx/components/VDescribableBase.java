@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @param <T> - concrete subclass
  * 
  */
-public abstract class VDescribableBase<T> extends VCommonBase<T> implements VDescribable<T>
+public abstract class VDescribableBase<T> extends VCommon<T> implements VDescribable<T>
 {
     /**
      * This property provides the capability to associate a document object with a calendar component.

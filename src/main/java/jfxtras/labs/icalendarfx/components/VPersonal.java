@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
@@ -33,7 +35,7 @@ import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
  * @see VJournalInt
  * @see VFreeBusy
  */
-public abstract class VPersonalBase<T> extends VPrimaryBase<T> implements VAttendee<T>
+public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
 {
     /*
      * ATTENDEE: Attendee
@@ -408,26 +410,29 @@ public abstract class VPersonalBase<T> extends VPrimaryBase<T> implements VAtten
     /*
      * CONSTRUCTORS
      */
-    VPersonalBase() { super(); }
+    VPersonal() { super(); }
     
 //    VComponentPersonalBase(String contentLines)
 //    {
 //        super(contentLines);
 //    }
     
-    public VPersonalBase(VPersonalBase<T> source)
+    public VPersonal(VPersonal<T> source)
     {
         super(source);
     }
     
     @Override
-    public List<String> parseContent(UnfoldingStringIterator lineIterator, boolean useRequestStatus)
+    public Map<VElement, List<String>> parseContent(UnfoldingStringIterator lineIterator, boolean useRequestStatus)
     {
-        List<String> statusMessages = super.parseContent(lineIterator, useRequestStatus);
+        Map<VElement, List<String>> statusMessages = super.parseContent(lineIterator, useRequestStatus);
         if (useRequestStatus)
         { // Set REQUEST-STATUS for each message
             setRequestStatus(FXCollections.observableArrayList());
-            statusMessages.stream().forEach(e -> getRequestStatus().add(RequestStatus.parse(e)));
+            statusMessages.entrySet()
+                    .stream()
+                    .flatMap(e -> e.getValue().stream())
+                    .forEach(e -> getRequestStatus().add(RequestStatus.parse(e)));
         }
         return statusMessages;
     }

@@ -393,7 +393,7 @@ public enum ValueType
     final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', '\n'};
 
     private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
-            .appendOffset("+HHMM", "+0000")
+            .appendOffset("+HHMMss", "+0000")
             .toFormatter();
     
     private static Map<String, ValueType> enumFromNameMap = makeEnumFromNameMap();

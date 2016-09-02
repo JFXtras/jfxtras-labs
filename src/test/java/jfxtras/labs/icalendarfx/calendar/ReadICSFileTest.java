@@ -28,11 +28,11 @@ public class ReadICSFileTest
         Path icsFilePath = Paths.get(url.getFile());
 //        VCalendar vCalendar = VCalendar.parse(icsFilePath);
 //        System.out.println(vCalendar.toContent());
-        boolean useResourceStatus = true;
+        boolean useResourceStatus = false;
         VCalendar vCalendar = VCalendar.parseICalendarFile(icsFilePath, useResourceStatus);
-        System.out.println(vCalendar.toContent());
+//        System.out.println(vCalendar.toContent());
         // HAS REQUEST-STATUS IN LINES - NEED TO REMOVE
-        assertEquals(8584, vCalendar.toContent().length());
+        assertEquals(7641, vCalendar.toContent().length());
         assertEquals(7, vCalendar.getVEvents().size());
         assertEquals(1, vCalendar.getVTimeZones().size());
         int subcomponents = vCalendar.getVTimeZones().get(0).getStandardOrDaylight().size();
