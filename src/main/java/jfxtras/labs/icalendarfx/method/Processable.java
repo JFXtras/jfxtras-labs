@@ -4,5 +4,5 @@ import jfxtras.labs.icalendarfx.VCalendar;
 
 public interface Processable
 {
-    VCalendar process(VCalendar mainVCalendar, VCalendar inputVCalendar);
+    void process(VCalendar mainVCalendar, VCalendar inputVCalendar);
 }

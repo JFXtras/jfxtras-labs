@@ -11,6 +11,8 @@ import jfxtras.labs.icalendarfx.calendar.OrdererTest;
 import jfxtras.labs.icalendarfx.calendar.ParseCalendarTest;
 import jfxtras.labs.icalendarfx.calendar.ReadICSFileTest;
 import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
+import jfxtras.labs.icalendarfx.calendar.method.cancel.ProcessCancelTest;
+import jfxtras.labs.icalendarfx.calendar.method.publish.ProcessPublishTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.CopyComponentTest;
 import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
@@ -98,6 +100,10 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         
         // general tests
         OrdererTest.class,
+        
+        // method tests
+        ProcessPublishTest.class,
+        ProcessCancelTest.class,
     
         // calendar tests
         CalendarScaleTest.class,

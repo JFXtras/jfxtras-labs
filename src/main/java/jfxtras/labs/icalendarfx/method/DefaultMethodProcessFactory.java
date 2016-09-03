@@ -13,7 +13,7 @@ public class DefaultMethodProcessFactory extends AbstractMethodProcessFactory
         case ADD:
             break;
         case CANCEL:
-            break;
+            return new ProcessCancel();
         case COUNTER:
             break;
         case DECLINECOUNTER:

@@ -280,10 +280,10 @@ public class VEvent extends VLocatable<VEvent> implements VDateTimeEnd<VEvent>,
         
         if (! isDateTimeEndPresent && ! isDurationPresent)
         {
-            errors.add("Neither DTEND or DURATION is present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
+//            errors.add("Neither DTEND or DURATION is present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once"); // not required
         } else if (isDateTimeEndPresent && isDurationPresent)
         {
-            errors.add("Both DTEND and DURATION are present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
+            errors.add("Both DTEND and DURATION are present.  DTEND or DURATION MAY appear, but both MUST NOT occur in the same " + name());
         } else if (isDateTimeEndPresent && isDateTimeEndMatch)
         {
             if (! DateTimeUtilities.isAfter(getDateTimeEnd().getValue(), getDateTimeStart().getValue()))

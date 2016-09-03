@@ -531,6 +531,16 @@ public class VCalendar extends VParentBase
         return true;
     }
     
+    /** Create a VComponent by parsing component text and add it to the appropriate list 
+     * @see #addVComponent(VComponent)*/
+    @Deprecated // not worth having
+    public void addVComponent(String contentText)
+    {
+        VComponent vComponent = SimpleVComponentFactory.emptyVComponent(contentText);
+        vComponent.parseContent(contentText);
+        addVComponent(vComponent);
+    }
+    
     /** Add a collection of {@link VComponent} to the correct ObservableList based on
     * its type, such as VEVENT, VTODO, etc.
      * 
@@ -553,14 +563,28 @@ public class VCalendar extends VParentBase
         return addAllVComponents(Arrays.asList(newVComponents));
     }
     
-    /** Create a VComponent by parsing component text and add it to the appropriate list 
-     * @see #addVComponent(VComponent)*/
-    public void addVComponent(String contentText)
-    {
-        VComponent vComponent = SimpleVComponentFactory.emptyVComponent(contentText);
-        vComponent.parseContent(contentText);
-        addVComponent(vComponent);
-    }
+//    public boolean removeVComponent(VComponent vComponent)
+//    {
+//        if (vComponent instanceof VEvent)
+//        {
+//            return getVEvents().remove(vComponent);
+//        } else if (vComponent instanceof VTodo)
+//        {
+//            return getVTodos().remove(vComponent);
+//        } else if (vComponent instanceof VJournal)
+//        {
+//            return getVJournals().remove(vComponent);
+//        } else if (vComponent instanceof VFreeBusy)
+//        {
+//            return getVFreeBusies().remove(vComponent);
+//        } else if (vComponent instanceof VTimeZone)
+//        {
+//            return getVTimeZones().remove(vComponent);
+//        } else
+//        {
+//            throw new RuntimeException("Unsuppored VComponent type:" + vComponent.getClass());
+//        }
+//    }
     
     /** Convenience method that returns all {@link VComponent VComponents} regardless of type (e.g.
      * {@link VEvent}, {@link VTodo}, etc.) 
@@ -579,6 +603,7 @@ public class VCalendar extends VParentBase
     
     /** Convenience method that returns all {@link VComponent VComponents} regardless of type (e.g.
      * {@link VEvent}, {@link VTodo}, etc.) 
+     * 
      * @return  unmodifiable list of all {@link VComponent VComponents}
      */
     public List<? extends VComponent> getVComponents(Class<? extends VComponent> vComponentClass)
@@ -601,6 +626,35 @@ public class VCalendar extends VParentBase
         } else
         {
             throw new RuntimeException("Unsuppored VComponent type:" + vComponentClass);
+        }
+    }
+    
+    /**
+     * A convenience method that returns parent list of the {@link VComponent} parameter.
+     * Returns null if component is not in any {@link VComponent} list.
+     * 
+     * @param vComponent - VComponent to look up
+     */
+    public List<? extends VComponent> getVComponents(VComponent vComponent)
+    {
+        if (vComponent instanceof VEvent)
+        {
+            return (getVEvents().contains(vComponent)) ? getVEvents() : null;
+        } else if (vComponent instanceof VTodo)
+        {
+            return (getVTodos().contains(vComponent)) ? getVTodos() : null;
+        } else if (vComponent instanceof VJournal)
+        {
+            return (getVJournals().contains(vComponent)) ? getVJournals() : null;
+        } else if (vComponent instanceof VFreeBusy)
+        {
+            return (getVFreeBusies().contains(vComponent)) ? getVFreeBusies() : null;
+        } else if (vComponent instanceof VTimeZone)
+        {
+            return (getVTimeZones().contains(vComponent)) ? getVTimeZones() : null;
+        } else
+        {
+            throw new RuntimeException("Unsuppored VComponent type:" + vComponent.getClass());
         }
     }
     
@@ -774,35 +828,6 @@ public class VCalendar extends VParentBase
     public List<String> importVComponent(VComponent newVComponent)
     {
         throw new RuntimeException("not implemented");
-    }
-    
-    /**
-     * A convenience method that returns parent list of the {@link VComponent} parameter.
-     * Returns null if component is not in any {@link VComponent} list not found.
-     * 
-     * @param vComponent - VComponent to look up
-     */
-    public List<? extends VComponent> getParentComponentList(VComponent vComponent)
-    {
-        if (vComponent instanceof VEvent)
-        {
-            return (getVEvents().contains(vComponent)) ? getVEvents() : null;
-        } else if (vComponent instanceof VTodo)
-        {
-            return (getVTodos().contains(vComponent)) ? getVTodos() : null;
-        } else if (vComponent instanceof VJournal)
-        {
-            return (getVJournals().contains(vComponent)) ? getVJournals() : null;
-        } else if (vComponent instanceof VFreeBusy)
-        {
-            return (getVFreeBusies().contains(vComponent)) ? getVFreeBusies() : null;
-        } else if (vComponent instanceof VTimeZone)
-        {
-            return (getVTimeZones().contains(vComponent)) ? getVTimeZones() : null;
-        } else
-        {
-            throw new RuntimeException("Unsuppored VComponent type:" + vComponent.getClass());
-        }
     }
     
     /*

@@ -270,7 +270,7 @@ public class ICalendarAgenda extends Agenda
                     Object[] params = new Object[] {
                             DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
                             appointment.getStartTemporal(),
-                            getVCalendar().getParentComponentList(vComponent)
+                            getVCalendar().getVComponents(vComponent)
                     };
                     SimpleDeleterFactory.newDeleter(vComponent, params).delete();
                 }
@@ -676,7 +676,7 @@ public class ICalendarAgenda extends Agenda
                     endRecurrence,
                     startOriginalRecurrence,
                     startRecurrence,
-                    getVCalendar().getParentComponentList(vComponent),
+                    getVCalendar().getVComponents(vComponent),
                     vComponent,
                     vComponentOriginalCopy
                     };

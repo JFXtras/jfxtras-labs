@@ -263,10 +263,10 @@ public class VTodo extends VLocatable<VTodo> implements VDescribable2<VTodo>
         
         if ((! isDateTimeDuePresent) && (! isDurationPresent))
         {
-            errors.add("Neither DUE or DURATION is present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
+//            errors.add("Neither DUE or DURATION is present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
         } else if (isDateTimeDuePresent && isDurationPresent)
         {
-            errors.add("Both DUE and DURATION are present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
+            errors.add("Both DUE and DURATION are present.  DUE or DURATION MAY appear, but both MUST NOT occur in the same " + name());
         }  else if (isDateTimeDuePresent)
         {
             if (! DateTimeUtilities.isAfter(getDateTimeDue().getValue(), getDateTimeStart().getValue()))

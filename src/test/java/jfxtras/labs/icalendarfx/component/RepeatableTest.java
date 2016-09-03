@@ -30,10 +30,10 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VPrimary;
-import jfxtras.labs.icalendarfx.components.VRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VPrimary;
+import jfxtras.labs.icalendarfx.components.VRepeatable;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -144,8 +144,8 @@ public class RepeatableTest //extends Application
     {
         VEvent component = new VEvent()
                 .withRecurrenceRule(new RecurrenceRule2());
-//        component.errors().forEach(System.out::println);
-        assertEquals(5, component.errors().size());
+        component.errors().forEach(System.out::println);
+        assertEquals(4, component.errors().size());
     }
 
     @Test
