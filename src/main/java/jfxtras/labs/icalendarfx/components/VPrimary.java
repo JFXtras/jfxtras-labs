@@ -150,14 +150,14 @@ public abstract class VPrimary<T> extends VCommon<T>
     }
     public T withDateTimeStart(Temporal dtStart)
     {
-        if (getDateTimeStart() == null)
-        {
-            setDateTimeStart(dtStart);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        if (getDateTimeStart() == null)
+//        {
+        setDateTimeStart(dtStart);
+        return (T) this;
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
     
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */

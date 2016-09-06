@@ -133,7 +133,8 @@ public final class ICalendarStaticComponents
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(FrequencyType.DAILY));
+                        .withFrequency(FrequencyType.DAILY))
+                .withOrganizer("ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org");
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */

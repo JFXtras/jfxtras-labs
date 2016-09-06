@@ -34,4 +34,15 @@ public class OrganizerTest
         assertEquals(ICalendarUtilities.foldLine(content).toString(), expectedProperty.toContent());
     }
     
+    @Test
+    public void canParseOrganizer3()
+    {
+        String content = "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org";
+        Organizer madeProperty = Organizer.parse(content);
+        Organizer expectedProperty = Organizer.parse("mailto:papa@smurf.org")
+                .withCommonName("Papa Smurf");
+        assertEquals(expectedProperty, madeProperty);
+        assertEquals(ICalendarUtilities.foldLine(content).toString(), expectedProperty.toContent());
+    }
+    
 }
