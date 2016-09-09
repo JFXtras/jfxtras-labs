@@ -552,14 +552,14 @@ public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepea
     }
     public T withRecurrenceId(Temporal recurrenceId)
     {
-        if (getRecurrenceId() == null)
-        {
-            setRecurrenceId(recurrenceId);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+//        if (getRecurrenceId() == null)
+//        {
+        setRecurrenceId(recurrenceId);
+        return (T) this;
+//        } else
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
     }
     
 //    /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener

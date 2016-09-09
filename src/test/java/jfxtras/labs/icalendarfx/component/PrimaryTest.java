@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,10 +10,10 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
@@ -69,7 +68,7 @@ public class PrimaryTest
         
         for (VPrimary<?> builtComponent : components)
         {
-            String componentName = builtComponent.name();            
+            String componentName = builtComponent.name();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "DTSTART:20160306T080000" + System.lineSeparator() +
                     "COMMENT:This is a test comment" + System.lineSeparator() +
@@ -85,12 +84,33 @@ public class PrimaryTest
         }
     }
     
-    @Test  (expected = IllegalArgumentException.class)
+    @Test (expected=IllegalArgumentException.class)
     public void canCatchAlreadySet()
     {
-        new VEvent()
-                .withDateTimeStart("20160306T080000")
-                .withDateTimeStart(LocalDateTime.of(2016, 3, 6, 8, 0));
+        String content = 
+            "BEGIN:VEVENT" + System.lineSeparator() +
+            "DTSTART:20151109T090000" + System.lineSeparator() +
+            "DTSTART:20151119T090000" + System.lineSeparator() +
+            "END:VEVENT";
+        VEvent v = VEvent.parse(content);
+////        System.out.println(v.errors().get(0) + " " +v.errors().get(0).contains("DTSTART:20151119T090000"));
+////        v.errors().forEach(System.out::println);
+//        boolean isErrorPresent = v.errors().stream().anyMatch(e -> e.contains("DTSTART:20151119T090000"));
+//        assertTrue(isErrorPresent);
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void canCatchInvalidProperty()
+    {
+        String content = 
+            "BEGIN:VEVENT" + System.lineSeparator() +
+            "DTSTART:INVALID" + System.lineSeparator() +
+            "END:VEVENT";
+        VEvent.parse(content);
+////        System.out.println(v.errors().get(0) + " " +v.errors().get(0).contains("DTSTART:20151119T090000"));
+////        v.errors().forEach(System.out::println);
+//        boolean isErrorPresent = v.errors().stream().anyMatch(e -> e.contains("DTSTART:20151119T090000"));
+//        assertTrue(isErrorPresent);
     }
 
 }

@@ -66,9 +66,7 @@ public class CopyComponentTest extends ICalendarTestAbstract
         VEvent component1 = VEvent.parse(content);
         VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
-      System.out.println(component2.toContent());
         assertEquals(component1.toContent(), component2.toContent());
-//        System.out.println(component2.toContent());
         assertEquals(content, component2.toContent());
     }
 

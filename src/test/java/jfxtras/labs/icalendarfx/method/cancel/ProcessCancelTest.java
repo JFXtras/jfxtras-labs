@@ -36,7 +36,7 @@ public class ProcessCancelTest
               "END:VEVENT" + System.lineSeparator() + 
               "END:VCALENDAR");
         VCalendar inputVCalendar = VCalendar.parse(publish);
-        main.processVCalendar(inputVCalendar);
+        main.processITIPMessage(inputVCalendar);
         String expectedContent = new String("BEGIN:VCALENDAR" + System.lineSeparator() +
                 "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "VERSION:2.0" + System.lineSeparator() + 

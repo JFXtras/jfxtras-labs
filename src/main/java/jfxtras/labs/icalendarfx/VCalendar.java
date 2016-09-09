@@ -677,7 +677,7 @@ public class VCalendar extends VParentBase
      * 
      * @param inputVCalendar  iTIP VCalendar to process with {@link Method} populated
      */
-    public void processVCalendar(VCalendar inputVCalendar)
+    public void processITIPMessage(VCalendar inputVCalendar)
     {
         if (inputVCalendar.getMethod() == null)
         {

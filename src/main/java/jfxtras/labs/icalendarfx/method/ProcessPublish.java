@@ -136,7 +136,8 @@ public class ProcessPublish implements Processable
                     if (matchingMainVComponent != null)
                     {
                         int oldSequence = (matchingMainVComponent.getSequence() == null) ? 0 : matchingMainVComponent.getSequence().getValue();
-                        isNewSequenceHigher = newSequence > oldSequence;
+                        isNewSequenceHigher = newSequence > oldSequence || (newSequence == 0 && oldSequence == 0);
+                        // SEQUENCE INCREASE ONLY APPLIES FOR PARENTS - NOT RECURRENCES THAT ONLY HAVE RECURRENCE-ID CHANGED
                         if (! isNewSequenceHigher) throw new IllegalArgumentException("Can't process PUBLISH method for VCALENDAR: SEQUENCY property MUST be higher than previously published component (new=" + newSequence + " old=" + oldSequence + ")");
                         if (isNewSequenceHigher)
                         {

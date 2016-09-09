@@ -6,6 +6,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -307,7 +308,14 @@ public class VEvent extends VLocatable<VEvent> implements VDateTimeEnd<VEvent>,
     {
         VEvent component = new VEvent();
         List<String> messages = component.parseContent(foldedContent);
-        messages.forEach(System.out::println);
+        // filter out Success messages
+        String filteredMessages = messages.stream()
+            .filter(m ->! m.contains(";Success"))
+            .collect(Collectors.joining(System.lineSeparator()));
+        if (! filteredMessages.isEmpty())
+        {
+            throw new IllegalArgumentException(messages.stream().collect(Collectors.joining(System.lineSeparator())));
+        }
         return component;
     }
 }
