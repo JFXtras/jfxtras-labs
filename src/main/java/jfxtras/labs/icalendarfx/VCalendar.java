@@ -31,9 +31,9 @@ import jfxtras.labs.icalendarfx.components.VPersonal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
-import jfxtras.labs.icalendarfx.method.AbstractMethodProcessFactory;
-import jfxtras.labs.icalendarfx.method.DefaultMethodProcessFactory;
-import jfxtras.labs.icalendarfx.method.Processable;
+import jfxtras.labs.icalendarfx.itip.AbstractITIPFactory;
+import jfxtras.labs.icalendarfx.itip.DefaultITIPFactory;
+import jfxtras.labs.icalendarfx.itip.Processable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
@@ -58,7 +58,7 @@ import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
 public class VCalendar extends VParentBase
 {
     // version of this project, not associated with the iCalendar specification version
-    public static String myVersion = "1.0";
+//    public static String myVersion = "1.0";
     private static final String NAME = "VCALENDAR";
     @Override public String name() { return NAME; }
     private static final String FIRST_CONTENT_LINE = "BEGIN:" + NAME;
@@ -141,26 +141,20 @@ public class VCalendar extends VParentBase
     private ObjectProperty<Method> method;
     public void setMethod(String method) { setMethod(Method.parse(method)); }
     public void setMethod(Method method) { methodProperty().set(method); }
+    public void setMethod(MethodType method) { methodProperty().set(new Method(method)); }
     public VCalendar withMethod(Method method)
     {
-        if (getMethod() == null)
-        {
-            setMethod(method);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.METHOD.toString() + " can only occur once in a calendar component");
-        }
+        setMethod(method);
+        return this;
+    }
+    public VCalendar withMethod(MethodType method)
+    {
+        setMethod(method);
         return this;
     }
     public VCalendar withMethod(String method)
     {
-        if (getMethod() == null)
-        {
-            setMethod(method);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.METHOD.toString() + " can only occur once in a calendar component");
-        }
+        setMethod(method);
         return this;
     }
     
@@ -547,7 +541,7 @@ public class VCalendar extends VParentBase
      * @param newVComponents  collection of {@link VComponent} to add
      * @return  true if add was successful, false otherwise
      */
-    public boolean addAllVComponents(Collection<VComponent> newVComponents)
+    public boolean addAllVComponents(Collection<? extends VComponent> newVComponents)
     {
         return newVComponents.stream().map(v -> addVComponent(v)).allMatch(b -> true);
     }
@@ -659,21 +653,21 @@ public class VCalendar extends VParentBase
     }
     
     
-    /** set AbstractMethodProcessFactory to handle processing input VCalendar based on {@link Method} */
-    public void setMethodProcessFactory(AbstractMethodProcessFactory methodProcessFactory)
+    /** set AbstractITIPFactory to handle processing input VCalendar based on {@link Method} */
+    public void setMethodProcessFactory(AbstractITIPFactory iTIPFactory)
     {
-        this.methodProcessFactory = methodProcessFactory;
+        this.iTIPFactory = iTIPFactory;
     }
-    /** get AbstractMethodProcessFactory to handle processing input VCalendar based on {@link Method} */
-    public AbstractMethodProcessFactory getMethodProcessFactory()
+    /** get AbstractITIPFactory to handle processing input VCalendar based on {@link Method} */
+    public AbstractITIPFactory getITIPFactory()
     {
-        return methodProcessFactory;
+        return iTIPFactory;
     }
-    private AbstractMethodProcessFactory methodProcessFactory;
+    private AbstractITIPFactory iTIPFactory;
     
     /**
      * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
-     * based on the methods in {@link #getMethodProcessFactory()}
+     * based on the methods in {@link #getITIPFactory()}
      * 
      * @param inputVCalendar  iTIP VCalendar to process with {@link Method} populated
      */
@@ -684,7 +678,7 @@ public class VCalendar extends VParentBase
             throw new IllegalArgumentException("VCalendar to be process MUST have the METHOD property populated");
         }
         MethodType method = inputVCalendar.getMethod().getValue();
-        Processable methodProcess = methodProcessFactory.getMethodProcess(method);
+        Processable methodProcess = iTIPFactory.getITIPMessageProcess(method);
         methodProcess.process(this, inputVCalendar);
     }
     
@@ -952,7 +946,7 @@ public class VCalendar extends VParentBase
     
     public VCalendar()
     {
-        setMethodProcessFactory(new DefaultMethodProcessFactory());
+        setMethodProcessFactory(new DefaultITIPFactory());
         addListeners();
         setContentLineGenerator(new MultiLineContent(
                 orderer(),

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.method;
+package jfxtras.labs.icalendarfx.itip;
 
 import java.time.temporal.Temporal;
 import java.util.List;

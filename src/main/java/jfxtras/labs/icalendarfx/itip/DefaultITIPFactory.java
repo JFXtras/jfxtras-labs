@@ -1,12 +1,12 @@
-package jfxtras.labs.icalendarfx.method;
+package jfxtras.labs.icalendarfx.itip;
 
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 
-public class DefaultMethodProcessFactory extends AbstractMethodProcessFactory
+public class DefaultITIPFactory extends AbstractITIPFactory
 {
 
     @Override
-    public Processable getMethodProcess(MethodType methodType)
+    public Processable getITIPMessageProcess(MethodType methodType)
     {
         switch (methodType)
         {

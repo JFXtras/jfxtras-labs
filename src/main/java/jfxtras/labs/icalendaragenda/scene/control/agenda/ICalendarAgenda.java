@@ -178,6 +178,9 @@ import jfxtras.util.NodeUtil;
 public class ICalendarAgenda extends Agenda
 {   
     public final static String ICALENDAR_STYLE_SHEET = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
+
+    public static final String MY_VERSION = "1.0";
+    public static final String PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarAgenda " + ICalendarAgenda.MY_VERSION + "//EN");
     
     final private VCalendar vCalendar;
     /** get the VCalendar object that is a model of the iCalendar RFC 5545 specification */

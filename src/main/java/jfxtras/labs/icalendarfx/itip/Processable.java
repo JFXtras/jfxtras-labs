@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.method;
+package jfxtras.labs.icalendarfx.itip;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 

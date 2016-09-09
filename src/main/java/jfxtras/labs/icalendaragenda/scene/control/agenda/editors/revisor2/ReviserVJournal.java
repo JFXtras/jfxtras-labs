@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors.revisors2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
 
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;

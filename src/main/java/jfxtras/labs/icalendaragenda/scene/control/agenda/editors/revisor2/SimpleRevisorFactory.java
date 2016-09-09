@@ -1,10 +1,11 @@
-package jfxtras.labs.icalendarfx.components.editors.revisors2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
 
 import java.time.temporal.Temporal;
 import java.util.Map;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -14,7 +15,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 
 /**
  * <p>Simple factory to create {@link Reviser} objects.  Two methods to create scenes

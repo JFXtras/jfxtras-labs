@@ -159,29 +159,29 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                             {
                                 if (propertyType.isRequired(this))
                                 {
-                                    myMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                    myMessages.add("3.2;Invalid property value;" + unfoldedLine);
                                 } else
                                 {
-                                    myMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                    myMessages.add("2.2;Success; invalid property ignored;" + unfoldedLine);
                                 }
                             }
                         } catch (Exception e)
                         { // exceptions from JavaFX thread
                             if (propertyType.isRequired(this))
                             {
-                                myMessages.add("3." + propertyType.ordinal() + ";Invalid property value;" + unfoldedLine);
+                                myMessages.add("3.2;Invalid property value;" + unfoldedLine);
                             } else
                             {
-                                myMessages.add("2." + propertyType.ordinal() + ";Success, Invalid property is ignored;" + unfoldedLine);                                
+                                myMessages.add("2.2;Success; invalid property ignored;" + unfoldedLine);
                             }
                         }
                     } else
                     {
-                        myMessages.add("2." + propertyType.ordinal() + ";Success, property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
+                        myMessages.add("2.2;Success; invalid property ignored.  Property can only occur once in a calendar component.  Subsequent property is ignored;" + unfoldedLine);
                     }
                 } else
                 {
-                    myMessages.add("2.0" + ";Success, unknown property is ignored;" + unfoldedLine);
+                    myMessages.add("2.4;Success; unknown, non-standard property ignored.;" + unfoldedLine);
                 }
             }
         }

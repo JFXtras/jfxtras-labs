@@ -1,5 +1,8 @@
-package jfxtras.labs.icalendarfx.components.editors.revisors2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
 
+import java.util.List;
+
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 
 /**
@@ -16,7 +19,7 @@ public class ReviserDaylightSavingTime implements Reviser
     }
     
     @Override
-    public Object revise()
+    public List<VCalendar> revise()
     {
         throw new RuntimeException("not implemented");
     }

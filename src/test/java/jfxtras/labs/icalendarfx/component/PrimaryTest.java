@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,8 +85,8 @@ public class PrimaryTest
         }
     }
     
-    @Test (expected=IllegalArgumentException.class)
-    public void canCatchAlreadySet()
+    @Test
+    public void canIgnoreAlreadySet()
     {
         String content = 
             "BEGIN:VEVENT" + System.lineSeparator() +
@@ -93,10 +94,7 @@ public class PrimaryTest
             "DTSTART:20151119T090000" + System.lineSeparator() +
             "END:VEVENT";
         VEvent v = VEvent.parse(content);
-////        System.out.println(v.errors().get(0) + " " +v.errors().get(0).contains("DTSTART:20151119T090000"));
-////        v.errors().forEach(System.out::println);
-//        boolean isErrorPresent = v.errors().stream().anyMatch(e -> e.contains("DTSTART:20151119T090000"));
-//        assertTrue(isErrorPresent);
+        assertEquals(LocalDateTime.of(2015, 11, 9, 9, 0), v.getDateTimeStart().getValue());
     }
     
     @Test (expected=IllegalArgumentException.class)
@@ -107,10 +105,6 @@ public class PrimaryTest
             "DTSTART:INVALID" + System.lineSeparator() +
             "END:VEVENT";
         VEvent.parse(content);
-////        System.out.println(v.errors().get(0) + " " +v.errors().get(0).contains("DTSTART:20151119T090000"));
-////        v.errors().forEach(System.out::println);
-//        boolean isErrorPresent = v.errors().stream().anyMatch(e -> e.contains("DTSTART:20151119T090000"));
-//        assertTrue(isErrorPresent);
     }
 
 }

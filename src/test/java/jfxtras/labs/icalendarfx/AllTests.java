@@ -33,8 +33,8 @@ import jfxtras.labs.icalendarfx.component.VFreeBusyTest;
 import jfxtras.labs.icalendarfx.component.VJournalTest;
 import jfxtras.labs.icalendarfx.component.VTimeZoneTest;
 import jfxtras.labs.icalendarfx.component.VTodoTest;
-import jfxtras.labs.icalendarfx.method.cancel.ProcessCancelTest;
-import jfxtras.labs.icalendarfx.method.publish.ProcessPublishTest;
+import jfxtras.labs.icalendarfx.itip.cancel.ProcessCancelTest;
+import jfxtras.labs.icalendarfx.itip.publish.PublishTest;
 import jfxtras.labs.icalendarfx.parameter.AlternateTextRepresentationTest;
 import jfxtras.labs.icalendarfx.parameter.CommonNameTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
@@ -102,7 +102,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         OrdererTest.class,
         
         // method tests
-        ProcessPublishTest.class,
+        PublishTest.class,
         ProcessCancelTest.class,
     
         // calendar tests

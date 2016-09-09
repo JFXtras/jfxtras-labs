@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> implements VElement
 {
-    public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarFx " + VCalendar.myVersion + "//EN");
+//    public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarFx " + VCalendar.myVersion + "//EN");
 
     public ProductIdentifier(ProductIdentifier source)
     {
@@ -33,7 +33,7 @@ public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> i
     public ProductIdentifier()
     {
         super();
-        setValue(DEFAULT_PRODUCT_IDENTIFIER);
+//        setValue(DEFAULT_PRODUCT_IDENTIFIER);
     }
     
     public static ProductIdentifier parse(String string)

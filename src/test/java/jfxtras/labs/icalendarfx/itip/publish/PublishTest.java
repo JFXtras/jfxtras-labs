@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.method.publish;
+package jfxtras.labs.icalendarfx.itip.publish;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
-public class ProcessPublishTest
+public class PublishTest
 {
     @Test
     public void canProcessPublish()
@@ -44,7 +44,7 @@ public class ProcessPublishTest
         assertEquals(expectedContent, main.toContent());
     }
     
-    @Test // new DTSTART and SUMMARY - individual
+    @Test // the time has been changed, an end time has been added, and the sequence number has been adjusted.
     public void canProcessPublishToReplace()
     {
         String mainContent = new String("BEGIN:VCALENDAR" + System.lineSeparator() + 

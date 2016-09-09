@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.method.cancel;
+package jfxtras.labs.icalendarfx.itip.cancel;
 
 import static org.junit.Assert.assertEquals;
 

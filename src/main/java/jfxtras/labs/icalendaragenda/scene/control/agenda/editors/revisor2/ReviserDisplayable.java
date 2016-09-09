@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors.revisors2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -11,7 +11,6 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,10 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayableBase;
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -208,7 +207,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
     }
     
     @Override
-    public List<U> revise()
+    public List<VCalendar> revise()
     {
         if (! isValid())
         {
@@ -237,6 +236,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                     vComponentEditedCopy.toContent());
         }
         
+        List<VCalendar> itipMessages = new ArrayList<>();
         List<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
@@ -281,6 +281,13 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                 {
                 case ALL:
                     adjustDateTime(vComponentEditedCopy);
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    publishMessage.addVComponent(vComponentEditedCopy);
+                    VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
+                    cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
+                    itipMessages.add(publishMessage);
+                    itipMessages.add(cancelMessage);
+                    
                     // GET RECURRENCES - MAKE CHANGES - ADD TO NEW VCALENDAR
                     // ADD EDITED MAIN TO NEW VCALENDAR
                     // TODO - NEED LIST OF VCALENDARS - ONE TO PUBLISH CHANGES, OTHER TO CANCEL RECURRENCES (IF PRESENT)
@@ -293,7 +300,8 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                 case CANCEL:
 //                    getVComponents().remove(getVComponentEdited());
 //                    getVComponents().add(vComponentOriginalCopy);
-                    return Arrays.asList(vComponentOriginalCopy);
+                    return null;
+//                    return Arrays.asList(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     revisedVComponents.add(0, vComponentOriginalCopy);
@@ -328,7 +336,11 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
         // TODO - NEED TO MAKE VCALENDAR WITH METHOD TO PUBLISH - LET VCALENDAR HANDLE REMOVE AND ADD BACK OF VCOMPONENTS
 //        getVComponents().remove(getVComponentEdited());
 //        getVComponents().addAll(revisedVComponents);
-        return Collections.unmodifiableList(revisedVComponents);
+        
+        // TODO - ASSEMBLE VCALENDAR ITIP MESSAGES
+        return itipMessages;
+//        throw new RuntimeException("not implemented");
+//        return Collections.unmodifiableList(revisedVComponents);
     }
 
     // Time shift child recurrence components
