@@ -29,6 +29,11 @@ public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> i
     {
         super(source);
     }
+    
+    public ProductIdentifier(String productIdentifier)
+    {
+        super(new ProductIdentifier(productIdentifier));
+    }
 
     public ProductIdentifier()
     {

@@ -18,7 +18,7 @@ public class GeneralCalendarTest extends ICalendarTestAbstract
     {
         String expectedContent = 
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "PRODID:" + ProductIdentifier.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "PRODID:-//JFxtras//iCalendarFx-1.0//EN" + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "CALSCALE:" + CalendarScale.DEFAULT_CALENDAR_SCALE + System.lineSeparator() +
                 
@@ -114,7 +114,7 @@ public class GeneralCalendarTest extends ICalendarTestAbstract
         VCalendar vCalendar = VCalendar.parse(expectedContent);
         
         VCalendar c = new VCalendar()
-                .withProductIdentifier(new ProductIdentifier())
+                .withProductIdentifier(new ProductIdentifier("-//JFxtras//iCalendarFx-1.0//EN"))
                 .withVersion(new Version())
                 .withCalendarScale(new CalendarScale())
                 .withVTodos(new VTodo()

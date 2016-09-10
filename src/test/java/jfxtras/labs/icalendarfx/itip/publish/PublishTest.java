@@ -44,6 +44,12 @@ public class PublishTest
         assertEquals(expectedContent, main.toContent());
     }
     
+    @Test
+    public void canReviseWithPublish()
+    {
+        throw new RuntimeException("not implemented");
+    }
+    
     @Test // the time has been changed, an end time has been added, and the sequence number has been adjusted.
     public void canProcessPublishToReplace()
     {

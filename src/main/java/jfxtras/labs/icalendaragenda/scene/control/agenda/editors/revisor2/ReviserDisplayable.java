@@ -20,7 +20,6 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayableBase;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -97,23 +96,23 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
 //     */
 //    public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
-    /*
-     * VCALENDAR
-     */
-    /** Gets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
-     * @see VCalendar */
-    public VCalendar getVCalendar() { return vCalendar; }
-    private VCalendar vCalendar;
-    /** Sets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
-     * @see VCalendar */
-    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
-    /**
-     * Sets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
-     * 
-     * @return - this class for chaining
-     * @see VCalendar
-     */
-    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
+//    /*
+//     * VCALENDAR
+//     */
+//    /** Gets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
+//     * @see VCalendar */
+//    public VCalendar getVCalendar() { return vCalendar; }
+//    private VCalendar vCalendar;
+//    /** Sets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
+//     * @see VCalendar */
+//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
+//    /**
+//     * Sets the value of the List of {@link VComponent} that contains the {@link VComponent} to be edited 
+//     * 
+//     * @return - this class for chaining
+//     * @see VCalendar
+//     */
+//    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
 
     
     /*
@@ -193,11 +192,11 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
             System.out.println("dialogCallback must not be null");
             return false;
         }
-        if (getVCalendar() == null)
-        {
-            System.out.println("vCalendar must not be null");
-            return false;
-        }
+//        if (getVCalendar() == null)
+//        {
+//            System.out.println("vCalendar must not be null");
+//            return false;
+//        }
         //        if (getVComponents() == null)
 //        {
 //            System.out.println("getVComponents must not be null");
@@ -281,12 +280,18 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                 {
                 case ALL:
                     adjustDateTime(vComponentEditedCopy);
+                    
                     VCalendar publishMessage = Reviser.defaultPublishVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
-                    VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
-                    cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
                     itipMessages.add(publishMessage);
-                    itipMessages.add(cancelMessage);
+
+                    List<VDisplayableBase<?>> children = getVComponentEdited().recurrenceChildren();
+                    if (children.size() > 0)
+                    {
+                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
+                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
+                        itipMessages.add(cancelMessage);
+                    }
                     
                     // GET RECURRENCES - MAKE CHANGES - ADD TO NEW VCALENDAR
                     // ADD EDITED MAIN TO NEW VCALENDAR
