@@ -47,8 +47,89 @@ public class PublishTest
     @Test
     public void canReviseWithPublish()
     {
-        throw new RuntimeException("not implemented");
+        VCalendar mainVCalendar = new VCalendar();
+        VEvent vComponent = ICalendarStaticComponents.getDaily1();
+        mainVCalendar.addVComponent(vComponent);
+        String publish = new String(
+                "BEGIN:VCALENDAR" + System.lineSeparator() + 
+                "METHOD:PUBLISH" + System.lineSeparator() + 
+                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
+                "VERSION:2.0" + System.lineSeparator() + 
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151108T100000" + System.lineSeparator() +
+                "DTEND:20151108T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:revised summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() + 
+                "END:VCALENDAR");
+        mainVCalendar.processITIPMessage(publish);
+        
+        String expectedContent = new String(
+                "BEGIN:VCALENDAR" + System.lineSeparator() + 
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151108T100000" + System.lineSeparator() +
+                "DTEND:20151108T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:revised summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() + 
+                "END:VCALENDAR");
+        assertEquals(expectedContent, mainVCalendar.toContent());
     }
+    
+//    @Test
+//    public void canReviseWithPublish2()
+//    {
+//        VCalendar mainVCalendar = new VCalendar();
+//        VEvent vComponent = ICalendarStaticComponents.getDaily1();
+//        mainVCalendar.addVComponent(vComponent);
+//        String publish = new String(
+//                "BEGIN:VCALENDAR" + System.lineSeparator() + 
+//                "METHOD:PUBLISH" + System.lineSeparator() + 
+//                "PRODID:-//JFxtras//iCalendarAgenda 1.0//EN" + System.lineSeparator() + 
+//                "VERSION:2.0" + System.lineSeparator() + 
+//                "BEGIN:VEVENT" + System.lineSeparator() + 
+//                "CATEGORIES:group05" + System.lineSeparator() + 
+//                "DTSTART:20151109T090000" + System.lineSeparator() + 
+//                "DTEND:20151109T103000" + System.lineSeparator() + 
+//                "DESCRIPTION:Daily1 Description" + System.lineSeparator() + 
+//                "SUMMARY:Edited summary" + System.lineSeparator() + 
+//                "DTSTAMP:20150110T080000Z" + System.lineSeparator() + 
+//                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() + 
+//                "RRULE:FREQ=DAILY" + System.lineSeparator() + 
+//                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() + 
+//                "SEQUENCE:1" + System.lineSeparator() + 
+//                "END:VEVENT" + System.lineSeparator() + 
+//                "END:VCALENDAR");
+//        mainVCalendar.processITIPMessage(publish);
+//        System.out.println(mainVCalendar.toContent());
+//        String expectedContent = new String(
+//                "BEGIN:VCALENDAR" + System.lineSeparator() + 
+//                "BEGIN:VEVENT" + System.lineSeparator() + 
+//                "CATEGORIES:group05" + System.lineSeparator() + 
+//                "DTSTART:20151109T100000" + System.lineSeparator() + 
+//                "DTEND:20151109T110000" + System.lineSeparator() + 
+//                "DESCRIPTION:Daily1 Description" + System.lineSeparator() + 
+//                "SUMMARY:Edited summary" + System.lineSeparator() + 
+//                "DTSTAMP:20150110T080000Z" + System.lineSeparator() + 
+//                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() + 
+//                "RRULE:FREQ=DAILY" + System.lineSeparator() + 
+//                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() + 
+//                "END:VEVENT" + System.lineSeparator() + 
+//                "END:VCALENDAR");
+//        assertEquals(expectedContent, mainVCalendar.toContent());
+//    }
     
     @Test // the time has been changed, an end time has been added, and the sequence number has been adjusted.
     public void canProcessPublishToReplace()

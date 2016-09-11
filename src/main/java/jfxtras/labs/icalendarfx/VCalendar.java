@@ -683,6 +683,17 @@ public class VCalendar extends VParentBase
     }
     
     /**
+     * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
+     * based on the methods in {@link #getITIPFactory()}
+     * 
+     * @param itipMessage  iTIP message
+     */
+    public void processITIPMessage(String itipMessage)
+    {
+        processITIPMessage(VCalendar.parse(itipMessage));
+    }
+    
+    /**
      * Parse component text to new VComponent with {@link RequestStatus REQUEST-STATUS} properties containing 
      * the result of the process, such as success message or error report.
      * 

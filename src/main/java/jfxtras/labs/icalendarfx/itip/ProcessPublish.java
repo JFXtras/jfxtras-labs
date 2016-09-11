@@ -145,10 +145,14 @@ public class ProcessPublish implements Processable
                         }                        
                     }
                 }
-                if (hasOrganizer && hasNoAttendees && isNewSequenceHigher)
-                {
-                    mainVCalendar.addVComponent(c); // add published VComponent
-                }
+//                System.out.println("mainVCalendar:" + mainVCalendar.getAllVComponents().size());
+
+//                if (hasOrganizer && hasNoAttendees && isNewSequenceHigher)
+//                {
+//                    mainVCalendar.addVComponent(c); // add published VComponent
+//                }
+//                System.out.println("mainVCalendar:" + mainVCalendar.getAllVComponents().size());
+
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
                 // TODO

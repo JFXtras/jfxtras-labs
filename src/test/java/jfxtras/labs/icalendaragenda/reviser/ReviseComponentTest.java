@@ -31,30 +31,38 @@ public class ReviseComponentTest
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
-        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
-        vComponents.add(vComponentEdited);
-        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
-        vComponentEdited.setSummary("Edited summary");
+        VEvent vComponent = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponent);
+        VEvent vComponentOriginalCopy = new VEvent(vComponent);
+        vComponent.setSummary("Edited summary");
 
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 
-        List<VCalendar> itipMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+//        System.out.println(mainVCalendar.toContent());
+
+        List<VCalendar> itipMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponent))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
 //                .withVComponents(vComponents)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentEdited(vComponent)
                 .withVComponentOriginal(vComponentOriginalCopy)
                 .revise();
         
-        itipMessages.forEach(System.out::println);
-        System.out.println("itipmessages:" + itipMessages.size());
-        itipMessages.forEach(m -> mainVCalendar.processITIPMessage(m));
+        assertEquals(1, itipMessages.size());
+        
+        mainVCalendar.processITIPMessage(itipMessages.get(0));
+        
+//        itipMessages.forEach(System.out::println);
+//        System.out.println("itipmessages:" + itipMessages.size());
+//        itipMessages.forEach(m -> mainVCalendar.processITIPMessage(m));
+        
+//        System.out.println(mainVCalendar.getAllVComponents().size());
 
-        vComponents.forEach(System.out::println);
+//        vComponents.forEach(System.out::println);
         assertEquals(1, vComponents.size());
         VEvent myComponent = vComponents.get(0);
         assertEquals(LocalDateTime.of(2015, 11, 9, 9, 0), myComponent.getDateTimeStart().getValue());        
