@@ -279,6 +279,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                 switch (changeResponse)
                 {
                 case ALL:
+                {
                     adjustDateTime(vComponentEditedCopy);
                     
                     VCalendar publishMessage = Reviser.defaultPublishVCalendar();
@@ -292,26 +293,40 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                         cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
                         itipMessages.add(cancelMessage);
                     }
-                    
-                    // GET RECURRENCES - MAKE CHANGES - ADD TO NEW VCALENDAR
-                    // ADD EDITED MAIN TO NEW VCALENDAR
-                    // TODO - NEED LIST OF VCALENDARS - ONE TO PUBLISH CHANGES, OTHER TO CANCEL RECURRENCES (IF PRESENT)
-//                    getVComponents().removeAll(getVComponentEdited().recurrenceChildren()); // Why is this happening?
                     break;
+                }
                 case ALL_IGNORE_RECURRENCES:
                     adjustDateTime(vComponentEditedCopy);
                     adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     break;
                 case CANCEL:
+                    break;
 //                    getVComponents().remove(getVComponentEdited());
 //                    getVComponents().add(vComponentOriginalCopy);
-                    return null;
+//                    return null;
 //                    return Arrays.asList(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
+                {
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    revisedVComponents.add(0, vComponentOriginalCopy);
-//                    getVComponents().removeAll(getVComponentEdited().recurrenceChildren());
+                    
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    publishMessage.addVComponent(vComponentEditedCopy);
+                    publishMessage.addVComponent(vComponentOriginalCopy);
+                    itipMessages.add(publishMessage);
+
+                    List<VDisplayableBase<?>> children = getVComponentEdited().recurrenceChildren();
+                    if (children.size() > 0)
+                    {
+                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
+                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
+                        itipMessages.add(cancelMessage);
+                    }
                     break;
+                }
+                    
+//                    revisedVComponents.add(0, vComponentOriginalCopy);
+//                    getVComponents().removeAll(getVComponentEdited().recurrenceChildren());
+//                    break;
                 case THIS_AND_FUTURE_IGNORE_RECURRENCES:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
@@ -319,9 +334,14 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
                     revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
                 case ONE:
+                {
                     editOne(vComponentEditedCopy);
-                    revisedVComponents.add(0, vComponentOriginalCopy);
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    publishMessage.addVComponent(vComponentEditedCopy);
+                    itipMessages.add(publishMessage);
+//                    revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
+                }
                 default:
                     throw new RuntimeException("Unsupprted response:" + changeResponse);
                 }

@@ -109,6 +109,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayableBase<T>, U ex
     
     @FXML private void handleCancelButton()
     {
+        // TODO - WITH PUBLISH IN MIND, I THINK THIS SHOULD RETURN NULL (MUST BE EDITING A COPY OF ORIGINAL THAT IS ABANDONED)
         vComponents.remove(vComponent);
         vComponents.add(vComponentOriginalCopy);
         newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden

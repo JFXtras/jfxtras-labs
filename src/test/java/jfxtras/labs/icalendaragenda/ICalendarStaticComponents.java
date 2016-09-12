@@ -55,6 +55,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 16, 11, 0))
                 .withUniqueIdentifier("20150110T080000-002@jfxtras.org")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3))));
@@ -93,6 +94,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withUniqueIdentifier("20150110T080000-002@jfxtras.org")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY)));

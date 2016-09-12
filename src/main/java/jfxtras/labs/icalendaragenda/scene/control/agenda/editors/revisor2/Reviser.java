@@ -25,6 +25,8 @@ public interface Reviser
 {
     /** Revise a calendar component.  Returns the result of the revision */
     List<VCalendar> revise();
+    
+    // TODO - ADD A INITIALIZE METHOD FOR AN ARRAY OF INPUT OBJECT PARAMETERS
 
     public static VCalendar defaultPublishVCalendar()
     {
