@@ -182,6 +182,7 @@ public final class ICalendarStaticComponents
                 .withDuration(Duration.ofMinutes(60))
                 .withDescription("Individual Description")
                 .withSummary("Individual Summary")
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-007@jfxtras.org");
     }
@@ -200,6 +201,7 @@ public final class ICalendarStaticComponents
     public static VEvent getIndividualZoned()
     {
         return new VEvent()
+                .withOrganizer("ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org")
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
@@ -227,6 +229,7 @@ public final class ICalendarStaticComponents
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY))
                 .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withDateTimeEnd(LocalDate.of(2015, 11, 9));
     }
     
