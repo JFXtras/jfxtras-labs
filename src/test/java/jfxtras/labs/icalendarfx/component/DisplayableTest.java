@@ -19,7 +19,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -72,7 +72,7 @@ public class DisplayableTest
     @Test
     public void canBuildDisplayable() throws InstantiationException, IllegalAccessException
     {
-        List<VDisplayableBase<?>> components = Arrays.asList(
+        List<VDisplayable<?>> components = Arrays.asList(
                 new VEvent()
                     .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withCategories("group03","group04","group05")
@@ -135,7 +135,7 @@ public class DisplayableTest
                 ZonedDateTime.of(LocalDateTime.of(1996, 3, 13, 1, 0), ZoneId.of("Z"))
                 );
         
-        for (VDisplayableBase<?> builtComponent : components)
+        for (VDisplayable<?> builtComponent : components)
         {
             String componentName = builtComponent.name();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

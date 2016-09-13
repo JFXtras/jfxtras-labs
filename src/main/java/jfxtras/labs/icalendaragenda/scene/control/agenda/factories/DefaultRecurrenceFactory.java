@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Optional;
 
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VLocatable;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
@@ -30,9 +30,9 @@ public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
         this.appointmentGroups = appointmentGroups;
     }
 
-    /** Make {@link AppointmentImplTemporal} from {@link VDisplayableBase} */
+    /** Make {@link AppointmentImplTemporal} from {@link VDisplayable} */
     @Override
-    Appointment makeRecurrence(VDisplayableBase<?> vComponent, Temporal startTemporal)
+    Appointment makeRecurrence(VDisplayable<?> vComponent, Temporal startTemporal)
     {
         Boolean isWholeDay = vComponent.getDateTimeStart().getValue() instanceof LocalDate;
         final String description;

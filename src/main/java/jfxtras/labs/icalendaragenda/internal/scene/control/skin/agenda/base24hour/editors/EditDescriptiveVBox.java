@@ -39,7 +39,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -52,7 +52,7 @@ import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /** 
- * Base controller for editing descriptive properties in a {@link VDisplayableBase} component.
+ * Base controller for editing descriptive properties in a {@link VDisplayable} component.
  * Edits the following properties: {@link DateTimeStart}, {@link DateTimeEnd}, {@link Summary}, {@link Description}
  * {@link Location}, {@link Categories}
  * <p>
@@ -62,9 +62,9 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  * 
  * @author David Bal
  * 
- * @param <T> subclass of {@link VDisplayableBase}
+ * @param <T> subclass of {@link VDisplayable}
  */
-public abstract class EditDescriptiveVBox<T extends VDisplayableBase<T>> extends VBox
+public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBox
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     public ResourceBundle getResources() { return resources; }

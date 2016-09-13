@@ -43,7 +43,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFac
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -70,7 +70,7 @@ import jfxtras.util.NodeUtil;
 /**
  * <p>The {@link ICalendarAgenda} control is designed to take a {@link VCalendar VCALENDAR} object,
  * which is based on the iCalendar RFC 5545 standard, and renders it in {@link Agenda}, which is a calendar
- * display control. {@link ICalendarAgenda} renders only the {@link VDisplayableBase displayable}
+ * display control. {@link ICalendarAgenda} renders only the {@link VDisplayable displayable}
  * iCalendar components which are {@link VEvent VEVENT}, {@link VTodo VTODO}, and {@link VJournal VJOURNAL}.
  * Other calendar components are ignored.</p>
  * 
@@ -108,7 +108,7 @@ import jfxtras.util.NodeUtil;
  *   <li>A default factory is included that creates the default {@link AppointmentImplTemporal} objects
  *   <li>A custom factory can be added to create custom {@link Appointment} objects.
  *   </ul>
- * <li>Uses an abstract {@link VComponentFactory} to create {@link VDisplayableBase} objects when new events
+ * <li>Uses an abstract {@link VComponentFactory} to create {@link VDisplayable} objects when new events
  *  are drawn by clicking and drag-and-drop actions.
  *   <ul>
  *   <li>A default factory is included that creates {@link VEvent VEVENT} and {@link VTodo VTODO} components
@@ -222,7 +222,7 @@ public class ICalendarAgenda extends Agenda
      * The original is needed for the RECURRENCE-ID. property */
     private final Map<Integer, Temporal> appointmentStartOriginalMap = new HashMap<>();
     /* Map to match the System.identityHashCode of each Appointment with the VComponent it represents. */
-    private final Map<Integer, VDisplayableBase<?>> appointmentVComponentMap = new HashMap<>();
+    private final Map<Integer, VDisplayable<?>> appointmentVComponentMap = new HashMap<>();
     /* Map to match the System.identityHashCode of each VComponent with a List of Appointments it represents */
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();
     /* When a new appointment is drawn, it's added to this map to indicate SEQUENCE shouldn't be incremented
@@ -243,7 +243,7 @@ public class ICalendarAgenda extends Agenda
     {
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
-        VDisplayableBase<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
+        VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
         System.out.println(vComponent0.toContent());
 
         alert.initOwner(this.getScene().getWindow());
@@ -269,7 +269,7 @@ public class ICalendarAgenda extends Agenda
                     getEditAppointmentCallback().call(appointment);
                 } else if (buttonText.equals(Settings.resources.getString("delete")))
                 {
-                    VDisplayableBase<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
+                    VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
                     Object[] params = new Object[] {
                             DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
                             appointment.getStartTemporal(),
@@ -365,7 +365,7 @@ public class ICalendarAgenda extends Agenda
          */
         Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
         {
-            VDisplayableBase<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
+            VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
             Object[] params = reviseParamGenerator(vComponent, appointment);
             SimpleRevisorFactory.newReviser(vComponent, params).revise();
             appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
@@ -383,7 +383,7 @@ public class ICalendarAgenda extends Agenda
          */
         Callback<Appointment, Void> editAppointmentCallback = (Appointment appointment) ->
         {
-            VDisplayableBase<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
+            VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
             if (vComponent == null)
             {
                 // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.
@@ -538,7 +538,7 @@ public class ICalendarAgenda extends Agenda
          * VComponents are removed.
          * Keeps appointments and vComponents synchronized.
          */
-        ListChangeListener<VDisplayableBase<?>> vComponentsChangeListener = (ListChangeListener.Change<? extends VDisplayableBase<?>> change) ->
+        ListChangeListener<VDisplayable<?>> vComponentsChangeListener = (ListChangeListener.Change<? extends VDisplayable<?>> change) ->
         {
             while (change.next())
             {
@@ -631,7 +631,7 @@ public class ICalendarAgenda extends Agenda
     } // end of constructor
     
     /** Generate the parameters required for {@link SimpleRevisorFactory} */
-    private Object[] reviseParamGenerator(VDisplayableBase<?> vComponent, Appointment appointment)
+    private Object[] reviseParamGenerator(VDisplayable<?> vComponent, Appointment appointment)
     {
         if (vComponent == null)
         {
@@ -687,7 +687,7 @@ public class ICalendarAgenda extends Agenda
     }
     
     /* Make Appointments by calling the RecurrenceFactory */
-    private Collection<Appointment> makeAppointments(VDisplayableBase<?> v)
+    private Collection<Appointment> makeAppointments(VDisplayable<?> v)
     {
         List<Appointment> myAppointments = getRecurrenceFactory().makeRecurrences(v);
         myAppointments.forEach(a -> 

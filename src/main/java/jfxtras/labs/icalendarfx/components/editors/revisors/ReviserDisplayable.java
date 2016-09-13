@@ -21,7 +21,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -33,14 +33,14 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
- * Handles revising one or all recurrences of a {@link VDisplayableBase}
+ * Handles revising one or all recurrences of a {@link VDisplayable}
  * 
  * @author David Bal
  *
  * @param <T> concrete implementation of this class
- * @param <U> concrete {@link VDisplayableBase} class
+ * @param <U> concrete {@link VDisplayable} class
  */
-public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> implements Reviser
+public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implements Reviser
 {
     public ReviserDisplayable(U vComponent)
     {
@@ -50,13 +50,13 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
     /*
      * VCOMPONENT EDITED
      */
-    /** Gets the value of the edited {@link VDisplayableBase} */
+    /** Gets the value of the edited {@link VDisplayable} */
     public U getVComponentEdited() { return vComponentEdited; }
     private U vComponentEdited;
-    /** Sets the value of the edited {@link VDisplayableBase} */
+    /** Sets the value of the edited {@link VDisplayable} */
     public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
     /**
-     * Sets the value of the edited {@link VDisplayableBase}
+     * Sets the value of the edited {@link VDisplayable}
      * 
      * @return - this class for chaining
      * @see VCalendar
@@ -66,13 +66,13 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
     /*
      * VCOMPONENT ORIGINAL
      */
-    /** Gets the value of the original {@link VDisplayableBase} */
+    /** Gets the value of the original {@link VDisplayable} */
     public U getVComponentOriginal() { return vComponentOriginal; }
     private U vComponentOriginal;
-    /** Sets the value of the original {@link VDisplayableBase} */
+    /** Sets the value of the original {@link VDisplayable} */
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
     /**
-     * Sets the value of the edited {@link VDisplayableBase}
+     * Sets the value of the edited {@link VDisplayable}
      * 
      * @return - this class for chaining
      * @see VCalendar
@@ -585,7 +585,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayableBase<U>> imple
      * to match the {@link UniqueIdentifier} of the revised VComponent */
     private void thisAndFutureIgnoreRecurrences(List<U> revisedVComponents, U vComponentEditedCopy)
     {
-        List<VDisplayableBase<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
+        List<VDisplayable<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
         if (! recurrenceChildren.isEmpty())
         {
             recurrenceChildren.stream().forEach(c -> 

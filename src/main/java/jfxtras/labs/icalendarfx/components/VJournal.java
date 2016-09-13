@@ -60,7 +60,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
  * @author David Bal
  *
  */
-public class VJournal extends VDisplayableBase<VJournal>
+public class VJournal extends VDisplayable<VJournal>
 {
     /**
      * DESCRIPTION:

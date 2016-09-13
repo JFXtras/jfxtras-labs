@@ -1,9 +1,11 @@
 package jfxtras.labs.icalendaragenda.reviser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -21,6 +23,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.Revise
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -172,6 +175,7 @@ public class ReviseComponentTest
         itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
 
         assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent myComponentRepeats = vComponents.get(0);
         
         assertEquals(vComponentOriginalCopy, myComponentRepeats);
@@ -187,24 +191,29 @@ public class ReviseComponentTest
         assertEquals(Collections.emptyList(), myComponentIndividual.recurrenceChildren());
 
         // 2nd edit - edit component with RecurrenceID (individual)
+        VEvent vComponentEditedIndividual = new VEvent(myComponentIndividual);
+        VEvent vComponentIndividualCopy = new VEvent(myComponentIndividual);
+        
+        vComponentEditedIndividual.setSummary("new summary");
         Temporal startOriginalRecurrence2 = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal startRecurrence2 = LocalDateTime.of(2016, 5, 16, 12, 0);
         Temporal endRecurrence2 = LocalDateTime.of(2016, 5, 16, 13, 0);
 
-        VEvent vComponentEditedCopy = new VEvent(myComponentIndividual);
-        ReviserVEvent reviser2 = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEditedCopy))
+        ReviserVEvent reviser2 = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentIndividualCopy))
                 .withDialogCallback((m) -> null) // no dialog required
                 .withEndRecurrence(endRecurrence2)
                 .withStartOriginalRecurrence(startOriginalRecurrence2)
                 .withStartRecurrence(startRecurrence2)
-                .withVComponentEdited(myComponentIndividual)
-                .withVComponentOriginal(vComponentEditedCopy);
-        reviser2.revise();
+                .withVComponentEdited(vComponentEditedIndividual)
+                .withVComponentOriginal(vComponentIndividualCopy);
+        itipMessages = reviser2.revise();
+        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         assertEquals(2, vComponents.size());
         
         // Check child components
         VEvent myComponentIndividual2 = vComponents.get(1);
         assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.recurrenceChildren());
+        assertEquals("new summary", myComponentIndividual2.getSummary().getValue());
         assertEquals(Collections.emptyList(), myComponentIndividual2.recurrenceChildren());
     }
     
@@ -253,7 +262,6 @@ public class ReviseComponentTest
         vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
         VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
-        
 
         vComponentEdited.setSummary("Edited summary");
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
@@ -274,8 +282,9 @@ public class ReviseComponentTest
         itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         
         assertEquals(2, vComponents.size());
-        VEvent myComponentFuture = vComponents.get(0);
-        VEvent myComponentOriginal = vComponents.get(1);
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentOriginal = vComponents.get(0);
         assertTrue(vComponentOriginalCopy == myComponentOriginal);
         assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
         assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
@@ -287,156 +296,130 @@ public class ReviseComponentTest
         RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
     }
-//    
-//    @Test // change INTERVAL
-//    public void canEditThisAndFuture2()
-//    {
-//        VCalendar vCalendar = new VCalendar();
-//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
-//        
-//        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
-//        vComponents.add(vComponentEdited);
-//        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
-//        vComponentEdited.setSummary("Edited summary");
-//        vComponentEdited.getRecurrenceRule().getValue().setInterval(2);
-//
-//        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
-//        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
-//        Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
-//
-//        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
-//                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
-//                .withEndRecurrence(endRecurrence)
-//                .withStartOriginalRecurrence(startOriginalRecurrence)
-//                .withStartRecurrence(startRecurrence)
-//                .withVComponents(vComponents)
-//                .withVComponentEdited(vComponentEdited)
-//                .withVComponentOriginal(vComponentOriginalCopy);
-//        reviser.revise();
-//
-//        assertEquals(2, vComponents.size());
-//        VEvent myComponentFuture = vComponents.get(1);
-//        VEvent myComponentOriginal = vComponents.get(0);
-//        assertTrue(vComponentOriginalCopy == myComponentOriginal);
-//        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
-//        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
-//        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
-//        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
-//        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-//        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
-//        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
-//    }
-//    
-//    @Test // change INTERVAL too
-//    public void canChangeToWholeDayThisAndFuture()
-//    {
-//        VCalendar vCalendar = new VCalendar();
-//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
-//        
-//        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
-//        vComponents.add(vComponentEdited);
-//        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
-//        vComponentEdited.setSummary("Edited summary");
-//        vComponentEdited.getRecurrenceRule().getValue().setInterval(2);
-//
-//        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
-//        Temporal startRecurrence = LocalDate.of(2016, 5, 16);
-//        Temporal endRecurrence = LocalDate.of(2016, 5, 17);
-//
-//        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
-//                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
-//                .withEndRecurrence(endRecurrence)
-//                .withStartOriginalRecurrence(startOriginalRecurrence)
-//                .withStartRecurrence(startRecurrence)
-//                .withVComponents(vComponents)
-//                .withVComponentEdited(vComponentEdited)
-//                .withVComponentOriginal(vComponentOriginalCopy);
-//        reviser.revise();
-//
-//        assertEquals(2, vComponents.size());
-//        VEvent myComponentFuture = vComponents.get(1);
-//        VEvent myComponentOriginal = vComponents.get(0);
-//        assertTrue(vComponentOriginalCopy == myComponentOriginal);
-//        assertEquals(LocalDate.of(2016, 5, 16), myComponentFuture.getDateTimeStart().getValue());        
-//        assertEquals(LocalDate.of(2016, 5, 17), myComponentFuture.getDateTimeEnd().getValue());        
-//        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
-//        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
-//        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-//        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
-//        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
-//    }
-//    
-//    @Test
-//    public void canChangeToWholeDayAll()
-//    {
-//        VCalendar vCalendar = new VCalendar();
-//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
-//        
-//        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
-//        vComponents.add(vComponentEdited);
-//        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
-//        vComponentEdited.setSummary("Edited summary");
-//
-//        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
-//        Temporal startRecurrence = LocalDate.of(2016, 5, 15); // shifts back 1 day
-//        Temporal endRecurrence = LocalDate.of(2016, 5, 16);
-//
-//        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
-//                .withDialogCallback((m) -> ChangeDialogOption.ALL)
-//                .withEndRecurrence(endRecurrence)
-//                .withStartOriginalRecurrence(startOriginalRecurrence)
-//                .withStartRecurrence(startRecurrence)
-//                .withVComponents(vComponents)
-//                .withVComponentEdited(vComponentEdited)
-//                .withVComponentOriginal(vComponentOriginalCopy);
-//        reviser.revise();
-//
-//        assertEquals(1, vComponents.size());
-//        VEvent myComponent = vComponents.get(0);
-//        assertEquals(LocalDate.of(2015, 11, 8), myComponent.getDateTimeStart().getValue());        
-//        assertEquals(LocalDate.of(2015, 11, 9), myComponent.getDateTimeEnd().getValue());        
-//        assertEquals("Edited summary", myComponent.getSummary().getValue());
-//    }
-//    
-//    @Test
-//    public void canChangOneWholeDayToTimeBased()
-//    {
-//        VCalendar vCalendar = new VCalendar();
-//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
-//        
-//        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
-//        vComponents.add(vComponentOriginal);
-//        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
-//        vComponentOriginal.setSummary("Edited summary");
-//
-//        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
-//        Temporal startRecurrence = LocalDate.of(2016, 5, 16);
-//        Temporal endRecurrence = LocalDate.of(2016, 5, 17);
-//
-//        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentOriginal))
-//                .withDialogCallback((m) -> ChangeDialogOption.ONE)
-//                .withEndRecurrence(endRecurrence)
-//                .withStartOriginalRecurrence(startOriginalRecurrence)
-//                .withStartRecurrence(startRecurrence)
-//                .withVComponents(vComponents)
-//                .withVComponentEdited(vComponentOriginal)
-//                .withVComponentOriginal(vComponentOriginalCopy);
-//        reviser.revise();
-//
-//        assertEquals(2, vComponents.size());
-//        VEvent repeatComponent = vComponents.get(0);
-//        VEvent individualComponent = vComponents.get(1);
-//        assertEquals(LocalDate.of(2016, 5, 16), individualComponent.getDateTimeStart().getValue());        
-//        assertEquals(LocalDate.of(2016, 5, 17), individualComponent.getDateTimeEnd().getValue());        
-//        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 0), individualComponent.getRecurrenceId().getValue());        
-//        assertEquals("Edited summary", individualComponent.getSummary().getValue());
-//        assertEquals(repeatComponent, vComponentOriginalCopy);
-//        assertNull(individualComponent.getRecurrenceRule());
-//    }
+    
+    @Test // change INTERVAL
+    public void canEditThisAndFuture2()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
+        
+        vComponentEdited.setSummary("Edited summary");
+        vComponentEdited.getRecurrenceRule().getValue().setInterval(2);
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        List<VCalendar> itipMessages = reviser.revise();
+        
+        assertEquals(1, itipMessages.size());
+        assertEquals(2, itipMessages.get(0).getVEvents().size());
+        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentOriginal = vComponents.get(0);
+        assertTrue(vComponentOriginalCopy == myComponentOriginal);
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
+        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
+    }
+    
+    
+    @Test
+    public void canChangeToWholeDayAll()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
+
+        vComponentEdited.setSummary("Edited summary");
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDate.of(2016, 5, 15); // shifts back 1 day
+        Temporal endRecurrence = LocalDate.of(2016, 5, 16);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.ALL)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        List<VCalendar> itipMessages = reviser.revise();
+        
+        assertEquals(1, itipMessages.size());
+        assertEquals(1, itipMessages.get(0).getVEvents().size());
+        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+
+        assertEquals(1, vComponents.size());
+        VEvent myComponent = vComponents.get(0);
+        assertEquals(LocalDate.of(2015, 11, 8), myComponent.getDateTimeStart().getValue());        
+        assertEquals(LocalDate.of(2015, 11, 9), myComponent.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponent.getSummary().getValue());
+    }
+    
+    @Test
+    public void canChangOneWholeDayToTimeBased()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
+        vComponentEdited.setSummary("Edited summary");
+
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDate.of(2016, 5, 16);
+        Temporal endRecurrence = LocalDate.of(2016, 5, 17);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentOriginal))
+                .withDialogCallback((m) -> ChangeDialogOption.ONE)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        List<VCalendar> itipMessages = reviser.revise();
+        
+        assertEquals(1, itipMessages.size());
+        assertEquals(1, itipMessages.get(0).getVEvents().size());
+        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent repeatComponent = vComponents.get(0);
+        VEvent individualComponent = vComponents.get(1);
+        assertEquals(LocalDate.of(2016, 5, 16), individualComponent.getDateTimeStart().getValue());        
+        assertEquals(LocalDate.of(2016, 5, 17), individualComponent.getDateTimeEnd().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 0), individualComponent.getRecurrenceId().getValue());        
+        assertEquals("Edited summary", individualComponent.getSummary().getValue());
+        assertEquals(repeatComponent, vComponentOriginalCopy);
+        assertNull(individualComponent.getRecurrenceRule());
+    }
 //    
 //    @Test
 //    public void canChangeWholeDayToTimeBasedThisAndFuture()

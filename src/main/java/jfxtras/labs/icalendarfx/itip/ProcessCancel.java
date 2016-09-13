@@ -8,7 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
 /**
@@ -131,9 +131,9 @@ public class ProcessCancel implements Processable
     {
         inputVCalendar.getAllVComponents().forEach(c ->
         {
-            if (c instanceof VDisplayableBase)
+            if (c instanceof VDisplayable)
             {
-                VDisplayableBase<?> vDisplayable = ((VDisplayableBase<?>) c);
+                VDisplayable<?> vDisplayable = ((VDisplayable<?>) c);
                 String uid = vDisplayable.getUniqueIdentifier().getValue();
                 Temporal recurrenceID = (vDisplayable.getRecurrenceId() != null) ? vDisplayable.getRecurrenceId().getValue() : null;
                 // match RECURRENCE-ID (if present)
@@ -144,12 +144,12 @@ public class ProcessCancel implements Processable
                     // if no recurrence date - delete all vcomponents
                     if (recurrenceID == null)
                     { // delete all related VComponents
-                        List<VDisplayableBase<?>> relatedVComponents = mainVCalendar.uidComponentsMap().get(uid);
+                        List<VDisplayable<?>> relatedVComponents = mainVCalendar.uidComponentsMap().get(uid);
                         List<? extends VComponent> vComponents = mainVCalendar.getVComponents(c.getClass());
                         vComponents.removeAll(relatedVComponents);
                     } else
                     {
-                        VDisplayableBase<?> matchingVComponent = mainVCalendar.uidComponentsMap().get(uid)
+                        VDisplayable<?> matchingVComponent = mainVCalendar.uidComponentsMap().get(uid)
                                 .stream()
                                 .filter(v -> {
                                     Temporal mRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
@@ -164,7 +164,7 @@ public class ProcessCancel implements Processable
 //                            mainVCalendar.removeVComponent(matchingVComponent);
                         } else
                         { // add recurrence as EXDATE to main
-                            VDisplayableBase<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
+                            VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
                             final ObservableList<ExceptionDates> exceptions;
                             if (parentVComponent.getExceptionDates() == null)
                             {

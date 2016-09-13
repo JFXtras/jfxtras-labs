@@ -179,10 +179,10 @@ public abstract class VPrimary<T> extends VCommon<T>
     /**
      * Sorts VComponents by DTSTART date/time
      */
-    public final static Comparator<? super VPrimary<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
+    public final static Comparator<? super VPrimary<?>> VPRIMARY_COMPARATOR = (v1, v2) -> 
     {
         Temporal t1 = v1.getDateTimeStart().getValue();
         Temporal t2 = v2.getDateTimeStart().getValue();
-        return DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t1, t2);
+        return DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(t1, t2);
     };
 }

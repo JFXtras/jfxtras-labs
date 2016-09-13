@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.Objects;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
@@ -102,9 +102,9 @@ public class ProcessPublish implements Processable
     {
         inputVCalendar.getAllVComponents().forEach(c ->
         {
-            if (c instanceof VDisplayableBase)
+            if (c instanceof VDisplayable)
             {
-                VDisplayableBase<?> vDisplayable = ((VDisplayableBase<?>) c);
+                VDisplayable<?> vDisplayable = ((VDisplayable<?>) c);
                 
                 final boolean hasOrganizer = vDisplayable.getOrganizer() != null;
                 if (! hasOrganizer) throw new IllegalArgumentException("Can't process PUBLISH method for VCALENDAR: ORGANIZER MUST be present, and it's absent");
@@ -124,7 +124,7 @@ public class ProcessPublish implements Processable
                      * if new doesn't have recurrence id, but match exists, replace match
                      * If no match then just add - can't have recurrence id 
                      */
-                    VDisplayableBase<?> matchingMainVComponent = mainVCalendar.uidComponentsMap().get(uid)
+                    VDisplayable<?> matchingMainVComponent = mainVCalendar.uidComponentsMap().get(uid)
                             .stream()
                             .filter(v -> {
                                 Temporal mRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
@@ -132,7 +132,7 @@ public class ProcessPublish implements Processable
                             })
                             .findAny()
                             .orElseGet(() -> null);
-                    
+
                     if (matchingMainVComponent != null)
                     {
                         int oldSequence = (matchingMainVComponent.getSequence() == null) ? 0 : matchingMainVComponent.getSequence().getValue();

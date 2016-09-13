@@ -52,7 +52,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
         // check change to state
         assertEquals(2, agenda.getVCalendar().getVEvents().size());
         assertEquals(6, agenda.appointments().size());
-        Collections.sort(agenda.getVCalendar().getVEvents(), VPrimary.VCOMPONENT_COMPARATOR);
+        Collections.sort(agenda.getVCalendar().getVEvents(), VPrimary.VPRIMARY_COMPARATOR);
         VEvent v0 = agenda.getVCalendar().getVEvents().get(0);
         VEvent v1 = agenda.getVCalendar().getVEvents().get(1);
 //        RecurrenceRule3 r = ICalendarStaticVEvents.getDaily1().childComponentsWithRecurrenceIDs().add(v1);

@@ -61,7 +61,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendarfx.components.VDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -76,16 +76,16 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
- * VBox containing controls to edit the {@link RecurrenceRule} in a {@link VDisplayableBase}.
+ * VBox containing controls to edit the {@link RecurrenceRule} in a {@link VDisplayable}.
  * <p>
  * Note: Only supports one Exception Date property (the iCalendar standard allows multiple Exception
  * Date properties)
  * 
  * @author David Bal
  * 
- * @param <T> subclass of {@link VDisplayableBase}
+ * @param <T> subclass of {@link VDisplayable}
  */
-public abstract class EditRecurrenceRuleVBox<T extends VDisplayableBase<T>> extends VBox
+public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends VBox
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
@@ -945,7 +945,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayableBase<T>> exte
     }
     
     /* Set controls to values in rRule */
-    private void setInitialValues(VDisplayableBase<?> vComponent)
+    private void setInitialValues(VDisplayable<?> vComponent)
     {
         final int initialInterval;
         if (rrule.getInterval() == null)
@@ -1322,7 +1322,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayableBase<T>> exte
         return builder.toString();
     }
     
-    private boolean isSupported(VDisplayableBase<?> vComponent)
+    private boolean isSupported(VDisplayable<?> vComponent)
     {
         if (rrule == null)
         {

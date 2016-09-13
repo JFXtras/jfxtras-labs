@@ -51,7 +51,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  *
  * @param <T> concrete subclass
  */
-public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepeatable<T>, VDescribable<T>, VLastModified<T>
+public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatable<T>, VDescribable<T>, VLastModified<T>
 {
     /**
      * This property provides the capability to associate a document object with a calendar component.
@@ -902,14 +902,14 @@ public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepea
     /*
      * CONSTRUCTORS
      */
-    public VDisplayableBase() { super(); }
+    public VDisplayable() { super(); }
     
 //    public VComponentDisplayableBase(String contentLines)
 //    {
 //        super(contentLines);
 //    }
     
-    public VDisplayableBase(VDisplayableBase<T> source)
+    public VDisplayable(VDisplayable<T> source)
     {
         super(source);
     }
@@ -925,7 +925,7 @@ public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepea
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;
-        List<VDisplayableBase<?>> children = recurrenceChildren();
+        List<VDisplayable<?>> children = recurrenceChildren();
         if (children != null)
         {
             // If present, remove recurrence ID original values
@@ -975,18 +975,18 @@ public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepea
      */
     /**  Callback to make list of child components (those with RECURRENCE-ID and same UID)
      * Callback assigned in {@link VCalendar#displayableListChangeListener } */
-    private Callback<VDisplayableBase<?>, List<VDisplayableBase<?>>> makeRecurrenceChildrenListCallBack;
+    private Callback<VDisplayable<?>, List<VDisplayable<?>>> makeRecurrenceChildrenListCallBack;
 //    @Override
 //    public Callback<VComponentDisplayableBase<?>, List<VComponentDisplayableBase<?>>> getChildComponentsListCallBack()
 //    {
 //        return makeChildComponentsListCallBack;
 //    }
-    public void setRecurrenceChildrenListCallBack(Callback<VDisplayableBase<?>, List<VDisplayableBase<?>>> makeRecurrenceChildrenListCallBack)
+    public void setRecurrenceChildrenListCallBack(Callback<VDisplayable<?>, List<VDisplayable<?>>> makeRecurrenceChildrenListCallBack)
     {
         this.makeRecurrenceChildrenListCallBack = makeRecurrenceChildrenListCallBack;
     }
 
-    public List<VDisplayableBase<?>> recurrenceChildren()
+    public List<VDisplayable<?>> recurrenceChildren()
     {
         if ((getRecurrenceId() == null) && (makeRecurrenceChildrenListCallBack != null))
         {
@@ -998,14 +998,14 @@ public abstract class VDisplayableBase<T> extends VPersonal<T> implements VRepea
     /*
      * RECURRENCE PARENT - (the VComponent with matching UID and no RECURRENCEID)
      */
-    private Callback<VDisplayableBase<?>, VDisplayableBase<?>> recurrenceParentCallBack;
+    private Callback<VDisplayable<?>, VDisplayable<?>> recurrenceParentCallBack;
 
-    public void setRecurrenceParentListCallBack(Callback<VDisplayableBase<?>, VDisplayableBase<?>> recurrenceParentCallBack)
+    public void setRecurrenceParentListCallBack(Callback<VDisplayable<?>, VDisplayable<?>> recurrenceParentCallBack)
     {
         this.recurrenceParentCallBack = recurrenceParentCallBack;
     }
     
-    public VDisplayableBase<?> recurrenceParent()
+    public VDisplayable<?> recurrenceParent()
     {
         if ((getRecurrenceId() != null) && (recurrenceParentCallBack != null))
         {

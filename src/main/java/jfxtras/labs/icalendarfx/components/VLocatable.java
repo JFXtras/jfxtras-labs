@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
-public abstract class VLocatable<T> extends VDisplayableBase<T> implements VDescribable2<T>, VDuration<T>
+public abstract class VLocatable<T> extends VDisplayable<T> implements VDescribable2<T>, VDuration<T>
 {
     /**
      * DESCRIPTION
