@@ -289,36 +289,18 @@ public interface VRepeatable<T> extends VComponent
     }
     default T withRecurrenceRule(String rrule)
     {
-        if (getRecurrenceRule() == null)
-        {
-            setRecurrenceRule(rrule);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setRecurrenceRule(rrule);
+        return (T) this;
     }
     default T withRecurrenceRule(RecurrenceRule rrule)
     {
-        if (getRecurrenceRule() == null)
-        {
-            setRecurrenceRule(rrule);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setRecurrenceRule(rrule);
+        return (T) this;
     }
     default T withRecurrenceRule(RecurrenceRule2 rrule)
     {
-        if (getRecurrenceRule() == null)
-        {
-            setRecurrenceRule(rrule);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setRecurrenceRule(rrule);
+        return (T) this;
     }
     
     // From VComponentPrimary

@@ -119,36 +119,18 @@ public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
     }
     public T withDateTimeStamp(ZonedDateTime dtStamp)
     {
-        if (getDateTimeStamp() == null)
-        {
-            setDateTimeStamp(dtStamp);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeStamp(dtStamp);
+        return (T) this;
     }
     public T withDateTimeStamp(String dtStamp)
     {
-        if (getDateTimeStamp() == null)
-        {
-            setDateTimeStamp(dtStamp);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeStamp(dtStamp);
+        return (T) this;
     }
     public T withDateTimeStamp(DateTimeStamp dtStamp)
     {
-        if (getDateTimeStamp() == null)
-        {
-            setDateTimeStamp(dtStamp);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeStamp(dtStamp);
+        return (T) this;
     }
 
     /**
@@ -286,37 +268,19 @@ public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
     public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); }
     public T withUniqueIdentifier(String uniqueIdentifier)
     {
-        if (getUniqueIdentifier() == null)
-        {
-            setUniqueIdentifier(uniqueIdentifier);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setUniqueIdentifier(uniqueIdentifier);
+        return (T) this;
     }
     public T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
     {
-        if (getUniqueIdentifier() == null)
-        {
-            setUniqueIdentifier(uniqueIdentifier);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setUniqueIdentifier(uniqueIdentifier);
+        return (T) this;
     }
     /** Assign UID by using UID generator callback */
     public T withUniqueIdentifier()
     {
-        if (getUniqueIdentifier() == null)
-        {
-            setUniqueIdentifier(getUidGeneratorCallback().call(null));
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setUniqueIdentifier(getUidGeneratorCallback().call(null));
+        return (T) this;
     }
     
    

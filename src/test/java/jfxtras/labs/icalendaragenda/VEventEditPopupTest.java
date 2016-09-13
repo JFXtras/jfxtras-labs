@@ -51,6 +51,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFac
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -242,6 +243,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         assertEquals("new group name", individualVEvent.getCategories().get(0).getValue().get(0));
 
         assertEquals(ICalendarStaticComponents.getDaily1(), vEvents.get(0));
+        
         VEvent editedVEvent = new VEvent()
                 .withCategories("new group name")
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 8, 0))
@@ -250,8 +252,10 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                 .withSummary("new summary")
                 .withDateTimeStamp(vEvents.get(1).getDateTimeStamp())
                 .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
+                .withOrganizer("ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org")
                 .withLocation("new location")
                 .withRecurrenceId(LocalDateTime.of(2016, 5, 15, 10, 0))
+                .withRecurrenceRule((RecurrenceRule) null)
                 .withSequence(1)
                 ;
         assertEquals(editedVEvent, individualVEvent);
@@ -1210,16 +1214,12 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
        assertEquals(expectedV0, v0);
 
        VEvent v1 = myCalendar.getVEvents().get(1);
-       VEvent expectedV1 = new VEvent()
-               .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+       VEvent expectedV1 = ICalendarStaticComponents.getDaily1()
                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
-               .withDescription("Daily1 Description")
-               .withSummary("new summary")
                .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
                .withUniqueIdentifier(v1.getUniqueIdentifier()) // uid is time-based so copy it to guarantee equality.
-               .withRecurrenceRule(new RecurrenceRule2()
-                       .withFrequency(FrequencyType.DAILY))
+               .withSummary("new summary")
                .withRelatedTo("20150110T080000-004@jfxtras.org")
                .withSequence(1);
       assertEquals(expectedV1, v1);

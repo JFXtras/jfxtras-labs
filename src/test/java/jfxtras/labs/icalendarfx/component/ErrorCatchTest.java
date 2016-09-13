@@ -63,7 +63,7 @@ public class ErrorCatchTest
             VEvent expected = new VEvent()
                     .withSummary("#1")
                     .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                    .withRequestStatus("2.37;Success, property can only occur once in a calendar component.  Subsequent property is ignored;SUMMARY:#2")
+                    .withRequestStatus("2.2;Success; invalid property ignored.  Property can only occur once in a calendar component.  Subsequent property is ignored;SUMMARY:#2")
                     ;
             assertEquals(expected, v);
     }
@@ -83,7 +83,7 @@ public class ErrorCatchTest
             VEvent expected = new VEvent()
                     .withSummary("#1")
                     .withNonStandard("X-CUSTOM-PROP:THE DATA")
-                    .withRequestStatus("2.0;Success, unknown property is ignored;IGNORE THIS LINE")
+                    .withRequestStatus("2.4;Success; unknown, non-standard property ignored.;IGNORE THIS LINE")
                     ;
             assertEquals(expected, v);
     }

@@ -32,7 +32,7 @@ public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> i
     
     public ProductIdentifier(String productIdentifier)
     {
-        super(new ProductIdentifier(productIdentifier));
+        super(productIdentifier);
     }
 
     public ProductIdentifier()
