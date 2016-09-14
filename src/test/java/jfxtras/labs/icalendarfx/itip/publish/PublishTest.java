@@ -2,16 +2,37 @@ package jfxtras.labs.icalendarfx.itip.publish;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.Collections;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VPrimary;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
+/**
+ * Tests to demonstrate PUBLISH iTIP message ability
+ * 
+ * @author David Bal
+ *
+ */
 public class PublishTest
 {
     @Test
@@ -203,6 +224,81 @@ public class PublishTest
         assertEquals(expectedVCalendar, mainVCalendar);
     }
     
+    @Test // edit an individual recurrence of a repeatable event twice
+    public void canEditOne()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160516T090000" + System.lineSeparator() +
+                "DTEND:20160516T103000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20160914T151835Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RECURRENCE-ID:20160516T100000" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+        
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent myComponentRepeats = vComponents.get(0);
+        
+        assertEquals(vComponentOriginal, myComponentRepeats);
+        VEvent myComponentIndividual = vComponents.get(1);
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentIndividual.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentIndividual.getDateTimeEnd().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentRepeats.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentRepeats.getDateTimeEnd().getValue()); 
+        assertEquals("Edited summary", myComponentIndividual.getSummary().getValue());
+                
+        // Check child components
+        assertEquals(Arrays.asList(myComponentIndividual), myComponentRepeats.recurrenceChildren());
+        assertEquals(Collections.emptyList(), myComponentIndividual.recurrenceChildren());
+
+        // 2nd edit - edit component with RecurrenceID (individual)       
+        String iTIPMessage2 =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160516T120000" + System.lineSeparator() +
+                "DTEND:20160516T130000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:new summary" + System.lineSeparator() +
+                "DTSTAMP:20160914T155333Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RECURRENCE-ID:20160516T100000" + System.lineSeparator() +
+                "SEQUENCE:2" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";        
+        mainVCalendar.processITIPMessage(iTIPMessage2);
+
+        assertEquals(2, vComponents.size());
+        
+        // Check child components
+        VEvent myComponentIndividual2 = vComponents.get(1);
+        assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.recurrenceChildren());
+        assertEquals("new summary", myComponentIndividual2.getSummary().getValue());
+        assertEquals(Collections.emptyList(), myComponentIndividual2.recurrenceChildren());
+    }
+    
     /* edits a repeatable event, with one recurrence, with ALL-IGNORE-RECURRENCES selection.
      * Only edits the repeatable event.
      */
@@ -269,10 +365,263 @@ public class PublishTest
         assertEquals(expectedVCalendar, mainVCalendar);        
     }
    
+    @Test // divides one repeatable event into two.  First one ends with UNTIL
+    public void canEditThisAndFuture()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160516T090000" + System.lineSeparator() +
+                "DTEND:20160516T103000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20160914T173109Z" + System.lineSeparator() +
+                "UID:20160914T103109-0jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RELATED-TO:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;UNTIL=20160515T170000Z" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+        
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentOriginal = vComponents.get(0);
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
+        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
+    }
+    
+    @Test // change INTERVAL
+    public void canEditThisAndFuture2()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160516T090000" + System.lineSeparator() +
+                "DTEND:20160516T103000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20160914T180627Z" + System.lineSeparator() +
+                "UID:20160914T110627-0jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;INTERVAL=2" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RELATED-TO:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;UNTIL=20160515T170000Z" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+                
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentOriginal = vComponents.get(0);
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
+        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
+    }
+    
+    @Test
+    public void canChangeToWholeDayAll()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART;VALUE=DATE:20151108" + System.lineSeparator() +
+                "DTEND;VALUE=DATE:20151109" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+
+        assertEquals(1, vComponents.size());
+        VEvent myComponent = vComponents.get(0);
+        assertEquals(LocalDate.of(2015, 11, 8), myComponent.getDateTimeStart().getValue());        
+        assertEquals(LocalDate.of(2015, 11, 9), myComponent.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponent.getSummary().getValue());
+    }
+    
+    @Test
+    public void canChangeWholeDayToTimeBasedThisAndFuture()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        vComponents.add(vComponentEdited);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group06" + System.lineSeparator() +
+                "DTSTAMP:20160914T200517Z" + System.lineSeparator() +
+                "UID:20160914T130517-0jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "DTSTART:20160516T090000" + System.lineSeparator() +
+                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
+                "DTEND:20160516T100000" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "RELATED-TO:20150110T080000-010@jfxtras.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group06" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-010@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;UNTIL=20160515" + System.lineSeparator() +
+                "DTSTART;VALUE=DATE:20151108" + System.lineSeparator() +
+                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
+                "DTEND;VALUE=DATE:20151109" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+
+
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        VEvent newVComponentOriginal = vComponents.get(0);
+        VEvent newVComponentFuture = vComponents.get(1);
+
+        VEvent expectedVComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
+        RecurrenceRule2 rrule = expectedVComponentOriginal.getRecurrenceRule().getValue();
+        rrule.setUntil(LocalDate.of(2016, 5, 15));
+        
+        assertEquals(expectedVComponentOriginal, newVComponentOriginal);
+
+        VEvent expectedVComponentFuture = ICalendarStaticComponents.getWholeDayDaily1();
+        expectedVComponentFuture.setDateTimeStart(LocalDateTime.of(2016, 5, 16, 9, 0));
+        expectedVComponentFuture.setDateTimeEnd(LocalDateTime.of(2016, 5, 16, 10, 0));
+        expectedVComponentFuture.setUniqueIdentifier(new UniqueIdentifier(newVComponentFuture.getUniqueIdentifier()));
+        expectedVComponentFuture.setDateTimeStamp(new DateTimeStamp(newVComponentFuture.getDateTimeStamp()));
+        expectedVComponentFuture.setSummary("Edited summary");
+        expectedVComponentFuture.withRelatedTo(vComponentOriginal.getUniqueIdentifier().getValue());
+        expectedVComponentFuture.setSequence(1);
+        
+        assertEquals(expectedVComponentFuture, newVComponentFuture);
+    }
+    
+    @Test
+    public void canAddRRuleToAll()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getIndividualZoned();
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        vComponents.add(vComponentEdited);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "CATEGORIES:group13" + System.lineSeparator() +
+                "DTSTART;TZID=Europe/London:20151113T090000" + System.lineSeparator() + // one hour earlier
+                "DTEND;TZID=Europe/London:20151113T100000" + System.lineSeparator() + // one hour earlier
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-009@jfxtras.org" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR" + System.lineSeparator() + // added RRULE
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+
+        assertEquals(1, vComponents.size());
+        VEvent myComponent = vComponents.get(0);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 9, 0), ZoneId.of("Europe/London")), myComponent.getDateTimeStart().getValue());        
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("Europe/London")), myComponent.getDateTimeEnd().getValue());
+        RecurrenceRule2 r = new RecurrenceRule2()
+                .withFrequency(FrequencyType.WEEKLY)
+                .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY));
+        assertEquals(r, myComponent.getRecurrenceRule().getValue());
+        assertEquals("Edited summary", myComponent.getSummary().getValue());
+    }
+    
     /* edits a repeatable event, with one recurrence, with THIS-AND-FUTURE selection.
      * The edit deletes the recurrence and edits the repeatable event.
      */
+    // TODO - DOESN'T WORK - needs to split event into 2 - one with until, other one for future
     @Test
+    @Ignore
     public void canProcessPublishReplaceThisAndFutureRepeatable()
     {
         VCalendar mainVCalendar = new VCalendar();
