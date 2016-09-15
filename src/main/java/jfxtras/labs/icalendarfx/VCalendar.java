@@ -669,28 +669,47 @@ public class VCalendar extends VParentBase
      * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
      * based on the methods in {@link #getITIPFactory()}
      * 
-     * @param inputVCalendar  iTIP VCalendar to process with {@link Method} populated
+     * @param iTIPMessages  iTIP VCalendars to process with {@link Method} populated
      */
-    public void processITIPMessage(VCalendar inputVCalendar)
+    public void processITIPMessage(VCalendar... iTIPMessages)
     {
-        if (inputVCalendar.getMethod() == null)
+        Arrays.asList(iTIPMessages).forEach(message ->
         {
-            throw new IllegalArgumentException("VCalendar to be process MUST have the METHOD property populated");
-        }
-        MethodType method = inputVCalendar.getMethod().getValue();
-        Processable methodProcess = iTIPFactory.getITIPMessageProcess(method);
-        methodProcess.process(this, inputVCalendar);
+            if (message.getMethod() == null)
+            {
+                throw new IllegalArgumentException("VCalendar to be process MUST have the METHOD property populated");
+            }
+            MethodType method = message.getMethod().getValue();
+            Processable methodProcess = iTIPFactory.getITIPMessageProcess(method);
+            methodProcess.process(this, message);            
+        });
     }
     
     /**
-     * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
-     * based on the methods in {@link #getITIPFactory()}
+     * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546.
+     * Input string can contain multiple iTIP VCALENDAR messages.
      * 
-     * @param itipMessage  iTIP message
+     * @param iTIPMessages  iTIP VCalendar Message strings
      */
-    public void processITIPMessage(String itipMessage)
+    public void processITIPMessage(String iTIPMessages)
     {
-        processITIPMessage(VCalendar.parse(itipMessage));
+        List<String> iTIPMessageList = new ArrayList<>();
+        StringBuilder builder = new StringBuilder(1000);
+        for(String line : iTIPMessages.split(System.lineSeparator()))
+        {
+            if (line.equals("BEGIN:VCALENDAR") && builder.length() > 0)
+            {
+                iTIPMessageList.add(builder.toString());
+                builder = new StringBuilder(1000);
+            }
+            builder.append(line + System.lineSeparator());
+        }
+        // handle last VCalendar message
+        if (builder.length() > 0)
+        {
+            iTIPMessageList.add(builder.toString());
+        }
+        iTIPMessageList.forEach(message -> processITIPMessage(VCalendar.parse(message)));
     }
     
     /**
