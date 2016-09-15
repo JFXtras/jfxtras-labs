@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import jfxtras.labs.icalendaragenda.itip.MakePublishiTIPMessage;
+
 @RunWith(Suite.class)
 @SuiteClasses({ 
     AgendaEditPopupTest.class,
@@ -11,6 +13,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ComponentChangeDialogTest.class,
     MakeAppointmentsTest.class,
     MakeNewVEventsTest.class,
+    MakePublishiTIPMessage.class,
     RenderVEventsTest.class,
     VEventEditPopupTest.class,
     VJournalEditPopupTest.class,

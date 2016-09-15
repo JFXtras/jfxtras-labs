@@ -28,6 +28,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
+@Deprecated
 public class RecurrenceIDComponentEditTest
 {
     @Test // with a recurrence in between new date range - removed special recurrence, replaces with normal recurrence

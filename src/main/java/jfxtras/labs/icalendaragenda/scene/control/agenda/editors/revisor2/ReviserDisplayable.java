@@ -301,16 +301,26 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     break;
                 }
                 case ALL_IGNORE_RECURRENCES:
+                {
                     adjustDateTime(vComponentEditedCopy);
-                    adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
-                    throw new RuntimeException("not implemented");
-//                    break;
+                    List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
+                    
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    publishMessage.addVComponent(vComponentEditedCopy);
+                    publishMessage.addAllVComponents(children);
+                    itipMessages.add(publishMessage);
+                    
+//                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
+//                    if (children.size() > 0)
+//                    {
+//                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
+//                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
+//                        itipMessages.add(cancelMessage);
+//                    }
+                    break;
+                }
                 case CANCEL:
                     break;
-//                    getVComponents().remove(getVComponentEdited());
-//                    getVComponents().add(vComponentOriginalCopy);
-//                    return null;
-//                    return Arrays.asList(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
                 {
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginal);
@@ -375,17 +385,28 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
 //        return Collections.unmodifiableList(revisedVComponents);
     }
 
-    // Time shift child recurrence components
-    private void adjustRecurrenceChildren(Temporal startRecurrence, Temporal startOriginalRecurrence)
+    // Make a copy of child recurrences, apply time shift, and return them as a List
+    private List<VDisplayable<?>> adjustRecurrenceChildren(Temporal startRecurrence, Temporal startOriginalRecurrence)
     {
-        getVComponentEdited().recurrenceChildren()
+        return getVComponentEdited().recurrenceChildren()
                 .stream()
-                .forEach(v ->
+                .map(v ->
                 {
                     Period dayShift = Period.between(LocalDate.from(startOriginalRecurrence), (LocalDate.from(v.getRecurrenceId().getValue())));
                     Temporal newRecurreneId = startRecurrence.plus(dayShift);
-                    v.setRecurrenceId(newRecurreneId);
-                });
+                    try
+                    {
+                        VDisplayable<?> vCopy = v.getClass().newInstance();
+                        vCopy.copyFrom(v);
+                        vCopy.setRecurrenceId(newRecurreneId);
+                        return vCopy;
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .collect(Collectors.toList());
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
