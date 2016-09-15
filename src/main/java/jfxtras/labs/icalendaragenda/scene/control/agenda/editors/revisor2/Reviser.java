@@ -38,6 +38,14 @@ public interface Reviser
                 .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
                 .withVersion(new Version());
     }
+
+    public static VCalendar defaultRequestVCalendar()
+    {
+        return new VCalendar()
+                .withMethod(MethodType.REQUEST)
+                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
+                .withVersion(new Version());
+    }
     
     public static VCalendar defaultCancelVCalendar()
     {

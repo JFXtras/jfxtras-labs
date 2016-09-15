@@ -44,7 +44,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * @author David Bal
  *
  */
-public class MakePublishiTIPMessage
+public class ReviseComponent
 {
     @Test
     public void canEditAll()
@@ -72,7 +72,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
             "BEGIN:VCALENDAR" + System.lineSeparator() +
-            "METHOD:PUBLISH" + System.lineSeparator() +
+            "METHOD:REQUEST" + System.lineSeparator() +
             "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
             "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
             "BEGIN:VEVENT" + System.lineSeparator() +
@@ -119,7 +119,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -163,7 +163,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -183,7 +183,7 @@ public class MakePublishiTIPMessage
     }       
     
     @Test
-    public void canEditOne()
+    public void canEditOneRecurrence()
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
@@ -212,7 +212,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -255,7 +255,7 @@ public class MakePublishiTIPMessage
         
         expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -278,7 +278,7 @@ public class MakePublishiTIPMessage
     }
     
     @Test
-    public void canEditCancel()
+    public void canCancelEdit()
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
@@ -333,7 +333,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -397,7 +397,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -449,7 +449,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -510,7 +510,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -557,7 +557,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -604,7 +604,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -670,7 +670,7 @@ public class MakePublishiTIPMessage
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -761,7 +761,7 @@ public class MakePublishiTIPMessage
 
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -776,6 +776,7 @@ public class MakePublishiTIPMessage
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
+                
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
                 "DTSTART:20160517T083000" + System.lineSeparator() +
@@ -787,6 +788,7 @@ public class MakePublishiTIPMessage
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "RECURRENCE-ID:20160517T090000" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
+                
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
                 "DTSTART:20160519T073000" + System.lineSeparator() +
@@ -803,20 +805,6 @@ public class MakePublishiTIPMessage
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
-//        
-//        assertEquals(2, vComponents.size());
-//        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
-//        VEvent myComponent1 = vComponents.get(0);
-//        VEvent myComponentRecurrence = vComponents.get(1);
-//        
-//        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
-//                .withSequence(1);
-//        expectedVComponent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 0));
-//        expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 30));
-//        assertEquals(expectedVComponent, myComponent1);
-//        
-//        assertEquals(vComponentRecurrence, myComponentRecurrence);
-//        assertEquals(LocalDateTime.of(2016, 5, 17, 9, 0), vComponentRecurrence.getRecurrenceId().getValue());
     }
     
     @Test // with a recurrence in between new date range - removed special recurrence, replaces with normal recurrence
@@ -851,7 +839,55 @@ public class MakePublishiTIPMessage
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginalCopy);
-        reviser.revise();
+        List<VCalendar> itipMessages = reviser.revise();
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151109T090000" + System.lineSeparator() +
+                "DTEND:20151109T103000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160517T083000" + System.lineSeparator() +
+                "DTEND:20160517T093000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:recurrence summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RECURRENCE-ID:20160517T090000" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160519T073000" + System.lineSeparator() +
+                "DTEND:20160519T083000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:recurrence summary2" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RECURRENCE-ID:20160519T090000" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        String iTIPMessage = itipMessages.stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(iTIPMessage);
+        assertEquals(expectediTIPMessage, iTIPMessage);
 
         assertEquals(2, vComponents.size());
         FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);

@@ -127,9 +127,9 @@ public class ProcessCancel implements Processable
 {
 
     @Override
-    public void process(VCalendar mainVCalendar, VCalendar inputVCalendar)
+    public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
-        inputVCalendar.getAllVComponents().forEach(c ->
+        iTIPMessage.getAllVComponents().forEach(c ->
         {
             if (c instanceof VDisplayable)
             {

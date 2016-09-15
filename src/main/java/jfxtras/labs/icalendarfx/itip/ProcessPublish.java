@@ -1,7 +1,9 @@
 package jfxtras.labs.icalendarfx.itip;
 
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
@@ -98,23 +100,23 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 public class ProcessPublish implements Processable
 {
     @Override
-    public void process(VCalendar mainVCalendar, VCalendar inputVCalendar)
+    public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
-        inputVCalendar.getAllVComponents().forEach(c ->
+        iTIPMessage.getAllVComponents().forEach(c ->
         {
             if (c instanceof VDisplayable)
             {
                 VDisplayable<?> vDisplayable = ((VDisplayable<?>) c);
-                
                 final boolean hasOrganizer = vDisplayable.getOrganizer() != null;
-                if (! hasOrganizer) throw new IllegalArgumentException("Can't process PUBLISH method for VCALENDAR: ORGANIZER MUST be present, and it's absent");
+                if (! hasOrganizer) throw new IllegalArgumentException("Can't process PUBLISH method: ORGANIZER MUST be present, and it's absent");
                 final boolean hasNoAttendees = vDisplayable.getAttendees() == null;
-                if (! hasNoAttendees) throw new IllegalArgumentException("Can't process PUBLISH method for VCALENDAR: ATTENDEE property MUST NOT be present, and it's exists");
+                if (! hasNoAttendees) throw new IllegalArgumentException("Can't process PUBLISH method: ATTENDEE property MUST NOT be present, and it's exists");
                 final int newSequence = (vDisplayable.getSequence() == null) ? 0 : vDisplayable.getSequence().getValue();
                 boolean isNewSequenceHigher = true;
                 
-                String uid = vDisplayable.getUniqueIdentifier().getValue();
-                Temporal recurrenceID = (vDisplayable.getRecurrenceId() != null) ? vDisplayable.getRecurrenceId().getValue() : null;
+                final String uid = vDisplayable.getUniqueIdentifier().getValue();
+                final Temporal recurrenceID = (vDisplayable.getRecurrenceId() != null) ? vDisplayable.getRecurrenceId().getValue() : null;
+
                 // match RECURRENCE-ID (if present)
                 if (mainVCalendar.uidComponentsMap().get(uid) != null)
                 {
@@ -124,7 +126,7 @@ public class ProcessPublish implements Processable
                      * if new doesn't have recurrence id, but match exists, replace match
                      * If no match then just add - can't have recurrence id 
                      */
-                    VDisplayable<?> matchingMainVComponent = mainVCalendar.uidComponentsMap().get(uid)
+                    VDisplayable<?> matchingVComponent = mainVCalendar.uidComponentsMap().get(uid)
                             .stream()
                             .filter(v -> {
                                 Temporal mRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
@@ -132,27 +134,34 @@ public class ProcessPublish implements Processable
                             })
                             .findAny()
                             .orElseGet(() -> null);
-
-                    if (matchingMainVComponent != null)
+                    if (matchingVComponent != null)
                     {
-                        int oldSequence = (matchingMainVComponent.getSequence() == null) ? 0 : matchingMainVComponent.getSequence().getValue();
+                        int oldSequence = (matchingVComponent.getSequence() == null) ? 0 : matchingVComponent.getSequence().getValue();
                         isNewSequenceHigher = newSequence > oldSequence || (newSequence == 0 && oldSequence == 0);
-                        // SEQUENCE INCREASE ONLY APPLIES FOR PARENTS - NOT RECURRENCES THAT ONLY HAVE RECURRENCE-ID CHANGED
-                        if (! isNewSequenceHigher) throw new IllegalArgumentException("Can't process PUBLISH method for VCALENDAR: SEQUENCY property MUST be higher than previously published component (new=" + newSequence + " old=" + oldSequence + ")");
+                        // SEQUENCE INCREASE REQUIREMENT ONLY APPLIES FOR PARENTS - NOT RECURRENCES THAT ONLY HAVE RECURRENCE-ID CHANGED
+                        if (! isNewSequenceHigher) throw new IllegalArgumentException("Can't process PUBLISH method: SEQUENCY property MUST be higher than previously published component (new=" + newSequence + " old=" + oldSequence + ")");
                         if (isNewSequenceHigher)
                         {
-                            mainVCalendar.getVComponents(matchingMainVComponent.getClass()).remove(matchingMainVComponent); // remove old VComponent because we're replacing
+                            mainVCalendar.getVComponents(matchingVComponent.getClass()).remove(matchingVComponent); // remove old VComponent because we're replacing it
                         }                        
                     }
                 }
-//                System.out.println("mainVCalendar:" + mainVCalendar.getAllVComponents().size());
-
-//                if (hasOrganizer && hasNoAttendees && isNewSequenceHigher)
-//                {
-//                    mainVCalendar.addVComponent(c); // add published VComponent
-//                }
-//                System.out.println("mainVCalendar:" + mainVCalendar.getAllVComponents().size());
-
+                
+                if (recurrenceID != null)
+                {
+                    // Delete orphaned children, if any
+                    VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid).get(0);
+                    System.out.println("parent:"+parent);
+                    List<VDisplayable<?>> orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
+                            .stream()
+                            .filter(v -> 
+                            {
+                                Temporal myRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
+                                return ! parent.isRecurrence(myRecurrenceID);
+                            })
+                            .collect(Collectors.toList());
+                    mainVCalendar.getVComponents(parent.getClass()).removeAll(orhpanedChildren);
+                }
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
                 // TODO

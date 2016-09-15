@@ -11,7 +11,8 @@ public class ProcessCancelTest
     @Test // new DTSTART and SUMMARY
     public void canProcessCancelIndividual()
     {
-        String mainContent = new String("BEGIN:VCALENDAR" + System.lineSeparator() + 
+        String mainContent = 
+                "BEGIN:VCALENDAR" + System.lineSeparator() + 
                 "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "VERSION:2.0" + System.lineSeparator() + 
                 "BEGIN:VEVENT" + System.lineSeparator() + 
@@ -21,9 +22,10 @@ public class ProcessCancelTest
                 "SUMMARY:ST. PAUL SAINTS -VS- DULUTH-SUPERIOR DUKES" + System.lineSeparator() + 
                 "UID:0981234-1234234-23@example.com" + System.lineSeparator() + 
                 "END:VEVENT" + System.lineSeparator() + 
-                "END:VCALENDAR");
+                "END:VCALENDAR";
         VCalendar main = VCalendar.parse(mainContent);
-        String publish = new String("BEGIN:VCALENDAR" + System.lineSeparator() + 
+        String publish = 
+              "BEGIN:VCALENDAR" + System.lineSeparator() + 
               "METHOD:CANCEL" + System.lineSeparator() + 
               "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
               "VERSION:2.0" + System.lineSeparator() + 
@@ -34,13 +36,20 @@ public class ProcessCancelTest
               "UID:0981234-1234234-23@example.com" + System.lineSeparator() + 
               "DTSTAMP:19970611T190000Z" + System.lineSeparator() + 
               "END:VEVENT" + System.lineSeparator() + 
-              "END:VCALENDAR");
+              "END:VCALENDAR";
         VCalendar inputVCalendar = VCalendar.parse(publish);
         main.processITIPMessage(inputVCalendar);
-        String expectedContent = new String("BEGIN:VCALENDAR" + System.lineSeparator() +
+        String expectedContent = 
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
                 "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "VERSION:2.0" + System.lineSeparator() + 
-                "END:VCALENDAR");
+                "END:VCALENDAR";
         assertEquals(expectedContent, main.toContent());
+    }
+    
+    @Test // add EXDATE when cancel one instance
+    public void canAddEXDate()
+    {
+        throw new RuntimeException("not implemented");
     }
 }

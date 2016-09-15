@@ -25,7 +25,7 @@ public class DefaultITIPFactory extends AbstractITIPFactory
         case REPLY:
             break;
         case REQUEST:
-            break;
+            return new ProcessRequest();
         default:
             break;        
         }

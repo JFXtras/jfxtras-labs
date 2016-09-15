@@ -227,13 +227,14 @@ public class PublishTest
     }
     
     @Test // edit an individual recurrence of a repeatable event twice
-    public void canEditOne()
+    public void canEditOneRecurrence()
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentOriginal);
+        System.out.println(vComponentOriginal);
         
         String iTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -254,6 +255,8 @@ public class PublishTest
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
         mainVCalendar.processITIPMessage(iTIPMessage);
+        
+//        System.out.println(iTIPMessage);
         
         assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
@@ -299,6 +302,7 @@ public class PublishTest
         assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.recurrenceChildren());
         assertEquals("new summary", myComponentIndividual2.getSummary().getValue());
         assertEquals(Collections.emptyList(), myComponentIndividual2.recurrenceChildren());
+//        System.out.println(mainVCalendar);
     }
     
     /* edits a repeatable event, with one recurrence, with ALL-IGNORE-RECURRENCES selection.
@@ -407,7 +411,6 @@ public class PublishTest
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
         mainVCalendar.processITIPMessage(iTIPMessage);
-        
         assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent myComponentFuture = vComponents.get(1);
@@ -700,7 +703,7 @@ public class PublishTest
         assertEquals(expectedVComponent, myComponent1);
     }
     
-    @Test // edit ALL and ingore 2 recurrences in date range - tests changing Recurrence-ID of recurrences to match parent's change
+    @Test // edit ALL and ignore 2 recurrences in date range - tests changing Recurrence-ID of recurrences to match parent's change
     public void canEditAllIgnoreRecurrences()
     {
         VCalendar mainVCalendar = new VCalendar();
@@ -709,21 +712,21 @@ public class PublishTest
         VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponent1);
         // make recurrences
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+        VEvent vComponentRecurrence2 = ICalendarStaticComponents.getDaily1()
                 .withRecurrenceRule((RecurrenceRule2) null)
                 .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
                 .withSummary("recurrence summary")
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
-        vComponents.add(vComponentRecurrence);
+        vComponents.add(vComponentRecurrence2);
         
-        VEvent vComponentRecurrence2 = ICalendarStaticComponents.getDaily1()
+        VEvent vComponentRecurrence3 = ICalendarStaticComponents.getDaily1()
                 .withRecurrenceRule((RecurrenceRule2) null)
                 .withRecurrenceId(LocalDateTime.of(2016, 5, 19, 10, 0))
                 .withSummary("recurrence summary2")
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 19, 7, 30))
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 19, 8, 30));
-        vComponents.add(vComponentRecurrence2);
+        vComponents.add(vComponentRecurrence3);
         
         String iTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -765,38 +768,8 @@ public class PublishTest
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "RECURRENCE-ID:20160519T090000" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                
-                "END:VCALENDAR" + System.lineSeparator() +
-                "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:CANCEL" + System.lineSeparator() +
-                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
-                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group05" + System.lineSeparator() +
-                "DTSTART:20160517T083000" + System.lineSeparator() +
-                "DTEND:20160517T093000" + System.lineSeparator() +
-                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
-                "SUMMARY:recurrence summary" + System.lineSeparator() +
-                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
-                "RECURRENCE-ID:20160517T100000" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group05" + System.lineSeparator() +
-                "DTSTART:20160519T073000" + System.lineSeparator() +
-                "DTEND:20160519T083000" + System.lineSeparator() +
-                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
-                "SUMMARY:recurrence summary2" + System.lineSeparator() +
-                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
-                "RECURRENCE-ID:20160519T100000" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                "END:VCALENDAR";
-        // TODO - DO I NEED TO CANCEL RECURRENCES WITH OLD TIME?
+                "END:VEVENT";
+
         mainVCalendar.processITIPMessage(iTIPMessage);
         FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
         assertEquals(3, vComponents.size());
@@ -810,7 +783,19 @@ public class PublishTest
         expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 30));
         assertEquals(expectedVComponent, myComponent1);
         
-        System.out.println(myComponent2);
+        VEvent expectedComponent2 = new VEvent(vComponentRecurrence2)
+                .withSummary("recurrence summary")
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 9, 0))
+                .withDateTimeStart("20160517T083000")
+                .withDateTimeEnd("20160517T093000");
+        assertEquals(expectedComponent2, myComponent2);
+        
+        VEvent expectedComponent3 = new VEvent(vComponentRecurrence3)
+                .withSummary("recurrence summary2")
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 19, 9, 0))
+                .withDateTimeStart("20160519T073000")
+                .withDateTimeEnd("20160519T083000");
+        assertEquals(expectedComponent3, myComponent3);
     }
     
     /* edits a repeatable event, with one recurrence, with THIS-AND-FUTURE selection.

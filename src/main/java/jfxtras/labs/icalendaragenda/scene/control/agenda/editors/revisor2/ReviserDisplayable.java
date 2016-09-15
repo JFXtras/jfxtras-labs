@@ -287,7 +287,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     adjustDateTime(vComponentEditedCopy);
                     
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = Reviser.defaultRequestVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(publishMessage);
 
@@ -305,13 +305,14 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     adjustDateTime(vComponentEditedCopy);
                     List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = Reviser.defaultRequestVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     publishMessage.addAllVComponents(children);
                     itipMessages.add(publishMessage);
                     
-//                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
-//                    if (children.size() > 0)
+                    // Uncomment if explicitly canceling orphaned child recurrences is desired
+//                    List<VDisplayable<?>> childrenToCancel = getVComponentEdited().recurrenceChildren();
+//                    if (childrenToCancel.size() > 0)
 //                    {
 //                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
 //                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
@@ -325,7 +326,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginal);
                     
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = Reviser.defaultRequestVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     publishMessage.addVComponent(vComponentOriginal);
                     itipMessages.add(publishMessage);
@@ -353,7 +354,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 case ONE:
                 {
                     editOne(vComponentEditedCopy);
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = Reviser.defaultRequestVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(publishMessage);
 //                    revisedVComponents.add(0, vComponentOriginalCopy);
