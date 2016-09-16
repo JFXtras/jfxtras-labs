@@ -342,7 +342,6 @@ public interface VRepeatable<T> extends VComponent
         DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
         if (startType != dateTimeStartType)
         {
-//            System.out.println(("Start type " + startType + " must match DTSTART type of " + dateTimeStartType));
             throw new DateTimeException("Start type " + startType + " must match DTSTART type of " + dateTimeStartType);
         }
         // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
@@ -353,6 +352,7 @@ public interface VRepeatable<T> extends VComponent
         } else
         {
             Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
+            System.out.println("cacheStart:" + cacheStart);
             stream1 = getRecurrenceRule().getValue().streamRecurrences(cacheStart);
         }
         
@@ -372,7 +372,7 @@ public interface VRepeatable<T> extends VComponent
         
         return stream2
                 .filter(t -> ! DateTimeUtilities.isBefore(t, start));
-//                .peek(t -> System.out.println("stream:" + t + " " + start))
+//                .peek(t -> System.out.println("stream:" + t + " " + start + " " + ! DateTimeUtilities.isBefore(t, start)));
     }
     
     /** Stream of recurrences starting at dateTimeStart (DTSTART) 
@@ -407,6 +407,7 @@ public interface VRepeatable<T> extends VComponent
      */
     default boolean isRecurrence(Temporal temporal)
     {
+        if (temporal == null) throw new DateTimeException("Temporal parameter must not be null.");
         Iterator<Temporal> startInstanceIterator = streamRecurrences(temporal).iterator();
         while (startInstanceIterator.hasNext())
         {

@@ -234,7 +234,6 @@ public class PublishTest
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentOriginal);
-        System.out.println(vComponentOriginal);
         
         String iTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -255,8 +254,6 @@ public class PublishTest
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
         mainVCalendar.processITIPMessage(iTIPMessage);
-        
-//        System.out.println(iTIPMessage);
         
         assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
@@ -358,17 +355,18 @@ public class PublishTest
         
         mainVCalendar.processITIPMessage(VCalendar.parse(publish));
         
-        VCalendar expectedVCalendar = new VCalendar();        
-        expectedVCalendar.addVComponent(new VEvent(vComponentRecurrence));
+        assertEquals(2, vComponents.size());
+        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        
         VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
                 .withSummary("Edited summary")
                 .withSequence(1)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 30));
+        assertEquals(expectedVComponent, vComponents.get(0));
         VEvent vComponentRecurrence2 = new VEvent(vComponentRecurrence)
                 .withRecurrenceId(LocalDateTime.of(2015, 11, 12, 9, 0));
-        expectedVCalendar.addAllVComponents(expectedVComponent, vComponentRecurrence2);
-        assertEquals(expectedVCalendar, mainVCalendar);        
+        assertEquals(vComponentRecurrence2, vComponents.get(1));
     }
    
     @Test // divides one repeatable event into two.  First one ends with UNTIL

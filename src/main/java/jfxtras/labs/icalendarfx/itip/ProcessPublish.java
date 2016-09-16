@@ -11,6 +11,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** 
  * 
@@ -150,17 +151,31 @@ public class ProcessPublish implements Processable
                 if (recurrenceID != null)
                 {
                     // Delete orphaned children, if any
-                    VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid).get(0);
-                    System.out.println("parent:"+parent);
-                    List<VDisplayable<?>> orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
-                            .stream()
-                            .filter(v -> 
-                            {
-                                Temporal myRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
-                                return ! parent.isRecurrence(myRecurrenceID);
-                            })
-                            .collect(Collectors.toList());
-                    mainVCalendar.getVComponents(parent.getClass()).removeAll(orhpanedChildren);
+                    List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
+                    if (recurrenceSet.size() > 1)
+                    {
+                        VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
+                                .stream()
+                                .filter(v -> v.getRecurrenceId() == null)
+                                .findAny()
+                                .orElseThrow(() -> new RuntimeException("Parent component not found."));
+                        List<VDisplayable<?>> orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
+                                .stream()
+                                .filter(v -> v.getRecurrenceId() != null)
+                                .filter(v -> 
+                                {
+                                    Temporal myRecurrenceID = v.getRecurrenceId().getValue();
+                                    Temporal cacheStart = parent.recurrenceStreamer().getStartFromCache(myRecurrenceID);
+                                    Temporal nextRecurrenceDateTime = parent.getRecurrenceRule().getValue()
+                                            .streamRecurrences(cacheStart)
+                                            .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
+                                            .findFirst()
+                                            .orElseGet(() -> null);
+                                    return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
+                                })
+                                .collect(Collectors.toList());
+                        mainVCalendar.getVComponents(parent.getClass()).removeAll(orhpanedChildren);
+                    }
                 }
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)

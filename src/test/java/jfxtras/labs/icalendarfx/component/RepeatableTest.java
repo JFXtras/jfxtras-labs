@@ -27,6 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -1384,4 +1385,27 @@ public class RepeatableTest //extends Application
         Temporal previous = vComponentEdited.previousStreamValue(startRecurrence);
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), previous);
     }
+
+    @Test
+    public void canCheckIfIsRecurrence()
+    {
+        VCalendar vCalendar = new VCalendar();
+        VEvent vComponentMain = ICalendarStaticComponents.getDaily1();
+        vCalendar.addVComponent(vComponentMain);
+        
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        vCalendar.addVComponent(vComponentRecurrence);
+        
+        assertTrue(vComponentMain.isRecurrence(LocalDateTime.of(2016, 5, 16, 10, 0)));
+        assertFalse(vComponentMain.isRecurrence(LocalDateTime.of(2016, 5, 17, 10, 0))); // is not recurrence because vComponentRecurrence uses this date/time
+        assertTrue(vComponentMain.isRecurrence(LocalDateTime.of(2016, 5, 18, 10, 0)));
+        
+        assertTrue(vComponentRecurrence.isRecurrence(LocalDateTime.of(2016, 5, 17, 8, 30)));
+    }
+
 }
