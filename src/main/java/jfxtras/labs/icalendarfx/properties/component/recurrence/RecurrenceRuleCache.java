@@ -73,7 +73,16 @@ public class RecurrenceRuleCache
         return lastT;
     }
     
-    public Temporal getStartFromCache(Temporal start)
+    /**
+     * Returns the previous start date/time value of the recurrence set on or before targetStart in the cache.  If no value
+     * is present in the cache then the DTSTART value is returned.  This value is guaranteed to be
+     * a valid recurrence date/time.  It can be used as a starting point for calculating future
+     * recurrences more efficiently than using DTSTART.
+     * 
+     * @param targetStart - target date/time to get previous recurrence.
+     * @return closest recurrence DTSTART value, without going over.
+     */
+    public Temporal getClosestStart(Temporal targetStart)
     {
         final Temporal match;
         final Temporal dateTimeStart;
@@ -84,7 +93,7 @@ public class RecurrenceRuleCache
         recurrenceRule = (component.getRecurrenceRule() != null) ? component.getRecurrenceRule().getValue() : null;
 
         // adjust start to ensure its not before dateTimeStart
-        final Temporal start2 = (DateTimeUtilities.isBefore(start, dateTimeStart)) ? dateTimeStart : start;
+        final Temporal start2 = (DateTimeUtilities.isBefore(targetStart, dateTimeStart)) ? dateTimeStart : targetStart;
         final Temporal latestCacheValue;
 
         

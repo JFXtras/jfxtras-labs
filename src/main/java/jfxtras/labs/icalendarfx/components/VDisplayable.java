@@ -959,16 +959,16 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         {
             return stream3; // no cache is no recurrence rule
         }
-        return recurrenceStreamer().makeCache(stream3);  // make cache of start date/times
+        return recurrenceCache().makeCache(stream3);  // make cache of start date/times
     }
 
     /*
      *  RECURRENCE STREAMER
      *  produces recurrence set
      */
-    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
+    private RecurrenceRuleCache recurrenceCache = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceCache() { return recurrenceCache; }
 
     /*
      * RECURRENCE CHILDREN - (RECURRENCE-IDs AND MATCHING UID)

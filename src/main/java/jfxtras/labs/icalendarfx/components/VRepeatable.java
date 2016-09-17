@@ -309,7 +309,7 @@ public interface VRepeatable<T> extends VComponent
     /**
      * Handles caching of recurrence start Temporal values.
      */
-    RecurrenceRuleCache recurrenceStreamer();
+    RecurrenceRuleCache recurrenceCache();
 
     /**
      * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrences(Temporal)}
@@ -351,8 +351,7 @@ public interface VRepeatable<T> extends VComponent
             stream1 = Arrays.asList(getDateTimeStart().getValue()).stream();
         } else
         {
-            Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
-            System.out.println("cacheStart:" + cacheStart);
+            Temporal cacheStart = recurrenceCache().getClosestStart(start);
             stream1 = getRecurrenceRule().getValue().streamRecurrences(cacheStart);
         }
         
@@ -390,7 +389,7 @@ public interface VRepeatable<T> extends VComponent
      */
     default Temporal previousStreamValue(Temporal value)
     {
-        Temporal cacheStart = recurrenceStreamer().getStartFromCache(value);
+        Temporal cacheStart = recurrenceCache().getClosestStart(value);
         Iterator<Temporal> i = streamRecurrences(cacheStart).iterator();
         Temporal lastT = null;
         while (i.hasNext())

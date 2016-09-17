@@ -148,24 +148,29 @@ public class ProcessPublish implements Processable
                     }
                 }
                 
-                if (recurrenceID != null)
+                // Delete orphaned children, if any
+                List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
+                if ((recurrenceSet != null) && (! recurrenceSet.isEmpty()))
                 {
-                    // Delete orphaned children, if any
-                    List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
-                    if (recurrenceSet.size() > 1)
-                    {
-                        VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
-                                .stream()
-                                .filter(v -> v.getRecurrenceId() == null)
-                                .findAny()
-                                .orElseThrow(() -> new RuntimeException("Parent component not found."));
-                        List<VDisplayable<?>> orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
+                    VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
+                            .stream()
+                            .filter(v -> v.getRecurrenceId() == null)
+                            .findAny()
+                            .orElseGet(() -> null);
+
+                    final List<VDisplayable<?>> orhpanedChildren;
+                    if (parent == null)
+                    { // parent is deleted - all children are orphans - remove them.
+                        orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid);
+                    } else
+                    { // remove children that don't have a valid RECURRENCE-ID date - they are orphans
+                        orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
                                 .stream()
                                 .filter(v -> v.getRecurrenceId() != null)
                                 .filter(v -> 
                                 {
                                     Temporal myRecurrenceID = v.getRecurrenceId().getValue();
-                                    Temporal cacheStart = parent.recurrenceStreamer().getStartFromCache(myRecurrenceID);
+                                    Temporal cacheStart = parent.recurrenceCache().getClosestStart(myRecurrenceID);
                                     Temporal nextRecurrenceDateTime = parent.getRecurrenceRule().getValue()
                                             .streamRecurrences(cacheStart)
                                             .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
@@ -174,7 +179,10 @@ public class ProcessPublish implements Processable
                                     return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
                                 })
                                 .collect(Collectors.toList());
-                        mainVCalendar.getVComponents(parent.getClass()).removeAll(orhpanedChildren);
+                    };
+                    if (orhpanedChildren != null)
+                    {
+                        mainVCalendar.getVComponents(c.getClass()).removeAll(orhpanedChildren);
                     }
                 }
             } else

@@ -145,12 +145,17 @@ public class ProcessRequest extends ProcessPublish
         while (componentIterator.hasNext())
         {
             VPersonal<?> myComponent = (VPersonal<?>) componentIterator.next();
+            if (myComponent.getAttendees() != null)
+            {
+                throw new IllegalArgumentException("Can't process REQUEST, handling Attendees is not implemented");
+            }
             UniqueIdentifier uid = myComponent.getUniqueIdentifier();
+            System.out.println("uid:" + uid);
             if (uid == null)
             {
                 throw new IllegalArgumentException("Can't process REQUEST, VComponent has null UID");
             }
-            if (mainVCalendar.uidComponentsMap().get(uid.getValue()) != null)
+            if (mainVCalendar.uidComponentsMap().get(uid.getValue()) == null)
             {
                 throw new IllegalArgumentException("Can't process REQUEST, VComponent UID is not present in main VCalendar");
             }

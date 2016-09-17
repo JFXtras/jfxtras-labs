@@ -102,7 +102,7 @@ public abstract class VRepeatableBase<T> extends VPrimary<T> implements VRepeata
         {
             return inStream; // no cache is no recurrence rule
         }
-        return recurrenceStreamer().makeCache(inStream);   // make cache of start date/times
+        return recurrenceCache().makeCache(inStream);   // make cache of start date/times
     }
     
     @Override
@@ -117,6 +117,6 @@ public abstract class VRepeatableBase<T> extends VPrimary<T> implements VRepeata
      */
     private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceCache() { return streamer; }
     
 }

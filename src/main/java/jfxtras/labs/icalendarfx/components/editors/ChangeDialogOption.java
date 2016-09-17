@@ -18,6 +18,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * Options available when editing or deleting a repeatable appointment.
  * 
  */
+@Deprecated // moved to agenda
 public enum ChangeDialogOption
 {
     ONE                                     // individual instance

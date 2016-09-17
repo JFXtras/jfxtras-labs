@@ -223,5 +223,5 @@ public abstract class StandardOrDaylight<T> extends VRepeatableBase<T>
     // Recurrence streamer - produces recurrence set
     private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceCache() { return streamer; }
 }

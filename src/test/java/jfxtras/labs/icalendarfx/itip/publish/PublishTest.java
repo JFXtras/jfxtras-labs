@@ -27,6 +27,7 @@ import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
 /**
@@ -699,6 +700,83 @@ public class PublishTest
         expectedVComponent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 0));
         expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 30));
         assertEquals(expectedVComponent, myComponent1);
+    }
+    
+    @Test // with a recurrence in between new date range - remove special recurrence, replaces with normal recurrence
+    public void canEditThisAndFutureWithRecurrence()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+//        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+        vComponents.add(vComponentEdited);
+        // make recurrence
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
+        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+        vComponentRecurrence.setSummary("recurrence summary");
+        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
+        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        vComponents.add(vComponentRecurrence);
+        
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;UNTIL=20160515T170000Z" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR" + System.lineSeparator() +
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20160516T090000" + System.lineSeparator() +
+                "DTEND:20160516T103000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20160917T030418Z" + System.lineSeparator() +
+                "UID:20160916T200418-0jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RELATED-TO:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+        
+        assertEquals(2, vComponents.size());
+        FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
+        VEvent myComponentFuture = vComponents.get(1);
+        VEvent myComponentOriginal = vComponents.get(0);
+        
+        VEvent expectedOriginalEdited = ICalendarStaticComponents.getDaily1()
+                .withSequence(1);
+        expectedOriginalEdited.getRecurrenceRule().getValue()
+            .setUntil(LocalDateTime.of(2016, 5, 15, 10, 0).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
+        assertEquals(expectedOriginalEdited, myComponentOriginal);
+        
+        VEvent expectedComponentFuture = ICalendarStaticComponents.getDaily1();
+        expectedComponentFuture.setDateTimeStart(LocalDateTime.of(2016, 5, 16, 9, 0));
+        expectedComponentFuture.setDateTimeEnd(LocalDateTime.of(2016, 5, 16, 10, 30));
+        RelatedTo relatedTo = RelatedTo.parse(vComponentEdited.getUniqueIdentifier().getValue());
+        expectedComponentFuture.setRelatedTo(FXCollections.observableArrayList(relatedTo));
+        expectedComponentFuture.setSummary("Edited summary");
+        expectedComponentFuture.setUniqueIdentifier(new UniqueIdentifier(myComponentFuture.getUniqueIdentifier()));
+        expectedComponentFuture.setDateTimeStamp(new DateTimeStamp(myComponentFuture.getDateTimeStamp()));
+        assertEquals(expectedComponentFuture, myComponentFuture);
     }
     
     @Test // edit ALL and ignore 2 recurrences in date range - tests changing Recurrence-ID of recurrences to match parent's change

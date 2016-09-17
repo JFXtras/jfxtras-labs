@@ -310,7 +310,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     publishMessage.addAllVComponents(children);
                     itipMessages.add(publishMessage);
                     
-                    // Uncomment if explicitly canceling orphaned child recurrences is desired
+                    // Uncomment if explicitly canceling orphaned child recurrences is desired.  Orphaned children should be automatically deleted.
 //                    List<VDisplayable<?>> childrenToCancel = getVComponentEdited().recurrenceChildren();
 //                    if (childrenToCancel.size() > 0)
 //                    {
@@ -326,18 +326,24 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginal);
                     
-                    VCalendar publishMessage = Reviser.defaultRequestVCalendar();
+                    // TODO - SEQUENCE NUMBER INCREMENT NEEDS TO BE CHANGED
+                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    requestMessage.addVComponent(vComponentOriginal);
                     publishMessage.addVComponent(vComponentEditedCopy);
-                    publishMessage.addVComponent(vComponentOriginal);
+                    vComponentOriginal.incrementSequence();
+                    incrementSequence = false;
+                    itipMessages.add(requestMessage);
                     itipMessages.add(publishMessage);
 
-                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
-                    if (children.size() > 0)
-                    {
-                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
-                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
-                        itipMessages.add(cancelMessage);
-                    }
+                    // Uncomment if explicitly canceling orphaned child recurrences is desired.  Orphaned children should be automatically deleted.
+//                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
+//                    if (children.size() > 0)
+//                    {
+//                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
+//                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
+//                        itipMessages.add(cancelMessage);
+//                    }
                     break;
                 }
                     
