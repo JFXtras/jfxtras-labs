@@ -709,7 +709,6 @@ public class PublishTest
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
-//        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
         vComponents.add(vComponentEdited);
         // make recurrence
         VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
