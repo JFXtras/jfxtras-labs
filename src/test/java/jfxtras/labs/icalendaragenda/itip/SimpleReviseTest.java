@@ -190,9 +190,7 @@ public class SimpleReviseTest
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentOriginal);
-        vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
-
 
         vComponentEdited.setSummary("Edited summary");
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
@@ -210,11 +208,12 @@ public class SimpleReviseTest
 
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
+        vComponents.forEach(System.out::println);
         VEvent myComponentIndividual = vComponents.get(1);
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:REQUEST" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -287,7 +286,6 @@ public class SimpleReviseTest
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentOriginal);
-        vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
         
@@ -314,7 +312,6 @@ public class SimpleReviseTest
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
-        vComponents.add(vComponentOriginal);
         vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
@@ -386,7 +383,6 @@ public class SimpleReviseTest
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentOriginal);
-        vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
         vComponentEdited.setSummary("Edited summary");
@@ -405,12 +401,13 @@ public class SimpleReviseTest
         List<VCalendar> iTIPMessages = reviser.revise();
         
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent individualComponent = vComponents.get(1);
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:REQUEST" + System.lineSeparator() +
+                "METHOD:PUBLISH" + System.lineSeparator() +
                 "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
@@ -442,9 +439,7 @@ public class SimpleReviseTest
         vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
-        vComponents.add(vComponentEdited);
         vComponentEdited.setSummary("Edited summary");
-
         Temporal startOriginalRecurrence = LocalDate.of(2016, 5, 16);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
@@ -457,8 +452,9 @@ public class SimpleReviseTest
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
-        
+
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent newVComponentFuture = vComponents.get(1);
         

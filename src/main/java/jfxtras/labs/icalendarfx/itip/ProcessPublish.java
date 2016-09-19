@@ -135,6 +135,7 @@ public class ProcessPublish implements Processable
                             })
                             .findAny()
                             .orElseGet(() -> null);
+//                    System.out.println("oldMatchingVComponent:" + oldMatchingVComponent);
                     if (oldMatchingVComponent != null)
                     {
                         int oldSequence = (oldMatchingVComponent.getSequence() == null) ? 0 : oldMatchingVComponent.getSequence().getValue();

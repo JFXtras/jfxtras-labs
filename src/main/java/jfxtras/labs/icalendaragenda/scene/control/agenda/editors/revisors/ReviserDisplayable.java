@@ -373,9 +373,9 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 case ONE:
                 {
                     editOne(vComponentEditedCopy);
-                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
-                    requestMessage.addVComponent(vComponentEditedCopy);
-                    itipMessages.add(requestMessage);
+                    VCalendar message = Reviser.defaultPublishVCalendar();
+                    message.addVComponent(vComponentEditedCopy);
+                    itipMessages.add(message);
                     break;
                 }
                 default:

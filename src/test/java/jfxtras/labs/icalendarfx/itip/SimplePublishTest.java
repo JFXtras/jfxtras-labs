@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.itip;
 import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,11 +19,9 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
 /**
  * Tests to demonstrate PUBLISH iTIP message ability
@@ -407,105 +404,6 @@ public class SimplePublishTest
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
         RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
-    }
-    
-    @Test
-    public void canChangeToWholeDayAll()
-    {
-        VCalendar mainVCalendar = new VCalendar();
-        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
-        
-        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
-        vComponents.add(vComponentOriginal);
-        
-        String iTIPMessage =
-                "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
-                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
-                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group05" + System.lineSeparator() +
-                "DTSTART;VALUE=DATE:20151108" + System.lineSeparator() +
-                "DTEND;VALUE=DATE:20151109" + System.lineSeparator() +
-                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
-                "SUMMARY:Edited summary" + System.lineSeparator() +
-                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY" + System.lineSeparator() +
-                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
-                "SEQUENCE:1" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                "END:VCALENDAR";
-        mainVCalendar.processITIPMessage(iTIPMessage);
-
-        assertEquals(1, vComponents.size());
-        VEvent myComponent = vComponents.get(0);
-        assertEquals(LocalDate.of(2015, 11, 8), myComponent.getDateTimeStart().getValue());        
-        assertEquals(LocalDate.of(2015, 11, 9), myComponent.getDateTimeEnd().getValue());        
-        assertEquals("Edited summary", myComponent.getSummary().getValue());
-    }
-    
-    @Test
-    public void canChangeWholeDayToTimeBasedThisAndFuture()
-    {
-        VCalendar mainVCalendar = new VCalendar();
-        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
-        
-        VEvent vComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
-        VEvent vComponentEdited = new VEvent(vComponentOriginal);
-        vComponents.add(vComponentEdited);
-        
-        String iTIPMessage =
-                "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "METHOD:PUBLISH" + System.lineSeparator() +
-                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
-                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group06" + System.lineSeparator() +
-                "DTSTAMP:20160914T200517Z" + System.lineSeparator() +
-                "UID:20160914T130517-0jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY" + System.lineSeparator() +
-                "DTSTART:20160516T090000" + System.lineSeparator() +
-                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
-                "DTEND:20160516T100000" + System.lineSeparator() +
-                "SUMMARY:Edited summary" + System.lineSeparator() +
-                "RELATED-TO:20150110T080000-010@jfxtras.org" + System.lineSeparator() +
-                "SEQUENCE:1" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group06" + System.lineSeparator() +
-                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "UID:20150110T080000-010@jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY;UNTIL=20160515" + System.lineSeparator() +
-                "DTSTART;VALUE=DATE:20151108" + System.lineSeparator() +
-                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
-                "DTEND;VALUE=DATE:20151109" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
-                "END:VCALENDAR";
-        mainVCalendar.processITIPMessage(iTIPMessage);
-
-
-        assertEquals(2, vComponents.size());
-        Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
-        VEvent newVComponentOriginal = vComponents.get(0);
-        VEvent newVComponentFuture = vComponents.get(1);
-
-        VEvent expectedVComponentOriginal = ICalendarStaticComponents.getWholeDayDaily1();
-        RecurrenceRule2 rrule = expectedVComponentOriginal.getRecurrenceRule().getValue();
-        rrule.setUntil(LocalDate.of(2016, 5, 15));
-        
-        assertEquals(expectedVComponentOriginal, newVComponentOriginal);
-
-        VEvent expectedVComponentFuture = ICalendarStaticComponents.getWholeDayDaily1();
-        expectedVComponentFuture.setDateTimeStart(LocalDateTime.of(2016, 5, 16, 9, 0));
-        expectedVComponentFuture.setDateTimeEnd(LocalDateTime.of(2016, 5, 16, 10, 0));
-        expectedVComponentFuture.setUniqueIdentifier(new UniqueIdentifier(newVComponentFuture.getUniqueIdentifier()));
-        expectedVComponentFuture.setDateTimeStamp(new DateTimeStamp(newVComponentFuture.getDateTimeStamp()));
-        expectedVComponentFuture.setSummary("Edited summary");
-        expectedVComponentFuture.withRelatedTo(vComponentOriginal.getUniqueIdentifier().getValue());
-        expectedVComponentFuture.setSequence(1);
-        
-        assertEquals(expectedVComponentFuture, newVComponentFuture);
     }
     
     @Test
