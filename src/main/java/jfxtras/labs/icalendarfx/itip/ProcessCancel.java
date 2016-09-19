@@ -163,19 +163,23 @@ public class ProcessCancel implements Processable
                             vComponents.remove(matchingVComponent);
 //                            mainVCalendar.removeVComponent(matchingVComponent);
                         } else
-                        { // add recurrence as EXDATE to main
-                            VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
-                            final ObservableList<ExceptionDates> exceptions;
-                            if (parentVComponent.getExceptionDates() == null)
+                        { // add recurrence as EXDATE to main if its an recurrence
+                            boolean isRecurrence = ((VDisplayable<?>) c).isRecurrence(recurrenceID);
+                            if (isRecurrence)
                             {
-                                exceptions = FXCollections.observableArrayList();
-                            } else
-                            {
-                                exceptions = parentVComponent.getExceptionDates();
+                                VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
+                                final ObservableList<ExceptionDates> exceptions;
+                                if (parentVComponent.getExceptionDates() == null)
+                                {
+                                    exceptions = FXCollections.observableArrayList();
+                                } else
+                                {
+                                    exceptions = parentVComponent.getExceptionDates();
+                                }
+                                exceptions.add(new ExceptionDates(recurrenceID));
+                                int oldSequence = (parentVComponent.getSequence() == null) ? 0 : parentVComponent.getSequence().getValue();
+                                parentVComponent.setSequence(++oldSequence);
                             }
-                            exceptions.add(new ExceptionDates(recurrenceID));
-                            int oldSequence = (parentVComponent.getSequence() == null) ? 0 : parentVComponent.getSequence().getValue();
-                            parentVComponent.setSequence(++oldSequence);
                         }
                     }
                         

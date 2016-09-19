@@ -26,6 +26,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -298,34 +299,22 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     VCalendar requestMessage = Reviser.defaultRequestVCalendar();
                     requestMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(requestMessage);
-
-                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
-                    if (children.size() > 0)
-                    {
-                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
-                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
-                        itipMessages.add(cancelMessage);
-                    }
+                    // Note: Child recurrences become orphans and get deleted when the iTIP message is processed
                     break;
                 }
                 case ALL_IGNORE_RECURRENCES:
                 {
                     adjustDateTime(vComponentEditedCopy);
-                    List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     
                     VCalendar requestMessage = Reviser.defaultRequestVCalendar();
                     requestMessage.addVComponent(vComponentEditedCopy);
-                    requestMessage.addAllVComponents(children);
                     itipMessages.add(requestMessage);
                     
-                    // Uncomment if explicitly canceling orphaned child recurrences is desired.  Orphaned children should be automatically deleted.
-//                    List<VDisplayable<?>> childrenToCancel = getVComponentEdited().recurrenceChildren();
-//                    if (childrenToCancel.size() > 0)
-//                    {
-//                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
-//                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
-//                        itipMessages.add(cancelMessage);
-//                    }
+                    // update child recurrences
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
+                    publishMessage.addAllVComponents(children);
+                    itipMessages.add(publishMessage);
                     break;
                 }
                 case CANCEL:
@@ -334,37 +323,53 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     
-                    // TODO - SEQUENCE NUMBER INCREMENT NEEDS TO BE CHANGED
+                    // request message to change original component
                     VCalendar requestMessage = Reviser.defaultRequestVCalendar();
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
                     requestMessage.addVComponent(vComponentOriginalCopy);
+                    itipMessages.add(requestMessage);
+
+                    // publish message to add new the-and-future component
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     vComponentOriginalCopy.incrementSequence();
                     incrementSequence = false;
-                    itipMessages.add(requestMessage);
                     itipMessages.add(publishMessage);
-
-                    // Uncomment if explicitly canceling orphaned child recurrences is desired.  Orphaned children should be automatically deleted.
-//                    List<VDisplayable<?>> children = getVComponentEdited().recurrenceChildren();
-//                    if (children.size() > 0)
-//                    {
-//                        VCalendar cancelMessage = Reviser.defaultCancelVCalendar();
-//                        cancelMessage.addAllVComponents(getVComponentEdited().recurrenceChildren());
-//                        itipMessages.add(cancelMessage);
-//                    }
+                    
+                    // Note: Child recurrences become orphans and get deleted when the iTIP message is processed
                     break;
                 }
-                    
-//                    revisedVComponents.add(0, vComponentOriginalCopy);
-//                    getVComponents().removeAll(getVComponentEdited().recurrenceChildren());
-//                    break;
                 case THIS_AND_FUTURE_IGNORE_RECURRENCES:
+                {                   
+                    // change edited and original copies
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     thisAndFutureIgnoreRecurrences(revisedVComponents, vComponentEditedCopy);
-                    revisedVComponents.add(0, vComponentOriginalCopy);
-                    throw new RuntimeException("not implemented");
-//                    break;
+                    
+                    // request message to change original component
+                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    requestMessage.addVComponent(vComponentOriginalCopy);
+                    itipMessages.add(requestMessage);
+
+                    // publish message to add new the-and-future component
+                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    publishMessage.addVComponent(vComponentEditedCopy);
+                    vComponentOriginalCopy.incrementSequence();
+                    incrementSequence = false;
+                    itipMessages.add(publishMessage);
+                    
+                    // process child recurrences (new recurrences made if after future edit)
+                    String uid = vComponentEditedCopy.getUniqueIdentifier().getValue();
+                    List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence)
+                            .stream()
+                            .filter(c -> DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(c.getDateTimeStart().getValue(), startOriginalRecurrence) >= 0) // is after or equals
+                            .peek(c ->
+                            {
+                                c.setUniqueIdentifier(uid);
+                                c.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+                            })
+                            .collect(Collectors.toList());
+                    publishMessage.addAllVComponents(children);
+                    break;
+                }
                 case ONE:
                 {
                     editOne(vComponentEditedCopy);
@@ -403,17 +408,20 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     // Make a copy of child recurrences, apply time shift, and return them as a List
     private List<VDisplayable<?>> adjustRecurrenceChildren(Temporal startRecurrence, Temporal startOriginalRecurrence)
     {
-        return getVComponentEdited().recurrenceChildren()
+        return getVComponentOriginal().recurrenceChildren()
                 .stream()
                 .map(v ->
                 {
                     Period dayShift = Period.between(LocalDate.from(startOriginalRecurrence), (LocalDate.from(v.getRecurrenceId().getValue())));
+//                    System.out.println("dayShift:" + dayShift);
+//                    Temporal newRecurreneId = startOriginalRecurrence.minus(dayShift);
                     Temporal newRecurreneId = startRecurrence.plus(dayShift);
                     try
                     {
                         VDisplayable<?> vCopy = v.getClass().newInstance();
                         vCopy.copyFrom(v);
-                        vCopy.setRecurrenceId(newRecurreneId);
+//                        System.out.println("newRecurreneId:" + newRecurreneId + " " + v.getRecurrenceId().getValue());
+                        vCopy.setRecurrenceId(new RecurrenceId(newRecurreneId));
                         return vCopy;
                     } catch (Exception e)
                     {
@@ -699,7 +707,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
             recurrenceChildren.stream().forEach(c -> 
             {
                 Temporal t = c.getRecurrenceId().getValue();
-                boolean isAfterStartRecurrence = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence()) > 0;
+                boolean isAfterStartRecurrence = DateTimeUtilities.TEMPORAL_COMPARATOR2.compare(t, getStartRecurrence()) > 0;
                 if (isAfterStartRecurrence)
                 { // change UID to match vComponentEditedCopy
 //                    getVComponents().remove(c);

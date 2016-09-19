@@ -150,7 +150,6 @@ public class ProcessRequest extends ProcessPublish
                 throw new IllegalArgumentException("Can't process REQUEST, handling Attendees is not implemented");
             }
             UniqueIdentifier uid = myComponent.getUniqueIdentifier();
-            System.out.println("uid:" + uid);
             if (uid == null)
             {
                 throw new IllegalArgumentException("Can't process REQUEST, VComponent has null UID");
