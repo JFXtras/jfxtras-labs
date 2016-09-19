@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Version;
  */
 public interface Reviser
 {
-    /** Revise a calendar component.  Returns the result of the revision */
+    /** Revise list of iTIP VCalendar components that represent the changes. */
     List<VCalendar> revise();
     
     // TODO - ADD A INITIALIZE METHOD FOR AN ARRAY OF INPUT OBJECT PARAMETERS
@@ -43,14 +43,6 @@ public interface Reviser
     {
         return new VCalendar()
                 .withMethod(MethodType.REQUEST)
-                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
-    
-    public static VCalendar defaultCancelVCalendar()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.CANCEL)
                 .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
                 .withVersion(new Version());
     }

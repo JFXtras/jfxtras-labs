@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -245,7 +245,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         }
         
         List<VCalendar> itipMessages = new ArrayList<>();
-        List<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
+//        List<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         boolean incrementSequence = true;
@@ -342,7 +342,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {                   
                     // change edited and original copies
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    thisAndFutureIgnoreRecurrences(revisedVComponents, vComponentEditedCopy);
+//                    thisAndFutureIgnoreRecurrences(vComponentEditedCopy, vComponentEditedCopy);
                     
                     // request message to change original component
                     VCalendar requestMessage = Reviser.defaultRequestVCalendar();
@@ -376,7 +376,6 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     VCalendar requestMessage = Reviser.defaultRequestVCalendar();
                     requestMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(requestMessage);
-//                    revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
                 }
                 default:
@@ -389,20 +388,14 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         {
             vComponentEditedCopy.incrementSequence();
         }
-        if (! vComponentEditedCopy.isValid())
-        {
-            throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    vComponentEditedCopy.toContent());
-        }
-        // TODO - NEED TO MAKE VCALENDAR WITH METHOD TO PUBLISH - LET VCALENDAR HANDLE REMOVE AND ADD BACK OF VCOMPONENTS
-//        getVComponents().remove(getVComponentEdited());
-//        getVComponents().addAll(revisedVComponents);
-        
-        // TODO - ASSEMBLE VCALENDAR ITIP MESSAGES
+//        if (! vComponentEditedCopy.isValid())
+//        {
+//            throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
+//                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+//                    vComponentEditedCopy.toContent());
+//        }
+
         return itipMessages;
-//        throw new RuntimeException("not implemented");
-//        return Collections.unmodifiableList(revisedVComponents);
     }
 
     // Make a copy of child recurrences, apply time shift, and return them as a List
@@ -413,14 +406,11 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 .map(v ->
                 {
                     Period dayShift = Period.between(LocalDate.from(startOriginalRecurrence), (LocalDate.from(v.getRecurrenceId().getValue())));
-//                    System.out.println("dayShift:" + dayShift);
-//                    Temporal newRecurreneId = startOriginalRecurrence.minus(dayShift);
                     Temporal newRecurreneId = startRecurrence.plus(dayShift);
                     try
                     {
                         VDisplayable<?> vCopy = v.getClass().newInstance();
                         vCopy.copyFrom(v);
-//                        System.out.println("newRecurreneId:" + newRecurreneId + " " + v.getRecurrenceId().getValue());
                         vCopy.setRecurrenceId(new RecurrenceId(newRecurreneId));
                         return vCopy;
                     } catch (Exception e)
@@ -699,6 +689,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     
     /** Handle changing the {@link UniqueIdentifier} of recurrence children, if any exist,
      * to match the {@link UniqueIdentifier} of the revised VComponent */
+    @Deprecated
     private void thisAndFutureIgnoreRecurrences(List<U> revisedVComponents, U vComponentEditedCopy)
     {
         List<VDisplayable<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();

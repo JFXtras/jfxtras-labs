@@ -17,8 +17,8 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.ReviserVEvent;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.SimpleRevisorFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.ReviserVEvent;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -28,7 +28,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
-public class ReviseWithRecurrencesWithiITIPTest
+public class ReviseWithRecurrencesTest
 {
     @Test // edit ALL with 2 recurrences in date range
     public void canEditAllWithRecurrence()

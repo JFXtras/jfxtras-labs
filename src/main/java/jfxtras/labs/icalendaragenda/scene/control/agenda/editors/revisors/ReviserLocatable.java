@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;

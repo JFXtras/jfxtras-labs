@@ -18,9 +18,9 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.Reviser;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.ReviserVEvent;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2.SimpleRevisorFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.Reviser;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.ReviserVEvent;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VPrimary;
@@ -38,7 +38,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
  * @author David Bal
  *
  */
-public class SimpleReviseWithITIPTest
+public class SimpleReviseTest
 {
     @Test
     public void canEditAll()
@@ -57,7 +57,7 @@ public class SimpleReviseWithITIPTest
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 
-        List<VCalendar> itipMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+        List<VCalendar> iTIPMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -84,7 +84,7 @@ public class SimpleReviseWithITIPTest
             "SEQUENCE:1" + System.lineSeparator() +
             "END:VEVENT" + System.lineSeparator() +
             "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -106,7 +106,7 @@ public class SimpleReviseWithITIPTest
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 17, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 17, 10, 30);
 
-        List<VCalendar> itipMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+        List<VCalendar> iTIPMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -130,7 +130,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -152,7 +152,7 @@ public class SimpleReviseWithITIPTest
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 17, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 17, 10, 30);
 
-        List<VCalendar> itipMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+        List<VCalendar> iTIPMessages = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -176,7 +176,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -206,9 +206,9 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
 
-        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent myComponentIndividual = vComponents.get(1);
         
@@ -230,7 +230,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -251,9 +251,9 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence2)
                 .withVComponentEdited(vComponentEditedIndividual)
                 .withVComponentOriginal(vComponentIndividualCopy);
-        itipMessages = reviser2.revise();
+        iTIPMessages = reviser2.revise();
         
-        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         
         expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -273,7 +273,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:2" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        iTIPMessage = itipMessages.stream()
+        iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -303,8 +303,8 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
-        assertEquals(Collections.emptyList(), itipMessages);        
+        List<VCalendar> iTIPMessages = reviser.revise();
+        assertEquals(Collections.emptyList(), iTIPMessages);        
     }
     
     @Test // change date and time
@@ -331,8 +331,8 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
-        itipMessages.forEach(message -> mainVCalendar.processITIPMessage(message));
+        List<VCalendar> iTIPMessages = reviser.revise();
+        iTIPMessages.forEach(message -> mainVCalendar.processITIPMessage(message));
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent myComponentFuture = vComponents.get(1);
         
@@ -371,7 +371,7 @@ public class SimpleReviseWithITIPTest
                 "RELATED-TO:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
 //        System.out.println(iTIPMessage);
@@ -402,9 +402,9 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
         
-        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent individualComponent = vComponents.get(1);
         
@@ -426,7 +426,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -456,9 +456,9 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
         
-        itipMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
+        iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent newVComponentFuture = vComponents.get(1);
         
@@ -494,7 +494,7 @@ public class SimpleReviseWithITIPTest
                 "RELATED-TO:20150110T080000-010@jfxtras.org" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -528,7 +528,7 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -547,7 +547,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -577,7 +577,7 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -595,7 +595,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
@@ -626,7 +626,7 @@ public class SimpleReviseWithITIPTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
-        List<VCalendar> itipMessages = reviser.revise();
+        List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -644,7 +644,7 @@ public class SimpleReviseWithITIPTest
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-        String iTIPMessage = itipMessages.stream()
+        String iTIPMessage = iTIPMessages.stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);

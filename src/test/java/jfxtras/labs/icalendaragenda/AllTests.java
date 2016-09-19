@@ -4,8 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import jfxtras.labs.icalendaragenda.itip.ReviseWithRecurrencesWithiITIPTest;
-import jfxtras.labs.icalendaragenda.itip.SimpleReviseWithITIPTest;
+import jfxtras.labs.icalendaragenda.itip.ReviseWithRecurrencesTest;
+import jfxtras.labs.icalendaragenda.itip.SimpleReviseTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
@@ -14,15 +14,15 @@ import jfxtras.labs.icalendaragenda.itip.SimpleReviseWithITIPTest;
     ComponentChangeDialogTest.class,
     MakeAppointmentsTest.class,
     MakeNewVEventsTest.class,
-    SimpleReviseWithITIPTest.class,
+    SimpleReviseTest.class,
     RenderVEventsTest.class,
     VEventEditPopupTest.class,
     VJournalEditPopupTest.class,
     VTodoEditPopupTest.class,
     
     // iTIP tests
-    ReviseWithRecurrencesWithiITIPTest.class,
-    SimpleReviseWithITIPTest.class
+    ReviseWithRecurrencesTest.class,
+    SimpleReviseTest.class
               })
 public class AllTests {
 

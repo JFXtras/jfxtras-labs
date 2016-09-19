@@ -1,20 +1,20 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisor2;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors;
 
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VTimeZone;
+import jfxtras.labs.icalendarfx.components.VFreeBusy;
 
 //TODO - add functionality
 /**
- * Reviser for {@link VTimeZone}
+ * Reviser for {@link VFreeBusy}
  * 
  * @author David Bal
  *
  */
-public class ReviserVTimeZone implements Reviser
+public class ReviserVFreeBusy implements Reviser
 {
-    public ReviserVTimeZone(VTimeZone component)
+    public ReviserVFreeBusy(VFreeBusy component)
     {
         throw new RuntimeException("not implemented");
     }

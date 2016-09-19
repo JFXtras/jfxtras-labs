@@ -34,7 +34,7 @@ import jfxtras.labs.icalendarfx.component.VJournalTest;
 import jfxtras.labs.icalendarfx.component.VTimeZoneTest;
 import jfxtras.labs.icalendarfx.component.VTodoTest;
 import jfxtras.labs.icalendarfx.itip.HandleRecurrencesTest;
-import jfxtras.labs.icalendarfx.itip.ProcessCancelTest;
+import jfxtras.labs.icalendarfx.itip.SimpleCancelTest;
 import jfxtras.labs.icalendarfx.itip.SimplePublishTest;
 import jfxtras.labs.icalendarfx.parameter.AlternateTextRepresentationTest;
 import jfxtras.labs.icalendarfx.parameter.CommonNameTest;
@@ -104,7 +104,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         
         // iTIP tests
         HandleRecurrencesTest.class,
-        ProcessCancelTest.class,
+        SimpleCancelTest.class,
         SimplePublishTest.class,
     
         // calendar tests

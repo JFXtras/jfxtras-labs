@@ -362,7 +362,7 @@ public class HandleRecurrencesTest
                 .withDateTimeStart(LocalDateTime.of(2015, 12, 26, 0, 30))
                 .withDateTimeEnd(LocalDateTime.of(2015, 12, 26, 2, 30));
         vComponents.add(vComponentRecurrenceBefore);
-        
+
         // make recurrence after
         VEvent vComponentRecurrenceAfter = ICalendarStaticComponents.getDaily1()
                 .withRecurrenceRule((RecurrenceRule2) null)
@@ -389,6 +389,7 @@ public class HandleRecurrencesTest
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
+                // NOTE: Yahoo calendar deletes the recurrence before the new UNTIL date.  It may be necessary to include the before recurrences in the REQUEST message.
                 "END:VCALENDAR" + System.lineSeparator() +
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
                 "METHOD:PUBLISH" + System.lineSeparator() +
@@ -419,7 +420,6 @@ public class HandleRecurrencesTest
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
         mainVCalendar.processITIPMessage(iTIPMessage);
-                
         assertEquals(4, vComponents.size());
         FXCollections.sort(vComponents, ICalendarTestAbstract.VCOMPONENT_COMPARATOR);
         VEvent myComponentOriginal = vComponents.get(0);

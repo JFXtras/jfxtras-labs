@@ -14,6 +14,7 @@ package jfxtras.labs.icalendarfx.components.editors.revisors;
  * @author David Bal
  *
  */
+@Deprecated // moved to iCalendarAgenda
 public interface Reviser
 {
     /** Revise a calendar component.  Returns the result of the revision */

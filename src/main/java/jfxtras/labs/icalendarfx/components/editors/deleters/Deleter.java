@@ -14,6 +14,7 @@ package jfxtras.labs.icalendarfx.components.editors.deleters;
  * @author David Bal
  *
  */
+@Deprecated // moved to iCalendarAgenda
 public interface Deleter
 {
     /** Executes the delete algorithms and returns the resulting VComponent, if any. 
