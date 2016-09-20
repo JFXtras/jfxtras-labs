@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.itip;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,41 @@ public class SimpleDeleteTest
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "STATUS:CANCELLED" + System.lineSeparator() +
                 "RECURRENCE-ID:20160516T100000" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+            String iTIPMessage = iTIPmessages.stream()
+                    .map(v -> v.toContent())
+                    .collect(Collectors.joining(System.lineSeparator()));
+            assertEquals(expectediTIPMessage, iTIPMessage);
+    }
+    
+    @Test
+    public void canDeleteThisAndFuture()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getWeeklyZoned();
+        vComponents.add(vComponentOriginal);
+
+        List<VCalendar> iTIPmessages = ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentOriginal))
+                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
+                .withStartOriginalRecurrence(LocalDateTime.of(2016, 5, 16, 10, 0).atZone(ZoneId.of("America/Los_Angeles")))
+                .delete();
+        
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:CANCEL" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "DTSTAMP:20151110T080000Z" + System.lineSeparator() +
+                "DESCRIPTION:WeeklyZoned Description" + System.lineSeparator() +
+                "SUMMARY:WeeklyZoned Summary" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "UID:20150110T080000-003@jfxtras.org" + System.lineSeparator() +
+                "STATUS:CANCELLED" + System.lineSeparator() +
+                "RECURRENCE-ID;TZID=America/Los_Angeles;RANGE=THISANDFUTURE:20160516T100000" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
             String iTIPMessage = iTIPmessages.stream()

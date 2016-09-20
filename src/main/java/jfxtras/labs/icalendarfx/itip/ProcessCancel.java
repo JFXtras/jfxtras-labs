@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.itip;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +11,10 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
+import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * 3.2.5.  CANCEL
@@ -129,19 +134,19 @@ public class ProcessCancel implements Processable
     @Override
     public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
-        iTIPMessage.getAllVComponents().forEach(c ->
+        for (VComponent c : iTIPMessage.getAllVComponents())
         {
             if (c instanceof VDisplayable)
             {
                 VDisplayable<?> vDisplayable = ((VDisplayable<?>) c);
+                int newSequence = (vDisplayable.getSequence() == null) ? 0 : vDisplayable.getSequence().getValue();
                 String uid = vDisplayable.getUniqueIdentifier().getValue();
-                Temporal recurrenceID = (vDisplayable.getRecurrenceId() != null) ? vDisplayable.getRecurrenceId().getValue() : null;
-                // match RECURRENCE-ID (if present)
+                RecurrenceId recurrenceID = vDisplayable.getRecurrenceId();
+                System.out.println("uid:" + uid);
+
                 if (mainVCalendar.uidComponentsMap().get(uid) != null)
                 {
-                    // if recurrence-id exists, and there is a matching vcomponent, then delete that vcomponent
-                    // if recurrence-id exists without a matching vcomponent add EXDATE to parent
-                    // if no recurrence date - delete all vcomponents
+                    // match RECURRENCE-ID (if present)
                     if (recurrenceID == null)
                     { // delete all related VComponents
                         List<VDisplayable<?>> relatedVComponents = mainVCalendar.uidComponentsMap().get(uid);
@@ -152,17 +157,27 @@ public class ProcessCancel implements Processable
                         VDisplayable<?> matchingVComponent = mainVCalendar.uidComponentsMap().get(uid)
                                 .stream()
                                 .filter(v -> {
-                                    Temporal mRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
-                                    return Objects.equals(recurrenceID, mRecurrenceID);
+                                    return Objects.equals(recurrenceID, v.getRecurrenceId());
+//                                    Temporal mRecurrenceID = (v.getRecurrenceId() != null) ? v.getRecurrenceId().getValue() : null;
+//                                    return Objects.equals(recurrenceID, mRecurrenceID);
                                 })
                                 .findAny()
                                 .orElseGet(() -> null);
-//System.out.println("matchingVComponent:" + matchingVComponent + " " + recurrenceID);
-                        if (matchingVComponent != null)
+
+                        boolean isMatchFound = matchingVComponent != null;
+                        if (isMatchFound)
                         { // delete one recurrence
-                            List<? extends VComponent> vComponents = mainVCalendar.getVComponents(c.getClass());
-                            vComponents.remove(matchingVComponent);
-//                            mainVCalendar.removeVComponent(matchingVComponent);
+                            int oldSequence = (matchingVComponent.getSequence() == null) ? 0 : matchingVComponent.getSequence().getValue();
+                            if (newSequence >= oldSequence)
+                            {
+                                List<? extends VComponent> vComponents = mainVCalendar.getVComponents(c.getClass());
+                                vComponents.remove(matchingVComponent);
+                            } else
+                            {
+                                throw new RuntimeException("Can't cancel because SEQUENCE in cancel message(" + newSequence +
+                                        ") is lower than sequence of matching component (" + oldSequence + ").");
+                            }
+                        // NO MATCH FOUND
                         } else
                         { // add recurrence as EXDATE to main if its an recurrence
                             
@@ -179,27 +194,54 @@ public class ProcessCancel implements Processable
                             {
                                 parentVComponent = vDisplayable;
                             }
-                            boolean isRecurrence = parentVComponent.isRecurrence(recurrenceID);
+                            boolean isRecurrence = parentVComponent.isRecurrence(recurrenceID.getValue());
                             if (isRecurrence)
                             {
-//                                VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
-                                final ObservableList<ExceptionDates> exceptions;
-                                if (parentVComponent.getExceptionDates() == null)
+                                int oldSequence = (parentVComponent.getSequence() == null) ? 0 : parentVComponent.getSequence().getValue();
+                                if (newSequence >= oldSequence)
                                 {
-                                    exceptions = FXCollections.observableArrayList();
-                                    parentVComponent.setExceptionDates(exceptions);
+                                    // Delete one instance 
+                                    if (recurrenceID.getRange() == null)
+                                    {
+                                        final ObservableList<ExceptionDates> exceptions;
+                                        if (parentVComponent.getExceptionDates() == null)
+                                        {
+                                            exceptions = FXCollections.observableArrayList();
+                                            parentVComponent.setExceptionDates(exceptions);
+                                        } else
+                                        {
+                                            exceptions = parentVComponent.getExceptionDates();
+                                        }
+                                        exceptions.add(new ExceptionDates(recurrenceID.getValue()));
+                                    // Delete THIS-AND-FUTURE
+                                    } else if (recurrenceID.getRange().getValue() == RangeType.THIS_AND_FUTURE)
+                                    {
+                                        // add UNTIL
+                                        Temporal previous = parentVComponent.previousStreamValue(recurrenceID.getValue());
+                                        final Temporal until;
+                                        if (previous.isSupported(ChronoUnit.NANOS))
+                                        {
+                                            until = DateTimeUtilities.DateTimeType.DATE_WITH_UTC_TIME.from(previous);
+                                        } else
+                                        {
+                                            until = LocalDate.from(previous);                    
+                                        }
+                                        parentVComponent.getRecurrenceRule().getValue().setUntil(until);
+                                    } else
+                                    {
+                                        throw new IllegalArgumentException("Unsupported RangeType:" + recurrenceID.getRange().toContent());
+                                    }
+                                    parentVComponent.incrementSequence();
                                 } else
                                 {
-                                    exceptions = parentVComponent.getExceptionDates();
+                                    throw new RuntimeException("Can't cancel because SEQUENCE in cancel message(" + newSequence +
+                                            ") is lower than sequence of matching component (" + oldSequence + ").");
                                 }
-                                exceptions.add(new ExceptionDates(recurrenceID));
-                                int oldSequence = (parentVComponent.getSequence() == null) ? 0 : parentVComponent.getSequence().getValue();
-                                parentVComponent.setSequence(++oldSequence);
                             }
                         }
                     }
                         
-                       
+                   //TODO - HANDLE ORPHANED CHILDREN - ADD TO CHANGE LISTENER?
                     
 
                 }
@@ -208,7 +250,7 @@ public class ProcessCancel implements Processable
                 // TODO
                 throw new RuntimeException("not implemented");
             }
-        });
+        }
     }
 
 }

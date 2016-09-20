@@ -120,6 +120,7 @@ public final class ICalendarStaticComponents
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
                 .withSummary("WeeklyZoned Summary")
+                .withOrganizer("ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org")
                 .withUniqueIdentifier("20150110T080000-003@jfxtras.org");
     }
     

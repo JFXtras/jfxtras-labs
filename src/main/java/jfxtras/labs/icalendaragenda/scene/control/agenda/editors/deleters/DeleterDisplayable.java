@@ -1,12 +1,9 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -17,9 +14,10 @@ import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 
 /**
  * <p>Handles deleting recurrences of a {@link VDisplayable}
@@ -172,41 +170,67 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
                 vComponent.setRecurrenceId(getStartOriginalRecurrence());
                 vComponent.eraseDateTimeProperties();
                 vComponent.setRecurrenceRule((RecurrenceRule) null);
-                // TODO - should remove DTSTART, DTEND, and DURATION - how?
                 cancelMessage.addVComponent(vComponent);
                 itipMessages.add(cancelMessage);
-            }
-
-//                getVComponents().remove(vComponent);
-//                final ExceptionDates exceptionDates;
+                
+                // REVISE APPROACH - accepted by Google
+//                // Add recurrence to EXDATE of parent
+//                Temporal recurrence = getStartOriginalRecurrence();
 //                if (vComponent.getExceptionDates() == null)
 //                {
-//                    exceptionDates = new ExceptionDates(FXCollections.observableSet());
-//                    vComponent.setExceptionDates(FXCollections.observableArrayList(exceptionDates));
+//                    vComponent.withExceptionDates(recurrence);
 //                } else
 //                {
-//                    exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()-1); // get last ExceptionDate
+//                    vComponent.getExceptionDates().get(0).getValue().add(recurrence);
 //                }
-//                exceptionDates.getValue().add(startOriginalRecurrence);
+//                vComponent.incrementSequence();
+//                
+//                VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+//                requestMessage.addVComponent(vComponent);
+//                itipMessages.add(requestMessage);    
                 break;
+            }
             case THIS_AND_FUTURE:
-                // add UNTIL
-                Temporal previous = vComponent.previousStreamValue(getStartOriginalRecurrence());
-                final Temporal until;
-                if (previous.isSupported(ChronoUnit.NANOS))
-                {
-                    until = DateTimeUtilities.DateTimeType.DATE_WITH_UTC_TIME.from(previous);
-                } else
-                {
-                    until = LocalDate.from(previous);                    
-                }
-                vComponent.getRecurrenceRule().getValue().setUntil(until);
-                List<VDisplayable<?>> recurrenceChildren = vComponent.recurrenceChildren()
-                        .stream()
-                        .filter(v -> DateTimeUtilities.isAfter(v.getRecurrenceId().getValue(), getStartOriginalRecurrence()))
-                        .collect(Collectors.toList());
-//                getVComponents().removeAll(recurrenceChildren);
-//                getVComponents().remove(vComponent);
+                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+                vComponent.setStatus(StatusType.CANCELLED);
+                vComponent.setRecurrenceId(new RecurrenceId(getStartOriginalRecurrence()).withRange(RangeType.THIS_AND_FUTURE));
+                vComponent.eraseDateTimeProperties();
+                vComponent.setRecurrenceRule((RecurrenceRule) null);
+                cancelMessage.addVComponent(vComponent);
+                itipMessages.add(cancelMessage);
+                
+                // REVISE APPROACH - accepted by Google
+//              // Add recurrence to EXDATE of parent
+//              Temporal recurrence = getStartOriginalRecurrence();
+//              if (vComponent.getExceptionDates() == null)
+//              {
+//                  vComponent.withExceptionDates(recurrence);
+//              } else
+//              {
+//                  vComponent.getExceptionDates().get(0).getValue().add(recurrence);
+//              }
+//              vComponent.incrementSequence();
+//              
+//              VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+//              requestMessage.addVComponent(vComponent);
+//              itipMessages.add(requestMessage);   
+                
+//                // add UNTIL
+//                Temporal previous = vComponent.previousStreamValue(getStartOriginalRecurrence());
+//                final Temporal until;
+//                if (previous.isSupported(ChronoUnit.NANOS))
+//                {
+//                    until = DateTimeUtilities.DateTimeType.DATE_WITH_UTC_TIME.from(previous);
+//                } else
+//                {
+//                    until = LocalDate.from(previous);                    
+//                }
+//                vComponent.getRecurrenceRule().getValue().setUntil(until);
+//                List<VDisplayable<?>> recurrenceChildren = vComponent.recurrenceChildren()
+//                        .stream()
+//                        .filter(v -> DateTimeUtilities.isAfter(v.getRecurrenceId().getValue(), getStartOriginalRecurrence()))
+//                        .collect(Collectors.toList());
+
                 break;
             default:
                 throw new RuntimeException("Unsupprted response:" + changeResponse);          
