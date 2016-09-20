@@ -285,6 +285,13 @@ public class VTodo extends VLocatable<VTodo> implements VDescribable2<VTodo>
         return Collections.unmodifiableList(errors);
     }
     
+    @Override
+    public void eraseDateTimeProperties()
+    {
+        super.eraseDateTimeProperties();
+        setDateTimeDue((DateTimeDue) null);
+    }
+    
     /** Parse content lines into calendar component object */
     public static VTodo parse(String contentLines)
     {

@@ -303,6 +303,13 @@ public class VEvent extends VLocatable<VEvent> implements VDateTimeEnd<VEvent>,
         return Collections.unmodifiableList(errors);
     }
     
+    @Override
+    public void eraseDateTimeProperties()
+    {
+        super.eraseDateTimeProperties();
+        setDateTimeEnd((DateTimeEnd) null);
+    }
+    
     /** Parse folded content lines into calendar component object */
     public static VEvent parse(String foldedContent)
     {

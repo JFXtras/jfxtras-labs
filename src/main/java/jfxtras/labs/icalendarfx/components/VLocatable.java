@@ -477,6 +477,13 @@ public abstract class VLocatable<T> extends VDisplayable<T> implements VDescriba
         return super.streamRecurrences(start.minus(adjustment));
     }
     
+    @Override
+    public void eraseDateTimeProperties()
+    {
+        super.eraseDateTimeProperties();
+        setDuration((DurationProp) null);
+    }
+    
     /** A convenience method that returns either Duration property value, or a calculated duration based on start and end values */
     public abstract TemporalAmount getActualDuration();
     

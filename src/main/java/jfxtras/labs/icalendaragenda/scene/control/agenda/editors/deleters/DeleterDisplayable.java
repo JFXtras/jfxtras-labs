@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javafx.collections.FXCollections;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
@@ -18,7 +17,8 @@ import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
@@ -106,21 +106,16 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
     /** Tests the object state is valid and revision can proceed.  Returns true if valid, false otherwise */
     private boolean isValid()
     {
-        if (getStartOriginalRecurrence() == null)
-        {
-            System.out.println("startOriginalRecurrence must not be null");
-            return false;
-        }
+//        if (getStartOriginalRecurrence() == null)
+//        {
+//            System.out.println("startOriginalRecurrence must not be null");
+//            return false;
+//        }
         if (getDialogCallback() == null)
         {
             System.out.println("dialogCallback must not be null");
             return false;
         }
-//        if (getVComponents() == null)
-//        {
-//            System.out.println("getVComponents must not be null");
-//            return false;
-//        }
         return true;   
     }
     
@@ -132,7 +127,7 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
-        // Copy edited component for further changes (i.e. UID, date/time)
+        // Copy VComponent to ensure original is unchanged
         U vComponent = null;
         try
         {
@@ -154,25 +149,45 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
             switch (changeResponse)
             {
             case ALL:
-//                getVComponents().removeAll(vComponent.recurrenceChildren());
-//                getVComponents().remove(vComponent);
-                return null;
+            {
+                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+                vComponent.setStatus(StatusType.CANCELLED);
+                cancelMessage.addVComponent(vComponent);
+                itipMessages.add(cancelMessage);
+                // NOTE: Orphaned children should be automatically removed when message is processed
+                // If not, then must be explicitly removed here
+                break;
+            }
             case CANCEL:
                 break;
 //                return vComponent;
             case ONE:
-                // Add recurrence to exception list
+            {
+                /* Note: A request method could be used to add an EXDATE instead of cancel.
+                 * RFC 5546 indicates cancel should be used, but some clients such as Google
+                 * calendar doesn't support the cancel, but it does support the request.
+                */
+                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+                vComponent.setStatus(StatusType.CANCELLED);
+                vComponent.setRecurrenceId(getStartOriginalRecurrence());
+                vComponent.eraseDateTimeProperties();
+                vComponent.setRecurrenceRule((RecurrenceRule) null);
+                // TODO - should remove DTSTART, DTEND, and DURATION - how?
+                cancelMessage.addVComponent(vComponent);
+                itipMessages.add(cancelMessage);
+            }
+
 //                getVComponents().remove(vComponent);
-                final ExceptionDates exceptionDates;
-                if (vComponent.getExceptionDates() == null)
-                {
-                    exceptionDates = new ExceptionDates(FXCollections.observableSet());
-                    vComponent.setExceptionDates(FXCollections.observableArrayList(exceptionDates));
-                } else
-                {
-                    exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()-1); // get last ExceptionDate
-                }
-                exceptionDates.getValue().add(startOriginalRecurrence);
+//                final ExceptionDates exceptionDates;
+//                if (vComponent.getExceptionDates() == null)
+//                {
+//                    exceptionDates = new ExceptionDates(FXCollections.observableSet());
+//                    vComponent.setExceptionDates(FXCollections.observableArrayList(exceptionDates));
+//                } else
+//                {
+//                    exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()-1); // get last ExceptionDate
+//                }
+//                exceptionDates.getValue().add(startOriginalRecurrence);
                 break;
             case THIS_AND_FUTURE:
                 // add UNTIL
@@ -199,6 +214,7 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
         } else
         { // delete individual component
             VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+            vComponent.setStatus(StatusType.CANCELLED);
             cancelMessage.addVComponent(vComponent);
             itipMessages.add(cancelMessage);
 
@@ -217,8 +233,8 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
                     e.printStackTrace();
                 }
                 
+                // Add recurrence to EXDATE of parent
                 Temporal recurrence = vComponent.getRecurrenceId().getValue();
-//                System.out.println(parentCopy);
                 if (parentCopy.getExceptionDates() == null)
                 {
                     parentCopy.withExceptionDates(recurrence);

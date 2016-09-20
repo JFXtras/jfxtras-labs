@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import jfxtras.labs.icalendaragenda.itip.ReviseWithRecurrencesTest;
+import jfxtras.labs.icalendaragenda.itip.SimpleDeleteTest;
 import jfxtras.labs.icalendaragenda.itip.SimpleReviseTest;
 
 @RunWith(Suite.class)
@@ -22,6 +23,7 @@ import jfxtras.labs.icalendaragenda.itip.SimpleReviseTest;
     
     // iTIP tests
     ReviseWithRecurrencesTest.class,
+    SimpleDeleteTest.class,
     SimpleReviseTest.class
               })
 public class AllTests {

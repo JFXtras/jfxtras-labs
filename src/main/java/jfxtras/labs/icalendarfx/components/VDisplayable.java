@@ -36,6 +36,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCa
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
@@ -1069,5 +1070,12 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         }
     
         return errors;
+    }
+    
+    /** Erase all date/time properties such as DTSTART, DTEND, DURATION, and DUE (which ever exist).  This
+     * is necessary to prepare a CANCEL iTIP message for one recurrence instance. */
+    public void eraseDateTimeProperties()
+    {
+        setDateTimeStart((DateTimeStart) null);
     }
 }

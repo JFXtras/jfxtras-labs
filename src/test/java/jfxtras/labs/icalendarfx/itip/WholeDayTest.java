@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 
-public class WholeDayPublishTest
+public class WholeDayTest
 {
     @Test
     public void canChangeToWholeDayAll()

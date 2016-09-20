@@ -156,7 +156,8 @@ public class ProcessCancel implements Processable
                                     return Objects.equals(recurrenceID, mRecurrenceID);
                                 })
                                 .findAny()
-                                .orElseGet(() -> null);    
+                                .orElseGet(() -> null);
+//System.out.println("matchingVComponent:" + matchingVComponent + " " + recurrenceID);
                         if (matchingVComponent != null)
                         { // delete one recurrence
                             List<? extends VComponent> vComponents = mainVCalendar.getVComponents(c.getClass());
@@ -164,14 +165,29 @@ public class ProcessCancel implements Processable
 //                            mainVCalendar.removeVComponent(matchingVComponent);
                         } else
                         { // add recurrence as EXDATE to main if its an recurrence
-                            boolean isRecurrence = ((VDisplayable<?>) c).isRecurrence(recurrenceID);
+                            
+                            // find parent repeatable VComponent, if RRULE is absent
+                            final VDisplayable<?> parentVComponent;
+                            if (vDisplayable.getRecurrenceRule() == null)
+                            {
+                                parentVComponent = mainVCalendar.uidComponentsMap().get(uid)
+                                .stream()
+                                .filter(v -> v.getRecurrenceRule() != null)
+                                .findAny()
+                                .orElseThrow(() -> new RuntimeException("Can't add EXDATE: VComponent with Recurrence Rule can't be found for uid:" + uid));
+                            } else
+                            {
+                                parentVComponent = vDisplayable;
+                            }
+                            boolean isRecurrence = parentVComponent.isRecurrence(recurrenceID);
                             if (isRecurrence)
                             {
-                                VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
+//                                VDisplayable<?> parentVComponent = mainVCalendar.uidComponentsMap().get(uid).get(0);
                                 final ObservableList<ExceptionDates> exceptions;
                                 if (parentVComponent.getExceptionDates() == null)
                                 {
                                     exceptions = FXCollections.observableArrayList();
+                                    parentVComponent.setExceptionDates(exceptions);
                                 } else
                                 {
                                     exceptions = parentVComponent.getExceptionDates();

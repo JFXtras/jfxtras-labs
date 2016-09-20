@@ -305,39 +305,39 @@ public class ReviseComponentWithRecurrencesWithiITIPTestOld
 //        assertEquals(LocalDateTime.of(2016, 5, 17, 9, 0), vComponentRecurrence.getRecurrenceId().getValue());
 //    }
     
-    @Test // makes sure when recurrence deleted the parent gets an EXDATE
-    public void canDeleteRecurrence()
-    {
-        VCalendar vCalendar = new VCalendar();
-        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
-        
-        VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
-        vComponents.add(vComponent1);
-        // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
-        vComponents.add(vComponentRecurrence);
-
-        // make changes
-        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
-
-        ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentRecurrence))
-                .withDialogCallback((m) -> null)
-                .withStartOriginalRecurrence(startOriginalRecurrence)
-                .withVComponents(vComponents)
-                .delete();
-        
-        assertEquals(1, vComponents.size());
-        VEvent myComponent1 = vComponents.get(0);
-        
-        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
-                .withExceptionDates(LocalDateTime.of(2016, 5, 17, 10, 0));
-        assertEquals(expectedVComponent, myComponent1);
-    }
+//    @Test // makes sure when recurrence deleted the parent gets an EXDATE
+//    public void canDeleteRecurrence()
+//    {
+//        VCalendar vCalendar = new VCalendar();
+//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+//        
+//        VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
+//        vComponents.add(vComponent1);
+//        // make recurrence
+//        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
+//        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+//        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+//        vComponentRecurrence.setSummary("recurrence summary");
+//        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
+//        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+//        vComponents.add(vComponentRecurrence);
+//
+//        // make changes
+//        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+//
+//        ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentRecurrence))
+//                .withDialogCallback((m) -> null)
+//                .withStartOriginalRecurrence(startOriginalRecurrence)
+//                .withVComponents(vComponents)
+//                .delete();
+//        
+//        assertEquals(1, vComponents.size());
+//        VEvent myComponent1 = vComponents.get(0);
+//        
+//        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
+//                .withExceptionDates(LocalDateTime.of(2016, 5, 17, 10, 0));
+//        assertEquals(expectedVComponent, myComponent1);
+//    }
     
     @Test // makes sure when recurrence deleted the parent gets an EXDATE
     public void canDeleteAllWithRecurrence()
