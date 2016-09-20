@@ -62,6 +62,7 @@ public class DeleteWithRecurrencesTest
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "RECURRENCE-ID:20160517T100000" + System.lineSeparator() +
+                "STATUS:CANCELLED" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR" + System.lineSeparator() +
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
@@ -85,6 +86,7 @@ public class DeleteWithRecurrencesTest
             String iTIPMessage = iTIPmessages.stream()
                     .map(v -> v.toContent())
                     .collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(iTIPMessage);
             assertEquals(expectediTIPMessage, iTIPMessage);
     }
 }

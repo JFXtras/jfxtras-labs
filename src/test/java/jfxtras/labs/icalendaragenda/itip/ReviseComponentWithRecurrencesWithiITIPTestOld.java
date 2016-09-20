@@ -18,6 +18,7 @@ import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
+@Deprecated
 public class ReviseComponentWithRecurrencesWithiITIPTestOld
 {
 //    @Test // with a recurrence in between new date range - removed special recurrence, replaces with normal recurrence
