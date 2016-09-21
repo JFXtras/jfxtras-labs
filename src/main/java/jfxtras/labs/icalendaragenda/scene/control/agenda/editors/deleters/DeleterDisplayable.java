@@ -8,7 +8,6 @@ import java.util.Map;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.Reviser;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -242,35 +241,35 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
             cancelMessage.addVComponent(vComponent);
             itipMessages.add(cancelMessage);
 
-            // does recurrence instance exist, then add EXDATE to parent
-            if (vComponent.getRecurrenceId() != null)
-            { // add EXDATE to recurrence parent
-                // Copy parent component
-                U parentCopy = null;
-                try
-                {
-                    parentCopy = (U) getVComponent().getClass().newInstance();
-                    VDisplayable<?> parent = getVComponent().recurrenceParent();
-                    parentCopy.copyFrom(parent);
-                } catch (InstantiationException | IllegalAccessException e)
-                {
-                    e.printStackTrace();
-                }
-                
-                // Add recurrence to EXDATE of parent
-                Temporal recurrence = vComponent.getRecurrenceId().getValue();
-                if (parentCopy.getExceptionDates() == null)
-                {
-                    parentCopy.withExceptionDates(recurrence);
-                } else
-                {
-                    parentCopy.getExceptionDates().get(0).getValue().add(recurrence);
-                }
-                parentCopy.incrementSequence();
-                VCalendar requestMessage = Reviser.defaultRequestVCalendar();
-                requestMessage.addVComponent(parentCopy);
-                itipMessages.add(requestMessage);                
-            }
+//            // does recurrence instance exist, then add EXDATE to parent
+//            if (vComponent.getRecurrenceId() != null)
+//            { // add EXDATE to recurrence parent
+//                // Copy parent component
+//                U parentCopy = null;
+//                try
+//                {
+//                    parentCopy = (U) getVComponent().getClass().newInstance();
+//                    VDisplayable<?> parent = getVComponent().recurrenceParent();
+//                    parentCopy.copyFrom(parent);
+//                } catch (InstantiationException | IllegalAccessException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                
+//                // Add recurrence to EXDATE of parent
+//                Temporal recurrence = vComponent.getRecurrenceId().getValue();
+//                if (parentCopy.getExceptionDates() == null)
+//                {
+//                    parentCopy.withExceptionDates(recurrence);
+//                } else
+//                {
+//                    parentCopy.getExceptionDates().get(0).getValue().add(recurrence);
+//                }
+//                parentCopy.incrementSequence();
+//                VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+//                requestMessage.addVComponent(parentCopy);
+//                itipMessages.add(requestMessage);                
+//            }
         }
 
 //        if (! vComponent.isValid())

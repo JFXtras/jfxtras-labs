@@ -231,6 +231,7 @@ public class ProcessCancel implements Processable
                                     {
                                         throw new IllegalArgumentException("Unsupported RangeType:" + recurrenceID.getRange().toContent());
                                     }
+                                    System.out.println("about to increment");
                                     parentVComponent.incrementSequence();
                                 } else
                                 {
