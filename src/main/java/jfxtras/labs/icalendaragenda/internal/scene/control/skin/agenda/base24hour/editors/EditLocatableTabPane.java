@@ -8,8 +8,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VLocatable;
-import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -58,8 +59,11 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
         };
 //        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
         // TODO - NEW REVISER WILL RETURN LIST<VCALENDAR> AS IPIT MESSSAGES
-        List<T> result = (List<T>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        newVComponentsProperty().set(result);
+        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        iTIPMessagesProperty().set(result);
+        
+//        List<T> result = (List<T>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
+//        newVComponentsProperty().set(result);
 //        isFinished.set(result);
     }
     

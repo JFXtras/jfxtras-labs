@@ -99,8 +99,9 @@ public class EditComponentPopupTrial extends Application
         primaryStage.setTitle("ICalendar Edit Popup Demo");
         primaryStage.show();
         
-        scene.getEditDisplayableTabPane().newVComponentsProperty().addListener((obs, oldValue, newValue) ->
+        scene.getEditDisplayableTabPane().iTIPMessagesProperty().addListener((obs, oldValue, newValue) ->
         {
+            newValue.forEach(message -> myCalendar.processITIPMessage(message));
             myCalendar.getVEvents().stream().forEach(System.out::println);
             primaryStage.hide();
         });

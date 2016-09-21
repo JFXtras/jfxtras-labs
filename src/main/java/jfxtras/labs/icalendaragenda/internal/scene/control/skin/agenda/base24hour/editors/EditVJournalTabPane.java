@@ -5,8 +5,9 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
 /** 
@@ -37,11 +38,12 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
                 vComponent,
                 vComponentOriginalCopy
         };
-//        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        List<VJournal> result = (List<VJournal>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        newVComponentsProperty().set(result);
+        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        iTIPMessagesProperty().set(result);
+//        List<VJournal> result = (List<VJournal>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
+//        newVComponentsProperty().set(result);
 //        isFinished.set(result);
-    }
+   }
     
     @Override
     void removeEmptyProperties()

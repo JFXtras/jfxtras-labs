@@ -37,6 +37,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditDisplayableScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.SimpleEditSceneFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -47,10 +48,8 @@ import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
-import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -426,13 +425,14 @@ public class ICalendarAgenda extends Agenda
                  */
                 Boolean isNew1 = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
                 Boolean isNew2 = (isNew1 == null) ? false : isNew1;
-                popupScene.getEditDisplayableTabPane().newVComponentsProperty().addListener((obs, oldValue, newValue) ->
+                popupScene.getEditDisplayableTabPane().iTIPMessagesProperty().addListener((obs, oldValue, newValue) ->
                 {
-                    if (isNew2)
-                    {
-                        newValue.stream().forEach(v -> v.setSequence((Sequence) null)); // remove SEQUENCE for new components
-                    }
-                    popupStage.hide();
+                    newValue.forEach(message -> getVCalendar().processITIPMessage(message));
+//                    if (isNew2)
+//                    {
+//                        newValue.stream().forEach(v -> v.setSequence((Sequence) null)); // remove SEQUENCE for new components
+//                    }
+//                    popupStage.hide();
                 });
             }
             return null;

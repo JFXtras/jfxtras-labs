@@ -147,9 +147,7 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
             {
             case ALL:
             {
-                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
-                vComponent.setStatus(StatusType.CANCELLED);
-                cancelMessage.addVComponent(vComponent);
+                VCalendar cancelMessage = setUpCancelMessage(vComponent);
                 itipMessages.add(cancelMessage);
                 // NOTE: Orphaned children should be automatically removed when message is processed
                 // If not, then must be explicitly removed here
@@ -164,12 +162,13 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
                  * RFC 5546 indicates cancel should be used, but some clients such as Google
                  * calendar doesn't support the cancel, but it does support the request.
                 */
-                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
-                vComponent.setStatus(StatusType.CANCELLED);
+                VCalendar cancelMessage = setUpCancelMessage(vComponent);
+//                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+//                vComponent.setStatus(StatusType.CANCELLED);
+//                vComponent.eraseDateTimeProperties();
+//                cancelMessage.addVComponent(vComponent);
                 vComponent.setRecurrenceId(getStartOriginalRecurrence());
-                vComponent.eraseDateTimeProperties();
                 vComponent.setRecurrenceRule((RecurrenceRule) null);
-                cancelMessage.addVComponent(vComponent);
                 itipMessages.add(cancelMessage);
                 
                 // REVISE APPROACH - accepted by Google
@@ -190,12 +189,12 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
                 break;
             }
             case THIS_AND_FUTURE:
-                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
-                vComponent.setStatus(StatusType.CANCELLED);
+                VCalendar cancelMessage = setUpCancelMessage(vComponent);
+//                VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+//                vComponent.setStatus(StatusType.CANCELLED);
+//                vComponent.eraseDateTimeProperties();
+//                cancelMessage.addVComponent(vComponent);
                 vComponent.setRecurrenceId(new RecurrenceId(getStartOriginalRecurrence()).withRange(RangeType.THIS_AND_FUTURE));
-                vComponent.eraseDateTimeProperties();
-                vComponent.setRecurrenceRule((RecurrenceRule) null);
-                cancelMessage.addVComponent(vComponent);
                 itipMessages.add(cancelMessage);
                 
                 // REVISE APPROACH - accepted by Google
@@ -236,10 +235,13 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
             }
         } else
         { // delete individual component
-            VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
-            vComponent.setStatus(StatusType.CANCELLED);
-            cancelMessage.addVComponent(vComponent);
+            VCalendar cancelMessage = setUpCancelMessage(vComponent);
+//            VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+//            vComponent.setStatus(StatusType.CANCELLED);
+//            vComponent.eraseDateTimeProperties();
+//            cancelMessage.addVComponent(vComponent);
             itipMessages.add(cancelMessage);
+            // NOTE: EXDATE should be added to parent when the iTIP message is processed.
 
 //            // does recurrence instance exist, then add EXDATE to parent
 //            if (vComponent.getRecurrenceId() != null)
@@ -281,5 +283,15 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
 //        getVComponents().add(vComponent);
         return itipMessages;
 //        return vComponent;
+    }
+
+    private VCalendar setUpCancelMessage(U vComponent)
+    {
+        VCalendar cancelMessage = Deleter.defaultCancelVCalendar();
+        vComponent.setStatus(StatusType.CANCELLED);
+        vComponent.setRecurrenceRule((RecurrenceRule) null);
+        vComponent.eraseDateTimeProperties();
+        cancelMessage.addVComponent(vComponent);
+        return cancelMessage;
     }
 }

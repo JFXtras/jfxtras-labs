@@ -142,7 +142,6 @@ public class ProcessCancel implements Processable
                 int newSequence = (vDisplayable.getSequence() == null) ? 0 : vDisplayable.getSequence().getValue();
                 String uid = vDisplayable.getUniqueIdentifier().getValue();
                 RecurrenceId recurrenceID = vDisplayable.getRecurrenceId();
-                System.out.println("uid:" + uid);
 
                 if (mainVCalendar.uidComponentsMap().get(uid) != null)
                 {
@@ -231,7 +230,6 @@ public class ProcessCancel implements Processable
                                     {
                                         throw new IllegalArgumentException("Unsupported RangeType:" + recurrenceID.getRange().toContent());
                                     }
-                                    System.out.println("about to increment");
                                     parentVComponent.incrementSequence();
                                 } else
                                 {

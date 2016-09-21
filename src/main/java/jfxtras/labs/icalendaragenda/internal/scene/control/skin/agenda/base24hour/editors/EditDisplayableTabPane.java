@@ -3,7 +3,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.net.URL;
 import java.time.temporal.Temporal;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -24,9 +24,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.SimpleDeleterFactory;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
-import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -64,11 +65,15 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
 //     * (i.e. Attach a listener to this property, on changing hide the control */
 //    public ObjectProperty<Boolean> isFinished() { return isFinished; }
 
+    ObjectProperty<List<VCalendar>> iTIPMessages = new SimpleObjectProperty<>();
+    public ObjectProperty<List<VCalendar>> iTIPMessagesProperty() { return iTIPMessages; }
+    @Deprecated
     ObjectProperty<List<T>> newVComponents = new SimpleObjectProperty<>();
     /** This property contains a List of new components resulting from the editing.
      * When property value becomes non-null the control should be closed.
      * (i.e. Attach a listener to this property, on changing hide the control */
-    public ObjectProperty<List<T>> newVComponentsProperty() { return newVComponents; }
+    @Deprecated
+//    public ObjectProperty<List<T>> newVComponentsProperty() { return newVComponents; }
     
     public EditDisplayableTabPane( )
     {
@@ -76,7 +81,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         loadFxml(EditDescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
-    @FXML
+    @FXML    @Deprecated
     void handleSaveButton()
     {
         removeEmptyProperties();
@@ -112,7 +117,8 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         // TODO - WITH PUBLISH IN MIND, I THINK THIS SHOULD RETURN NULL (MUST BE EDITING A COPY OF ORIGINAL THAT IS ABANDONED)
         vComponents.remove(vComponent);
         vComponents.add(vComponentOriginalCopy);
-        newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden
+        iTIPMessagesProperty().set(Collections.emptyList());
+//        newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden
 //        isFinished.set(true);
     }
     
@@ -124,9 +130,12 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
                 editDescriptiveVBox.startOriginalRecurrence,
                 vComponents
         };
-//        boolean result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-        T result = (T) SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-        newVComponentsProperty().set(Arrays.asList(result)); // indicates control should be hidden
+        List<VCalendar> result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+        iTIPMessagesProperty().set(result);
+
+        
+//        T result = (T) SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+//        newVComponentsProperty().set(Arrays.asList(result)); // indicates control should be hidden
 //        isFinished.set(result);
     }
     

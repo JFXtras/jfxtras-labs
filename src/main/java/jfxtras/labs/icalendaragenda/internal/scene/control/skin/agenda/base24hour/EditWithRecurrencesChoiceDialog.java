@@ -10,7 +10,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 
 
 /**
