@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.itip;
+package jfxtras.labs.icalendaragenda.editors;
 
 import static org.junit.Assert.assertEquals;
 

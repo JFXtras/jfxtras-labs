@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.popup;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVJournalTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;

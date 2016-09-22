@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.popup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,16 +41,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
+import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditRecurrenceRuleVBox;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -124,7 +126,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
     }
     
     @Test
-    public void canSimpleEditVEvent()
+    public void canEditSimpleVEvent()
     {
         RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
@@ -380,47 +382,6 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         assertEquals(FrequencyType.YEARLY, f.getValue());
         assertEquals(0, rrule.byRules().size());
         }
-    }
-    
-    @Test
-    public void canChangeToWholeDayAll()
-    {
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
-        VCalendar myCalendar = new VCalendar();
-        VEvent vevent = ICalendarStaticComponents.getDaily1()
-                .withLocation("Here");
-        myCalendar.getVEvents().add(vevent);
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
-        
-        TestUtil.runThenWaitForPaintPulse( () ->
-        {
-            editComponentPopup.setupData(
-                    vevent,
-                    myCalendar.getVEvents(),
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
-                    AgendaTestAbstract.CATEGORIES);
-        });
-        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
-        click(wholeDayCheckBox);
-
-        LocalDateTextField start = find("#startDateTextField");
-        assertEquals(LocalDate.of(2016, 5, 15), start.getLocalDate());
-        start.setLocalDate(LocalDate.of(2016, 5, 16)); // adds 1 day shift
-        
-        // Save changes
-        click("#saveComponentButton");
-        
-        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
-        click("#changeDialogOkButton");
-        
-        VEvent editedVEvent = myCalendar.getVEvents().get(0);
-        assertEquals(LocalDate.of(2015, 11, 10), editedVEvent.getDateTimeStart().getValue());
-        assertEquals(LocalDate.of(2015, 11, 11), editedVEvent.getDateTimeEnd().getValue());
     }
     
     @Test

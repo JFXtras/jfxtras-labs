@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.icalendarfx.components.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 
 /**

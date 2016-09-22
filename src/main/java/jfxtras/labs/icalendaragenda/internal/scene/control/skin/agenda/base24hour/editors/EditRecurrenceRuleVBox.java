@@ -93,6 +93,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         
     T vComponent;
     private RecurrenceRule2 rrule;
+    private RecurrenceRule2 oldRRule; // previous rrule from toggling repeatableCheckBox
     private ObjectProperty<Temporal> dateTimeStartRecurrenceNew;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -134,7 +135,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     @FXML private Button addExceptionButton;
     @FXML private ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
     @FXML private Button removeExceptionButton;
-    private Temporal exceptionFirstTemporal;
+//    private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
 
     public EditRecurrenceRuleVBox( )
@@ -480,18 +481,26 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
 //                removeListeners();
                 if (rrule == null)
                 {
-                    // setup new default RRule
-                    rrule = new RecurrenceRule2()
-                            .withFrequency(FrequencyType.WEEKLY)
-                            .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
-                    vComponent.setRecurrenceRule(rrule);
-                    setInitialValues(vComponent);
+                    if (oldRRule != null)
+                    {
+                        rrule = oldRRule;
+                    } else
+                    {
+                        // setup new default RRule
+                        rrule = new RecurrenceRule2()
+                                .withFrequency(FrequencyType.WEEKLY)
+                                .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
+                        vComponent.setRecurrenceRule(rrule);
+                        setInitialValues(vComponent);
+                    }
                 }
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else
             {
+                oldRRule = rrule;
                 rrule = null;
+                vComponent.setRecurrenceRule(rrule);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -814,7 +823,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
          * TODO - NEED TO MAKE SURE TEMPORAL CLASS MATCHES WHOLE DAY CHECKBOX
          * 
          */
-        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
+//        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
             @Override public String toString(Temporal temporal)
@@ -888,7 +897,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                                         int elements = exceptionComboBox.getItems().size();
                                         if (elements == EXCEPTION_CHOICE_LIMIT)
                                         {
-                                            exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
+//                                            exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
                                             makeExceptionDates();
                                             bar.setValue(.5);
                                         }
@@ -901,7 +910,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                                         int newIndex = Math.max((indexInMasterList - elements/3), 0);
                                         if (newIndex < indexInMasterList)
                                         {
-                                            exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+//                                            exceptionFirstTemporal = exceptionMasterList.get(newIndex);
                                             makeExceptionDates();
                                             bar.setValue(.5);
                                         }
@@ -1055,8 +1064,11 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     /** Make list of start date/times for exceptionComboBox */
     private void refreshExceptionDates()
     {
-        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
-        makeExceptionDates();
+//        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
+        if (vComponent.getRecurrenceRule() != null)
+        {
+            makeExceptionDates();
+        }
     }
     
     /** Make list of start date/times for exceptionComboBox */
