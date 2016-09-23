@@ -72,7 +72,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
     /** This property contains a List of new components resulting from the editing.
      * When property value becomes non-null the control should be closed.
      * (i.e. Attach a listener to this property, on changing hide the control */
-    @Deprecated
+//    @Deprecated
 //    public ObjectProperty<List<T>> newVComponentsProperty() { return newVComponents; }
     
     public EditDisplayableTabPane( )
@@ -115,8 +115,8 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
     @FXML private void handleCancelButton()
     {
         // TODO - WITH PUBLISH IN MIND, I THINK THIS SHOULD RETURN NULL (MUST BE EDITING A COPY OF ORIGINAL THAT IS ABANDONED)
-        vComponents.remove(vComponent);
-        vComponents.add(vComponentOriginalCopy);
+//        vComponents.remove(vComponent);
+//        vComponents.add(vComponentOriginalCopy);
         iTIPMessagesProperty().set(Collections.emptyList());
 //        newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden
 //        isFinished.set(true);
@@ -127,8 +127,8 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         removeEmptyProperties();
         Object[] params = new Object[] {
                 DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
-                editDescriptiveVBox.startOriginalRecurrence,
-                vComponents
+                editDescriptiveVBox.startOriginalRecurrence
+//                vComponents
         };
         List<VCalendar> result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
         iTIPMessagesProperty().set(result);
@@ -149,7 +149,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
     
     T vComponent;
     T vComponentOriginalCopy;
-    List<T> vComponents;
+//    List<T> vComponents;
 
     /**
      * Provide necessary data to setup
@@ -162,14 +162,14 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
      */
     public void setupData(
             T vComponent,
-            List<T> vComponents,
+//            List<T> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories
             )
     {
         this.vComponent = vComponent;
-        this.vComponents = vComponents;
+//        this.vComponents = vComponents;
         editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
         
         /* 

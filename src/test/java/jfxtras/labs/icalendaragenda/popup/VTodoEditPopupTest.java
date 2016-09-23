@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -67,7 +66,7 @@ public class VTodoEditPopupTest extends JFXtrasGuiTest
             editComponentPopup.setupData(
 //                    appointment,
                     vtodo,
-                    Arrays.asList(vtodo),
+//                    Arrays.asList(vtodo),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
                     AgendaTestAbstract.CATEGORIES);

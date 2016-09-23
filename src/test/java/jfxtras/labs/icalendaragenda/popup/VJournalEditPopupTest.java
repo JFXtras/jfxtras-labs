@@ -3,7 +3,6 @@ package jfxtras.labs.icalendaragenda.popup;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -64,7 +63,7 @@ public class VJournalEditPopupTest extends JFXtrasGuiTest
         {
             editComponentPopup.setupData(
                     vjournal,
-                    Arrays.asList(vjournal),
+//                    Arrays.asList(vjournal),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
                     AgendaTestAbstract.CATEGORIES);

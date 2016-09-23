@@ -48,14 +48,12 @@ public class SimpleDeleterFactory
             return new DeleterVEvent((VEvent) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
-//                    .withVComponents((List<VEvent>) params[2]) // can be null
                     ;
         } else if (vComponent instanceof VTodo)
         {
             return new DeleterVTodo((VTodo) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
-//                    .withVComponents((List<VTodo>) params[2]) // can be null
                     ;
 
         } else if (vComponent instanceof VJournal)
@@ -63,7 +61,6 @@ public class SimpleDeleterFactory
             return new DeleterVJournal((VJournal) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
-//                    .withVComponents((List<VJournal>) params[2]) // can be null
                     ;
         } else if (vComponent instanceof VFreeBusy)
         {

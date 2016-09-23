@@ -28,8 +28,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * <li>Temporal - endRecurrence, end of selected recurrence
  * <li>Temporal - startRecurrence, start of selected recurrence
  * <li>Temporal - startOriginalRecurrence, start of selected recurrence
- * <li>{@code List<VComponent>} - list of components that vComponentEdited is a member
- * <li>VComponent - VComponent with non-time changes
+ * <li>VComponent - VComponent with non-time changes applied
  * <li>VComponent - copy of original unchanged VComponent
  * </ul>
  * </p>
@@ -49,9 +48,8 @@ public class SimpleRevisorFactory
                     .withEndRecurrence((Temporal) params[1])
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
-//                    .withVComponents((List<VEvent>) params[4]) // can be null
-                    .withVComponentEdited((VEvent) params[5])
-                    .withVComponentOriginal((VEvent) params[6]);
+                    .withVComponentEdited((VEvent) params[4])
+                    .withVComponentOriginal((VEvent) params[5]);
         } else if (vComponent instanceof VTodo)
         {
             return new ReviserVTodo((VTodo) vComponent)
@@ -59,9 +57,8 @@ public class SimpleRevisorFactory
                     .withEndRecurrence((Temporal) params[1])
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
-//                    .withVComponents((List<VTodo>) params[4]) // can be null
-                    .withVComponentEdited((VTodo) params[5])
-                    .withVComponentOriginal((VTodo) params[6]);
+                    .withVComponentEdited((VTodo) params[4])
+                    .withVComponentOriginal((VTodo) params[5]);
         } else if (vComponent instanceof VJournal)
         {
             // Note: array is different - endRecurrence is omitted
@@ -69,9 +66,8 @@ public class SimpleRevisorFactory
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
                     .withStartRecurrence((Temporal) params[2])
-//                    .withVComponents((List<VJournal>) params[3]) // can be null
-                    .withVComponentEdited((VJournal) params[4])
-                    .withVComponentOriginal((VJournal) params[5]);
+                    .withVComponentEdited((VJournal) params[3])
+                    .withVComponentOriginal((VJournal) params[4]);
         } else if (vComponent instanceof VFreeBusy)
         {
             throw new RuntimeException("not implemented");           

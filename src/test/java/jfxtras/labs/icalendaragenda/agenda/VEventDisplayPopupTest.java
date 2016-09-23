@@ -1,39 +1,27 @@
-package jfxtras.labs.icalendaragenda.popup;
+package jfxtras.labs.icalendaragenda.agenda;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDateTime;
-import java.time.temporal.Temporal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
 /**
- * Tests adding and removing VComponents outside the ICalendarAgenda implementation.
- * Inside ICalendarAgenda adding and removing VComponents is handled by removing
- * instances (Appointments) by Agenda through the popups.
- * 
- * The change vComponentsListener should only fire by changes made outside the implementation.
+ * Tests displaying edit popups from Agenda.
  *
  * @author David Bal
  */
-public class DisplayEditPopupTest extends AgendaTestAbstract
+public class VEventDisplayPopupTest extends AgendaTestAbstract
 {
     @Override
     public Parent getRootNode()
@@ -93,45 +81,6 @@ public class DisplayEditPopupTest extends AgendaTestAbstract
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
         closeCurrentWindow();
     }
-    
-    @Test
-    public void canMakeRepeatableAppointments()
-    {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividual1()));
-        
-        // Open edit popup
-        move("#hourLine11");
-        press(MouseButton.SECONDARY);
-        release(MouseButton.SECONDARY);
-        
-        click("#recurrenceRuleTab");
-        click("#repeatableCheckBox");
-        ComboBox<FrequencyType> frequencyComboBox = find("#frequencyComboBox");
-        TestUtil.runThenWaitForPaintPulse( () -> frequencyComboBox.setValue(FrequencyType.DAILY));
-        click("#saveRepeatButton");
-
-        List<Temporal> expectedStarts = Arrays.asList(
-                LocalDateTime.of(2015, 11, 11, 10, 30),
-                LocalDateTime.of(2015, 11, 12, 10, 30),
-                LocalDateTime.of(2015, 11, 13, 10, 30),
-                LocalDateTime.of(2015, 11, 14, 10, 30)
-                );
-        List<Temporal> starts = agenda.appointments().stream()
-            .map(a -> a.getStartTemporal())
-            .collect(Collectors.toList());
-        assertEquals(expectedStarts, starts);
-
-        List<Temporal> expectedEnds = Arrays.asList(
-                LocalDateTime.of(2015, 11, 11, 11, 30),
-                LocalDateTime.of(2015, 11, 12, 11, 30),
-                LocalDateTime.of(2015, 11, 13, 11, 30),
-                LocalDateTime.of(2015, 11, 14, 11, 30)
-                );
-        List<Temporal> ends = agenda.appointments().stream()
-            .map(a -> a.getEndTemporal())
-            .collect(Collectors.toList());
-        assertEquals(expectedEnds, ends);
-    }
 
     @Test
     public void canToggleRepeatableCheckBox()
@@ -163,6 +112,8 @@ public class DisplayEditPopupTest extends AgendaTestAbstract
         
         closeCurrentWindow();
     }
+    
+
 //    
 //    @Test
 //    public void canChangeFrequency()

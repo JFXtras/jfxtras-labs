@@ -3,7 +3,6 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -50,7 +49,7 @@ public class SimpleEditSceneFactory
             return new EditVEventScene()
                     .setupData(
                         (VEvent) vComponent,                        // vComponent - component to edit
-                        ((VCalendar) params[0]).getVEvents(),       // vComponents - collection of components that vComponent is a member
+//                        ((VCalendar) params[0]).getVEvents(),       // vComponents - collection of components that vComponent is a member
                         startRecurrence,                            // startRecurrence - start of selected recurrence
                         endRecurrence,                              // endRecurrence - end of selected recurrence
                         categories                                  // categories - available category names
@@ -60,7 +59,7 @@ public class SimpleEditSceneFactory
             return new EditVTodoScene()
                     .setupData(
                         (VTodo) vComponent,                        // vComponent - component to edit
-                        ((VCalendar) params[0]).getVTodos(),       // vComponents - collection of components that vComponent is a member
+//                        ((VCalendar) params[0]).getVTodos(),       // vComponents - collection of components that vComponent is a member
                         startRecurrence,                           // startRecurrence - start of selected recurrence
                         endRecurrence,                             // endRecurrence - end of selected recurrence
                         categories                                 // categories - available category names
@@ -71,7 +70,7 @@ public class SimpleEditSceneFactory
             return new EditVJournalScene()
                     .setupData(
                         (VJournal) vComponent,                      // vComponent - component to edit
-                        ((VCalendar) params[0]).getVJournals(),     // vComponents - collection of components that vComponent is a member
+//                        ((VCalendar) params[0]).getVJournals(),     // vComponents - collection of components that vComponent is a member
                         startRecurrence,                            // startRecurrence - start of selected recurrence
                         endRecurrence,                              // endRecurrence - end of selected recurrence
                         categories                                  // categories - available category names

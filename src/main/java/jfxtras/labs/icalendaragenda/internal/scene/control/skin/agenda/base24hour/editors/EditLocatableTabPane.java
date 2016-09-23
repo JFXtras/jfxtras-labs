@@ -53,7 +53,6 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
                 editDescriptiveVBox.endNewRecurrence,
                 editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
-                vComponents,
                 vComponent,
                 vComponentOriginalCopy
         };

@@ -28,23 +28,21 @@ public class EditVJournalScene extends EditDisplayableScene
      */
     public EditVJournalScene(
             VJournal vComponent,
-            List<VJournal> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
         this();
-        setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
+        setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
     
     EditVJournalScene setupData(
             VJournal vComponent,
-            List<VJournal> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
-        ((EditVJournalTabPane) getRoot()).setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
+        ((EditVJournalTabPane) getRoot()).setupData(vComponent, startRecurrence, endRecurrence, categories);
         return this;
     }
 }

@@ -21,30 +21,29 @@ public class EditVEventScene extends EditDisplayableScene
 
     /**
      * @param vComponent - component to edit
-     * @param vComponents - collection of components that vComponent is a member
      * @param startRecurrence - start of selected recurrence
      * @param endRecurrence - end of selected recurrence
      * @param categories - available category names
      */
     public EditVEventScene(
             VEvent vComponent,
-            List<VEvent> vComponents,
+//            List<VEvent> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
         this();
-        setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
+        setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
     
     EditVEventScene setupData(
             VEvent vComponent,
-            List<VEvent> vComponents,
+//            List<VEvent> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
-        ((EditVEventTabPane) getRoot()).setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
+        ((EditVEventTabPane) getRoot()).setupData(vComponent, startRecurrence, endRecurrence, categories);
         return this;
     }
 }
