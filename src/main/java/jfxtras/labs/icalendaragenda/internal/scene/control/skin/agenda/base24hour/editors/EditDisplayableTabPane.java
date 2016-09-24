@@ -26,7 +26,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -67,8 +66,8 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
 
     ObjectProperty<List<VCalendar>> iTIPMessages = new SimpleObjectProperty<>();
     public ObjectProperty<List<VCalendar>> iTIPMessagesProperty() { return iTIPMessages; }
-    @Deprecated
-    ObjectProperty<List<T>> newVComponents = new SimpleObjectProperty<>();
+//    @Deprecated
+//    ObjectProperty<List<T>> newVComponents = new SimpleObjectProperty<>();
     /** This property contains a List of new components resulting from the editing.
      * When property value becomes non-null the control should be closed.
      * (i.e. Attach a listener to this property, on changing hide the control */
@@ -155,21 +154,18 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
      * Provide necessary data to setup
      * 
      * @param vComponent - component to be edited
-     * @param vComponents - List of {@link VComponent} that the vComponent parameter is a member
      * @param startRecurrence - start of selected recurrence
      * @param endRecurrence - end of selected recurrence
      * @param categories - list of category names
      */
     public void setupData(
             T vComponent,
-//            List<T> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories
             )
     {
         this.vComponent = vComponent;
-//        this.vComponents = vComponents;
         editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
         
         /* 
