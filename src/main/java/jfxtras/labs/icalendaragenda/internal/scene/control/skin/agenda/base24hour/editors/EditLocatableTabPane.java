@@ -56,14 +56,8 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
                 vComponent,
                 vComponentOriginalCopy
         };
-//        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        // TODO - NEW REVISER WILL RETURN LIST<VCALENDAR> AS IPIT MESSSAGES
         List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
         iTIPMessagesProperty().set(result);
-        
-//        List<T> result = (List<T>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
-//        newVComponentsProperty().set(result);
-//        isFinished.set(result);
     }
     
     @Override

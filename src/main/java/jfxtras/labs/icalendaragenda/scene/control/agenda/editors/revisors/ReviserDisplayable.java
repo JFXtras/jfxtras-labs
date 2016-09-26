@@ -245,10 +245,10 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         }
         
         List<VCalendar> itipMessages = new ArrayList<>();
-//        List<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         boolean incrementSequence = true;
+        System.out.println("rruleType:" + rruleType);
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
@@ -257,10 +257,20 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
         {
+            System.out.println("parent:" + vComponentEditedCopy.getParent());
+            VCalendar message;
+            if (vComponentEditedCopy.getParent() == null)
+            {
+                message = Reviser.defaultPublishVCalendar();
+                incrementSequence = false;
+            } else
+            {
+                message = Reviser.defaultRequestVCalendar();
+            }
             adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);
-            VCalendar requestMessage = Reviser.defaultRequestVCalendar();
-            requestMessage.addVComponent(vComponentEditedCopy);
-            itipMessages.add(requestMessage);
+//            VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+            message.addVComponent(vComponentEditedCopy);
+            itipMessages.add(message);
             break;
         }
         case WITH_EXISTING_REPEAT:
@@ -290,6 +300,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
+                System.out.println("changeResponse:"  +changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:

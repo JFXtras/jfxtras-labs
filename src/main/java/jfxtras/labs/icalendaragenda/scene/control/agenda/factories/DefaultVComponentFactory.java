@@ -8,6 +8,7 @@ import java.time.temporal.Temporal;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
@@ -18,6 +19,13 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  */
 public class DefaultVComponentFactory extends VComponentFactory<Appointment>
 {
+    final private Organizer organizer;
+    
+    public DefaultVComponentFactory(Organizer organizer)
+    {
+        this.organizer = organizer;
+    }
+    
     @Override
     public VDisplayable<?> createVComponent(Appointment appointment)
     {
@@ -34,6 +42,7 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
         if (hasEnd)
         {
             newVComponent = new VEvent()
+                    .withOrganizer(organizer)
                     .withSummary(summary)
                     .withCategories(category)
                     .withDateTimeStart(dtstart)
@@ -43,9 +52,11 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier(); // using default UID generator
+//            System.out.println("newVComponent" + newVComponent);
         } else
         {
             newVComponent = new VTodo()
+                    .withOrganizer(organizer)
                     .withSummary(summary)
                     .withCategories(category)
                     .withDateTimeStart(dtstart)

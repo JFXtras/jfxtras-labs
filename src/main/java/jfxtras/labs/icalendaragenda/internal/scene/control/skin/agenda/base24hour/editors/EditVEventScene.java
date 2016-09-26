@@ -27,7 +27,6 @@ public class EditVEventScene extends EditDisplayableScene
      */
     public EditVEventScene(
             VEvent vComponent,
-//            List<VEvent> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
@@ -38,7 +37,6 @@ public class EditVEventScene extends EditDisplayableScene
     
     EditVEventScene setupData(
             VEvent vComponent,
-//            List<VEvent> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)

@@ -65,7 +65,8 @@ public class ComboMessageTest
        assertEquals(2, mainVCalendar.getVEvents().size());
 
        VEvent v0 = mainVCalendar.getVEvents().get(0);
-       VEvent expectedV0 = ICalendarStaticComponents.getDaily1();
+       VEvent expectedV0 = ICalendarStaticComponents.getDaily1()
+               .withSequence(1);
        ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
        expectedV0.getRecurrenceRule().getValue()
                .setUntil(until);
@@ -78,31 +79,7 @@ public class ComboMessageTest
                .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
                .withUniqueIdentifier(v1.getUniqueIdentifier()) // uid is time-based so copy it to guarantee equality.
                .withSummary("new summary")
-               .withRelatedTo("20150110T080000-004@jfxtras.org")
-               .withSequence(1);
+               .withRelatedTo("20150110T080000-004@jfxtras.org");
       assertEquals(expectedV1, v1);
-
-//       // verify Appointment changes      
-//       {
-//           List<String> summaries = vComponentFactory.makeRecurrences(v0)
-//                   .stream()
-//                   .map(a -> a.getSummary())
-//                   .collect(Collectors.toList());
-//           List<String> summaries2 = vComponentFactory.makeRecurrences(v1)
-//                   .stream()
-//                   .map(a -> a.getSummary())
-//                   .collect(Collectors.toList());
-//           List<String> summariesAll = new ArrayList<>(summaries);
-//           summariesAll.addAll(summaries2);
-//           List<String> expectedSummaries = new ArrayList<>(Arrays.asList(
-//                   "Daily1 Summary"
-//                 , "Daily1 Summary"
-//                 , "new summary"
-//                 , "new summary"
-//                 , "new summary"
-//                 , "new summary"
-//                   ));
-//           assertEquals(expectedSummaries, summariesAll);
-//       }
     }
 }

@@ -12,6 +12,7 @@ import org.loadui.testfx.exceptions.NoNodesFoundException;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.test.TestUtil;
@@ -93,7 +94,9 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         // verify event's creation
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
+//        System.out.println(vEvent);
         VEvent expectedVEvent = new VEvent()
+                .withOrganizer(ICalendarAgenda.DEFAULT_ORGANIZER)
                 .withSummary("New")
                 .withCategories("group00")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 11, 00).atZone(ZoneId.systemDefault()))

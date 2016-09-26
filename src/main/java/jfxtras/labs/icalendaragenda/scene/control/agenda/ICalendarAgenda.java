@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -50,6 +52,7 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -60,6 +63,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Count;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -181,6 +185,30 @@ public class ICalendarAgenda extends Agenda
     public static final String MY_VERSION = "1.0";
     public static final String PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarAgenda " + ICalendarAgenda.MY_VERSION + "//EN");
     
+    /* Organizer */
+    public static final String DEFAULT_ORGANIZER = "mailto:default_organizer@example.org";
+    public ObjectProperty<Organizer> organizerProperty()
+    {
+        return organizer;
+    }
+    private ObjectProperty<Organizer> organizer = new SimpleObjectProperty<>(this, PropertyType.ORGANIZER.toString(), Organizer.parse(DEFAULT_ORGANIZER));
+    public Organizer getOrganizer()
+    {
+        return organizer.get();
+    }
+    public void setOrganizer(Organizer organizer)
+    {
+        this.organizer.set(organizer);
+        if (vComponentFactory instanceof DefaultVComponentFactory)
+        {
+            vComponentFactory = new DefaultVComponentFactory(getOrganizer());
+        }
+        // Note: if not using the default VComponent factory, and the organizer is set to a non-default
+        // value, and the vComponentFactory uses the organizer property, then the vComponentFactory
+        // must be replaced with a new one with the new organizer property.
+        // The code here only replaces the default vcomponent factory automatically.
+    }    
+    
     final private VCalendar vCalendar;
     /** get the VCalendar object that is a model of the iCalendar RFC 5545 specification */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -243,7 +271,7 @@ public class ICalendarAgenda extends Agenda
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
         VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
-        System.out.println(vComponent0.toContent());
+//        System.out.println(vComponent0.toContent());
 
         alert.initOwner(this.getScene().getWindow());
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
@@ -310,6 +338,7 @@ public class ICalendarAgenda extends Agenda
         ButtonData button = result.isPresent() ? result.get() : ButtonData.CANCEL_CLOSE;
         return button;
     };
+    // TODO - SHOULD CALLBACK BE WRAPPED IN AN OBJECT PROPERTY?
     /** Sets the value of the new appointment callback.  The callback is executed after a new appointment is
      * added in Agenda.  This is done by clicking on the start time, dragging, and releasing on the end time. */
     public Callback<Appointment, ButtonData> getNewAppointmentDrawnCallback() { return newAppointmentDrawnCallback; }
@@ -327,7 +356,7 @@ public class ICalendarAgenda extends Agenda
         // Default recurrence factory
         recurrenceFactory = new DefaultRecurrenceFactory(appointmentGroups());
         // Default VComponent factory
-        vComponentFactory = new DefaultVComponentFactory();
+        vComponentFactory = new DefaultVComponentFactory(getOrganizer());
         
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
@@ -384,12 +413,13 @@ public class ICalendarAgenda extends Agenda
         {
             VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
             if (vComponent == null)
-            {
+            { // having no VComponent in map means the appointment is new and VComponent must be created
+                vComponent = getVComponentFactory().createVComponent(appointment);
                 // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.
                 // Throwing an exception will leave the mouse unresponsive.
-                System.out.println("ERROR: no component found - popup can't be displayed");
-            } else
-            {
+//                System.out.println("ERROR: no component found - popup can't be displayed");
+            }
+//            {
                 // make popup stage
                 Stage popupStage = new Stage();
                 String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
@@ -423,18 +453,13 @@ public class ICalendarAgenda extends Agenda
                  * Add listener to newVComponentsProperty to get resulting VComponents
                  * Remove SEQUENCE if Appointment is new
                  */
-                Boolean isNew1 = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
-                Boolean isNew2 = (isNew1 == null) ? false : isNew1;
+//                Boolean isNew1 = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
+//                Boolean isNew2 = (isNew1 == null) ? false : isNew1;
                 popupScene.getEditDisplayableTabPane().iTIPMessagesProperty().addListener((obs, oldValue, newValue) ->
                 {
                     newValue.forEach(message -> getVCalendar().processITIPMessage(message));
-//                    if (isNew2)
-//                    {
-//                        newValue.stream().forEach(v -> v.setSequence((Sequence) null)); // remove SEQUENCE for new components
-//                    }
-//                    popupStage.hide();
                 });
-            }
+//            }
             return null;
         };
         setEditAppointmentCallback(editAppointmentCallback);
@@ -469,6 +494,7 @@ public class ICalendarAgenda extends Agenda
          */
         ListChangeListener<Appointment> appointmentsListChangeListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
+//            System.out.println("newVComponent1:");
             while (change.next())
             {
                 if (change.wasAdded())
@@ -478,6 +504,7 @@ public class ICalendarAgenda extends Agenda
                     {
                         Appointment appointment = change.getAddedSubList().get(0);
                         ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
+                        System.out.println("button:" + button);
                         // remove drawn appointment - it was replaced by one made when the newVComponent was added
                         appointments().remove(appointment);
                         switch (button)
@@ -487,18 +514,20 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE: // Create VComponent
                             {
-                                System.out.println("appointment:" + appointment.getDescription().equals(""));
+//                                System.out.println("appointment:" + appointment.getDescription().equals(""));
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
-                                getVCalendar().addVComponent(newVComponent);
+                                // TODO - MAKE PUBLISH, PROCESS ITIP MESSAGE
+//                                getVCalendar().addVComponent(newVComponent);
                                 break;
                             }
                         case OTHER: // Advanced Edit
                             {
-                                VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
-                                getVCalendar().addVComponent(newVComponent); // when newVComponent is added, the vComponentsChangeListener fires and its associated appointment is made
-                                Appointment newAppointment = vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0);
-                                newAppointmentMap.put(newAppointment, true);
-                                editAppointmentCallback.call(newAppointment);
+//                                VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
+//                                getVCalendar().addVComponent(newVComponent); // when newVComponent is added, the vComponentsChangeListener fires and its associated appointment is made
+//                                Appointment newAppointment = vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0);
+//                                newAppointmentMap.put(newAppointment, true);
+                                editAppointmentCallback.call(appointment);
+//                                System.out.println("newVComponent:" + newVComponent);
                                 break;
                             }
                         default:
@@ -697,5 +726,5 @@ public class ICalendarAgenda extends Agenda
         });
         vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
         return myAppointments;
-    }  
+    }
 }
