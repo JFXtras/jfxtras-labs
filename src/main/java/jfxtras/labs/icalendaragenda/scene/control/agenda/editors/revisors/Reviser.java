@@ -2,11 +2,8 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors;
 
 import java.util.List;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
-import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 /**
  * Interface for the edit behavior of a VComponent
@@ -31,19 +28,19 @@ public interface Reviser
     
     // TODO - ADD A INITIALIZE METHOD FOR AN ARRAY OF INPUT OBJECT PARAMETERS
 
-    public static VCalendar defaultPublishVCalendar()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.PUBLISH)
-                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
-
-    public static VCalendar defaultRequestVCalendar()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.REQUEST)
-                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
+//    public static VCalendar defaultPublishVCalendar()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.PUBLISH)
+//                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
+//
+//    public static VCalendar defaultRequestVCalendar()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.REQUEST)
+//                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
 }

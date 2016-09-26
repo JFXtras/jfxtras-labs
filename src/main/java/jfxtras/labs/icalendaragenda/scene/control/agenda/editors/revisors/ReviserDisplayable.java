@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
@@ -248,7 +249,6 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         boolean incrementSequence = true;
-        System.out.println("rruleType:" + rruleType);
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
@@ -257,18 +257,16 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
         {
-            System.out.println("parent:" + vComponentEditedCopy.getParent());
             VCalendar message;
             if (vComponentEditedCopy.getParent() == null)
             {
-                message = Reviser.defaultPublishVCalendar();
+                message = ICalendarAgenda.emptyPublishiTIPMessage();
                 incrementSequence = false;
             } else
             {
-                message = Reviser.defaultRequestVCalendar();
+                message = ICalendarAgenda.emptyRequestiTIPMessage();
             }
             adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);
-//            VCalendar requestMessage = Reviser.defaultRequestVCalendar();
             message.addVComponent(vComponentEditedCopy);
             itipMessages.add(message);
             break;
@@ -300,14 +298,13 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
-                System.out.println("changeResponse:"  +changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:
                 {
                     adjustDateTime(vComponentEditedCopy);
                     
-                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    VCalendar requestMessage = ICalendarAgenda.emptyRequestiTIPMessage();
                     requestMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(requestMessage);
                     // Note: Child recurrences become orphans and get deleted when the iTIP message is processed
@@ -317,12 +314,12 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 {
                     adjustDateTime(vComponentEditedCopy);
                     
-                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    VCalendar requestMessage = ICalendarAgenda.emptyRequestiTIPMessage();
                     requestMessage.addVComponent(vComponentEditedCopy);
                     itipMessages.add(requestMessage);
                     
                     // update child recurrences
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = ICalendarAgenda.emptyPublishiTIPMessage();
                     List<VDisplayable<?>> children = adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     publishMessage.addAllVComponents(children);
                     itipMessages.add(publishMessage);
@@ -335,12 +332,12 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     
                     // request message to change original component
-                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    VCalendar requestMessage = ICalendarAgenda.emptyRequestiTIPMessage();
                     requestMessage.addVComponent(vComponentOriginalCopy);
                     itipMessages.add(requestMessage);
 
                     // publish message to add new the-and-future component
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = ICalendarAgenda.emptyPublishiTIPMessage();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     vComponentOriginalCopy.incrementSequence();
                     incrementSequence = false;
@@ -356,12 +353,12 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
 //                    thisAndFutureIgnoreRecurrences(vComponentEditedCopy, vComponentEditedCopy);
                     
                     // request message to change original component
-                    VCalendar requestMessage = Reviser.defaultRequestVCalendar();
+                    VCalendar requestMessage = ICalendarAgenda.emptyRequestiTIPMessage();
                     requestMessage.addVComponent(vComponentOriginalCopy);
                     itipMessages.add(requestMessage);
 
                     // publish message to add new the-and-future component
-                    VCalendar publishMessage = Reviser.defaultPublishVCalendar();
+                    VCalendar publishMessage = ICalendarAgenda.emptyPublishiTIPMessage();
                     publishMessage.addVComponent(vComponentEditedCopy);
                     vComponentOriginalCopy.incrementSequence();
                     incrementSequence = false;
@@ -384,7 +381,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                 case ONE:
                 {
                     editOne(vComponentEditedCopy);
-                    VCalendar message = Reviser.defaultPublishVCalendar();
+                    VCalendar message = ICalendarAgenda.emptyPublishiTIPMessage();
                     message.addVComponent(vComponentEditedCopy);
                     itipMessages.add(message);
                     break;

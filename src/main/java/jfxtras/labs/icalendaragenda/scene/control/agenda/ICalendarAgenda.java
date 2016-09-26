@@ -53,6 +53,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -183,7 +185,47 @@ public class ICalendarAgenda extends Agenda
     public final static String ICALENDAR_STYLE_SHEET = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
 
     public static final String MY_VERSION = "1.0";
-    public static final String PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarAgenda " + ICalendarAgenda.MY_VERSION + "//EN");
+    public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarAgenda " + ICalendarAgenda.MY_VERSION + "//EN");
+    
+    /* EMPTY iTIP VCALENDAR MESSAGES 
+     * These convenience factory methods return an empty VCalendar with the
+     * necessary properties set for various types if iTIP messages including
+     * PUBLISH, REQUEST and CANCEL */
+    public static VCalendar emptyPublishiTIPMessage()
+    {
+        return new VCalendar()
+                .withMethod(MethodType.PUBLISH)
+                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+                .withVersion(new Version());
+    }
+
+    public static VCalendar emptyRequestiTIPMessage()
+    {
+        return new VCalendar()
+                .withMethod(MethodType.REQUEST)
+                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+                .withVersion(new Version());
+    }
+    
+    public static VCalendar emptyCanceliTIPMessage()
+    {
+        return new VCalendar()
+                .withMethod(MethodType.CANCEL)
+                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+                .withVersion(new Version());
+    }
+    
+    /* PRODUCT IDENTIFIER */
+    private String productIdentifier = DEFAULT_PRODUCT_IDENTIFIER;
+    public String getProductIdentifier()
+    {
+        return productIdentifier;
+    }
+
+    public void setProductIdentifier(String productIdentifier)
+    {
+        this.productIdentifier = productIdentifier;
+    }   
     
     /* Organizer */
     public static final String DEFAULT_ORGANIZER = "mailto:default_organizer@example.org";
@@ -514,8 +556,11 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE: // Create VComponent
                             {
-//                                System.out.println("appointment:" + appointment.getDescription().equals(""));
+                                System.out.println("appointment crated:" );
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
+                                VCalendar message = emptyPublishiTIPMessage();
+                                message.addVComponent(newVComponent);
+                                getVCalendar().processITIPMessage(message);
                                 // TODO - MAKE PUBLISH, PROCESS ITIP MESSAGE
 //                                getVCalendar().addVComponent(newVComponent);
                                 break;

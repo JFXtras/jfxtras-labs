@@ -42,6 +42,7 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
         VEvent expectedVEvent = new VEvent()
+                .withOrganizer(ICalendarAgenda.DEFAULT_ORGANIZER)
                 .withSummary("Edited summary")
                 .withCategories("group10")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 11, 00).atZone(ZoneId.systemDefault()))
@@ -127,6 +128,7 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
         VEvent expectedVEvent = new VEvent()
+                .withOrganizer(ICalendarAgenda.DEFAULT_ORGANIZER)
                 .withSummary("New")
                 .withCategories("group00")
                 .withDateTimeStart(LocalDate.of(2015, 11, 12))
@@ -160,6 +162,7 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
         VEvent expectedVEvent = new VEvent()
+                .withOrganizer(ICalendarAgenda.DEFAULT_ORGANIZER)
                 .withSummary("New")
                 .withCategories("group00")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0).atZone(ZoneId.systemDefault()))

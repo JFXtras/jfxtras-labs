@@ -2,10 +2,7 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters;
 
 import java.util.List;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
-import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 /**
  * Interface for the delete behavior of a VComponent
@@ -29,11 +26,11 @@ public interface Deleter
     
  // TODO - ADD A INITIALIZE METHOD FOR AN ARRAY OF INPUT OBJECT PARAMETERS
     
-    public static VCalendar defaultCancelVCalendar()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.CANCEL)
-                .withProductIdentifier(ICalendarAgenda.PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
+//    public static VCalendar defaultCancelVCalendar()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.CANCEL)
+//                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
 }
