@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.agenda;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,7 @@ import org.loadui.testfx.exceptions.NoNodesFoundException;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
+import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;

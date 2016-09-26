@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.editors.delete;
+package jfxtras.labs.icalendaragenda.editors.deletor;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.misc;
 
 import static org.junit.Assert.assertTrue;
 
@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.components.VEvent;

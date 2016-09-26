@@ -22,7 +22,7 @@ public final class ICalendarStaticComponents
     private ICalendarStaticComponents() { }
 
     /** FREQ=YEARLY; */
-    protected static VEvent getYearly1()
+    public static VEvent getYearly1()
     {
         return new VEvent()
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
@@ -39,7 +39,7 @@ public final class ICalendarStaticComponents
     }
         
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
-    protected static VEvent getMonthly1()
+    public static VEvent getMonthly1()
     {
         return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
@@ -62,7 +62,7 @@ public final class ICalendarStaticComponents
     }
     
     /** FREQ=WEEKLY, Basic weekly stream */
-    protected static VEvent getWeekly1()
+    public static VEvent getWeekly1()
     {
         return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
@@ -71,7 +71,7 @@ public final class ICalendarStaticComponents
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
-    protected static VEvent getWeekly2()
+    public static VEvent getWeekly2()
     {
         return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
@@ -101,7 +101,7 @@ public final class ICalendarStaticComponents
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
-    protected static VEvent getWeekly5()
+    public static VEvent getWeekly5()
     {
         VEvent vEvent = getWeekly2();
         vEvent.getRecurrenceRule().getValue().setCount(11);
@@ -141,7 +141,7 @@ public final class ICalendarStaticComponents
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected static VEvent getDaily2()
+    public static VEvent getDaily2()
     {
         return new VEvent()
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
@@ -158,7 +158,7 @@ public final class ICalendarStaticComponents
     }
     
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T095959 */
-    protected static VEvent getDaily6()
+    public static VEvent getDaily6()
     {
         return new VEvent()
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
@@ -189,7 +189,7 @@ public final class ICalendarStaticComponents
     }
     
     // Whole day events
-    protected static VEvent getIndividual2()
+    public static VEvent getIndividual2()
     {
         return new VEvent()
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())

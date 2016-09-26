@@ -484,12 +484,13 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                     if (oldRRule != null)
                     {
                         rrule = oldRRule;
+                        vComponent.setRecurrenceRule(rrule);
                     } else
                     {
                         // setup new default RRule
                         rrule = new RecurrenceRule2()
                                 .withFrequency(FrequencyType.WEEKLY)
-                                .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
+                                .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get())));
                         vComponent.setRecurrenceRule(rrule);
                         setInitialValues(vComponent);
                     }

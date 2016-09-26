@@ -1,8 +1,9 @@
-package jfxtras.labs.icalendaragenda.editors.delete;
+package jfxtras.labs.icalendaragenda.editors.deletor;
 
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +20,11 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
-public class DeleteAllTest
+public class DeleteOneTest
 {
-    @Test
-    public void canDeleteRepeatableAll()
+    
+    @Test // deletes one instance of a repeating event
+    public void canDeleteOneInstance()
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
@@ -31,8 +33,8 @@ public class DeleteAllTest
         vComponents.add(vComponentOriginal);
 
         List<VCalendar> iTIPmessages = ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentOriginal))
-                .withDialogCallback((m) -> ChangeDialogOption.ALL)
-                .withStartOriginalRecurrence(null)
+                .withDialogCallback((m) -> ChangeDialogOption.ONE)
+                .withStartOriginalRecurrence(LocalDateTime.of(2016, 5, 16, 10, 0))
                 .delete();
         
         String expectediTIPMessage =
@@ -42,15 +44,13 @@ public class DeleteAllTest
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
-                "DTSTART:20151109T100000" + System.lineSeparator() +
-                "DTEND:20151109T110000" + System.lineSeparator() +
                 "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
                 "SUMMARY:Daily1 Summary" + System.lineSeparator() +
                 "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "STATUS:CANCELLED" + System.lineSeparator() +
+                "RECURRENCE-ID:20160516T100000" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
             String iTIPMessage = iTIPmessages.stream()
@@ -59,8 +59,8 @@ public class DeleteAllTest
             assertEquals(expectediTIPMessage, iTIPMessage);
     }
     
-    @Test // delete parent with recurrence children
-    public void canDeleteAllWithRecurrence()
+    @Test // Deletes VEvent with RECURRENCE-ID
+    public void canDeleteRecurrence()
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
@@ -77,9 +77,12 @@ public class DeleteAllTest
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
         vComponents.add(vComponentRecurrence);
 
-        List<VCalendar> iTIPmessages = ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentOriginal))
-                .withDialogCallback((m) -> ChangeDialogOption.ALL)
-                .withStartOriginalRecurrence(null)
+        // make changes
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+
+        List<VCalendar> iTIPmessages = ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentRecurrence))
+                .withDialogCallback((m) -> null) // deletes recurrence - its an individual so no dialog needed
+                .withStartOriginalRecurrence(startOriginalRecurrence)
                 .delete();
         
         String expectediTIPMessage =
@@ -89,11 +92,14 @@ public class DeleteAllTest
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
+//                "DTSTART:20160517T083000" + System.lineSeparator() +
+//                "DTEND:20160517T093000" + System.lineSeparator() +
                 "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
-                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "SUMMARY:recurrence summary" + System.lineSeparator() +
                 "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "RECURRENCE-ID:20160517T100000" + System.lineSeparator() +
                 "STATUS:CANCELLED" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";

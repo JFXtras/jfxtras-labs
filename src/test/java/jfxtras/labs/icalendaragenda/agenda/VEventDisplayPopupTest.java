@@ -108,7 +108,7 @@ public class VEventDisplayPopupTest extends AgendaTestAbstract
         
         // Change back and verify return to original state
         TestUtil.runThenWaitForPaintPulse( () -> repeatableCheckBox.setSelected(true));
-        assertEquals(v.getRecurrenceRule(), r);
+        assertEquals(r, v.getRecurrenceRule());
         
         closeCurrentWindow();
     }

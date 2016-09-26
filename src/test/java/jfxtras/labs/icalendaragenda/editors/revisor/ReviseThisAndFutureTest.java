@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.editors.revise;
+package jfxtras.labs.icalendaragenda.editors.revisor;
 
 import static org.junit.Assert.assertEquals;
 

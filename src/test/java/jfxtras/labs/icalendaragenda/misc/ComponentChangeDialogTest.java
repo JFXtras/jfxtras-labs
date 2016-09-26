@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.misc;
 
 import java.time.LocalDate;
 import java.time.temporal.Temporal;

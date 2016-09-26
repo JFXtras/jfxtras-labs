@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda;
+package jfxtras.labs.icalendaragenda.agenda;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import javafx.scene.Parent;
+import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.test.TestUtil;
 
 public class RenderVEventsTest extends AgendaTestAbstract

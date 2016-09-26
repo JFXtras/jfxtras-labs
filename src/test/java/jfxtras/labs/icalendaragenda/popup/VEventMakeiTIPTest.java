@@ -33,24 +33,19 @@ import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
-public class MakeiTIPForVEventTest extends VEventPopupTestBase
+public class VEventMakeiTIPTest extends VEventPopupTestBase
 {
     @Test // simple press save
     public void canSaveWithNoEdit()
     {
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2016, 5, 15, 10, 0),  // start of edited instance
+                    LocalDateTime.of(2016, 5, 15, 11, 0),  // end of edited instance
                     AgendaTestAbstract.CATEGORIES);
         });
         
@@ -361,7 +356,6 @@ public class MakeiTIPForVEventTest extends VEventPopupTestBase
         {
             getEditComponentPopup().setupData(
                     vevent,
-//                    myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
                     AgendaTestAbstract.CATEGORIES);
