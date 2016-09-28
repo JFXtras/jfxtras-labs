@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditDisplayableScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditDisplayableScene;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;

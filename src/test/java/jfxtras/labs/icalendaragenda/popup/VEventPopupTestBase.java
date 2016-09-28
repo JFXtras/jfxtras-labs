@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import javafx.scene.Parent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVEventTabPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.test.JFXtrasGuiTest;

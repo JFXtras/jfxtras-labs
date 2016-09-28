@@ -19,7 +19,6 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.Simple
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
 public class DeleteThisAndFutureTest
@@ -79,19 +78,30 @@ public class DeleteThisAndFutureTest
         // make changes
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 15, 10, 0);
 
-        ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponent1))
+        List<VCalendar> iTIPmessages = ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponent1))
                 .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .delete();
-        
-        assertEquals(1, vComponents.size());
-        VEvent myComponent1 = vComponents.get(0);
-        
-        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1();
-        RecurrenceRule2 newRRule = new RecurrenceRule2()
-                .withFrequency(FrequencyType.DAILY)
-                .withUntil(LocalDateTime.of(2016, 5, 14, 10, 0).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
-        expectedVComponent.setRecurrenceRule(newRRule);
-        assertEquals(expectedVComponent, myComponent1);
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:CANCEL" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "STATUS:CANCELLED" + System.lineSeparator() +
+                "RECURRENCE-ID;RANGE=THISANDFUTURE:20160515T100000" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        String iTIPMessage = iTIPmessages.stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        assertEquals(expectediTIPMessage, iTIPMessage);
     }
 }

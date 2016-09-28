@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
@@ -288,7 +287,7 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
 
     private VCalendar setUpCancelMessage(U vComponent)
     {
-        VCalendar cancelMessage = ICalendarAgenda.emptyCanceliTIPMessage();
+        VCalendar cancelMessage = Deleter.emptyCanceliTIPMessage();
         vComponent.setStatus(StatusType.CANCELLED);
         vComponent.setRecurrenceRule((RecurrenceRule) null);
         vComponent.eraseDateTimeProperties();

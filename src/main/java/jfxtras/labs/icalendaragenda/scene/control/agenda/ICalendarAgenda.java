@@ -37,9 +37,10 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditDisplayableScene;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.SimpleEditSceneFactory;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditDisplayableScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.Reviser;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -53,8 +54,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
-import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -191,29 +190,29 @@ public class ICalendarAgenda extends Agenda
      * These convenience factory methods return an empty VCalendar with the
      * necessary properties set for various types if iTIP messages including
      * PUBLISH, REQUEST and CANCEL */
-    public static VCalendar emptyPublishiTIPMessage()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.PUBLISH)
-                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
-
-    public static VCalendar emptyRequestiTIPMessage()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.REQUEST)
-                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
+//    public static VCalendar emptyPublishiTIPMessage()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.PUBLISH)
+//                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
+//
+//    public static VCalendar emptyRequestiTIPMessage()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.REQUEST)
+//                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
     
-    public static VCalendar emptyCanceliTIPMessage()
-    {
-        return new VCalendar()
-                .withMethod(MethodType.CANCEL)
-                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
-                .withVersion(new Version());
-    }
+//    public static VCalendar emptyCanceliTIPMessage()
+//    {
+//        return new VCalendar()
+//                .withMethod(MethodType.CANCEL)
+//                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+//                .withVersion(new Version());
+//    }
     
     /* PRODUCT IDENTIFIER */
     private String productIdentifier = DEFAULT_PRODUCT_IDENTIFIER;
@@ -558,7 +557,7 @@ public class ICalendarAgenda extends Agenda
                             {
                                 System.out.println("appointment crated:" );
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
-                                VCalendar message = emptyPublishiTIPMessage();
+                                VCalendar message = Reviser.emptyPublishiTIPMessage();
                                 message.addVComponent(newVComponent);
                                 getVCalendar().processITIPMessage(message);
                                 // TODO - MAKE PUBLISH, PROCESS ITIP MESSAGE

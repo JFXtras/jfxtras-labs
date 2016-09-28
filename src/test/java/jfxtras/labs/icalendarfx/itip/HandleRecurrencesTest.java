@@ -19,6 +19,7 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
@@ -624,5 +625,55 @@ public class HandleRecurrencesTest
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 30), ZoneId.of("Europe/London")))
                 .withUniqueIdentifier(new UniqueIdentifier(expectedComponentFuture.getUniqueIdentifier()));
         assertEquals(expectedvComponentRecurrence, myComponentRecurrence);
+    }
+    
+    
+    @Test // makes sure when recurrence deleted the parent gets an EXDATE
+    public void canDeleteThisAndFutureWithRecurrence()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponent1);
+        // make recurrence
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
+        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+        vComponentRecurrence.setSummary("recurrence summary");
+        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
+        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        vComponents.add(vComponentRecurrence);
+
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:CANCEL" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "STATUS:CANCELLED" + System.lineSeparator() +
+                "RECURRENCE-ID;RANGE=THISANDFUTURE:20160515T100000" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+        
+//        System.out.println(mainVCalendar);
+        // TODO - RECURRENCE SHOULD BE DELETED - ITS A ORPHANED CHILD
+        assertEquals(1, vComponents.size());
+        VEvent myComponent1 = vComponents.get(0);
+        
+        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
+                .withSequence(1);
+        RecurrenceRule2 newRRule = new RecurrenceRule2()
+                .withFrequency(FrequencyType.DAILY)
+                .withUntil(LocalDateTime.of(2016, 5, 14, 10, 0).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
+        expectedVComponent.setRecurrenceRule(newRRule);
+        assertEquals(expectedVComponent, myComponent1);
     }
 }

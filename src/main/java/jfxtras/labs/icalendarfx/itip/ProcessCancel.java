@@ -5,14 +5,14 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -202,16 +202,13 @@ public class ProcessCancel implements Processable
                                     // Delete one instance 
                                     if (recurrenceID.getRange() == null)
                                     {
-                                        final ObservableList<ExceptionDates> exceptions;
                                         if (parentVComponent.getExceptionDates() == null)
                                         {
-                                            exceptions = FXCollections.observableArrayList();
-                                            parentVComponent.setExceptionDates(exceptions);
+                                            parentVComponent.withExceptionDates(recurrenceID.getValue());
                                         } else
                                         {
-                                            exceptions = parentVComponent.getExceptionDates();
+                                            parentVComponent.getExceptionDates().add(new ExceptionDates(recurrenceID.getValue()));
                                         }
-                                        exceptions.add(new ExceptionDates(recurrenceID.getValue()));
                                     // Delete THIS-AND-FUTURE
                                     } else if (recurrenceID.getRange().getValue() == RangeType.THIS_AND_FUTURE)
                                     {
@@ -225,7 +222,72 @@ public class ProcessCancel implements Processable
                                         {
                                             until = LocalDate.from(previous);                    
                                         }
-                                        parentVComponent.getRecurrenceRule().getValue().setUntil(until);
+//                                        int i = mainVCalendar.getVEvents().indexOf(parentVComponent);
+//                                        VDisplayable<?> parentCopy = null;
+                                        try
+                                        {
+                                            VDisplayable<?> parentCopy = parentVComponent.getClass().newInstance();
+                                            parentCopy.copyFrom(parentVComponent);
+                                            RecurrenceRule updatedRecurrenceRule = new RecurrenceRule(parentCopy.getRecurrenceRule());
+                                            updatedRecurrenceRule.getValue().setUntil(until);
+//                                            System.out.println("updatedRecurrenceRule:" + updatedRecurrenceRule);
+//                                            System.out.println("parentVComponent:" + System.identityHashCode(parentVComponent));
+                                            //parentVComponent.setRecurrenceRule((RecurrenceRule) null);
+//                                            parentVComponent.setRecurrenceRule(updatedRecurrenceRule);
+//                                            parentVComponent.setSummary("new summary");
+//                                            parentVComponent.setSummary("new summary");
+//                                            System.out.println("parentVComponent:" + System.identityHashCode(parentVComponent));
+//                                            System.out.println("parentVComponent:" + parentVComponent);
+//                                            parentVComponent.setSummary("new summary");
+
+                                            parentCopy.getRecurrenceRule().getValue().setUntil(until);
+                                            parentCopy.incrementSequence();
+//                                            mainVCalendar.replaceVComponent(parentVComponent, parentCopy);
+                                            mainVCalendar.addVComponent(parentCopy);
+                                            mainVCalendar.removeVComponent(parentVComponent);
+//                                            parentVComponent.getRecurrenceRule().getValue().setUntil(until);
+//                                            parentVComponent.incrementSequence();
+//                                            parentCopy = new VEvent();
+//                                            System.out.println("set:" + i + " " + parentCopy);
+//                                            mainVCalendar.getVEvents().set(i, (VEvent) parentCopy);
+                                            
+                                            
+//                                            boolean isParent = vDisplayable.getRecurrenceId() == null;
+//                                          List<VDisplayable<?>> orhpanedChildren = Collections.emptyList(); // initialize with empty list
+//                                          if (isParent)
+                                          {
+//                                              final String uid = vDisplayable.getUniqueIdentifier().getValue();
+                                              List<VDisplayable<?>> orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
+                                                      .stream()
+                                                      .filter(v -> v.getRecurrenceId() != null)
+                                                      .filter(v -> 
+                                                      {
+                                                          Temporal myRecurrenceID = v.getRecurrenceId().getValue();
+                                                          System.out.println("myRecurrenceID:" + myRecurrenceID + " " + vDisplayable.getDateTimeStart());
+                                                          Temporal cacheStart = parentCopy.recurrenceCache().getClosestStart(myRecurrenceID);
+                                                          Temporal nextRecurrenceDateTime = parentCopy.getRecurrenceRule().getValue()
+                                                                  .streamRecurrences(cacheStart)
+                                                                  .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
+                                                                  .findFirst()
+                                                                  .orElseGet(() -> null);
+                                                          return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
+                                                      })
+                                                      .collect(Collectors.toList());
+                                              System.out.println("orhpanedChildren:" + orhpanedChildren);
+                                              if (! orhpanedChildren.isEmpty())
+                                              {
+                                                  mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
+                                              }
+                                          }
+                                          
+                                      } catch (InstantiationException | IllegalAccessException e)
+                                      {
+                                          e.printStackTrace();
+                                      }
+
+                                        
+                                        
+                                        
                                     } else
                                     {
                                         throw new IllegalArgumentException("Unsupported RangeType:" + recurrenceID.getRange().toContent());
@@ -241,6 +303,7 @@ public class ProcessCancel implements Processable
                     }
                         
                    //TODO - HANDLE ORPHANED CHILDREN - ADD TO CHANGE LISTENER?
+                    // PROBABLY DO IN IN VCALENDAR
                     
 
                 }

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 

@@ -42,13 +42,13 @@ public class DeleteAllTest
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
-                "DTSTART:20151109T100000" + System.lineSeparator() +
-                "DTEND:20151109T110000" + System.lineSeparator() +
+//                "DTSTART:20151109T100000" + System.lineSeparator() +
+//                "DTEND:20151109T110000" + System.lineSeparator() +
                 "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
                 "SUMMARY:Daily1 Summary" + System.lineSeparator() +
                 "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+//                "RRULE:FREQ=DAILY" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "STATUS:CANCELLED" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
@@ -56,6 +56,7 @@ public class DeleteAllTest
             String iTIPMessage = iTIPmessages.stream()
                     .map(v -> v.toContent())
                     .collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(expectediTIPMessage);
             assertEquals(expectediTIPMessage, iTIPMessage);
     }
     

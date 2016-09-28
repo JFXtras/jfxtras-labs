@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditRecurrenceRuleVEventVBox;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditRecurrenceRuleVEventVBox;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
 public class PopupRecurrenceDescriptionTest
