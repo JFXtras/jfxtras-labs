@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.itip;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
@@ -11,7 +10,6 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** 
  * 
@@ -152,48 +150,54 @@ public class ProcessPublish implements Processable
                 boolean isParent = recurrenceID == null;
                 mainVCalendar.addVComponent(c);
                 
-                if (isParent)
+                List<VDisplayable<?>> orhpanedChildren = vDisplayable.orphanedRecurrenceChildren();
+                if (! orhpanedChildren.isEmpty())
                 {
-                    // Delete orphaned children, if any
-                    List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
-                    if ((recurrenceSet != null) && (! recurrenceSet.isEmpty()))
-                    {
-                        VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
-                                .stream()
-                                .filter(v -> v.getRecurrenceId() == null)
-                                .findAny()
-                                .orElseGet(() -> null);
-    
-                        final List<VDisplayable<?>> orhpanedChildren;
-//                        System.out.println("parent:" + parent);
-                        if (parent == null)
-                        { // parent is deleted - all children are orphans - remove them.
-                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid);
-                        } else
-                        { // remove children that don't have a valid RECURRENCE-ID date - they are orphans
-                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
-                                    .stream()
-                                    .filter(v -> v.getRecurrenceId() != null)
-                                    .filter(v -> 
-                                    {
-                                        Temporal myRecurrenceID = v.getRecurrenceId().getValue();
-                                        Temporal cacheStart = parent.recurrenceCache().getClosestStart(myRecurrenceID);
-                                        Temporal nextRecurrenceDateTime = parent.getRecurrenceRule().getValue()
-                                                .streamRecurrences(cacheStart)
-                                                .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
-                                                .findFirst()
-                                                .orElseGet(() -> null);
-                                        return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
-                                    })
-                                    .collect(Collectors.toList());
-                        };
-//                        System.out.println("orhpanedChildren:"+orhpanedChildren.size());
-                        if (orhpanedChildren != null)
-                        {
-                            mainVCalendar.getVComponents(c.getClass()).removeAll(orhpanedChildren);
-                        }
-                    }
+                    mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
                 }
+                
+//                if (isParent)
+//                {
+//                    // Delete orphaned children, if any
+//                    List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
+//                    if ((recurrenceSet != null) && (! recurrenceSet.isEmpty()))
+//                    {
+//                        VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
+//                                .stream()
+//                                .filter(v -> v.getRecurrenceId() == null)
+//                                .findAny()
+//                                .orElseGet(() -> null);
+//    
+//                        final List<VDisplayable<?>> orhpanedChildren;
+////                        System.out.println("parent:" + parent);
+//                        if (parent == null)
+//                        { // parent is deleted - all children are orphans - remove them.
+//                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid);
+//                        } else
+//                        { // remove children that don't have a valid RECURRENCE-ID date - they are orphans
+//                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
+//                                    .stream()
+//                                    .filter(v -> v.getRecurrenceId() != null)
+//                                    .filter(v -> 
+//                                    {
+//                                        Temporal myRecurrenceID = v.getRecurrenceId().getValue();
+//                                        Temporal cacheStart = parent.recurrenceCache().getClosestStart(myRecurrenceID);
+//                                        Temporal nextRecurrenceDateTime = parent.getRecurrenceRule().getValue()
+//                                                .streamRecurrences(cacheStart)
+//                                                .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
+//                                                .findFirst()
+//                                                .orElseGet(() -> null);
+//                                        return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
+//                                    })
+//                                    .collect(Collectors.toList());
+//                        };
+////                        System.out.println("orhpanedChildren:"+orhpanedChildren.size());
+//                        if (orhpanedChildren != null)
+//                        {
+//                            mainVCalendar.getVComponents(c.getClass()).removeAll(orhpanedChildren);
+//                        }
+//                    }
+//                }
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
                 // TODO

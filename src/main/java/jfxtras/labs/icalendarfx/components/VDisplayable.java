@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1015,6 +1016,36 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         return null;
     }
 
+    /** returns list of orphaned recurrence components due to a change.  These
+     * components should be deleted */
+    public List<VDisplayable<?>> orphanedRecurrenceChildren()
+    {
+        boolean isRecurrenceParent = getRecurrenceId() == null;
+        if (isRecurrenceParent)
+        {
+            VCalendar vCalendar = (VCalendar) getParent();
+            if (vCalendar != null)
+            {
+                final String uid = getUniqueIdentifier().getValue();
+                return vCalendar.uidComponentsMap().get(uid)
+                        .stream()
+                        .filter(v -> v.getRecurrenceId() != null)
+                        .filter(v -> 
+                        {
+                            Temporal myRecurrenceID = v.getRecurrenceId().getValue();
+                            Temporal cacheStart = recurrenceCache().getClosestStart(myRecurrenceID);
+                            Temporal nextRecurrenceDateTime = getRecurrenceRule().getValue()
+                                    .streamRecurrences(cacheStart)
+                                    .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
+                                    .findFirst()
+                                    .orElseGet(() -> null);
+                            return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
+                        })
+                        .collect(Collectors.toList());
+            }
+        }
+        return Collections.emptyList();
+    }
     
 
 

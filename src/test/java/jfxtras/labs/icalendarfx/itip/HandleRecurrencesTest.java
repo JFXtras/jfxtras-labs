@@ -118,12 +118,12 @@ public class HandleRecurrencesTest
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
 
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         vComponents.addAll(vComponentEdited, vComponentRecurrence);
 //        System.out.println(mainVCalendar);
@@ -279,12 +279,12 @@ public class HandleRecurrencesTest
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentEdited);
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
         vComponents.add(vComponentRecurrence);
         
         String iTIPMessage =
@@ -467,12 +467,12 @@ public class HandleRecurrencesTest
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
 
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         vComponents.addAll(vComponentEdited, vComponentRecurrence);
         
@@ -541,12 +541,12 @@ public class HandleRecurrencesTest
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getWholeDayDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDate.of(2016, 5, 17));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 8, 30), ZoneId.of("Europe/London")));
-        vComponentRecurrence.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 30), ZoneId.of("Europe/London")));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getWholeDayDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDate.of(2016, 5, 17))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 8, 30), ZoneId.of("Europe/London")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 17, 9, 30), ZoneId.of("Europe/London")));
         vComponents.add(vComponentRecurrence);
 
         String iTIPMessage =
@@ -627,7 +627,6 @@ public class HandleRecurrencesTest
         assertEquals(expectedvComponentRecurrence, myComponentRecurrence);
     }
     
-    
     @Test // makes sure when recurrence deleted the parent gets an EXDATE
     public void canDeleteThisAndFutureWithRecurrence()
     {
@@ -637,12 +636,12 @@ public class HandleRecurrencesTest
         VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponent1);
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
         vComponents.add(vComponentRecurrence);
 
         String iTIPMessage =
@@ -663,8 +662,6 @@ public class HandleRecurrencesTest
                 "END:VCALENDAR";
         mainVCalendar.processITIPMessage(iTIPMessage);
         
-//        System.out.println(mainVCalendar);
-        // TODO - RECURRENCE SHOULD BE DELETED - ITS A ORPHANED CHILD
         assertEquals(1, vComponents.size());
         VEvent myComponent1 = vComponents.get(0);
         

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -982,40 +980,43 @@ public class VCalendar extends VParentBase
 //        change.getList().forEach(v -> System.out.println(v));
     };
     
-    // Assumes the component is the only one with the children attached to it.
-    // If a replace operation happened, the old component must be removed, but not its
-    /*
-     * If modify
-     */
-    private void deleteOrphans(VDisplayable<?> vDisplayable)
-    {
-        boolean isParent = vDisplayable.getRecurrenceId() == null;
-//        List<VDisplayable<?>> orhpanedChildren = Collections.emptyList(); // initialize with empty list
-        if (isParent)
-        {
-            final String uid = vDisplayable.getUniqueIdentifier().getValue();
-            List<VDisplayable<?>> orhpanedChildren = uidComponentsMap().get(uid)
-                    .stream()
-                    .filter(v -> v.getRecurrenceId() != null)
-                    .filter(v -> 
-                    {
-                        Temporal myRecurrenceID = v.getRecurrenceId().getValue();
-                        Temporal cacheStart = vDisplayable.recurrenceCache().getClosestStart(myRecurrenceID);
-                        Temporal nextRecurrenceDateTime = vDisplayable.getRecurrenceRule().getValue()
-                                .streamRecurrences(cacheStart)
-                                .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
-                                .findFirst()
-                                .orElseGet(() -> null);
-                        return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
-                    })
-                    .collect(Collectors.toList());
-            System.out.println("orhpanedChildren:" + orhpanedChildren);
-            if (! orhpanedChildren.isEmpty())
-            {
-                getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
-            }
-        }
-    }
+//    // Assumes the component is the only one with the children attached to it.
+//    // If a replace operation happened, the old component must be removed, but not its
+//    /*
+//     * If modify
+//     */
+//    @Deprecated // causes UnsupportedOperationException when called from displayableListChangeListener
+//    // Move to VDisplayable
+//    public void deleteOrphans(VDisplayable<?> vDisplayable)
+//    {
+//        boolean isParent = vDisplayable.getRecurrenceId() == null;
+////        List<VDisplayable<?>> orhpanedChildren = Collections.emptyList(); // initialize with empty list
+//        if (isParent)
+//        {
+//            final String uid = vDisplayable.getUniqueIdentifier().getValue();
+//            List<VDisplayable<?>> orhpanedChildren = uidComponentsMap().get(uid)
+//                    .stream()
+//                    .filter(v -> v.getRecurrenceId() != null)
+//                    .filter(v -> 
+//                    {
+//                        Temporal myRecurrenceID = v.getRecurrenceId().getValue();
+//                        Temporal cacheStart = vDisplayable.recurrenceCache().getClosestStart(myRecurrenceID);
+//                        Temporal nextRecurrenceDateTime = vDisplayable.getRecurrenceRule().getValue()
+//                                .streamRecurrences(cacheStart)
+//                                .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
+//                                .findFirst()
+//                                .orElseGet(() -> null);
+//                        return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
+//                    })
+//                    .collect(Collectors.toList());
+//            System.out.println("orhpanedChildren:" + orhpanedChildren);
+//            if (! orhpanedChildren.isEmpty())
+//            {
+//                getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
+//            }
+//        }
+//    }
+    
 //    /*
 //     * SORT ORDER FOR CHILD ELEMENTS
 //     */
