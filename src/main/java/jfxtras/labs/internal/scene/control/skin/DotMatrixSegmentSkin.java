@@ -189,6 +189,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
                     if (control.getDotMapping().get(ASCII).contains(dot)) {
                         dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll(ON_STYLE);
+                        dotMap.get(dot).setStyle(dots.getStyle());
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
                         dotMap.get(dot).setStyle(CURRENT_STYLE);
@@ -207,6 +208,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
                     if (control.getCustomDotMapping().get(ASCII).contains(dot)) {
                         dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll(ON_STYLE);
+                        dotMap.get(dot).setStyle(dots.getStyle());
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
                         dotMap.get(dot).setStyle(CURRENT_STYLE);
