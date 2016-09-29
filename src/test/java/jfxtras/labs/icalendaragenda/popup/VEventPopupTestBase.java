@@ -1,7 +1,10 @@
 package jfxtras.labs.icalendaragenda.popup;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javafx.scene.Parent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -27,6 +30,13 @@ public class VEventPopupTestBase extends JFXtrasGuiTest
         this.editComponentPopup = editComponentPopup;
     }
     private EditVEventTabPane editComponentPopup;
+    
+    public List<String> categories()
+    {
+        return IntStream.range(0, 24)
+                .mapToObj(i -> new String("group" + (i < 10 ? "0" : "") + i))
+                .collect(Collectors.toList());
+    }
     
     @Override
     public Parent getRootNode()

@@ -221,10 +221,12 @@ public class ProcessCancel implements Processable
                                             until = LocalDate.from(previous);                    
                                         }
                                         parentVComponent.getRecurrenceRule().getValue().setUntil(until);
-                                        List<VDisplayable<?>> orhpanedChildren = parentVComponent.orphanedRecurrenceChildren();
-                                        if (! orhpanedChildren.isEmpty())
+                                        
+                                        // Remove orphaned recurrence children
+                                        List<VDisplayable<?>> orphanedChildren = parentVComponent.orphanedRecurrenceChildren();
+                                        if (! orphanedChildren.isEmpty())
                                         {
-                                            mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
+                                            mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orphanedChildren);
                                         }                                        
                                     } else
                                     {

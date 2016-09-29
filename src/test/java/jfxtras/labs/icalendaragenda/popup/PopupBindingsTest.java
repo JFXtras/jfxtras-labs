@@ -42,14 +42,15 @@ public class PopupBindingsTest extends VEventPopupTestBase
     public void canEditDescribableProperties()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-
+//        vevent.setCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // reset caterory names
+        
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
                     LocalDateTime.of(2016, 5, 15, 10, 0),
                     LocalDateTime.of(2016, 5, 15, 11, 0),
-                    AgendaTestAbstract.CATEGORIES);
+                    categories());
         });
 
         // Get properties

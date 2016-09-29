@@ -223,6 +223,7 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
         // store group name changes by each character typed
         categoryTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
+            System.out.println("listener2:" + newSelection);
             int i = categorySelectionGridPane.getCategorySelected();
             if (! categories.get(i).equals(newSelection))
             {
@@ -236,6 +237,7 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
         // verify category is unique
         categoryTextField.focusedProperty().addListener((obs, oldValue, newValue) ->
         {
+            System.out.println("listener1:" + newValue);
             if (newValue)
             {
                 // save initial value

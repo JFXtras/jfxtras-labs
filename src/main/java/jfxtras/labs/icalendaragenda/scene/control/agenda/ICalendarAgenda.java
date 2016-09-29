@@ -499,6 +499,7 @@ public class ICalendarAgenda extends Agenda
                 popupScene.getEditDisplayableTabPane().iTIPMessagesProperty().addListener((obs, oldValue, newValue) ->
                 {
                     newValue.forEach(message -> getVCalendar().processITIPMessage(message));
+                    popupStage.hide();
                 });
 //            }
             return null;

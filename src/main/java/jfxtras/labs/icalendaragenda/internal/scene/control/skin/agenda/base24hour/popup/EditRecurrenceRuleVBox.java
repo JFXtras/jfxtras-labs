@@ -473,6 +473,9 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     // INITIALIZATION - runs when FXML is initialized
     @FXML public void initialize()
     {
+//        System.out.println("null RRule:" );
+//        rrule = null;
+        
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -499,9 +502,11 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                 startDatePicker.setDisable(false);
             } else
             {
+                System.out.println("save oldRRule");
                 oldRRule = rrule;
                 rrule = null;
                 vComponent.setRecurrenceRule(rrule);
+                System.out.println("new rrule:" + vComponent.getRecurrenceRule() + " " + System.identityHashCode(vComponent));
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -749,6 +754,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             T vComponent
           , ObjectProperty<Temporal> dateTimeStartRecurrenceNew)
     {
+        System.out.println("vComponent:" + System.identityHashCode(vComponent));
         rrule = (vComponent.getRecurrenceRule() != null) ? vComponent.getRecurrenceRule().getValue() : null;
         this.vComponent = vComponent;
         this.dateTimeStartRecurrenceNew = dateTimeStartRecurrenceNew;
@@ -930,7 +936,9 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         {
             setInitialValues(vComponent);
         }
+        System.out.println("isRepeatable:" + isRepeatable);
         repeatableCheckBox.selectedProperty().set(isRepeatable);
+        System.out.println("isSelected:" + repeatableCheckBox.isSelected());
         
         // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
         dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);

@@ -133,7 +133,6 @@ public class ProcessPublish implements Processable
                             })
                             .findAny()
                             .orElseGet(() -> null);
-//                    System.out.println("oldMatchingVComponent:" + oldMatchingVComponent);
                     if (oldMatchingVComponent != null)
                     {
                         int oldSequence = (oldMatchingVComponent.getSequence() == null) ? 0 : oldMatchingVComponent.getSequence().getValue();
@@ -147,57 +146,14 @@ public class ProcessPublish implements Processable
                     }
                 }
                 
-                boolean isParent = recurrenceID == null;
                 mainVCalendar.addVComponent(c);
                 
-                List<VDisplayable<?>> orhpanedChildren = vDisplayable.orphanedRecurrenceChildren();
-                if (! orhpanedChildren.isEmpty())
+                // Remove orphaned recurrence children
+                List<VDisplayable<?>> orphanedChildren = vDisplayable.orphanedRecurrenceChildren();
+                if (! orphanedChildren.isEmpty())
                 {
-                    mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orhpanedChildren);
+                    mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orphanedChildren);
                 }
-                
-//                if (isParent)
-//                {
-//                    // Delete orphaned children, if any
-//                    List<VDisplayable<?>> recurrenceSet = mainVCalendar.uidComponentsMap().get(uid);
-//                    if ((recurrenceSet != null) && (! recurrenceSet.isEmpty()))
-//                    {
-//                        VDisplayable<?> parent = mainVCalendar.uidComponentsMap().get(uid)
-//                                .stream()
-//                                .filter(v -> v.getRecurrenceId() == null)
-//                                .findAny()
-//                                .orElseGet(() -> null);
-//    
-//                        final List<VDisplayable<?>> orhpanedChildren;
-////                        System.out.println("parent:" + parent);
-//                        if (parent == null)
-//                        { // parent is deleted - all children are orphans - remove them.
-//                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid);
-//                        } else
-//                        { // remove children that don't have a valid RECURRENCE-ID date - they are orphans
-//                            orhpanedChildren = mainVCalendar.uidComponentsMap().get(uid)
-//                                    .stream()
-//                                    .filter(v -> v.getRecurrenceId() != null)
-//                                    .filter(v -> 
-//                                    {
-//                                        Temporal myRecurrenceID = v.getRecurrenceId().getValue();
-//                                        Temporal cacheStart = parent.recurrenceCache().getClosestStart(myRecurrenceID);
-//                                        Temporal nextRecurrenceDateTime = parent.getRecurrenceRule().getValue()
-//                                                .streamRecurrences(cacheStart)
-//                                                .filter(t -> ! DateTimeUtilities.isBefore(t, myRecurrenceID))
-//                                                .findFirst()
-//                                                .orElseGet(() -> null);
-//                                        return ! Objects.equals(nextRecurrenceDateTime, myRecurrenceID);
-//                                    })
-//                                    .collect(Collectors.toList());
-//                        };
-////                        System.out.println("orhpanedChildren:"+orhpanedChildren.size());
-//                        if (orhpanedChildren != null)
-//                        {
-//                            mainVCalendar.getVComponents(c.getClass()).removeAll(orhpanedChildren);
-//                        }
-//                    }
-//                }
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
                 // TODO
