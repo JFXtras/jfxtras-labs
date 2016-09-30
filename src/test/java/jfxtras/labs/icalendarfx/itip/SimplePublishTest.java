@@ -238,12 +238,12 @@ public class SimplePublishTest
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
 
         // make recurrence
-        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
-        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2015, 11, 12, 10, 0));
-        vComponentRecurrence.setSummary("recurrence summary");
-        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2015, 11, 12, 8, 30));
-        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2015, 11, 12, 9, 30));
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule((RecurrenceRule2) null)
+                .withRecurrenceId(LocalDateTime.of(2015, 11, 12, 10, 0))
+                .withSummary("recurrence summary")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 12, 8, 30))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 12, 9, 30));
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         vComponents.addAll(vComponentEdited, vComponentRecurrence);
                 

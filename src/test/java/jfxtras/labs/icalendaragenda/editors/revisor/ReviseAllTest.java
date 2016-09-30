@@ -76,13 +76,12 @@ public class ReviseAllTest
     }
     
     @Test
-    public void canEditWeeklyAll() // shift day of weekly
+    public void canShiftWeeklyAll() // shift day of weekly
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getWeekly3();
-        vComponents.add(vComponentOriginal);
         vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
@@ -122,13 +121,12 @@ public class ReviseAllTest
     }
     
     @Test
-    public void canEditMonthlyAll2() // shift day of weekly with ordinal
+    public void canShiftMonthlyAll2() // shift day of weekly with ordinal
     {
         VCalendar mainVCalendar = new VCalendar();
         final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
         
         VEvent vComponentOriginal = ICalendarStaticComponents.getMonthly7();
-        vComponents.add(vComponentOriginal);
         vComponents.add(vComponentOriginal);
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
 
@@ -407,5 +405,4 @@ public class ReviseAllTest
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
     }
-
 }

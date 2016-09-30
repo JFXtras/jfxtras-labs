@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.control.CheckBox;
@@ -37,7 +36,6 @@ import jfxtras.test.TestUtil;
 public class VEventMakeiTIPTest extends VEventPopupTestBase
 {
     @Test // simple press save
-    @Ignore
     public void canSaveWithNoEdit()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -61,23 +59,16 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
-    @Ignore
     public void canCancelEdit()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(2);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 11, 10, 0), // start selected instance
+                    LocalDateTime.of(2015, 11, 11, 11, 0), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
 
@@ -99,22 +90,16 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
-    @Ignore
     public void canEditSimpleVEvent()
     {
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 9, 10, 0), // start selected instance
+                    LocalDateTime.of(2015, 11, 9, 11, 0), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
 
@@ -153,23 +138,16 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
-    @Ignore
     public void canEditThisAndFuture()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(2);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 11, 10, 0), // start selected instance
+                    LocalDateTime.of(2015, 11, 11, 11, 0), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
 
@@ -232,20 +210,14 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     @Test
     public void canDeleteAll()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(2);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 11, 10, 0), // start selected instance
+                    LocalDateTime.of(2015, 11, 11, 11, 0), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
 
@@ -279,19 +251,14 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     @Test
     public void canEditDescribableProperties()
     {
-        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
 
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2016, 5, 15, 10, 0), // start selected instance
+                    LocalDateTime.of(2016, 5, 15, 11, 0), // end selected instance
                     categories());
         });
 
@@ -341,29 +308,20 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
-//        assertEquals(expectediTIPMessage, iTIPMessage);
-        
-//        closeCurrentWindow();
+        assertEquals(expectediTIPMessage, iTIPMessage);
     }
   
     @Test
-    @Ignore
     public void canChangeWholeDayToTimeBased()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getWholeDayDaily3();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDate.of(2015, 11, 11), // start selected instance
+                    LocalDate.of(2015, 11, 13), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
@@ -407,7 +365,6 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
-    @Ignore
     public void canChangeToWholeDayAll()
     {
         RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
