@@ -198,6 +198,37 @@ public class DisplayableTest
         assertEquals(expectedContent2, e.getRecurrenceRule().toContent());
     }
     
+    @Test // 2 separate EXDATE properties, and out of order too
+    public void exceptionTest2()
+    {       
+        VEvent e = new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency("DAILY")
+                        .withInterval(3)
+                        .withCount(6))
+                .withExceptionDates(new ExceptionDates(LocalDateTime.of(2015, 11, 15, 10, 0)))
+                .withSequence(2)
+                .withExceptionDates(LocalDateTime.of(2015, 11, 12, 10, 0));
+        
+        List<Temporal> madeDates = e
+                .streamRecurrences()
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "EXDATE:20151115T100000";
+        assertEquals(expectedContent, e.getExceptionDates().get(0).toContent());
+        String expectedContent2 = "EXDATE:20151112T100000";
+        assertEquals(expectedContent2, e.getExceptionDates().get(1).toContent());
+        String expectedContent3 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
+        assertEquals(expectedContent3, e.getRecurrenceRule().toContent());
+    }
+    
     // Google test
     @Test
     public void canStreamGoogleWithExDates()

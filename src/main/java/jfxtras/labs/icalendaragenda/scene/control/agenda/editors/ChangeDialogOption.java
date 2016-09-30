@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.Deleter;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.Reviser;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
-import jfxtras.labs.icalendarfx.components.editors.deleters.Deleter;
-import jfxtras.labs.icalendarfx.components.editors.revisors.Reviser;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 

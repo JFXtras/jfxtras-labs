@@ -40,7 +40,9 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditDisplayableScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.Reviser;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -51,8 +53,6 @@ import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.editors.deleters.SimpleDeleterFactory;
-import jfxtras.labs.icalendarfx.components.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;

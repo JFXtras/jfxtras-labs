@@ -155,6 +155,43 @@ public class SimpleCancelTest
         assertEquals(vComponentExpected, vComponents.get(0));
     }
     
+    @Test // use CANCEL to delete a second recurrence
+    public void canDeleteAnotherInstance()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1()
+                .withExceptionDates(LocalDateTime.of(2016, 5, 16, 10, 0))
+                .withSequence(1);
+        vComponents.add(vComponentOriginal);
+
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:CANCEL" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "STATUS:CANCELLED" + System.lineSeparator() +
+                "RECURRENCE-ID:20160515T100000" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        mainVCalendar.processITIPMessage(iTIPMessage);
+        
+        VEvent vComponentExpected = ICalendarStaticComponents.getDaily1()
+                .withExceptionDates(LocalDateTime.of(2016, 5, 15, 10, 0), LocalDateTime.of(2016, 5, 16, 10, 0))
+                .withSequence(2);
+        assertEquals(1, vComponents.size());
+        assertEquals(vComponentExpected, vComponents.get(0));
+    }
+    
     @Test
     public void canDeleteRepeatableAll()
     {

@@ -10,7 +10,6 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -205,7 +204,8 @@ public class ProcessCancel implements Processable
                                             parentVComponent.withExceptionDates(recurrenceID.getValue());
                                         } else
                                         {
-                                            parentVComponent.getExceptionDates().add(new ExceptionDates(recurrenceID.getValue()));
+                                            parentVComponent.getExceptionDates().get(0).getValue().add(recurrenceID.getValue());
+//                                            parentVComponent.getExceptionDates().add(new ExceptionDates(recurrenceID.getValue()));
                                         }
                                     // Delete THIS-AND-FUTURE
                                     } else if (recurrenceID.getRange().getValue() == RangeType.THIS_AND_FUTURE)

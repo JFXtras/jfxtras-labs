@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence;
 
 import java.time.temporal.Temporal;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
@@ -32,7 +31,7 @@ public class RecurrenceDates extends PropertyBaseRecurrence<RecurrenceDates>
     @SuppressWarnings("unchecked")
     public RecurrenceDates(Temporal...temporals)
     {
-        super(FXCollections.observableSet(temporals));
+        super(temporals);
     }
     
     public RecurrenceDates(RecurrenceDates source)

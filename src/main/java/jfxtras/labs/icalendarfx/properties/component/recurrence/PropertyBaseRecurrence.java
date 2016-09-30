@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
@@ -69,12 +71,18 @@ public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<Observa
         @Override
         public ObservableSet<Temporal> fromString(String string)
         {
-            return FXCollections.observableSet(Arrays.stream(string.split(","))
+            Set<Temporal> list = Arrays.stream(string.split(","))
                     .map(s -> DateTimeUtilities.temporalFromString(s))
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            TreeSet<Temporal> treeSet = new TreeSet<Temporal>(DateTimeUtilities.TEMPORAL_COMPARATOR);
+            treeSet.addAll(list);
+            return FXCollections.observableSet(list);
         }
     };
-
+    
+    /*
+     * CONSTRUCTORS
+     */
     public PropertyBaseRecurrence(ObservableSet<Temporal> value)
     {
         this();
@@ -85,9 +93,17 @@ public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<Observa
         }
     }
     
-    /*
-     * CONSTRUCTORS
-     */
+    public PropertyBaseRecurrence(Temporal...temporals)
+    {
+        this();
+        Set<Temporal> tree = new TreeSet<>(DateTimeUtilities.TEMPORAL_COMPARATOR);
+        tree.addAll(Arrays.asList(temporals));
+        setValue(FXCollections.observableSet(tree));
+        if (! isValid())
+        {
+            throw new IllegalArgumentException("Error in parsing " + temporals);
+        }
+    }
     
     public PropertyBaseRecurrence()
     {
@@ -107,14 +123,12 @@ public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<Observa
         {
             Temporal sampleValue = getValue().iterator().next();
             myType = DateTimeType.of(sampleValue);
-//            System.out.println("value:" + getValue() + " " + recurrenceListener);
             SetChangeListener<Temporal> recurrenceListener = (SetChangeListener<Temporal>) (SetChangeListener.Change<? extends Temporal> change) ->
             {
                 if (change.wasAdded())
                 {
                     Temporal newTemporal = change.getElementAdded();
                     DateTimeType newType = DateTimeType.of(newTemporal);
-                    System.out.println("types" + newType + " " + myType);
                     if (newType != myType)
                     {
                         change.getSet().remove(newTemporal);
