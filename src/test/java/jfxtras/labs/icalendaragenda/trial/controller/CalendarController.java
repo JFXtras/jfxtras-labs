@@ -126,6 +126,7 @@ public class CalendarController
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(8).getDescription())
                 .withDescription("Split Description")
                 .withSummary(Summary.parse("Split"))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withUniqueIdentifier("20150110T080000-00@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventSplit);
         
@@ -140,6 +141,7 @@ public class CalendarController
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
                 .withSummary(Summary.parse("WeeklyZoned Ends"))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withUniqueIdentifier("20150110T080000-01@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventZonedUntil);
                
@@ -153,6 +155,7 @@ public class CalendarController
                     .withFrequency(FrequencyType.WEEKLY)
                     .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
             .withSummary(Summary.parse("WeeklyZoned Infinite"))
+            .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
             .withUniqueIdentifier("20150110T080000-02@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventZonedInfinite);
         
@@ -164,6 +167,7 @@ public class CalendarController
                 .withDescription("LocalDate Description")
                 .withSummary(Summary.parse("LocalDate"))
                 .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withInterval(3));
@@ -177,6 +181,7 @@ public class CalendarController
                 .withDescription("LocalDateTime Daily Description")
                 .withSummary(Summary.parse("LocalDateTime Daily"))
                 .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
         agenda.getVCalendar().getVEvents().add(vEventLocalDateTime); 
@@ -189,6 +194,7 @@ public class CalendarController
                 .withDescription("Monthly Description")
                 .withSummary(Summary.parse("Monthly"))
                 .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY));
         agenda.getVCalendar().getVEvents().add(vEventLocalDateTimeMonthly); 
@@ -203,6 +209,7 @@ public class CalendarController
                 .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
                 .withSummary(Summary.parse("Monthly Ordinal"))
                 .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber))));

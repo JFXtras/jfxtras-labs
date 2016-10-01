@@ -14,7 +14,6 @@ import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.CopyComponentTest;
 import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
-import jfxtras.labs.icalendarfx.component.DeleteComponentTest;
 import jfxtras.labs.icalendarfx.component.DisplayableTest;
 import jfxtras.labs.icalendarfx.component.EqualsTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
@@ -23,7 +22,6 @@ import jfxtras.labs.icalendarfx.component.ParseComponentTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.RepeatableTest;
-import jfxtras.labs.icalendarfx.component.ReviseComponentTest;
 import jfxtras.labs.icalendarfx.component.ScheduleConflictTest;
 import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
@@ -126,7 +124,6 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CopyComponentTest.class,
         DateTimeEndTest.class,
         DaylightSavingsTimeTest.class,
-        DeleteComponentTest.class,
         DisplayableTest.class,
         EqualsTest.class,
         GeneralComponentTest.class,
@@ -134,9 +131,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         ParseComponentTest.class,
         PrimaryTest.class,
         PersonalTest.class,
-//        RecurrenceIDComponentEditTest.class,
         RepeatableTest.class,
-        ReviseComponentTest.class,
         ScheduleConflictTest.class,
         StandardOrDaylightTimeTest.class,
         VAlarmTest.class,

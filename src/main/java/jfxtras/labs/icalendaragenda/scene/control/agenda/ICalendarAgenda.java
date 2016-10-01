@@ -312,7 +312,7 @@ public class ICalendarAgenda extends Agenda
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
         VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
-//        System.out.println(vComponent0.toContent());
+        System.out.println(vComponent0.toContent());
 
         alert.initOwner(this.getScene().getWindow());
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
@@ -424,7 +424,7 @@ public class ICalendarAgenda extends Agenda
         });
         
         /*
-         * Default Appointment Changed Callback
+         * Appointment Changed Callback (change from default in Agenda)
          * 
          * Callback that is executed after an appointment is changed in Agenda.  This is done by drag-n-drop,
          * expand end time, and other user actions.
@@ -435,8 +435,10 @@ public class ICalendarAgenda extends Agenda
         Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
         {
             VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-            Object[] params = reviseParamGenerator(vComponent, appointment);
-            SimpleRevisorFactory.newReviser(vComponent, params).revise();
+            Object[] params = revisorParamGenerator(vComponent, appointment);
+            VCalendar iTIPMessage = SimpleRevisorFactory.newReviser(vComponent, params).revise().get(0);
+//            System.out.println("iTIPMessage:" + iTIPMessage);
+            getVCalendar().processITIPMessage(iTIPMessage);
             appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
             Platform.runLater(() -> refresh());
             return null;
@@ -705,7 +707,7 @@ public class ICalendarAgenda extends Agenda
     } // end of constructor
     
     /** Generate the parameters required for {@link SimpleRevisorFactory} */
-    private Object[] reviseParamGenerator(VDisplayable<?> vComponent, Appointment appointment)
+    private Object[] revisorParamGenerator(VDisplayable<?> vComponent, Appointment appointment)
     {
         if (vComponent == null)
         {
@@ -715,15 +717,15 @@ public class ICalendarAgenda extends Agenda
             return null;
         } else
         {
-            VComponent vComponentOriginalCopy = null;
-            try
-            {
-                vComponentOriginalCopy = vComponent.getClass().newInstance();
-            } catch (InstantiationException | IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
-            vComponentOriginalCopy.copyChildrenFrom(vComponent);
+//            VComponent edited = null;
+//            try
+//            {
+//                edited = vComponent.getClass().newInstance();
+//            } catch (InstantiationException | IllegalAccessException e)
+//            {
+//                e.printStackTrace();
+//            }
+//            edited.copyChildrenFrom(vComponent);
             Temporal startOriginalRecurrence = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
             final Temporal startRecurrence;
             final Temporal endRecurrence;
@@ -753,9 +755,10 @@ public class ICalendarAgenda extends Agenda
                     endRecurrence,
                     startOriginalRecurrence,
                     startRecurrence,
-                    getVCalendar().getVComponents(vComponent),
-                    vComponent,
-                    vComponentOriginalCopy
+//                    getVCalendar().getVComponents(vComponent),
+                    vComponent, // edited
+                    vComponent  // original
+                 // Note: edited and original are the same here - can't edit descriptive properties with drag-n-drop
                     };
         }
     }

@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.itip;
 import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
@@ -95,5 +96,45 @@ public class RequestTest
                 .withSummary("Edited summary")
                 .withSequence(1);
         assertEquals(expectedVComponent, myComponent);
+    }
+    
+    @Test
+    public void canChangeToWholeDayAll()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentOriginal);
+
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART;VALUE=DATE:20151108" + System.lineSeparator() +
+                "DTEND;VALUE=DATE:20151109" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Edited summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR"
+                ;
+        mainVCalendar.processITIPMessage(iTIPMessage);
+
+        assertEquals(1, vComponents.size());
+        VEvent vComponentExpected = ICalendarStaticComponents.getDaily1()
+                .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 9))
+                .withSummary("Edited summary")
+                .withSequence(1);
+        
+        assertEquals(vComponentExpected, vComponents.get(0));
     }
 }

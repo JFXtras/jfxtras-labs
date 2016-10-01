@@ -43,6 +43,7 @@ public class SimpleRevisorFactory
     {
         if (vComponent instanceof VEvent)
         {
+            if (params.length != 6) throw new IllegalArgumentException("Can't create Reviser: Paramaters should be 6 not" + params.length);
             return new ReviserVEvent((VEvent) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withEndRecurrence((Temporal) params[1])
@@ -52,6 +53,7 @@ public class SimpleRevisorFactory
                     .withVComponentOriginal((VEvent) params[5]);
         } else if (vComponent instanceof VTodo)
         {
+            if (params.length != 6) throw new IllegalArgumentException("Can't create Reviser: Paramaters should be 6 not" + params.length);
             return new ReviserVTodo((VTodo) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withEndRecurrence((Temporal) params[1])
@@ -62,6 +64,7 @@ public class SimpleRevisorFactory
         } else if (vComponent instanceof VJournal)
         {
             // Note: array is different - endRecurrence is omitted
+            if (params.length != 5) throw new IllegalArgumentException("Can't create Reviser: Paramaters should be 6 not" + params.length);
             return new ReviserVJournal((VJournal) vComponent)
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
