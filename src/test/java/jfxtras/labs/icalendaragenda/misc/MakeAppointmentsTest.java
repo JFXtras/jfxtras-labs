@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
@@ -119,7 +118,6 @@ public class MakeAppointmentsTest
     }
     
     @Test
-    @Ignore
     public void makeAppointmentsDailyTest3()
     {
         LocalDate startDate = LocalDate.of(2015, 11, 15);
