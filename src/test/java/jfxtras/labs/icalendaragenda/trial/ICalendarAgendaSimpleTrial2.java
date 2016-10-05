@@ -32,6 +32,7 @@ public class ICalendarAgendaSimpleTrial2 extends Application
                 .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
                 .withSummary("Example Daily Event")
                 .withRecurrenceRule("RRULE:FREQ=DAILY")
+                .withOrganizer("mailto:david@balsoftware.net")
                 .withUniqueIdentifier("exampleuid000jfxtras.org");
         vCalendar.addVComponent(vEvent);
         ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);

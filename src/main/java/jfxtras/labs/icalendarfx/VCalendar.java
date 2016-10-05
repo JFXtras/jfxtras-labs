@@ -99,24 +99,12 @@ public class VCalendar extends VParentBase
     public void setCalendarScale(CalendarScale calendarScale) { calendarScaleProperty().set(calendarScale); }
     public VCalendar withCalendarScale(CalendarScale calendarScale)
     {
-        if (getCalendarScale() == null)
-        {
-            setCalendarScale(calendarScale);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
-        }
+        setCalendarScale(calendarScale);
         return this;
     }
     public VCalendar withCalendarScale(String calendarScale)
     {
-        if (getCalendarScale() == null)
-        {
-            setCalendarScale(calendarScale);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
-        }
+        setCalendarScale(calendarScale);
         return this;
     }
 
@@ -183,24 +171,12 @@ public class VCalendar extends VParentBase
     public void setProductIdentifier(ProductIdentifier productIdentifier) { productIdentifierProperty().set(productIdentifier); }
     public VCalendar withProductIdentifier(ProductIdentifier productIdentifier)
     {
-        if (getProductIdentifier() == null)
-        {
-            setProductIdentifier(productIdentifier);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
-        }
+        setProductIdentifier(productIdentifier);
         return this;
     }
     public VCalendar withProductIdentifier(String productIdentifier)
     {
-        if (getProductIdentifier() == null)
-        {
-            setProductIdentifier(productIdentifier);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
-        }
+        setProductIdentifier(productIdentifier);
         return this;
     }
     
@@ -231,24 +207,12 @@ public class VCalendar extends VParentBase
     public void setVersion(Version version) { versionProperty().set(version); }
     public VCalendar withVersion(Version version)
     {
-        if (getVersion() == null)
-        {
-            setVersion(version);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.VERSION.toString() + " can only occur once in a calendar component");
-        }
+        setVersion(version);
         return this;
     }
     public VCalendar withVersion(String version)
     {
-        if (getVersion() == null)
-        {
-            setVersion(version);
-        } else
-        {
-            throw new IllegalArgumentException(CalendarProperty.VERSION.toString() + " can only occur once in a calendar component");
-        }
+        setVersion(version);
         return this;
     }
 

@@ -18,8 +18,6 @@ import javafx.scene.Parent;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.test.TestUtil;
 
 public class RenderVEventsTest extends AgendaTestAbstract
@@ -212,22 +210,37 @@ public class RenderVEventsTest extends AgendaTestAbstract
     @Test
     public void canRenderiTIPPublish()
     {
-        VEvent vEvent = new VEvent()
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
-                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
-                .withSummary("Example Daily Event")
-                .withRecurrenceRule("RRULE:FREQ=DAILY")
-                .withOrganizer("mailto:david@balsoftware.net")
-                .withUniqueIdentifier("exampleuid000jfxtras.org");
-        VCalendar publishMessage = new VCalendar()
-                .withMethod(MethodType.PUBLISH)
-                .withVEvents(vEvent);
+        String publish = "BEGIN:VCALENDAR" + System.lineSeparator() + 
+                "METHOD:PUBLISH" + System.lineSeparator() + 
+                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
+                "VERSION:2.0" + System.lineSeparator() + 
+                "BEGIN:VEVENT" + System.lineSeparator() + 
+                "ORGANIZER:mailto:a@example.com" + System.lineSeparator() + 
+                "DTSTART:20150701T200000Z" + System.lineSeparator() + 
+                "DTEND:20150701T220000Z" + System.lineSeparator() + 
+                "DTSTAMP:20150611T190000Z" + System.lineSeparator() + 
+                "RRULE:FREQ=WEEKLY;BYDAY=FR" + System.lineSeparator() +
+                "SUMMARY:Friday meeting with Joe" + System.lineSeparator() + 
+                "UID:0981234-1234234-23@example.com" + System.lineSeparator() + 
+                "END:VEVENT" + System.lineSeparator() + 
+                "END:VCALENDAR";
+        VCalendar publishMessage = VCalendar.parse(publish);
+//        VEvent vEvent = new VEvent()
+//                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
+//                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
+//                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
+//                .withSummary("Example Daily Event")
+//                .withRecurrenceRule("RRULE:FREQ=DAILY")
+//                .withOrganizer("mailto:david@balsoftware.net")
+//                .withUniqueIdentifier("exampleuid000jfxtras.org");
+//        VCalendar publishMessage = new VCalendar()
+//                .withMethod(MethodType.PUBLISH)
+//                .withVEvents(vEvent);
 
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.getVCalendar().processITIPMessage(publishMessage);
         });
-        
+        TestUtil.sleep(3000);
         assertEquals(4, agenda.appointments().size());
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         List<Temporal> startDates = agenda.appointments()
