@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +18,45 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 public class ParseCalendarTest extends ICalendarTestAbstract
 {
     @Test
-    public void canParseVCalendar()
+    public void canParseSimpleVCalendar()
+    {
+        String content = 
+       "BEGIN:VCALENDAR" + System.lineSeparator() +
+       "VERSION:2.0" + System.lineSeparator() +
+       "PRODID:-//hacksw/handcal//NONSGML v1.0//EN" + System.lineSeparator() +
+       "BEGIN:VEVENT" + System.lineSeparator() +
+       "UID:19970610T172345Z-AF23B2@example.com" + System.lineSeparator() +
+       "DTSTAMP:19970610T172345Z" + System.lineSeparator() +
+       "DTSTART:19970714T170000Z" + System.lineSeparator() +
+       "DTEND:19970715T040000Z" + System.lineSeparator() +
+       "SUMMARY:Bastille Day Party" + System.lineSeparator() +
+       "END:VEVENT" + System.lineSeparator() +
+       "END:VCALENDAR";
+        
+        VCalendar vCalendar = VCalendar.parse(content);
+        assertEquals(content, vCalendar.toContent());
+        
+        VCalendar vCalendar2 = new VCalendar()
+                .withVersion(new Version())
+                .withProductIdentifier("-//hacksw/handcal//NONSGML v1.0//EN")
+                .withVEvents(new VEvent()
+                        .withUniqueIdentifier("UID:19970610T172345Z-AF23B2@example.com")
+                        .withDateTimeStamp("DTSTAMP:19970610T172345Z")
+                        .withDateTimeStart("19970714T170000Z")
+                        .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(1997, 7, 15, 4, 0), ZoneId.of("Z")))
+                        .withSummary("Bastille Day Party")
+                        );
+        assertEquals(vCalendar2, vCalendar);
+    }
+    
+    @Test
+    public void canParseVCalendarWithNonStandard()
     {
         String content = 
        "BEGIN:VCALENDAR" + System.lineSeparator() +

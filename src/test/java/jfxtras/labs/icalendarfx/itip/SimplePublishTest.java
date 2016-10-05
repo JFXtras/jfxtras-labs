@@ -35,7 +35,7 @@ public class SimplePublishTest
     public void canProcessPublish()
     {
         VCalendar main = new VCalendar();
-        String publish = new String("BEGIN:VCALENDAR" + System.lineSeparator() + 
+        String publish = "BEGIN:VCALENDAR" + System.lineSeparator() + 
               "METHOD:PUBLISH" + System.lineSeparator() + 
               "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
               "VERSION:2.0" + System.lineSeparator() + 
@@ -46,10 +46,10 @@ public class SimplePublishTest
               "SUMMARY:ST. PAUL SAINTS -VS- DULUTH-SUPERIOR DUKES" + System.lineSeparator() + 
               "UID:0981234-1234234-23@example.com" + System.lineSeparator() + 
               "END:VEVENT" + System.lineSeparator() + 
-              "END:VCALENDAR");
+              "END:VCALENDAR";
         VCalendar inputVCalendar = VCalendar.parse(publish);
         main.processITIPMessage(inputVCalendar);
-        String expectedContent = new String("BEGIN:VCALENDAR" + System.lineSeparator() + 
+        String expectedContent = "BEGIN:VCALENDAR" + System.lineSeparator() + 
                 "BEGIN:VEVENT" + System.lineSeparator() + 
                 "ORGANIZER:mailto:a@example.com" + System.lineSeparator() + 
                 "DTSTART:19970701T200000Z" + System.lineSeparator() + 
@@ -57,7 +57,7 @@ public class SimplePublishTest
                 "SUMMARY:ST. PAUL SAINTS -VS- DULUTH-SUPERIOR DUKES" + System.lineSeparator() + 
                 "UID:0981234-1234234-23@example.com" + System.lineSeparator() + 
                 "END:VEVENT" + System.lineSeparator() + 
-                "END:VCALENDAR");
+                "END:VCALENDAR";
         assertEquals(expectedContent, main.toContent());
     }
     

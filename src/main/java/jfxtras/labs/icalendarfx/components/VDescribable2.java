@@ -8,18 +8,13 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * For single DESCRIPTION property
  * Note: Not for VJournal - allows multiple descriptions
  * 
- * DESCRIPTION:
- * RFC 5545 iCalendar 3.8.1.12. page 84
- * This property provides a more complete description of the
- * calendar component than that provided by the "SUMMARY" property.
- * Example:
- * DESCRIPTION:Meeting to provide technical review for "Phoenix"
- *  design.\nHappy Face Conference Room. Phoenix design team
- *  MUST attend this meeting.\nRSVP to team leader.
- *  
+ * <p>{@link VComponent} with the following properties
+ * <ul>
+ * <li>{@link Description DESCRIPTION}
+ * </ul>
+ * </p>
+ * 
  * @author David Bal
- *
- * @param <T> - concrete subclass
  */
 public interface VDescribable2<T> extends VDescribable<T>
 {

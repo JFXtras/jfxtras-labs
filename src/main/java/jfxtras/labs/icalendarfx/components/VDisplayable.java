@@ -45,6 +45,17 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * <p>{@link VComponent} with the following properties
  * <ul>
  * <li>{@link Attachment ATTACH}
+ * <li>{@link Categories CATEGORIES}
+ * <li>{@link Classification CLASS}
+ * <li>{@link Contact CONTACT}
+ * <li>{@link DateTimeCreated CREATED}
+ * <li>{@link ExceptionDates EXDATE}
+ * <li>{@link LastModified LAST-MODIFIED}
+ * <li>{@link RecurrenceId RECURRENCE-ID}
+ * <li>{@link RelatedTo RELATED-TO}
+ * <li>{@link RecurrenceRule RRULE}
+ * <li>{@link Sequence SEQUENCE}
+ * <li>{@link Status STATUS}
  * <li>{@link Summary SUMMARY}
  * </ul>
  * </p>
@@ -763,28 +774,6 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
             setSequence(1);            
         }
     }
-
-    /**
-     * SUMMARY
-     * RFC 5545 iCalendar 3.8.1.12. page 93
-     * 
-     * This property defines a short summary or subject for the calendar component.
-     * 
-     * Example:
-     * SUMMARY:Department Party
-     */
-    @Override public ObjectProperty<Summary> summaryProperty()
-    {
-        if (summary == null)
-        {
-            summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
-            orderer().registerSortOrderProperty(summary);
-        }
-        return summary;
-    }
-    @Override
-    public Summary getSummary() { return (summary == null) ? null : summaryProperty().get(); }
-    private ObjectProperty<Summary> summary;
     
     /**
      * STATUS
@@ -862,6 +851,28 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         }
     }
 
+    /**
+     * SUMMARY
+     * RFC 5545 iCalendar 3.8.1.12. page 93
+     * 
+     * This property defines a short summary or subject for the calendar component.
+     * 
+     * Example:
+     * SUMMARY:Department Party
+     */
+    @Override public ObjectProperty<Summary> summaryProperty()
+    {
+        if (summary == null)
+        {
+            summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
+            orderer().registerSortOrderProperty(summary);
+        }
+        return summary;
+    }
+    @Override
+    public Summary getSummary() { return (summary == null) ? null : summaryProperty().get(); }
+    private ObjectProperty<Summary> summary;
+    
 //    @Override
 //    public void checkDateTimeStartConsistency()
 //    {

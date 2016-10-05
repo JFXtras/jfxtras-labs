@@ -355,6 +355,28 @@ public class RecurrenceRuleStreamTest
        assertEquals(expectedRecurrences, madeRecurrences);
    }
    
+   @Test // tests the RecurrenceRule2 property value streaming date/times
+   public void canStreamRRule10b()
+   {
+    RecurrenceRule2 rrule = RecurrenceRule2.parse("FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR");
+    List<Temporal> madeRecurrences = rrule.streamRecurrences(LocalDate.of(2017, 1, 2))
+            .limit(10)
+            .collect(Collectors.toList());
+    List<Temporal> expectedRecurrences = new ArrayList<>(Arrays.asList(
+            LocalDate.of(2017, 1, 2)
+          , LocalDate.of(2017, 1, 4)
+          , LocalDate.of(2017, 1, 6)
+          , LocalDate.of(2017, 1, 16)
+          , LocalDate.of(2017, 1, 18)
+          , LocalDate.of(2017, 1, 20)
+          , LocalDate.of(2017, 1, 30)
+          , LocalDate.of(2017, 2, 1)
+          , LocalDate.of(2017, 2, 3)
+          , LocalDate.of(2017, 2, 13)
+          ));
+    assertEquals(expectedRecurrences, madeRecurrences);
+   }
+   
    /*
     * Every other week on Tuesday and Thursday, for 8 occurrences:
     * 
