@@ -249,11 +249,21 @@ public class ICalendarAgenda extends Agenda
         // must be replaced with a new one with the new organizer property.
         // The code here only replaces the default vcomponent factory automatically.
     }
+    public void setOrganizer(String organizer)
+    {
+        setOrganizer(Organizer.parse(organizer));
+    }
     public ICalendarAgenda withOrganizer(Organizer organizer)
     {
-        this.organizer.set(organizer);
+        setOrganizer(organizer);
         return this;
     }
+    public ICalendarAgenda withOrganizer(String organizer)
+    {
+        setOrganizer(organizer);
+        return this;
+    }
+
     
     final private VCalendar vCalendar;
     /** get the VCalendar object that is a model of the iCalendar RFC 5545 specification */
@@ -318,6 +328,7 @@ public class ICalendarAgenda extends Agenda
 
         VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
         System.out.println(vComponent0.toContent());
+//        System.out.println(getVCalendar().toContent());
 
         alert.initOwner(this.getScene().getWindow());
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);

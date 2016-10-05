@@ -17,6 +17,9 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.test.TestUtil;
 
 public class RenderVEventsTest extends AgendaTestAbstract
@@ -205,5 +208,39 @@ public class RenderVEventsTest extends AgendaTestAbstract
         assertEquals(expectedStartDates, startDates);
 
     }
+    
+    @Test
+    public void canRenderiTIPPublish()
+    {
+        VEvent vEvent = new VEvent()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
+                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
+                .withSummary("Example Daily Event")
+                .withRecurrenceRule("RRULE:FREQ=DAILY")
+                .withOrganizer("mailto:david@balsoftware.net")
+                .withUniqueIdentifier("exampleuid000jfxtras.org");
+        VCalendar publishMessage = new VCalendar()
+                .withMethod(MethodType.PUBLISH)
+                .withVEvents(vEvent);
 
+        TestUtil.runThenWaitForPaintPulse( () -> {
+            agenda.getVCalendar().processITIPMessage(publishMessage);
+        });
+        
+        assertEquals(4, agenda.appointments().size());
+        assertEquals(1, agenda.getVCalendar().getVEvents().size());
+        List<Temporal> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartTemporal())
+                .sorted()
+                .collect(Collectors.toList());
+        List<Temporal> expectedStartDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 12, 10, 0), ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 14, 10, 0), ZoneId.of("Europe/London"))
+                ));
+        assertEquals(expectedStartDates, startDates);
+    }
 }

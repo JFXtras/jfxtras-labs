@@ -393,12 +393,12 @@ public class VCalendar extends VParentBase
 //            (VEvent v) -> new Observable[] { v.summaryProperty(), v.descriptionProperty(), v.dateTimeStartProperty(), v.recurrenceRuleProperty() });
     // TODO - ADD MORE PROPERTIES TO ABOVE EXTRACTOR
     public void setVEvents(ObservableList<VEvent> vEvents) { this.vEvents = vEvents; }
-    public VCalendar withVEventNew(ObservableList<VEvent> vEvents)
+    public VCalendar withVEvent(ObservableList<VEvent> vEvents)
     {
         setVEvents(vEvents);
         return this;
     }
-    public VCalendar withVEventNew(String...vEvents)
+    public VCalendar withVEvent(String...vEvents)
     {
         Arrays.stream(vEvents).forEach(c -> getVEvents().add(VEvent.parse(c)));
         return this;
@@ -1068,6 +1068,7 @@ public class VCalendar extends VParentBase
                 FIRST_CONTENT_LINE,
                 LAST_CONTENT_LINE,
                 1000));
+        setVersion(new Version());
     }
   
     /** Copy constructor */
