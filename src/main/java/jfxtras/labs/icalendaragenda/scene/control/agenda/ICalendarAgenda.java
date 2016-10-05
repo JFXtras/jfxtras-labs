@@ -214,17 +214,17 @@ public class ICalendarAgenda extends Agenda
 //                .withVersion(new Version());
 //    }
     
-    /* PRODUCT IDENTIFIER */
-    private String productIdentifier = DEFAULT_PRODUCT_IDENTIFIER;
-    public String getProductIdentifier()
-    {
-        return productIdentifier;
-    }
-
-    public void setProductIdentifier(String productIdentifier)
-    {
-        this.productIdentifier = productIdentifier;
-    }   
+//    /* PRODUCT IDENTIFIER */
+//    private String productIdentifier = DEFAULT_PRODUCT_IDENTIFIER;
+//    public String getProductIdentifier()
+//    {
+//        return productIdentifier;
+//    }
+//
+//    public void setProductIdentifier(String productIdentifier)
+//    {
+//        this.productIdentifier = productIdentifier;
+//    }   
     
     /* Organizer */
     public static final String DEFAULT_ORGANIZER = "mailto:default_organizer@example.org";
@@ -248,7 +248,12 @@ public class ICalendarAgenda extends Agenda
         // value, and the vComponentFactory uses the organizer property, then the vComponentFactory
         // must be replaced with a new one with the new organizer property.
         // The code here only replaces the default vcomponent factory automatically.
-    }    
+    }
+    public ICalendarAgenda withOrganizer(Organizer organizer)
+    {
+        this.organizer.set(organizer);
+        return this;
+    }
     
     final private VCalendar vCalendar;
     /** get the VCalendar object that is a model of the iCalendar RFC 5545 specification */

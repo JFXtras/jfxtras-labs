@@ -1289,6 +1289,7 @@ public class VCalendar extends VParentBase
      * @return  Created VCalendar
      * @throws IOException
      */
+    // TODO - REMOVE useResourceStatus
     public static VCalendar parseICalendarFile(Path icsFilePath, boolean useResourceStatus) throws IOException
     {
         BufferedReader br = Files.newBufferedReader(icsFilePath);
