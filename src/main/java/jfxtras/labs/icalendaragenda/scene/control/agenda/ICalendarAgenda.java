@@ -602,6 +602,19 @@ public class ICalendarAgenda extends Agenda
                     {
                         throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
                     }
+                } else if (change.wasRemoved())
+                {
+                    change.getRemoved().forEach(appointment ->
+                    {
+                        VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
+                        Object[] params = new Object[] {
+                                (Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) (choices) -> ChangeDialogOption.ONE,
+                                appointment.getStartTemporal(),
+                                getVCalendar().getVComponents(vComponent)
+                        };
+                        List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+                        getVCalendar().processITIPMessage(cancelMessage);
+                    });
                 }
             }
         };

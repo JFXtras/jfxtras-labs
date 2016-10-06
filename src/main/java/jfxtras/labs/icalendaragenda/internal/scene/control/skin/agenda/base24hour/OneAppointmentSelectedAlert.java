@@ -30,7 +30,8 @@ public class OneAppointmentSelectedAlert extends Alert
         // Buttons
         ButtonType editButtonType = new ButtonType(resources.getString("edit"));
         ButtonType deleteButtonType = new ButtonType(resources.getString("delete"));
-        getButtonTypes().setAll(editButtonType, deleteButtonType, ButtonType.CANCEL);
+        ButtonType cancelButtonType = ButtonType.CANCEL;
+        getButtonTypes().setAll(editButtonType, deleteButtonType, cancelButtonType);
 //        getDialogPane().lookupButton(editButtonType).setId("oneSelectedEditButton");
 //        getDialogPane().lookupButton(deleteButtonType).setId("oneSelectedDeleteButton");
 //        getDialogPane().lookupButton(ButtonType.CANCEL).setId("oneSelectedCancelButton");
@@ -39,7 +40,7 @@ public class OneAppointmentSelectedAlert extends Alert
         getDialogPane().setId("newAppointmentDialog");
         getDialogPane().lookupButton(editButtonType).setId("OneAppointmentSelectedEditButton");
         getDialogPane().lookupButton(deleteButtonType).setId("OneAppointmentSelectedDeleteButton");
-        getDialogPane().lookupButton(ButtonType.CANCEL).setId("OneAppointmentSelectedCancelButton");
+        getDialogPane().lookupButton(cancelButtonType).setId("OneAppointmentSelectedCancelButton"); // this id doesn't work with TestFx find
         
         // assign labels
         setTitle(resources.getString("alert.one.appointment.title"));
