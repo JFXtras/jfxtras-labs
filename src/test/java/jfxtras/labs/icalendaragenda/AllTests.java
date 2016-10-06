@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import jfxtras.labs.icalendaragenda.agenda.DeleteVEventTest;
+import jfxtras.labs.icalendaragenda.agenda.GraphicallyChangeTest;
 import jfxtras.labs.icalendaragenda.agenda.MakeNewVEventsTest;
 import jfxtras.labs.icalendaragenda.agenda.RenderVEventsTest;
 import jfxtras.labs.icalendaragenda.agenda.VEventDisplayPopupTest;
@@ -50,6 +52,8 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     RecurrenceExceptionsTests.class,
     
     // agenda tests
+    DeleteVEventTest.class,
+    GraphicallyChangeTest.class,
     MakeNewVEventsTest.class,
     PopupRecurrenceDescriptionTest.class,
     RenderVEventsTest.class,
