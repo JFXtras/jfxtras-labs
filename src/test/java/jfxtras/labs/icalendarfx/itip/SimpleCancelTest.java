@@ -20,8 +20,8 @@ public class SimpleCancelTest
     {
         String mainContent = 
                 "BEGIN:VCALENDAR" + System.lineSeparator() + 
-                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "VERSION:2.0" + System.lineSeparator() + 
+                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "BEGIN:VEVENT" + System.lineSeparator() + 
                 "ORGANIZER:mailto:a@example.com" + System.lineSeparator() + 
                 "DTSTART:19970705T200000Z" + System.lineSeparator() + 
@@ -48,8 +48,8 @@ public class SimpleCancelTest
         main.processITIPMessage(inputVCalendar);
         String expectedContent = 
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "VERSION:2.0" + System.lineSeparator() + 
+                "PRODID:-//Example/ExampleCalendarClient//EN" + System.lineSeparator() + 
                 "END:VCALENDAR";
         assertEquals(expectedContent, main.toContent());
     }

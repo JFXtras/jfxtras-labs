@@ -241,7 +241,7 @@ public class RenderVEventsTest extends AgendaTestAbstract
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.getVCalendar().processITIPMessage(publishMessage);
         });
-        TestUtil.sleep(3000);
+
         assertEquals(4, agenda.appointments().size());
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         List<Temporal> startDates = agenda.appointments()

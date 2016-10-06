@@ -50,6 +50,7 @@ public class SimplePublishTest
         VCalendar inputVCalendar = VCalendar.parse(publish);
         main.processITIPMessage(inputVCalendar);
         String expectedContent = "BEGIN:VCALENDAR" + System.lineSeparator() + 
+//                "VERSION:2.0" + System.lineSeparator() + 
                 "BEGIN:VEVENT" + System.lineSeparator() + 
                 "ORGANIZER:mailto:a@example.com" + System.lineSeparator() + 
                 "DTSTART:19970701T200000Z" + System.lineSeparator() + 
@@ -64,7 +65,7 @@ public class SimplePublishTest
     @Test
     public void canReviseWithPublish()
     {
-        VCalendar mainVCalendar = new VCalendar();
+        VCalendar mainVCalendar = new VCalendar().withVersion();
         VEvent vComponent = ICalendarStaticComponents.getDaily1();
         mainVCalendar.addVComponent(vComponent);
         String publish = new String(
@@ -89,6 +90,7 @@ public class SimplePublishTest
         
         String expectedContent = new String(
                 "BEGIN:VCALENDAR" + System.lineSeparator() + 
+                "VERSION:2.0" + System.lineSeparator() + 
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group05" + System.lineSeparator() +
                 "DTSTART:20151108T100000" + System.lineSeparator() +

@@ -215,6 +215,11 @@ public class VCalendar extends VParentBase
         setVersion(version);
         return this;
     }
+    public VCalendar withVersion()
+    {
+        setVersion(new Version());
+        return this;
+    }
 
     /**
      * Provides a framework for defining non-standard properties.
@@ -1043,7 +1048,7 @@ public class VCalendar extends VParentBase
                 FIRST_CONTENT_LINE,
                 LAST_CONTENT_LINE,
                 1000));
-        setVersion(new Version());
+//        setVersion(new Version());
     }
   
     /** Copy constructor */

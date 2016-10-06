@@ -15,9 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
 
 public class ReadICSFileTest
@@ -44,9 +42,9 @@ public class ReadICSFileTest
     @Test
     public void canReadICSFile2() throws IOException
     {
-        VCalendar myCalendar = new VCalendar();
-        ICalendarAgenda myAgenda = new ICalendarAgenda(myCalendar);
-        myAgenda.setOrganizer(Organizer.parse("mailto:david@balsoftware.net"));
+//        VCalendar myCalendar = new VCalendar();
+//        ICalendarAgenda myAgenda = new ICalendarAgenda(myCalendar);
+//        myAgenda.setOrganizer(Organizer.parse("mailto:david@balsoftware.net"));
         String fileName = "mathBirthdays.ics";       
         URL url = getClass().getResource(fileName);
         Path icsFilePath = Paths.get(url.getFile());

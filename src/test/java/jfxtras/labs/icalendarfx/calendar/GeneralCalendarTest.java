@@ -18,8 +18,8 @@ public class GeneralCalendarTest extends ICalendarTestAbstract
     {
         String expectedContent = 
                 "BEGIN:VCALENDAR" + System.lineSeparator() +
-                "PRODID:-//JFxtras//iCalendarFx-1.0//EN" + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "PRODID:-//JFxtras//iCalendarFx-1.0//EN" + System.lineSeparator() +
                 "CALSCALE:" + CalendarScale.DEFAULT_CALENDAR_SCALE + System.lineSeparator() +
                 
                 "BEGIN:VTODO" + System.lineSeparator() +
@@ -114,8 +114,8 @@ public class GeneralCalendarTest extends ICalendarTestAbstract
         VCalendar vCalendar = VCalendar.parse(expectedContent);
         
         VCalendar c = new VCalendar()
-                .withProductIdentifier(new ProductIdentifier("-//JFxtras//iCalendarFx-1.0//EN"))
                 .withVersion(new Version())
+                .withProductIdentifier(new ProductIdentifier("-//JFxtras//iCalendarFx-1.0//EN"))
                 .withCalendarScale(new CalendarScale())
                 .withVTodos(new VTodo()
                         .withDateTimeCompleted("COMPLETED:19960401T150000Z")

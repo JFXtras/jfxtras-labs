@@ -220,5 +220,8 @@ public class PopupBindingsTest extends VEventPopupTestBase
         assertEquals(FrequencyType.YEARLY, f.getValue());
         assertEquals(0, rrule.byRules().size());
         }
+        
+        click("#cancelRepeatButton");
+//        closeCurrentWindow();
     }
 }

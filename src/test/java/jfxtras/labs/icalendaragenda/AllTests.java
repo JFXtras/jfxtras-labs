@@ -44,12 +44,12 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     DeleteOneTest.class,
     
     // popup tests
-    VEventMakeiTIPTest.class,
-    VJournalMakeiTIPTest.class,
-    VTodoMakeiTIPTest.class,
     PopupBindingsTest.class,
     PopupRecurrenceDescriptionTest.class,
     RecurrenceExceptionsTests.class,
+    VEventMakeiTIPTest.class,
+    VJournalMakeiTIPTest.class,
+    VTodoMakeiTIPTest.class,
     
     // agenda tests
     DeleteVEventTest.class,
