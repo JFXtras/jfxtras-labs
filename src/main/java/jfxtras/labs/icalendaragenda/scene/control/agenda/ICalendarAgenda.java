@@ -454,7 +454,7 @@ public class ICalendarAgenda extends Agenda
         {
             VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
             Object[] params = revisorParamGenerator(vComponent, appointment);
-            VCalendar iTIPMessage = SimpleRevisorFactory.newReviser(vComponent, params).revise().get(0);
+            List<VCalendar> iTIPMessage = SimpleRevisorFactory.newReviser(vComponent, params).revise();
 //            System.out.println("iTIPMessage:" + iTIPMessage);
             getVCalendar().processITIPMessage(iTIPMessage);
             appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
@@ -748,15 +748,15 @@ public class ICalendarAgenda extends Agenda
             return null;
         } else
         {
-//            VComponent edited = null;
+//            VComponent vComponentCopy = null;
 //            try
 //            {
-//                edited = vComponent.getClass().newInstance();
+//                vComponentCopy = vComponent.getClass().newInstance();
 //            } catch (InstantiationException | IllegalAccessException e)
 //            {
 //                e.printStackTrace();
 //            }
-//            edited.copyChildrenFrom(vComponent);
+//            vComponentCopy.copyChildrenFrom(vComponent);
             Temporal startOriginalRecurrence = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
             final Temporal startRecurrence;
             final Temporal endRecurrence;
@@ -788,7 +788,7 @@ public class ICalendarAgenda extends Agenda
                     startRecurrence,
 //                    getVCalendar().getVComponents(vComponent),
                     vComponent, // edited
-                    vComponent  // original
+                    vComponent  // original // TODO - THIS IS PROBABLY CAUSING THIS-AND-FUTURE DRAG-N-DROP TO FAIL - FIXTHIS
                  // Note: edited and original are the same here - can't edit descriptive properties with drag-n-drop
                     };
         }

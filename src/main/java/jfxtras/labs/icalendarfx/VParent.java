@@ -23,4 +23,9 @@ public interface VParent extends VElement
      * Copy {@link VChild} elements from source into this {@link VParent}
      */
     void copyChildrenFrom(VParent source);
+    
+//    /**
+//     * Copy {@link VChild} elements from this into destination {@link VParent}
+//     */
+//    void copyInto(VParent destination);
 }

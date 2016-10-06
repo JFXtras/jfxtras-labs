@@ -341,7 +341,6 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     vComponentOriginalCopy.incrementSequence();
                     incrementSequence = false;
                     itipMessages.add(publishMessage);
-                    
                     // Note: Child recurrences become orphans and get deleted when the iTIP message is processed
                     break;
                 }
