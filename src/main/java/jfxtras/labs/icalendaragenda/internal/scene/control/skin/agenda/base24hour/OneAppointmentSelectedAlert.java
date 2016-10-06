@@ -31,7 +31,9 @@ public class OneAppointmentSelectedAlert extends Alert
         ButtonType editButtonType = new ButtonType(resources.getString("edit"));
         ButtonType deleteButtonType = new ButtonType(resources.getString("delete"));
         getButtonTypes().setAll(editButtonType, deleteButtonType, ButtonType.CANCEL);
-        getDialogPane().lookupButton(ButtonType.CANCEL).setId("oneSelectedCancelButton");
+//        getDialogPane().lookupButton(editButtonType).setId("oneSelectedEditButton");
+//        getDialogPane().lookupButton(deleteButtonType).setId("oneSelectedDeleteButton");
+//        getDialogPane().lookupButton(ButtonType.CANCEL).setId("oneSelectedCancelButton");
         
         // set id
         getDialogPane().setId("newAppointmentDialog");

@@ -663,7 +663,18 @@ public class VCalendar extends VParentBase
      */
     public void processITIPMessage(VCalendar... iTIPMessages)
     {
-        Arrays.asList(iTIPMessages).forEach(message ->
+        processITIPMessage(Arrays.asList(iTIPMessages));
+    }
+    
+    /**
+     * Process the exchange of iCalendar object according to the iTIP methods identifies in RFC 5546
+     * based on the methods in {@link #getITIPFactory()}
+     * 
+     * @param iTIPMessages  iTIP VCalendars to process with {@link Method} populated
+     */
+    public void processITIPMessage(Collection<VCalendar> iTIPMessages)
+    {
+        iTIPMessages.forEach(message ->
         {
             if (message.getMethod() == null)
             {

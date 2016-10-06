@@ -359,7 +359,9 @@ public class ICalendarAgenda extends Agenda
                             appointment.getStartTemporal(),
                             getVCalendar().getVComponents(vComponent)
                     };
-                    SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+                    List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+                    getVCalendar().processITIPMessage(cancelMessage);
+                    refresh();
                 }
             }
         });
