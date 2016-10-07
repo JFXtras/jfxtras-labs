@@ -14,7 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -204,6 +203,8 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     {
         if (newValue)
         {
+//            rrule.setUntil((Until) null);
+//            rrule.setCount((Count) null);
             refreshSummary();
             refreshExceptionDates();
         }
@@ -344,14 +345,16 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
 
     private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
     {
-        if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart().getValue())))
+        LocalDate dtstartZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue()));
+        if (newSelection.isBefore(dtstartZDate))
         {
             tooEarlyDateAlert(vComponent.getDateTimeStart().getValue());
             untilDatePicker.setValue(oldSelection);
         } else
         {
             Temporal until = findUntil(newSelection);
-            if (LocalDate.from(until).equals(newSelection))
+            LocalDate newSelectionZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue().with(newSelection)));
+            if (LocalDate.from(until).equals(newSelectionZDate))
             {
                 rrule.setUntil(until);
                 refreshSummary();
@@ -384,7 +387,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             refreshExceptionDates();
         } else
         {
-            rrule.setUntil((Until) null);
+            untilDatePicker.setValue(null);
             untilDatePicker.setDisable(true);
         }
     };
@@ -472,10 +475,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
 
     // INITIALIZATION - runs when FXML is initialized
     @FXML public void initialize()
-    {
-//        System.out.println("null RRule:" );
-//        rrule = null;
-        
+    {        
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -502,11 +502,9 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                 startDatePicker.setDisable(false);
             } else
             {
-                System.out.println("save oldRRule");
                 oldRRule = rrule;
                 rrule = null;
                 vComponent.setRecurrenceRule(rrule);
-                System.out.println("new rrule:" + vComponent.getRecurrenceRule() + " " + System.identityHashCode(vComponent));
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -636,7 +634,6 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             } else
             {
                 rrule.setCount(null);
-                System.out.println("newcount:" + rrule.getCount());
                 endAfterEventsSpinner.setValueFactory(null);
                 endAfterEventsSpinner.setDisable(true);
                 eventLabel.setDisable(true);
@@ -754,7 +751,6 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             T vComponent
           , ObjectProperty<Temporal> dateTimeStartRecurrenceNew)
     {
-        System.out.println("vComponent:" + System.identityHashCode(vComponent));
         rrule = (vComponent.getRecurrenceRule() != null) ? vComponent.getRecurrenceRule().getValue() : null;
         this.vComponent = vComponent;
         this.dateTimeStartRecurrenceNew = dateTimeStartRecurrenceNew;
@@ -794,12 +790,13 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                     untilNew = LocalDate.from(untilOld).atTime(localTime).atZone(ZoneId.of("Z"));
                 } else if (newValue instanceof LocalDateTime)
                 {
-                    untilNew = ((LocalDateTime) newValue.with((TemporalAdjuster) untilOld)).atZone(ZoneId.of("Z"));
+                    LocalTime localTime = LocalTime.from(newValue);
+                    untilNew = LocalDate.from(untilOld).atTime(localTime).atZone(ZoneId.of("Z"));
+//                    untilNew = ((LocalDateTime) newValue.with((TemporalAdjuster) untilOld)).atZone(ZoneId.of("Z"));
                 } else
                 {
                     untilNew = LocalDate.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
                 }
-                System.out.println("newUntil:" + untilNew);
                 vComponent.getRecurrenceRule().getValue().setUntil(untilNew);
             }
             
@@ -936,9 +933,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         {
             setInitialValues(vComponent);
         }
-        System.out.println("isRepeatable:" + isRepeatable);
         repeatableCheckBox.selectedProperty().set(isRepeatable);
-        System.out.println("isSelected:" + repeatableCheckBox.isSelected());
         
         // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
         dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);

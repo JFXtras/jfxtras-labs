@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -22,15 +21,14 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
 public class VEventMakeiTIPTest extends VEventPopupTestBase
@@ -367,22 +365,15 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     @Test
     public void canChangeToWholeDayAll()
     {
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1()
                 .withLocation("Here");
-        myCalendar.getVEvents().add(vevent);
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2016, 5, 15, 10, 0), // start selected instance
+                    LocalDateTime.of(2016, 5, 15, 11, 0), // end selected instance
                     AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
@@ -414,6 +405,113 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
                 "RRULE:FREQ=DAILY" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "LOCATION:Here" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        String iTIPMessage = getEditComponentPopup().iTIPMessagesProperty().get().stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        assertEquals(expectediTIPMessage, iTIPMessage);
+    }
+    
+    @Test // testing event that has LocalDate start on a different date that the zoned "Z" date challenges the popup UNTIL checker
+    public void canChangeUntilToForever()
+    {
+        Until until = new Until(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 23, 30), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
+        VEvent vevent = new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 23, 30))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 8, 0, 30))
+                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
+                .withSummary("Example Daily Event")
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.DAILY)
+                        .withUntil(until))
+                .withOrganizer("mailto:david@balsoftware.net")
+                .withUniqueIdentifier("exampleuid000jfxtras.org");
+
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            getEditComponentPopup().setupData(
+                    vevent,
+                    LocalDateTime.of(2015, 11, 10, 23, 30), // start selected instance
+                    LocalDateTime.of(2015, 11, 11, 0, 30), // end selected instance
+                    AgendaTestAbstract.CATEGORIES);
+        });
+        // make changes
+        click("#recurrenceRuleTab");
+        click("#endNeverRadioButton");
+        
+        // save changes
+        click("#saveRepeatButton");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151107T233000" + System.lineSeparator() +
+                "DTEND:20151108T003000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        String iTIPMessage = getEditComponentPopup().iTIPMessagesProperty().get().stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(iTIPMessage);
+        assertEquals(expectediTIPMessage, iTIPMessage);
+    }
+    
+    @Test
+    public void canChangeCountToForever()
+    {
+        VEvent vevent = ICalendarStaticComponents.getDaily1()
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.DAILY)
+                        .withCount(10));
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            getEditComponentPopup().setupData(
+                    vevent,
+                    LocalDateTime.of(2015, 11, 10, 10, 0), // start selected instance
+                    LocalDateTime.of(2015, 11, 10, 11, 0), // end selected instance
+                    AgendaTestAbstract.CATEGORIES);
+        });
+        // make changes
+        click("#recurrenceRuleTab");
+        click("#endNeverRadioButton");
+        
+        // save changes
+        click("#saveRepeatButton");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group05" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T110000" + System.lineSeparator() +
+                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
+                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";

@@ -177,4 +177,14 @@ public class RecurrenceRuleTest
                             new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
         assertEquals(1, madeProperty.errors().size());
     }
+    
+    @Test
+    public void canRemoveParameter()
+    {
+        String content = "FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=2";
+        RecurrenceRule property1 = RecurrenceRule.parse(content);
+        property1.getValue().setUntil((Until) null);
+        RecurrenceRule expectedProperty = RecurrenceRule.parse("FREQ=DAILY;INTERVAL=2");
+        assertEquals(expectedProperty, property1);
+    }
 }

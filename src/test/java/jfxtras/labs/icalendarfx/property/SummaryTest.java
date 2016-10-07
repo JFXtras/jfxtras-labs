@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 public class SummaryTest
@@ -42,5 +43,15 @@ public class SummaryTest
         assertEquals(property2, property1);
         assertFalse(property2 == property1);
         assertEquals(content, property2.toContent());
+    }
+    
+    @Test
+    public void canRemoveParameter()
+    {
+        String content = "SUMMARY;LANGUAGE=en:Department Party";
+        Summary property1 = Summary.parse(content);
+        property1.setLanguage((Language) null);
+        Summary expectedProperty = Summary.parse("SUMMARY:Department Party");
+        assertEquals(expectedProperty, property1);
     }
 }

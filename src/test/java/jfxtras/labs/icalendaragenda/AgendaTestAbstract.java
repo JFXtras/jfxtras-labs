@@ -44,7 +44,8 @@ public abstract class AgendaTestAbstract extends JFXtrasGuiTest
         agenda = new ICalendarAgenda(calendar);
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
 //        agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
-        agenda.setPrefSize(1000, 800);
+//        agenda.setPrefSize(1000, 800);
+        agenda.setPrefSize(600, 400);
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
 //        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
