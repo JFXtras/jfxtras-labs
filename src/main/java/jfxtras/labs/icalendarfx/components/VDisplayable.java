@@ -171,58 +171,27 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     private ObjectProperty<Classification> classification;
     public void setClassification(String classification)
     {
-        if (getClassification() == null)
-        {
-            setClassification(Classification.parse(classification));
-        } else
-        {
-            Classification temp = Classification.parse(classification);
-            getClassification().setValue(temp.getValue());
-        }
+        setClassification(Classification.parse(classification));
     }
     public void setClassification(Classification classification) { classificationProperty().set(classification); }
     public void setClassification(ClassificationType classification)
     {
-        if (getClassification() == null)
-        {
-            setClassification(new Classification(classification));            
-        } else
-        {
-            getClassification().setValue(classification);
-        }
+        setClassification(new Classification(classification));            
     }
     public T withClassification(Classification classification)
     {
-        if (getClassification() == null)
-        {
-            setClassification(classification);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setClassification(classification);
+        return (T) this;
     }
     public T withClassification(ClassificationType classification)
     {
-        if (getClassification() == null)
-        {
-            setClassification(classification);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setClassification(classification);
+        return (T) this;
     }
     public T withClassification(String classification)
     {
-        if (getClassification() == null)
-        {
-            setClassification(classification);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setClassification(classification);
+        return (T) this;
     }
     
     /**
@@ -301,49 +270,28 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
             setDateTimeCreated(temp);
         }
     }
-    public void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
+    public void setDateTimeCreated(DateTimeCreated dtCreated)
+    {
+        dateTimeCreatedProperty().set(dtCreated);
+    }
     public void setDateTimeCreated(ZonedDateTime dtCreated)
     {
-        if (getDateTimeCreated() == null)
-        {
-            setDateTimeCreated(new DateTimeCreated(dtCreated));
-        } else
-        {
-            getDateTimeCreated().setValue(dtCreated);
-        }
+        setDateTimeCreated(new DateTimeCreated(dtCreated));
     }
     public T withDateTimeCreated(ZonedDateTime dtCreated)
     {
-        if (getDateTimeCreated() == null)
-        {
-            setDateTimeCreated(dtCreated);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeCreated(dtCreated);
+        return (T) this;
     }
     public T withDateTimeCreated(String dtCreated)
     {
-        if (getDateTimeCreated() == null)
-        {
-            setDateTimeCreated(dtCreated);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeCreated(dtCreated);
+        return (T) this;
     }
     public T withDateTimeCreated(DateTimeCreated dtCreated)
     {
-        if (getDateTimeCreated() == null)
-        {
-            setDateTimeCreated(dtCreated);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeCreated(dtCreated);
+        return (T) this;
     }
     
    /** 
@@ -353,26 +301,33 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     * 
     * This property defines the list of DATE-TIME exceptions for
     * recurring events, to-dos, journal entries, or time zone definitions.
-    */ 
+    */
+    public ObjectProperty<ObservableList<ExceptionDates>> exceptionDatesProperty()
+    {
+        if (exceptionDates == null)
+        {
+            exceptionDates = new SimpleObjectProperty<>(this, PropertyType.EXCEPTION_DATE_TIMES.toString());
+        }
+        return exceptionDates;
+    }
     public ObservableList<ExceptionDates> getExceptionDates()
     {
-        return exceptions;
+        return (exceptionDates == null) ? null : exceptionDates.get();
     }
-    private ObservableList<ExceptionDates> exceptions;
+    private ObjectProperty<ObservableList<ExceptionDates>> exceptionDates;
     public void setExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
         if (exceptions != null)
         {
             orderer().registerSortOrderProperty(exceptions);
             exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-//            String error = VComponentRepeatable.checkRecurrencesConsistency(exceptions);
             String error = checkRecurrencesConsistency(exceptions);
             if (error != null) throw new DateTimeException(error);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.exceptions);
+            orderer().unregisterSortOrderProperty(exceptionDatesProperty().get());
         }
-        this.exceptions = exceptions;
+        exceptionDatesProperty().set(exceptions);
     }
     public T withExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
@@ -451,9 +406,20 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
      * 
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
+    public ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDatesProperty()
+    {
+        if (recurrenceDates == null)
+        {
+            recurrenceDates = new SimpleObjectProperty<>(this, PropertyType.RECURRENCE_DATE_TIMES.toString());
+        }
+        return recurrenceDates;
+    }
     @Override
-    public ObservableList<RecurrenceDates> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<RecurrenceDates> recurrenceDates;
+    public ObservableList<RecurrenceDates> getRecurrenceDates()
+    {
+        return (recurrenceDates == null) ? null : recurrenceDates.get();
+    }
+    private ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDates;
     @Override
     public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
@@ -461,14 +427,13 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         {
             orderer().registerSortOrderProperty(recurrenceDates);
             recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-            String error = checkRecurrencesConsistency(exceptions);
-//            String error = VComponentRepeatable.checkRecurrencesConsistency(recurrenceDates);
+            String error = checkRecurrencesConsistency(recurrenceDates);
             if (error != null) throw new DateTimeException(error);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.recurrenceDates);
+            orderer().unregisterSortOrderProperty(recurrenceDatesProperty().get());
         }
-        this.recurrenceDates = recurrenceDates;
+        recurrenceDatesProperty().set(recurrenceDates);
     }
 
     /**

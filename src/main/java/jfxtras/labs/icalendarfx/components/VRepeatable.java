@@ -56,6 +56,7 @@ public interface VRepeatable<T> extends VComponent
      * RDATE;VALUE=DATE:19970101,19970120,19970217,19970421
      *  19970526,19970704,19970901,19971014,19971128,19971129,1997122
      */
+    ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDatesProperty();
     ObservableList<RecurrenceDates> getRecurrenceDates();
     void setRecurrenceDates(ObservableList<RecurrenceDates> recurrences);
     default T withRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)

@@ -36,45 +36,21 @@ public interface VLastModified<T> extends VComponent
     default void setDateTimeLastModified(LastModified lastModified) { dateTimeLastModifiedProperty().set(lastModified); }
     default void setDateTimeLastModified(ZonedDateTime lastModified)
     {
-        if (getDateTimeLastModified() == null)
-        {
-            setDateTimeLastModified(new LastModified(lastModified));
-        } else
-        {
-            getDateTimeLastModified().setValue(lastModified);
-        }
+        setDateTimeLastModified(new LastModified(lastModified));
     }
     default T withDateTimeLastModified(ZonedDateTime lastModified)
     {
-        if (getDateTimeLastModified() == null)
-        {
-            setDateTimeLastModified(lastModified);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeLastModified(lastModified);
+        return (T) this;
     }
     default T withDateTimeLastModified(String lastModified)
     {
-        if (getDateTimeLastModified() == null)
-        {
-            setDateTimeLastModified(lastModified);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeLastModified(lastModified);
+        return (T) this;
     }
     default T withDateTimeLastModified(LastModified lastModified)
     {
-        if (getDateTimeLastModified() == null)
-        {
-            setDateTimeLastModified(lastModified);
-            return (T) this;
-        } else
-        {
-            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-        }
+        setDateTimeLastModified(lastModified);
+        return (T) this;
     }
 }

@@ -153,24 +153,13 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     public void setCount(int count) { setCount(new Count(count)); }
     public RecurrenceRule2 withCount(Count count)
     {
-        if (getCount() == null)
-        {
-            setCount(count);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
-    }    public RecurrenceRule2 withCount(int count)
+        setCount(count);
+        return this;
+    }
+    public RecurrenceRule2 withCount(int count)
     {
-        if (getCount() == null)
-        {
-            setCount(count);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setCount(count);
+        return this;
     }
     
     /** 
@@ -193,43 +182,25 @@ public class RecurrenceRule2 extends VParentBase implements VChild
      * interval of a year or more.
      */
     public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
-    final private ObjectProperty<Frequency> frequency; // = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
+    final private ObjectProperty<Frequency> frequency; // initialized in constructor
     public Frequency getFrequency() { return frequency.get(); }
-    public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
+    public void setFrequency(Frequency frequency) { frequencyProperty().set(frequency); }
     public void setFrequency(String frequency) { setFrequency(Frequency.parse(frequency)); }
     public void setFrequency(FrequencyType frequency) { setFrequency(new Frequency(frequency)); }
     public RecurrenceRule2 withFrequency(Frequency frequency)
     {
-        if (getFrequency() == null)
-        {
-            setFrequency(frequency);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setFrequency(frequency);
+        return this;
     }
     public RecurrenceRule2 withFrequency(String frequency)
     {
-        if (getFrequency() == null)
-        {
-            setFrequency(frequency);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setFrequency(frequency);
+        return this;
     }
     public RecurrenceRule2 withFrequency(FrequencyType frequency)
     {
-        if (getFrequency() == null)
-        {
-            setFrequency(frequency);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setFrequency(frequency);
+        return this;
     }
     
     /**
@@ -259,25 +230,13 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     public void setInterval(Integer interval) { setInterval(new Interval(interval)); }
     public RecurrenceRule2 withInterval(int interval)
     {
-        if (getInterval() == null)
-        {
-            setInterval(interval);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setInterval(interval);
+        return this;
     }
     public RecurrenceRule2 withInterval(Interval interval)
     {
-        if (getInterval() == null)
-        {
-            setInterval(interval);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setInterval(interval);
+        return this;
     }
     
     /**

@@ -36,23 +36,34 @@ public abstract class VRepeatableBase<T> extends VPrimary<T> implements VRepeata
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<RecurrenceDates> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<RecurrenceDates> recurrenceDates;
+    public ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDatesProperty()
+    {
+        if (recurrenceDates == null)
+        {
+            recurrenceDates = new SimpleObjectProperty<>(this, PropertyType.RECURRENCE_DATE_TIMES.toString());
+        }
+        return recurrenceDates;
+    }
+    @Override
+    public ObservableList<RecurrenceDates> getRecurrenceDates()
+    {
+        return (recurrenceDates == null) ? null : recurrenceDates.get();
+    }
+    private ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDates;
     @Override
     public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
-        this.recurrenceDates = recurrenceDates;
         if (recurrenceDates != null)
         {
             orderer().registerSortOrderProperty(recurrenceDates);
+            recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+            String error = checkRecurrencesConsistency(recurrenceDates);
+            if (error != null) throw new DateTimeException(error);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.recurrenceDates);
+            orderer().unregisterSortOrderProperty(recurrenceDatesProperty().get());
         }
-        recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-        String error = checkRecurrencesConsistency(recurrenceDates);
-//        String error = VComponentRepeatable.checkRecurrencesConsistency(recurrenceDates);
-        if (error != null) throw new DateTimeException(error);
+        recurrenceDatesProperty().set(recurrenceDates);
     }
 
     /**

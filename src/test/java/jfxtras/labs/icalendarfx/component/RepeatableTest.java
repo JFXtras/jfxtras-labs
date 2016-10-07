@@ -199,7 +199,7 @@ public class RepeatableTest //extends Application
         assertTrue(hasError);
     }
 
-    @Test
+    @Test (expected = DateTimeException.class)
     public void canCatchWrongDateType()
     {
         VEvent component = new VEvent()
