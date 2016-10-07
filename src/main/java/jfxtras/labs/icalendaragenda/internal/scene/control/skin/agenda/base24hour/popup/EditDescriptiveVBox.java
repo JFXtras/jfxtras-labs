@@ -81,7 +81,7 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
     @FXML TextArea descriptionTextArea;
     @FXML Label locationLabel;
     @FXML TextField locationTextField;
-    @FXML private TextField categoryTextField;
+    @FXML TextField categoryTextField;
     @FXML private CategorySelectionGridPane categorySelectionGridPane;
     @FXML private Button saveComponentButton;
     @FXML private Button cancelComponentButton;

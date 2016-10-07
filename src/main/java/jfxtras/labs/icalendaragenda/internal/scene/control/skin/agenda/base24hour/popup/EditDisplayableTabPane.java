@@ -103,6 +103,11 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         {
             vComponent.setSummary((Summary) null); 
         }
+        
+        if (editDescriptiveVBox.categoryTextField.getText().isEmpty())
+        {
+            vComponent.setCategories(null); 
+        }
 
        // nullify Interval if value equals default (avoid unnecessary content output)
         if ((vComponent.getRecurrenceRule() != null) && (recurrenceRuleVBox.intervalSpinner.getValue() == Interval.DEFAULT_INTERVAL))

@@ -345,24 +345,27 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
 
     private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
     {
-        LocalDate dtstartZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue()));
-        if (newSelection.isBefore(dtstartZDate))
+        if (newSelection != null)
         {
-            tooEarlyDateAlert(vComponent.getDateTimeStart().getValue());
-            untilDatePicker.setValue(oldSelection);
-        } else
-        {
-            Temporal until = findUntil(newSelection);
-            LocalDate newSelectionZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue().with(newSelection)));
-            if (LocalDate.from(until).equals(newSelectionZDate))
+            LocalDate dtstartZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue()));
+            if (newSelection.isBefore(dtstartZDate))
             {
-                rrule.setUntil(until);
-                refreshSummary();
-                refreshExceptionDates();
+                tooEarlyDateAlert(vComponent.getDateTimeStart().getValue());
+                untilDatePicker.setValue(oldSelection);
             } else
             {
-                notOccurrenceDateAlert(newSelection);
-                untilDatePicker.setValue(oldSelection);               
+                Temporal until = findUntil(newSelection);
+                LocalDate newSelectionZDate = LocalDate.from(DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getDateTimeStart().getValue().with(newSelection)));
+                if (LocalDate.from(until).equals(newSelectionZDate))
+                {
+                    rrule.setUntil(until);
+                    refreshSummary();
+                    refreshExceptionDates();
+                } else
+                {
+                    notOccurrenceDateAlert(newSelection);
+                    untilDatePicker.setValue(oldSelection);               
+                }
             }
         }
     };
@@ -378,7 +381,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                 LocalDate defaultEndOnDateTime = (isRecurrenceFarEnoughInFuture)
                         ? LocalDate.from(dateTimeStartRecurrenceNew.get())
                         : LocalDate.from(vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
-                Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
+                Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual recurrence
                 rrule.setUntil(until);
             }
             untilDatePicker.setValue(LocalDate.from(rrule.getUntil().getValue()));
@@ -388,6 +391,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         } else
         {
             untilDatePicker.setValue(null);
+            rrule.setUntil((Until) null);
             untilDatePicker.setDisable(true);
         }
     };
@@ -797,7 +801,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
                 {
                     untilNew = LocalDate.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
                 }
-                vComponent.getRecurrenceRule().getValue().setUntil(untilNew);
+                rrule.setUntil(untilNew);
             }
             
             exceptionMasterList.clear();

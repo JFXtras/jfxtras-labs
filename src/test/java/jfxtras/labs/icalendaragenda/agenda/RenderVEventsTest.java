@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import javafx.scene.Parent;
-import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;

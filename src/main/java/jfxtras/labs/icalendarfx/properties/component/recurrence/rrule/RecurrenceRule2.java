@@ -318,47 +318,33 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     public void setUntil(Until until) { untilProperty().set(until); }
     public void setUntil(Temporal until)
     {
-        if (getUntil() == null)
-        {
-            setUntil(new Until(until));
-        } else
-        {
-            getUntil().setValue(until);
-        }
+        setUntil(new Until(until));
+        //  TODO - all properties need to make new object here or ORDERER listener won't fire
+        //  I NEED TO REPLACE THE SET-VALUE METHOD FOR ALL PROPERTIES
+//        System.out.println("old until:" + getUntil());
+//        if (getUntil() == null)
+//        {
+//            setUntil(new Until(until));
+//        } else
+//        {
+//            getUntil().setValue(until);
+//        }
     }
     public void setUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); }
     public RecurrenceRule2 withUntil(Temporal until)
     {
-        if (getUntil() == null)
-        {
-            setUntil(until);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setUntil(until);
+        return this;
     }
     public RecurrenceRule2 withUntil(String until)
     {
-        if (getUntil() == null)
-        {
-            setUntil(until);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setUntil(until);
+        return this;
     }
     public RecurrenceRule2 withUntil(Until until)
     {
-        if (getUntil() == null)
-        {
-            setUntil(until);
-            return this;
-        } else
-        {
-            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
-        }
+        setUntil(until);
+        return this;
     }
     
     /**

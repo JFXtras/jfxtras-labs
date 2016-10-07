@@ -16,8 +16,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
@@ -421,7 +421,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
         VEvent vevent = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 23, 30))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 8, 0, 30))
-                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
+                .withDateTimeStamp("20150110T080000Z")
                 .withSummary("Example Daily Event")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY)
@@ -453,22 +453,19 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
                 "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
                 "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
                 "BEGIN:VEVENT" + System.lineSeparator() +
-                "CATEGORIES:group05" + System.lineSeparator() +
                 "DTSTART:20151107T233000" + System.lineSeparator() +
                 "DTEND:20151108T003000" + System.lineSeparator() +
-                "DESCRIPTION:Daily1 Description" + System.lineSeparator() +
-                "SUMMARY:Daily1 Summary" + System.lineSeparator() +
                 "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
-                "RRULE:FREQ=DAILY;" + System.lineSeparator() +
-                "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SUMMARY:Example Daily Event" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY" + System.lineSeparator() +
+                "ORGANIZER:mailto:david@balsoftware.net" + System.lineSeparator() +
+                "UID:exampleuid000jfxtras.org" + System.lineSeparator() +
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR";
         String iTIPMessage = getEditComponentPopup().iTIPMessagesProperty().get().stream()
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
-        System.out.println(iTIPMessage);
         assertEquals(expectediTIPMessage, iTIPMessage);
     }
     

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,6 +184,21 @@ public class RecurrenceRuleTest
     {
         String content = "FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=2";
         RecurrenceRule property1 = RecurrenceRule.parse(content);
+        property1.getValue().setUntil((Until) null);
+        RecurrenceRule expectedProperty = RecurrenceRule.parse("FREQ=DAILY;INTERVAL=2");
+        assertEquals(expectedProperty, property1);
+    }
+    
+    @Test
+    public void canRemoveParameter2()
+    {
+        Until until = new Until(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 23, 30), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
+        RecurrenceRule property1 = new RecurrenceRule(new RecurrenceRule2()
+            .withFrequency(FrequencyType.DAILY)
+            .withUntil(until)
+            .withInterval(2));
+        Temporal until2 = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 23, 30), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        property1.getValue().setUntil(until2); // use Temporal setter to test ability to remove reset property
         property1.getValue().setUntil((Until) null);
         RecurrenceRule expectedProperty = RecurrenceRule.parse("FREQ=DAILY;INTERVAL=2");
         assertEquals(expectedProperty, property1);

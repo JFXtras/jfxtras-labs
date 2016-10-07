@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.trial;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.geometry.Orientation;
@@ -10,14 +11,15 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.test.TestUtil;
 
 public class DemoTest extends AgendaTestAbstract
 {
     @Test
+    @Ignore
     public void canMakeGraphicalDemo() // Can't figure out how to easily make video so not useful
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments

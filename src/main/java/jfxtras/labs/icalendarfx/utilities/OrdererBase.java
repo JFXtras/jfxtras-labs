@@ -75,7 +75,7 @@ public class OrdererBase implements Orderer
             {
                 sortOrder = elementSortOrderMap.get(oldValue);
                 elementSortOrderMap.remove(oldValue);
-                System.out.println("remove from map:" + oldValue + " " + elementSortOrderMap.size());
+//                System.out.println("remove from map:" + oldValue.toContent() + " " + elementSortOrderMap.size() + " " + System.identityHashCode(parent));
             } else
             {
                 sortOrder = sortOrderCounter;
@@ -83,8 +83,8 @@ public class OrdererBase implements Orderer
             }
             if (newValue != null)
             {
-//                System.out.println("add to map:" + newValue+ elementSortOrderMap.size());
                 elementSortOrderMap.put(newValue, sortOrder);
+//                System.out.println("add to map:" + newValue.toContent() + " " + elementSortOrderMap.size()+ " " + System.identityHashCode(parent));
                 newValue.setParent(parent);                
             }
         };

@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditDisplayableScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.SimpleEditSceneFactory;
