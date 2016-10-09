@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.itip;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -138,8 +140,9 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
 public class ProcessRequest extends ProcessPublish
 {
     @Override
-    public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
+    public List<String> process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
+        List<String> log = new ArrayList<>();
         // Check UID from iTIPMessage is already present
         Iterator<VComponent> componentIterator = iTIPMessage.getAllVComponents().iterator();
         while (componentIterator.hasNext())
@@ -159,6 +162,7 @@ public class ProcessRequest extends ProcessPublish
                 throw new IllegalArgumentException("Can't process REQUEST, VComponent UID is not present in main VCalendar");
             }
         }
-        super.process(mainVCalendar, iTIPMessage);
+        log.addAll(super.process(mainVCalendar, iTIPMessage));
+        return log;
     }
 }

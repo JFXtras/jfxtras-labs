@@ -106,7 +106,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     }
 
     @Override
-    public Map<VElement, List<String>> parseContent(UnfoldingStringIterator unfoldedLineIterator, boolean useRequestStatus)
+    public Map<VElement, List<String>> parseContent(UnfoldingStringIterator unfoldedLineIterator, boolean collectErrorMessages)
     {
         if (unfoldedLineIterator == null)
         {
@@ -135,7 +135,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
                 {
                     String subcomponentName = unfoldedLine.substring(nameEndIndex+1);
                     VComponent subcomponent = SimpleVComponentFactory.emptyVComponent(subcomponentName);
-                    Map<VElement, List<String>> subMessages = subcomponent.parseContent(unfoldedLineIterator, useRequestStatus);
+                    Map<VElement, List<String>> subMessages = subcomponent.parseContent(unfoldedLineIterator, collectErrorMessages);
                     messageMap.putAll(subMessages);
                     addSubcomponent(subcomponent);
                 }
@@ -143,6 +143,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             {
                 break; // exit when end found
             } else
+                // TODO - GENERATE RFC 5546 REQUEST STATUS MESSAGES
             {  // parse properties - ignore unknown properties
                 PropertyType propertyType = PropertyType.enumFromName(propertyName);
                 if (propertyType != null)

@@ -1,12 +1,14 @@
 package jfxtras.labs.icalendarfx.itip;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -99,17 +101,19 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 public class ProcessPublish implements Processable
 {
     @Override
-    public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
+    public List<String> process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
+        List<String> log = new ArrayList<>();
         iTIPMessage.getAllVComponents().forEach(c ->
         {
             if (c instanceof VDisplayable)
             {
                 VDisplayable<?> vDisplayable = ((VDisplayable<?>) c);
                 final boolean hasOrganizer = vDisplayable.getOrganizer() != null;
-                if (! hasOrganizer) throw new IllegalArgumentException("Can't process PUBLISH method: ORGANIZER MUST be present, and it's absent");
+                // TODO - LOG DEFECTS - DON'T THROW EXCEPTIONS
+                if (! hasOrganizer) log.add("WARNING: According to RFC 5546, a PUBLISH method MUST contain the ORGANIZER property and it's absent. " + c.getClass().getSimpleName() + " with UID:" + vDisplayable.getUniqueIdentifier().getValue() + " is being processed anyway.");
                 final boolean hasNoAttendees = vDisplayable.getAttendees() == null;
-                if (! hasNoAttendees) throw new IllegalArgumentException("Can't process PUBLISH method: ATTENDEE property MUST NOT be present, and it's exists");
+                if (! hasNoAttendees) log.add("WARNING: According to RFC 5546, a PUBLISH MUST NOT contain the ATTENDEE property yet it's exists. " + c.getClass().getSimpleName() + " with UID:" + vDisplayable.getUniqueIdentifier().getValue() + " is being processed anyway.");
                 final int newSequence = (vDisplayable.getSequence() == null) ? 0 : vDisplayable.getSequence().getValue();
                 boolean isNewSequenceHigher = true;
                 
@@ -147,6 +151,7 @@ public class ProcessPublish implements Processable
                 }
                 
                 mainVCalendar.addVComponent(c);
+                log.add("SUCCESS: added " + c.getClass().getSimpleName() + " with UID:" + vDisplayable.getUniqueIdentifier().getValue());
                 
                 // Remove orphaned recurrence children
                 List<VDisplayable<?>> orphanedChildren = vDisplayable.orphanedRecurrenceChildren();
@@ -154,12 +159,15 @@ public class ProcessPublish implements Processable
                 {
                     mainVCalendar.getVComponents(vDisplayable.getClass()).removeAll(orphanedChildren);
                 }
+            } else if (c instanceof VTimeZone)
+            {
+                mainVCalendar.getVTimeZones().add((VTimeZone) c);
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
-                // TODO
-                throw new RuntimeException("not implemented");
+                log.add("Can't process non-displayble component method (not implemented):" + System.lineSeparator() + c.toContent());
             }
         });
+        return log;
     }
 
 }

@@ -665,10 +665,11 @@ public class VCalendar extends VParentBase
      * based on the methods in {@link #getITIPFactory()}
      * 
      * @param iTIPMessages  iTIP VCalendars to process with {@link Method} populated
+     * @return - log of process operation
      */
-    public void processITIPMessage(VCalendar... iTIPMessages)
+    public List<String> processITIPMessage(VCalendar... iTIPMessages)
     {
-        processITIPMessage(Arrays.asList(iTIPMessages));
+        return processITIPMessage(Arrays.asList(iTIPMessages));
     }
     
     /**
@@ -676,19 +677,27 @@ public class VCalendar extends VParentBase
      * based on the methods in {@link #getITIPFactory()}
      * 
      * @param iTIPMessages  iTIP VCalendars to process with {@link Method} populated
+     * @return - log of process operation
      */
-    public void processITIPMessage(Collection<VCalendar> iTIPMessages)
+    public List<String> processITIPMessage(Collection<VCalendar> iTIPMessages)
     {
+        List<String> log = new ArrayList<>();
         iTIPMessages.forEach(message ->
         {
+            final Processable methodProcess;
             if (message.getMethod() == null)
+            { // default to PUBLISH method if not present
+                methodProcess = getITIPFactory().getITIPMessageProcess(MethodType.PUBLISH);
+ //               throw new IllegalArgumentException("VCalendar to be processed MUST have the METHOD property populated");
+            } else
             {
-                throw new IllegalArgumentException("VCalendar to be process MUST have the METHOD property populated");
+                MethodType method = message.getMethod().getValue();
+                methodProcess = getITIPFactory().getITIPMessageProcess(method);
             }
-            MethodType method = message.getMethod().getValue();
-            Processable methodProcess = iTIPFactory.getITIPMessageProcess(method);
-            methodProcess.process(this, message);            
+            List<String> methodLog = methodProcess.process(this, message);
+            log.addAll(methodLog);
         });
+        return log;
     }
     
     /**
@@ -696,9 +705,11 @@ public class VCalendar extends VParentBase
      * Input string can contain multiple iTIP VCALENDAR messages.
      * 
      * @param iTIPMessages  iTIP VCalendar Message strings
+     * @return - log of process operation
      */
-    public void processITIPMessage(String iTIPMessages)
+    public List<String> processITIPMessage(String iTIPMessages)
     {
+        List<String> log = new ArrayList<>();
         List<String> iTIPMessageList = new ArrayList<>();
         StringBuilder builder = new StringBuilder(1000);
         for(String line : iTIPMessages.split(System.lineSeparator()))
@@ -715,7 +726,12 @@ public class VCalendar extends VParentBase
         {
             iTIPMessageList.add(builder.toString());
         }
-        iTIPMessageList.forEach(message -> processITIPMessage(VCalendar.parse(message)));
+        iTIPMessageList.forEach(message -> 
+        {
+            List<String> methodLog = processITIPMessage(VCalendar.parse(message));
+            log.addAll(methodLog);
+        });
+        return log;
     }
     
     /**
@@ -1102,7 +1118,7 @@ public class VCalendar extends VParentBase
     }
     
     /** Parse unfolded content lines into calendar object */
-    public Map<VElement, List<String>> parseContent(Iterator<String> lineIterator, boolean useResourceStatus)
+    public Map<VElement, List<String>> parseContent(Iterator<String> lineIterator, boolean collectErrorMessages)
     {
         List<String> vCalendarMessages = new ArrayList<>();
         Map<VElement, List<String>> messageMap = new HashMap<>();
@@ -1124,7 +1140,7 @@ public class VCalendar extends VParentBase
             {
                 String componentName = unfoldedLine.substring(nameEndIndex+1);
                 VComponent newComponent = SimpleVComponentFactory.emptyVComponent(componentName);
-                Map<VElement, List<String>> newComponentMessages = newComponent.parseContent(unfoldedLineIterator, useResourceStatus);
+                Map<VElement, List<String>> newComponentMessages = newComponent.parseContent(unfoldedLineIterator, collectErrorMessages);
                 addVComponent(newComponent);
                 messageMap.putAll(newComponentMessages);
 //                messages.addAll(myMessages);
@@ -1142,13 +1158,9 @@ public class VCalendar extends VParentBase
                 {
                     //non-standard - check for X- prefix
                     boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
-//                    boolean isIANA = (IANAProperty.getRegisteredIANAPropertys() != null) ? IANAProperty.getRegisteredIANAPropertys().contains(propertyName) : false;
                     if (isNonStandard)
                     {
                         child = CalendarProperty.NON_STANDARD.parse(this, unfoldedLine);
-//                    } else if (isIANA)
-//                    {
-//                        child = CalendarProperty.IANA_PROPERTY.parse(this, unfoldedLine);
                     } else
                     {
                         // ignore unknown properties
@@ -1278,6 +1290,24 @@ public class VCalendar extends VParentBase
 //        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
         VCalendar vCalendar = new VCalendar();
         vCalendar.parseContent(lines.iterator(), useResourceStatus);
+        return vCalendar;
+    }
+    
+    /**
+     * Creates a new VCalendar from an ics file
+     * 
+     * @param icsFilePath  path of ics file to parse
+     * @return  Created VCalendar
+     * @throws IOException
+     */
+    // TODO - REMOVE useResourceStatus
+    public static VCalendar parseICalendarFile(Path icsFilePath) throws IOException
+    {
+        BufferedReader br = Files.newBufferedReader(icsFilePath);
+        List<String> lines = br.lines().collect(Collectors.toList());
+//        Iterator<String> unfoldedLines = ICalendarUtilities.unfoldLines(lines).iterator();
+        VCalendar vCalendar = new VCalendar();
+        vCalendar.parseContent(lines.iterator());
         return vCalendar;
     }
 

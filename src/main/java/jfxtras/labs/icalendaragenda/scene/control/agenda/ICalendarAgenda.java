@@ -658,7 +658,7 @@ public class ICalendarAgenda extends Agenda
                             {
                                 if (! v.isValid())
                                 {
-                                    throw new RuntimeException("Invalid VComponent:" + System.lineSeparator() + 
+                                    throw new RuntimeException("ERROR: Invalid " + v.getClass().getSimpleName() + " with UID:" + v.getUniqueIdentifier().getValue() + " can't be added to agenda:" + System.lineSeparator() + 
                                             v.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                                             v.toContent());
                                 }

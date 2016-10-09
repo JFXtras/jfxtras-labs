@@ -2,6 +2,20 @@ package jfxtras.labs.icalendarfx.itip;
 
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 
+/**
+ * Default iTIP process method factory that supports one calendar user - just an organizer, no attendees.
+ * 
+ * The following methods are implemented
+ * <ul>
+ * <li>PUBLISH
+ * <li>REQUEST
+ * <li>CANCEL
+ * </ul>
+ * 
+ * 
+ * @author David Bal
+ *
+ */
 public class DefaultITIPFactory extends AbstractITIPFactory
 {
 

@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.itip;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -129,8 +130,9 @@ public class ProcessCancel implements Processable
 {
 
     @Override
-    public void process(VCalendar mainVCalendar, VCalendar iTIPMessage)
+    public List<String> process(VCalendar mainVCalendar, VCalendar iTIPMessage)
     {
+        List<String> log = new ArrayList<>();
         for (VComponent c : iTIPMessage.getAllVComponents())
         {
             if (c instanceof VDisplayable)
@@ -241,11 +243,6 @@ public class ProcessCancel implements Processable
                             }
                         }
                     }
-                        
-                   //TODO - HANDLE ORPHANED CHILDREN - ADD TO CHANGE LISTENER?
-                    // PROBABLY DO IN IN VCALENDAR
-                    
-
                 }
             } else
             { // non-displayable VComponents (only VFREEBUSY has UID)
@@ -253,6 +250,7 @@ public class ProcessCancel implements Processable
                 throw new RuntimeException("not implemented");
             }
         }
+        return log;
     }
 
 }
