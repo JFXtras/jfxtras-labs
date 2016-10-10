@@ -120,10 +120,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
-            Action propertyCopy = new Action((Action) child);
+            Action propertyCopy = new Action((Action) childSource);
             castDestination.setAction(propertyCopy);
         }
         
@@ -162,7 +162,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDescribable<?> castDestination = (VDescribable<?>) destination;
             final ObservableList<Attachment<?>> list;
@@ -174,7 +174,7 @@ public enum PropertyType
             {
                 list = castDestination.getAttachments();
             }
-            list.add(new Attachment<>((Attachment<?>) child));
+            list.add(new Attachment<>((Attachment<?>) childSource));
         }
     },
 
@@ -213,7 +213,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VAttendee<?> castDestination = (VAttendee<?>) destination;
             final ObservableList<Attendee> list;
@@ -225,7 +225,7 @@ public enum PropertyType
             {
                 list = castDestination.getAttendees();
             }
-            list.add(new Attendee((Attendee) child));
+            list.add(new Attendee((Attendee) childSource));
         }
     },
     // Calendar property
@@ -247,7 +247,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -284,7 +284,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
             final ObservableList<Categories> list;
@@ -296,7 +296,7 @@ public enum PropertyType
             {
                 list = castDestination.getCategories();
             }
-            list.add(new Categories((Categories) child));
+            list.add(new Categories((Categories) childSource));
         }
     },
     // Descriptive
@@ -322,10 +322,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
-            Classification propertyCopy = new Classification((Classification) child);
+            Classification propertyCopy = new Classification((Classification) childSource);
             castDestination.setClassification(propertyCopy);
         }
     },
@@ -362,7 +362,7 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPrimary<?> castDestination = (VPrimary<?>) destination;
             final ObservableList<Comment> list;
@@ -374,7 +374,7 @@ public enum PropertyType
             {
                 list = castDestination.getComments();
             }
-            list.add(new Comment((Comment) child));
+            list.add(new Comment((Comment) childSource));
         }
     },
     // Relationship
@@ -424,12 +424,12 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             if (destination instanceof VFreeBusy)
             { // VFreeBusy has one Contact
                 VFreeBusy castDestination = (VFreeBusy) destination;
-                Contact propertyCopy = new Contact((Contact) child);
+                Contact propertyCopy = new Contact((Contact) childSource);
                 castDestination.setContact(propertyCopy);
             } else
             { // Other components have a list of Contacts
@@ -443,7 +443,7 @@ public enum PropertyType
                 {
                     list = castDestination.getContacts();
                 }
-                list.add(new Contact((Contact) child));
+                list.add(new Contact((Contact) childSource));
             }
         }
     },
@@ -470,10 +470,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VTodo castDestination = (VTodo) destination;
-            DateTimeCompleted propertyCopy = new DateTimeCompleted((DateTimeCompleted) child);
+            DateTimeCompleted propertyCopy = new DateTimeCompleted((DateTimeCompleted) childSource);
             castDestination.setDateTimeCompleted(propertyCopy);
         }
     },
@@ -500,10 +500,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
-            DateTimeCreated propertyCopy = new DateTimeCreated((DateTimeCreated) child);
+            DateTimeCreated propertyCopy = new DateTimeCreated((DateTimeCreated) childSource);
             castDestination.setDateTimeCreated(propertyCopy);
         }
     },
@@ -530,10 +530,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VTodo castDestination = (VTodo) destination;
-            DateTimeDue propertyCopy = new DateTimeDue((DateTimeDue) child);
+            DateTimeDue propertyCopy = new DateTimeDue((DateTimeDue) childSource);
             castDestination.setDateTimeDue(propertyCopy);
         }
     },
@@ -560,10 +560,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDateTimeEnd<?> castDestination = (VDateTimeEnd<?>) destination;
-            DateTimeEnd propertyCopy = new DateTimeEnd((DateTimeEnd) child);
+            DateTimeEnd propertyCopy = new DateTimeEnd((DateTimeEnd) childSource);
             castDestination.setDateTimeEnd(propertyCopy);
         }
         
@@ -593,10 +593,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPersonal<?> castDestination = (VPersonal<?>) destination;
-            DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) child);
+            DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) childSource);
             castDestination.setDateTimeStamp(propertyCopy);
         }
         
@@ -625,10 +625,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPrimary<?> castDestination = (VPrimary<?>) destination;
-            DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) child);
+            DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) childSource);
             castDestination.setDateTimeStart(propertyCopy);
         }
         
@@ -690,7 +690,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             if (destination instanceof VJournal)
             { // VJournal has list of Descriptions
@@ -704,11 +704,11 @@ public enum PropertyType
                 {
                     list = castDestination.getDescriptions();
                 }
-                list.add(new Description((Description) child));
+                list.add(new Description((Description) childSource));
             } else
             { // Other components have only one Description
                 VDescribable2<?> castDestination = (VDescribable2<?>) destination;
-                Description propertyCopy = new Description((Description) child);
+                Description propertyCopy = new Description((Description) childSource);
                 castDestination.setDescription(propertyCopy);
             }
         }
@@ -742,10 +742,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDuration<?> castDestination = (VDuration<?>) destination;
-            DurationProp propertyCopy = new DurationProp((DurationProp) child);
+            DurationProp propertyCopy = new DurationProp((DurationProp) childSource);
             castDestination.setDuration(propertyCopy);
         }
         
@@ -790,7 +790,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
             final ObservableList<ExceptionDates> list;
@@ -802,7 +802,7 @@ public enum PropertyType
             {
                 list = castDestination.getExceptionDates();
             }
-            list.add(new ExceptionDates((ExceptionDates) child));
+            list.add(new ExceptionDates((ExceptionDates) childSource));
         }
     },
     // Date and Time
@@ -828,10 +828,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VFreeBusy castDestination = (VFreeBusy) destination;
-            FreeBusyTime propertyCopy = new FreeBusyTime((FreeBusyTime) child);
+            FreeBusyTime propertyCopy = new FreeBusyTime((FreeBusyTime) childSource);
             castDestination.setFreeBusyTime(propertyCopy);
         }
     },
@@ -858,10 +858,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VLocatable<?> castDestination = (VLocatable<?>) destination;
-            GeographicPosition propertyCopy = new GeographicPosition((GeographicPosition) child);
+            GeographicPosition propertyCopy = new GeographicPosition((GeographicPosition) childSource);
             castDestination.setGeographicPosition(propertyCopy);
         }
     },
@@ -888,10 +888,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VLastModified<?> castDestination = (VLastModified<?>) destination;
-            LastModified propertyCopy = new LastModified((LastModified) child);
+            LastModified propertyCopy = new LastModified((LastModified) childSource);
             castDestination.setDateTimeLastModified(propertyCopy);
         }
     },
@@ -919,10 +919,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VLocatable<?> castDestination = (VLocatable<?>) destination;
-            Location propertyCopy = new Location((Location) child);
+            Location propertyCopy = new Location((Location) childSource);
             castDestination.setLocation(propertyCopy);
         }
     },
@@ -945,7 +945,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -983,7 +983,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VCommon<?> castDestination = (VCommon<?>) destination;
             final ObservableList<NonStandardProperty> list;
@@ -995,7 +995,7 @@ public enum PropertyType
             {
                 list = castDestination.getNonStandard();
             }
-            list.add(new NonStandardProperty((NonStandardProperty) child));
+            list.add(new NonStandardProperty((NonStandardProperty) childSource));
         }
     },
     // Relationship
@@ -1022,10 +1022,10 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPersonal<?> castDestination = (VPersonal<?>) destination;
-            Organizer propertyCopy = new Organizer((Organizer) child);
+            Organizer propertyCopy = new Organizer((Organizer) childSource);
             castDestination.setOrganizer(propertyCopy);
         }
     },
@@ -1052,10 +1052,10 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VTodo castDestination = (VTodo) destination;
-            PercentComplete propertyCopy = new PercentComplete((PercentComplete) child);
+            PercentComplete propertyCopy = new PercentComplete((PercentComplete) childSource);
             castDestination.setPercentComplete(propertyCopy);
         }
     },
@@ -1082,10 +1082,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VLocatable<?> castDestination = (VLocatable<?>) destination;
-            Priority propertyCopy = new Priority((Priority) child);
+            Priority propertyCopy = new Priority((Priority) childSource);
             castDestination.setPriority(propertyCopy);
         }
     },
@@ -1108,7 +1108,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1145,7 +1145,7 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VRepeatable<?> castDestination = (VRepeatable<?>) destination;
             final ObservableList<RecurrenceDates> list;
@@ -1157,7 +1157,7 @@ public enum PropertyType
             {
                 list = castDestination.getRecurrenceDates();
             }
-            list.add(new RecurrenceDates((RecurrenceDates) child));
+            list.add(new RecurrenceDates((RecurrenceDates) childSource));
         }
     },
     // Relationship
@@ -1184,10 +1184,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
-            RecurrenceId propertyCopy = new RecurrenceId((RecurrenceId) child);
+            RecurrenceId propertyCopy = new RecurrenceId((RecurrenceId) childSource);
             castDestination.setRecurrenceId(propertyCopy);
         }
     },
@@ -1214,10 +1214,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VRepeatable<?> castDestination = (VRepeatable<?>) destination;
-            RecurrenceRule propertyCopy = new RecurrenceRule((RecurrenceRule) child);
+            RecurrenceRule propertyCopy = new RecurrenceRule((RecurrenceRule) childSource);
             castDestination.setRecurrenceRule(propertyCopy);
         }
     },
@@ -1253,7 +1253,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
             final ObservableList<RelatedTo> list;
@@ -1265,7 +1265,7 @@ public enum PropertyType
             {
                 list = castDestination.getRelatedTo();
             }
-            list.add(new RelatedTo((RelatedTo) child));
+            list.add(new RelatedTo((RelatedTo) childSource));
         }
     },
     // Alarm
@@ -1291,10 +1291,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
-            RepeatCount propertyCopy = new RepeatCount((RepeatCount) child);
+            RepeatCount propertyCopy = new RepeatCount((RepeatCount) childSource);
             castDestination.setRepeatCount(propertyCopy);
         }
     },
@@ -1330,7 +1330,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPersonal<?> castDestination = (VPersonal<?>) destination;
             final ObservableList<RequestStatus> list;
@@ -1342,7 +1342,7 @@ public enum PropertyType
             {
                 list = castDestination.getRequestStatus();
             }
-            list.add(new RequestStatus((RequestStatus) child));
+            list.add(new RequestStatus((RequestStatus) childSource));
         }
     },
     // Descriptive
@@ -1378,7 +1378,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VLocatable<?> castDestination = (VLocatable<?>) destination;
             final ObservableList<Resources> list;
@@ -1390,7 +1390,7 @@ public enum PropertyType
             {
                 list = castDestination.getResources();
             }
-            list.add(new Resources((Resources) child));
+            list.add(new Resources((Resources) childSource));
         }
     },
     // Change management
@@ -1416,10 +1416,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
-            Sequence propertyCopy = new Sequence((Sequence) child);
+            Sequence propertyCopy = new Sequence((Sequence) childSource);
             castDestination.setSequence(propertyCopy);
         }
     },
@@ -1446,10 +1446,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDisplayable<?> castDestination = (VDisplayable<?>) destination;
-            Status propertyCopy = new Status((Status) child);
+            Status propertyCopy = new Status((Status) childSource);
             castDestination.setStatus(propertyCopy);
         }
     },
@@ -1477,10 +1477,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VDescribable<?> castDestination = (VDescribable<?>) destination;
-            Summary propertyCopy = new Summary((Summary) child);
+            Summary propertyCopy = new Summary((Summary) childSource);
             castDestination.setSummary(propertyCopy);
         }
     },
@@ -1507,10 +1507,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VEvent castDestination = (VEvent) destination;
-            TimeTransparency propertyCopy = new TimeTransparency((TimeTransparency) child);
+            TimeTransparency propertyCopy = new TimeTransparency((TimeTransparency) childSource);
             castDestination.setTimeTransparency(propertyCopy);
         }
     },
@@ -1537,10 +1537,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VTimeZone castDestination = (VTimeZone) destination;
-            TimeZoneIdentifier propertyCopy = new TimeZoneIdentifier((TimeZoneIdentifier) child);
+            TimeZoneIdentifier propertyCopy = new TimeZoneIdentifier((TimeZoneIdentifier) childSource);
             castDestination.setTimeZoneIdentifier(propertyCopy);
         }
         
@@ -1582,7 +1582,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
             final ObservableList<TimeZoneName> list;
@@ -1594,7 +1594,7 @@ public enum PropertyType
             {
                 list = castDestination.getTimeZoneNames();
             }
-            list.add(new TimeZoneName((TimeZoneName) child));
+            list.add(new TimeZoneName((TimeZoneName) childSource));
         }
     },
     // Time Zone
@@ -1620,10 +1620,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
-            TimeZoneOffsetFrom propertyCopy = new TimeZoneOffsetFrom((TimeZoneOffsetFrom) child);
+            TimeZoneOffsetFrom propertyCopy = new TimeZoneOffsetFrom((TimeZoneOffsetFrom) childSource);
             castDestination.setTimeZoneOffsetFrom(propertyCopy);
         }
         
@@ -1653,10 +1653,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
-            TimeZoneOffsetTo propertyCopy = new TimeZoneOffsetTo((TimeZoneOffsetTo) child);
+            TimeZoneOffsetTo propertyCopy = new TimeZoneOffsetTo((TimeZoneOffsetTo) childSource);
             castDestination.setTimeZoneOffsetTo(propertyCopy);
         }
         
@@ -1686,10 +1686,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VTimeZone castDestination = (VTimeZone) destination;
-            TimeZoneURL propertyCopy = new TimeZoneURL((TimeZoneURL) child);
+            TimeZoneURL propertyCopy = new TimeZoneURL((TimeZoneURL) childSource);
             castDestination.setTimeZoneURL(propertyCopy);
         }
     },
@@ -1716,10 +1716,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VAlarm castDestination = (VAlarm) destination;
-            Trigger<?> propertyCopy = new Trigger<>((Trigger<?>) child);
+            Trigger<?> propertyCopy = new Trigger<>((Trigger<?>) childSource);
             castDestination.setTrigger(propertyCopy);
         }
         
@@ -1749,10 +1749,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPersonal<?> castDestination = (VPersonal<?>) destination;
-            UniqueIdentifier propertyCopy = new UniqueIdentifier((UniqueIdentifier) child);
+            UniqueIdentifier propertyCopy = new UniqueIdentifier((UniqueIdentifier) childSource);
             castDestination.setUniqueIdentifier(propertyCopy);
         }
     },
@@ -1779,10 +1779,10 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             VPersonal<?> castDestination = (VPersonal<?>) destination;
-            UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) child);
+            UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) childSource);
             castDestination.setUniformResourceLocator(propertyCopy);
         }
         
@@ -1811,7 +1811,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VChild child, VParent destination)
+        public void copyProperty(Property<?> childSource, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1894,8 +1894,8 @@ public enum PropertyType
 //    abstract public VChild parse(VParent vParent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    abstract public void copyProperty(VChild childSource, VParent destination);
-//    abstract public void copyProperty(VChild child, VParent destination);
+    abstract public void copyProperty(Property<?> childSource, VComponent destination);
+//    abstract public void copyProperty(Property<?> childSource, VComponent destination);
     
     /** If property is required returns true, false otherwise */
     public boolean isRequired(VParent parent ) { return false; }

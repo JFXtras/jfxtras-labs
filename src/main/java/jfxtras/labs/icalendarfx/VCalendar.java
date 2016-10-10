@@ -1031,6 +1031,7 @@ public class VCalendar extends VParentBase
 //    };
     
     @Override
+    @Deprecated
     protected Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
@@ -1049,6 +1050,30 @@ public class VCalendar extends VParentBase
             }
             return null;
         };
+    }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        if (! (destination instanceof VCalendar))
+        {
+            throw new IllegalArgumentException("A VCalendar can only be copied into another VCalendar not a " + destination.getClass().getSimpleName());
+        }
+        childrenUnmodifiable().forEach((childSource) -> 
+        {
+            CalendarComponent componentType = CalendarComponent.enumFromClass(childSource.getClass());
+            if (componentType != null)
+            {
+                componentType.copyChild(childSource, (VCalendar) destination);
+            } else
+            {
+                CalendarProperty propertyType = CalendarProperty.enumFromClass(childSource.getClass());
+                if (propertyType != null)
+                {
+                    propertyType.copyChild(childSource, (VCalendar) destination);
+                }
+            }
+        });
     }
     
     /*

@@ -1,10 +1,13 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class CommentTest
@@ -40,5 +43,28 @@ public class CommentTest
         assertEquals("COMMENT:" + content, madeProperty.toContent());
         Comment expectedProperty = Comment.parse("The meeting needs to be canceled");
         assertEquals(expectedProperty, madeProperty);
+    }
+    
+    @Test
+    public void canSetParent()
+    {
+        String content = "COMMENT;LANGUAGE=en:Department Party";
+        Comment property1 = Comment.parse(content);
+        VEvent v = new VEvent().withComments(property1);
+        assertTrue(v == property1.getParent());
+        Comment propertyCopy = new Comment();
+        property1.copyInto(propertyCopy);
+        assertEquals(propertyCopy, property1);
+        v.getComments().add(propertyCopy);
+        assertTrue(v == property1.getParent());
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canCatchDifferentCopyType()
+    {
+        String content = "COMMENT;LANGUAGE=en:Department Party";
+        Comment property1 = Comment.parse(content);
+        Summary propertyCopy = new Summary();
+        property1.copyInto(propertyCopy);
     }
 }

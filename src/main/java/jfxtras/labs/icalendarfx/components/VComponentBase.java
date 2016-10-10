@@ -15,6 +15,7 @@ import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.MultiLineContent;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;;
@@ -39,6 +40,25 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         myParent = source.getParent();
         copyChildrenFrom(source);
     }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        if (! (destination instanceof Property))
+        {
+            throw new IllegalArgumentException("A VComponent can only be copied into another VComponent not a " + destination.getClass().getSimpleName());
+        }
+//        ((VChild) destination).setParent(getParent());
+        childrenUnmodifiable().forEach((child) -> 
+        {
+            PropertyType type = PropertyType.enumFromClass(child.getClass());
+            if (type != null)
+            { /* Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
+               * and copying happens in overridden version of this method in subclasses */
+                type.copyProperty((Property<?>) child, (VComponent) destination);
+            } 
+        });
+    }
         
     @Override
     protected Callback<VChild, Void> copyIntoCallback()
@@ -49,7 +69,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             if (type != null)
             { /* Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
                * and copying happens in overridden version of this method in subclasses */
-                type.copyProperty(childSource, this);
+                type.copyProperty((Property<?>) childSource, this);
             }
             return null;
         };
@@ -198,12 +218,33 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         return messageMap;
     }
 
+    // Note: can't check equals or hashCode of parents - causes stack overflow
+
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        boolean childrenEquals = super.equals(obj);
+//        if (! childrenEquals) return false;
+//        PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
+//        boolean parentEquals = (getParent() == null) ? testObj.getParent() == null : getParent() == testObj.getParent(); // equality by reference - if not desired only other option is equality of toContent, can't do equals method because it causes stack overflow (must have same reference to be equal)
+//        return parentEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = super.hashCode();
+//        final int prime = 31;
+//        hash = prime * hash + System.identityHashCode(getParent()); // using identityHashCode because hashCode method causes cyclic stack overflow (must have same reference to be equal)
+//        return hash;
+//    }
+    
     /**
      * Hook to add subcomponent such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
      * 
      * @param subcomponent
      */
-    void addSubcomponent(VComponent subcomponent) { };
+    void addSubcomponent(VComponent subcomponent) { }
             
     @Override
     public String toString()

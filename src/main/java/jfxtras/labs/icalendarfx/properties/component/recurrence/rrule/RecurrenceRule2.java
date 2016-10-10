@@ -355,21 +355,21 @@ public class RecurrenceRule2 extends VParentBase implements VChild
         }
     }
     
-    /**
-     * List of all recurrence rule elements found in object.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of elements
-     * @deprecated  not needed due to addition of Orderer, may be deleted
-     */
-    @Deprecated
-    public List<RRuleElementType> elements()
-    {
-        List<RRuleElementType> populatedElements = Arrays.stream(RRuleElementType.values())
-            .filter(p -> (p.getElement(this) != null))
-            .collect(Collectors.toList());
-      return Collections.unmodifiableList(populatedElements);
-    }
+//    /**
+//     * List of all recurrence rule elements found in object.
+//     * The list is unmodifiable.
+//     * 
+//     * @return - the list of elements
+//     * @deprecated  not needed due to addition of Orderer, may be deleted
+//     */
+//    @Deprecated
+//    public List<RRuleElementType> elements()
+//    {
+//        List<RRuleElementType> populatedElements = Arrays.stream(RRuleElementType.values())
+//            .filter(p -> (p.getElement(this) != null))
+//            .collect(Collectors.toList());
+//      return Collections.unmodifiableList(populatedElements);
+//    }
     
     /*
      * SORT ORDER FOR CHILD ELEMENTS
@@ -387,6 +387,8 @@ public class RecurrenceRule2 extends VParentBase implements VChild
 //    };
     
     @Override
+    @Deprecated
+
     protected Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
@@ -395,6 +397,24 @@ public class RecurrenceRule2 extends VParentBase implements VChild
             type.copyElement((RRuleElement<?>) child, this);
             return null;
         };
+    }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        if (! (destination instanceof RecurrenceRule2))
+        {
+            throw new IllegalArgumentException("A RecurrenceRule2 can only be copied into another RecurrenceRule2 not a " + destination.getClass().getSimpleName());
+        }
+//        ((VChild) destination).setParent(getParent());
+        childrenUnmodifiable().forEach((childSource) -> 
+        {
+            RRuleElementType type = RRuleElementType.enumFromClass(childSource.getClass());
+            if (type != null)
+            {
+                type.copyElement((RRuleElement<?>) childSource, (RecurrenceRule2) destination);
+            } 
+        });
     }
     
 //    /** 
@@ -598,6 +618,27 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     {
         return super.toString() + ", " + toContent();
     }
+    
+    // Note: can't check equals or hashCode of parents - causes stack overflow
+    
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        boolean childrenEquals = super.equals(obj);
+//        if (! childrenEquals) return false;
+//        PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
+//        boolean parentEquals = Objects.equal(this.getParent(), testObj.getParent());
+//        return parentEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = super.hashCode();
+//        final int prime = 31;
+//        hash = prime * hash + ((getParent() == null) ? 0 : getParent().hashCode());
+//        return hash;
+//    }
 
 //    @Override
 //    public boolean equals(Object obj)

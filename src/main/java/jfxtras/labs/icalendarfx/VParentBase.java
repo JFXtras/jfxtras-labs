@@ -71,10 +71,12 @@ public abstract class VParentBase implements VParent
         source.childrenUnmodifiable().forEach((e) -> copyIntoCallback().call(e));
     }
     
-    public void copyInto(VParentBase destination)
-    {
-        childrenUnmodifiable().forEach((e) -> destination.copyIntoCallback().call(e));
-    }
+//    @Override
+//    public void copyInto(VParent destination)
+//    {
+//        ((VChild) destination).setParent(getParent());
+//        // copy children in subclasses
+//    }
     
     @Override
     public List<String> errors()
@@ -94,6 +96,7 @@ public abstract class VParentBase implements VParent
         return contentLineGenerator.execute();
     }
     
+    // Note: can't check equals or hashCode of parents - causes stack overflow
     @Override
     public boolean equals(Object obj)
     {

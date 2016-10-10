@@ -101,7 +101,7 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
         return super.toString() + "," + toContent();
     }
 
-    @Override
+    @Override // Note: can't check equality of parents - causes stack overflow
     public boolean equals(Object obj)
     {
         if (obj == this) return true;
@@ -109,14 +109,17 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
             return false;
         }
         ParameterBase<U,T> testObj = (ParameterBase<U,T>) obj;
-
-        return getValue().equals(testObj.getValue());
+        boolean valueEquals = getValue().equals(testObj.getValue());
+        return valueEquals;
     }
     
-    @Override
+    @Override // Note: can't check hashCode of parents - causes stack overflow
     public int hashCode()
     {
-        return getValue().hashCode();
+        int hash = super.hashCode();
+        final int prime = 31;
+        hash = prime * hash + getValue().hashCode();
+        return hash;
     }
     
     @Override

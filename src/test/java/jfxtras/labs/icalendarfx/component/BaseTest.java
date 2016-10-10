@@ -70,10 +70,6 @@ public class BaseTest
         
         for (VComponentBase builtComponent : components)
         {
-            // reorders properties to match expectedContent
-//            builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
-//            builtComponent.propertySortOrder().put("TESTPROP2", 1);
-//            builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
             String componentName = builtComponent.name();
             
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

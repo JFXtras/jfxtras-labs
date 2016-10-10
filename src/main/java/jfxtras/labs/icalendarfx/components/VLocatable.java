@@ -11,6 +11,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -407,6 +408,7 @@ public abstract class VLocatable<T> extends VDisplayable<T> implements VDescriba
     
     /** copy VAlarms */
     @Override
+    @Deprecated
     public void copyChildrenFrom(VParent source)
     {
         super.copyChildrenFrom(source);
@@ -418,6 +420,23 @@ public abstract class VLocatable<T> extends VDisplayable<T> implements VDescriba
                 setVAlarms(FXCollections.observableArrayList());
             }
             castSource.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
+        }
+    }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        super.copyInto(destination);
+
+        ((VChild) destination).setParent(getParent());
+        VLocatable<?> castDestination = (VLocatable<?>) destination;
+        if (getVAlarms() != null)
+        {
+            if (castDestination.getVAlarms() == null)
+            {
+                setVAlarms(FXCollections.observableArrayList());
+            }
+            castDestination.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
         }
     }
     

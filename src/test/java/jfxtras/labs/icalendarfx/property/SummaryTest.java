@@ -53,5 +53,5 @@ public class SummaryTest
         property1.setLanguage((Language) null);
         Summary expectedProperty = Summary.parse("SUMMARY:Department Party");
         assertEquals(expectedProperty, property1);
-    }
+    }    
 }

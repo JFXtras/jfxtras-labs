@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Objects;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -136,7 +138,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             propertyName.set(name);
         } else
         {
-            throw new RuntimeException("Custom property names can only be set for non-standard and IANA-registered properties.");
+            throw new RuntimeException("Custom property names can only be set for non-standard and IANA-registered properties (" + name + ")");
         }
     }
     public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
@@ -358,6 +360,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //    }
 
     @Override
+    @Deprecated
     public Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
@@ -366,6 +369,30 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             type.copyParameter((Parameter<?>) child, this);
             return null;
         };
+    }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        if (! destination.getClass().equals(getClass()))
+        {
+            throw new IllegalArgumentException("Property class types must be equal (" + getClass().getSimpleName() +
+                    "," + destination.getClass().getSimpleName() + ")");
+//            throw new IllegalArgumentException("A Property can only be copied into another Property not a " + destination.getClass().getSimpleName());
+        }
+        PropertyBase<T,U> castDestination = (PropertyBase<T,U>) destination;
+        castDestination.setConverter(getConverter());
+        T valueCopy = copyValue(getValue());
+        castDestination.setValue(valueCopy);
+        castDestination.setPropertyName(name());
+        childrenUnmodifiable().forEach((childSource) -> 
+        {
+            ParameterType type = ParameterType.enumFromClass(childSource.getClass());
+            if (type != null)
+            {
+                type.copyParameter((Parameter<?>) childSource, (Property<?>) destination);
+            } 
+        });
     }
     
     // property value as string - kept if string converter changes the value can change
@@ -613,18 +640,19 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         return super.toString() + "," + toContent();
     }
     
-    @Override
+    @Override // Note: can't check equality of parents - causes stack overflow
     public boolean equals(Object obj)
     {
-        boolean parametersEquals = super.equals(obj);
-        if (! parametersEquals) return false;
+        boolean childrenEquals = super.equals(obj);
+        if (! childrenEquals) return false;
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
-        boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
+        boolean valueEquals = Objects.equal(this.getValue(), testObj.getValue());
+        if (! valueEquals) return false;
         boolean nameEquals = name().equals(testObj.name());
-        return valueEquals && parametersEquals && nameEquals;
+        return nameEquals;
     }
 
-    @Override
+    @Override // Note: can't check hashCode of parents - causes stack overflow
     public int hashCode()
     {
         int hash = super.hashCode();
