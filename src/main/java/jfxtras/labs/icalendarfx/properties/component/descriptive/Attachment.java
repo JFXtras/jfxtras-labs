@@ -18,7 +18,6 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.properties.PropAttachment;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.ValueType;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
@@ -31,7 +30,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
       value type can also be set to {@link ValueType.Binary BINARY} to indicate inline binary
       encoded content information.</p>
 
-   <p>Property Parameters:  {@link IANAProperty IANA}, {@link NonStandardProperty non-standard},
+   <p>Property Parameters:  IANA, {@link NonStandardProperty non-standard},
       {@link Encoding inline encoding}, and {@link ValueParameter value
       data type property} parameters can be specified on this property.
       The {@link FormatType format type parameter} can be specified on this property and is

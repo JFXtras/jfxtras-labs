@@ -42,7 +42,7 @@ public abstract class VParentBase implements VParent
     
     /** Strategy to copy subclass's children
      * This method MUST be overridden in subclasses */
-    protected Callback<VChild, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyIntoCallback()
     {
         throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
     };
@@ -65,9 +65,15 @@ public abstract class VParentBase implements VParent
     * this component that are not present in source then those will remain unchanged.
     * */
     @Override
+    @Deprecated
     public void copyChildrenFrom(VParent source)
     {
-        source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
+        source.childrenUnmodifiable().forEach((e) -> copyIntoCallback().call(e));
+    }
+    
+    public void copyInto(VParentBase destination)
+    {
+        childrenUnmodifiable().forEach((e) -> destination.copyIntoCallback().call(e));
     }
     
     @Override

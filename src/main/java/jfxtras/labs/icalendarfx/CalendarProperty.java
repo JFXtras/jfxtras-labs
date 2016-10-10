@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 public enum CalendarProperty
 {
     CALENDAR_SCALE ("CALSCALE",
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD),
              CalendarScale.class)
     {
         @Override
@@ -76,7 +76,7 @@ public enum CalendarProperty
 //
 //    },
     METHOD ("METHOD",
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD),
             Method.class)
     {
         @Override
@@ -135,7 +135,7 @@ public enum CalendarProperty
     },
     
     PRODUCT_IDENTIFIER ("PRODID",
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD),
             ProductIdentifier.class)
     {
         @Override
@@ -154,7 +154,7 @@ public enum CalendarProperty
         }
     },
     VERSION ("VERSION",
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD),
             Version.class)
     {
         @Override

@@ -10,7 +10,6 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
@@ -50,7 +49,7 @@ import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
  *  <li>The following are OPTIONAL, and MAY occur more than once.
  *    <ul>
  *    <li>{@link NonStandardProperty X-PROP}
- *    <li>{@link IANAProperty IANA-PROP}
+ *    <li>IANA-PROP
  *    </ul>
  *  </ul>
  *<li>component

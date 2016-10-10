@@ -64,8 +64,8 @@ public interface Parameter<T> extends Comparable<Parameter<T>>, VChild
         {
             String name = content.substring(0, equalsIndex);
             boolean hasName1 = ParameterType.enumFromName(name.toUpperCase()) != null;
-            boolean hasName2 = (IANAParameter.getRegisteredIANAParameters() != null) ? IANAParameter.getRegisteredIANAParameters().contains(name.toUpperCase()) : false;
-            valueString = (hasName1 || hasName2) ? content.substring(equalsIndex+1) : content;    
+//            boolean hasName2 = (IANAParameter.getRegisteredIANAParameters() != null) ? IANAParameter.getRegisteredIANAParameters().contains(name.toUpperCase()) : false;
+            valueString = (hasName1) ? content.substring(equalsIndex+1) : content;    
         } else
         {
             valueString = content;
@@ -80,8 +80,8 @@ public interface Parameter<T> extends Comparable<Parameter<T>>, VChild
         {
             String name = content.substring(0, equalsIndex);
             boolean hasName1 = ParameterType.enumFromName(name.toUpperCase()) != null;
-            boolean hasName2 = IANAParameter.getRegisteredIANAParameters().contains(name.toUpperCase());
-            return (hasName1 || hasName2) ? name : null;
+//            boolean hasName2 = IANAParameter.getRegisteredIANAParameters().contains(name.toUpperCase());
+            return (hasName1) ? name : null;
         }
         return null;
     }

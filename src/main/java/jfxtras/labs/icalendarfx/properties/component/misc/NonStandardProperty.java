@@ -9,7 +9,6 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 
@@ -24,7 +23,7 @@ import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
    <p>Value Type:  The default value type is TEXT.  The value type can be
       set to any value type.</p>
 
-   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
+   <p>Property Parameters:  IANA, {@link NonStandardParameter non-standard},
       {@link Language language} parameters can be specified on this property.
       Note: Contradicting above RFC 5545 text, based on examples (even one
       below), it seems that this property can contain all parameters - David Bal.</p>

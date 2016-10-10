@@ -13,23 +13,23 @@ import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VAttendee;
-import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VCommon;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VDescribable;
 import jfxtras.labs.icalendarfx.components.VDescribable2;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.components.VDuration;
+import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VFreeBusy;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VLastModified;
 import jfxtras.labs.icalendarfx.components.VLocatable;
 import jfxtras.labs.icalendarfx.components.VPersonal;
 import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.components.VRepeatable;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -56,7 +56,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
@@ -101,7 +100,7 @@ public enum PropertyType
     // Alarm
     ACTION ("ACTION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Action.class) // property class
     {
         @Override
@@ -134,7 +133,7 @@ public enum PropertyType
     // property class
     ATTACHMENT ("ATTACH" // property name
             , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY) // valid property value types, first is default
-            , Arrays.asList(ParameterType.FORMAT_TYPE, ParameterType.INLINE_ENCODING, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.FORMAT_TYPE, ParameterType.INLINE_ENCODING, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , Attachment.class)
     {
         @Override
@@ -185,7 +184,7 @@ public enum PropertyType
                     ParameterType.DELEGATORS, ParameterType.DIRECTORY_ENTRY_REFERENCE,
                     ParameterType.GROUP_OR_LIST_MEMBERSHIP, ParameterType.LANGUAGE, ParameterType.PARTICIPATION_ROLE,
                     ParameterType.PARTICIPATION_STATUS, ParameterType.RSVP_EXPECTATION, ParameterType.SENT_BY,
-                    ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+                    ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , Attendee.class) // property class
     {
         @Override
@@ -232,7 +231,7 @@ public enum PropertyType
     // Calendar property
     CALENDAR_SCALE ("CALSCALE" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , CalendarScale.class) // property class
     {
         @Override
@@ -256,7 +255,7 @@ public enum PropertyType
     // Descriptive
     CATEGORIES ("CATEGORIES" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , Categories.class) // property class
     {
         @Override
@@ -303,7 +302,7 @@ public enum PropertyType
     // Descriptive
     CLASSIFICATION ("CLASS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Classification.class) // property class
     {
         @Override
@@ -334,7 +333,7 @@ public enum PropertyType
     COMMENT ("COMMENT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.NON_STANDARD), // allowed parameters
             Comment.class)
     {
         @Override
@@ -382,7 +381,7 @@ public enum PropertyType
     CONTACT ("CONTACT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.NON_STANDARD), // allowed parameters
             Contact.class)
     {
         @Override
@@ -451,7 +450,7 @@ public enum PropertyType
     // Date and Time
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeCompleted.class) // property class
     {
         @Override
@@ -481,7 +480,7 @@ public enum PropertyType
     // Change management
     DATE_TIME_CREATED ("CREATED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeCreated.class) // property class
     {
         @Override
@@ -511,7 +510,7 @@ public enum PropertyType
     // Date and time
     DATE_TIME_DUE ("DUE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeDue.class) // property class
     {
         @Override
@@ -541,7 +540,7 @@ public enum PropertyType
     // Date and Time
     DATE_TIME_END ("DTEND", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeEnd.class) // property class
     {
         @Override
@@ -574,7 +573,7 @@ public enum PropertyType
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeStamp.class) // property class
     {
         @Override
@@ -606,7 +605,7 @@ public enum PropertyType
     },
     DATE_TIME_START ("DTSTART", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DateTimeStart.class) // property class
     {
         @Override
@@ -642,7 +641,7 @@ public enum PropertyType
     // Descriptive
     DESCRIPTION ("DESCRIPTION",
             Arrays.asList(ValueType.TEXT),
-            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER),
+            Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.NON_STANDARD),
             Description.class)
     {
         @Override
@@ -717,7 +716,7 @@ public enum PropertyType
     // Date and Time
     DURATION ("DURATION", // property name
             Arrays.asList(ValueType.DURATION), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             DurationProp.class)
     {
         @Override
@@ -756,7 +755,7 @@ public enum PropertyType
     // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             ExceptionDates.class)
     {
         @Override
@@ -809,7 +808,7 @@ public enum PropertyType
     // Date and Time
     FREE_BUSY_TIME ("FREEBUSY", // property name
             Arrays.asList(ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterType.FREE_BUSY_TIME_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.FREE_BUSY_TIME_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             FreeBusyTime.class)
     {
         @Override
@@ -839,7 +838,7 @@ public enum PropertyType
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", // property name
             Arrays.asList(ValueType.TEXT), // In GeographicPosition there are two doubles for latitude and longitude
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             GeographicPosition.class)
     {
         @Override
@@ -866,57 +865,10 @@ public enum PropertyType
             castDestination.setGeographicPosition(propertyCopy);
         }
     },
-    // Miscellaneous
-    IANA_PROPERTY (null, // name specified in IANAProperty registeredIANAProperties
-            Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
-            Arrays.asList(ParameterType.values()), // all parameters allowed
-            IANAProperty.class) // property class
-    {
-        @Override
-        public Object getProperty(VComponent vComponent)
-        {
-            VCommon<?> castComponent = (VCommon<?>) vComponent;
-            return castComponent.getIana();
-        }
-
-        @Override
-        public VChild parse(VParent vParent, String propertyContent)
-        {
-            VCommon<?> castComponent = (VCommon<?>) vParent;
-            final ObservableList<IANAProperty> list;
-            if (castComponent.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                castComponent.setIana(list);
-            } else
-            {
-                list = castComponent.getIana();
-            }
-            IANAProperty child = IANAProperty.parse(propertyContent);
-            list.add(child);
-            return child;
-        }
-
-        @Override
-        public void copyProperty(VChild child, VParent destination)
-        {
-            VCommon<?> castDestination = (VCommon<?>) destination;
-            final ObservableList<IANAProperty> list;
-            if (castDestination.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                castDestination.setIana(list);
-            } else
-            {
-                list = castDestination.getIana();
-            }
-            list.add(new IANAProperty((IANAProperty) child));
-        }
-    },
     // Change management
     LAST_MODIFIED ("LAST-MODIFIED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             LastModified.class) // property class
     {
         @Override
@@ -947,7 +899,7 @@ public enum PropertyType
     LOCATION ("LOCATION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.NON_STANDARD), // allowed parameters
             Location.class) // property class
     {
         @Override
@@ -977,7 +929,7 @@ public enum PropertyType
     // Calendar property
     METHOD ("METHOD" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , Method.class) // property class
     {
         @Override
@@ -1002,7 +954,7 @@ public enum PropertyType
     NON_STANDARD ("X-", // property name begins with X- prefix
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
             Arrays.asList(ParameterType.values()), // all parameters allowed
-//            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER, ParameterType.LANGUAGE), // allowed parameters (RFC 5545 says only IANA, non-standard, and language property parameters can be specified on this property, but examples of other parameters are in RFC 5545, so I am allowing all parameters)
+//            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.LANGUAGE), // allowed parameters (RFC 5545 says only IANA, non-standard, and language property parameters can be specified on this property, but examples of other parameters are in RFC 5545, so I am allowing all parameters)
             NonStandardProperty.class) // property class
     {
         @Override
@@ -1050,7 +1002,7 @@ public enum PropertyType
     ORGANIZER ("ORGANIZER", // name
             Arrays.asList(ValueType.CALENDAR_USER_ADDRESS), // valid property value types, first is default
             Arrays.asList(ParameterType.COMMON_NAME, ParameterType.DIRECTORY_ENTRY_REFERENCE, ParameterType.LANGUAGE,
-                    ParameterType.SENT_BY, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.SENT_BY, ParameterType.NON_STANDARD), // allowed parameters
             Organizer.class) // property class
     {
         @Override
@@ -1080,7 +1032,7 @@ public enum PropertyType
     // Descriptive
     PERCENT_COMPLETE ("PERCENT-COMPLETE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             PercentComplete.class) // property class
     {
         @Override
@@ -1110,7 +1062,7 @@ public enum PropertyType
     // Descriptive
     PRIORITY ("PRIORITY", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Priority.class) // property class
     {
         @Override
@@ -1140,7 +1092,7 @@ public enum PropertyType
     // Calendar property
     PRODUCT_IDENTIFIER ("PRODID" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , ProductIdentifier.class) // property class
     {
         @Override
@@ -1164,7 +1116,7 @@ public enum PropertyType
     // Recurrence
     RECURRENCE_DATE_TIMES ("RDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE, ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             RecurrenceDates.class)
     {
         @Override
@@ -1212,7 +1164,7 @@ public enum PropertyType
     RECURRENCE_IDENTIFIER ("RECURRENCE-ID", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterType.RECURRENCE_IDENTIFIER_RANGE, ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.NON_STANDARD), // allowed parameters
             RecurrenceId.class) // property class
     {
         @Override
@@ -1242,7 +1194,7 @@ public enum PropertyType
     // Recurrence
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             RecurrenceRule.class) // property class
     {
         @Override
@@ -1272,7 +1224,7 @@ public enum PropertyType
     // Relationship
     RELATED_TO ("RELATED-TO", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.RELATIONSHIP_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.RELATIONSHIP_TYPE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             RelatedTo.class) // property class
     {
         @Override
@@ -1319,7 +1271,7 @@ public enum PropertyType
     // Alarm
     REPEAT_COUNT ("REPEAT", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             RepeatCount.class) // property class
     {
         @Override
@@ -1349,7 +1301,7 @@ public enum PropertyType
     // Miscellaneous
     REQUEST_STATUS ("REQUEST-STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             RequestStatus.class)
     {
         @Override
@@ -1397,7 +1349,7 @@ public enum PropertyType
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES,
-                    ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.NON_STANDARD), // allowed parameters
             Resources.class) // property class
     {
         @Override
@@ -1444,7 +1396,7 @@ public enum PropertyType
     // Change management
     SEQUENCE ("SEQUENCE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Sequence.class) // property class
     {
         @Override
@@ -1474,7 +1426,7 @@ public enum PropertyType
     // Descriptive
     STATUS ("STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Status.class) // property class
     {
         @Override
@@ -1505,7 +1457,7 @@ public enum PropertyType
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterType.ALTERNATE_TEXT_REPRESENTATION, ParameterType.LANGUAGE,
-                    ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+                    ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Summary.class) // property class
     {
         @Override
@@ -1535,7 +1487,7 @@ public enum PropertyType
     // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeTransparency.class) // property class
     {
         @Override
@@ -1565,7 +1517,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_IDENTIFIER ("TZID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeZoneIdentifier.class) // property class
     {
         @Override
@@ -1601,7 +1553,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_NAME ("TZNAME", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.LANGUAGE, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeZoneName.class) // property class
     {
         @Override
@@ -1648,7 +1600,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
@@ -1681,7 +1633,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeZoneOffsetTo.class) // property class
     {
         @Override
@@ -1714,7 +1666,7 @@ public enum PropertyType
     // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             TimeZoneURL.class) // property class
     {
         @Override
@@ -1744,7 +1696,7 @@ public enum PropertyType
     // Alarm
     TRIGGER ("TRIGGER", // property name
             Arrays.asList(ValueType.DURATION, ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterType.ALARM_TRIGGER_RELATIONSHIP, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.ALARM_TRIGGER_RELATIONSHIP, ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             Trigger.class) // property class
     {
         @Override
@@ -1777,7 +1729,7 @@ public enum PropertyType
     // Relationship
     UNIQUE_IDENTIFIER ("UID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             UniqueIdentifier.class) // property class
     {
         @Override
@@ -1807,7 +1759,7 @@ public enum PropertyType
     // Relationship
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER), // allowed parameters
+            Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD), // allowed parameters
             UniformResourceLocator.class) // property class
     {
         @Override
@@ -1840,7 +1792,7 @@ public enum PropertyType
     // Calendar property
     VERSION ("VERSION" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD, ParameterType.IANA_PARAMETER) // allowed parameters
+            , Arrays.asList(ParameterType.VALUE_DATA_TYPES, ParameterType.NON_STANDARD) // allowed parameters
             , Version.class) // property class
     {
         @Override
@@ -1883,9 +1835,9 @@ public enum PropertyType
         if (propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString()))
         {
             prop = PropertyType.NON_STANDARD;
-        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(propertyName))
-        {
-            prop = PropertyType.IANA_PROPERTY;            
+//        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(propertyName))
+//        {
+//            prop = PropertyType.IANA_PROPERTY;            
         } else
         {
             prop = enumFromNameMap.get(propertyName);   
@@ -1942,7 +1894,7 @@ public enum PropertyType
 //    abstract public VChild parse(VParent vParent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    abstract public void copyProperty(VChild child, VParent destination);
+    abstract public void copyProperty(VChild childSource, VParent destination);
 //    abstract public void copyProperty(VChild child, VParent destination);
     
     /** If property is required returns true, false otherwise */

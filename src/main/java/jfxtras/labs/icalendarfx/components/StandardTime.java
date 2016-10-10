@@ -1,8 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
-import jfxtras.labs.icalendarfx.properties.component.misc.UnknownProperty;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
@@ -37,13 +36,12 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
  *<ul>
  *<li>{@link Comment COMMENT}
  *<li>{@link DateTimeStart DTSTART}
- *<li>{@link IANAProperty IANA-PROP}
  *<li>{@link RecurrenceDates RDATE}
  *<li>{@link RecurrenceRule RRULE}
  *<li>{@link TimeZoneName TZNAME}
  *<li>{@link TimeZoneOffsetFrom TZOFFSETFROM}
  *<li>{@link TimeZoneOffsetTo TZOFFSETTO}
- *<li>{@link UnknownProperty X-PROP}
+ *<li>{@link NonStandardProperty X-PROP}
  *</ul>
  *</p>
  * 

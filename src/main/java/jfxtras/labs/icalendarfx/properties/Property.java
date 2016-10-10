@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
@@ -67,15 +66,15 @@ public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
     ObservableList<NonStandardParameter> getNonStandard();
     void setNonStandard(ObservableList<NonStandardParameter> nonStandardParams);
     
-    /**
-     * IANA Registered Parameters
-     * 
-     *<p>Allows other properties registered
-     * with IANA to be specified in any calendar components.</p>
-     */
-    ObjectProperty<ObservableList<IANAParameter>> IANAParameter();
-    ObservableList<IANAParameter> getIana();
-    void setIana(ObservableList<IANAParameter> ianaParams);
+//    /**
+//     * IANA Registered Parameters
+//     * 
+//     *<p>Allows other properties registered
+//     * with IANA to be specified in any calendar components.</p>
+//     */
+//    ObjectProperty<ObservableList<IANAParameter>> IANAParameter();
+//    ObservableList<IANAParameter> getIana();
+//    void setIana(ObservableList<IANAParameter> ianaParams);
     
 //    // TODO - make non-standard parameter as regular parameter
 //    /**

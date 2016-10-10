@@ -33,6 +33,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
+    @Deprecated
     public void copyFrom(VComponent source)
     {
         myParent = source.getParent();
@@ -40,15 +41,15 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     }
         
     @Override
-    protected Callback<VChild, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyIntoCallback()
     {        
-        return (child) ->
+        return (childSource) ->
         {
-            PropertyType type = PropertyType.enumFromClass(child.getClass());
+            PropertyType type = PropertyType.enumFromClass(childSource.getClass());
             if (type != null)
             { /* Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
                * and copying happens in overridden version of this method in subclasses */
-                type.copyProperty(child, this);
+                type.copyProperty(childSource, this);
             }
             return null;
         };

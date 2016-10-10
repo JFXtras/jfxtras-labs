@@ -4,7 +4,6 @@ import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
@@ -22,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
  *<p>Value Type:  The default value type is DATE-TIME.  The value type can
  * be set to a DATE value type.</p>
  * 
- *<p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
+ *<p>Property Parameters:  IANA, {@link NonStandardParameter non-standard},
  * {@link ValueType value data type}, and {@link TimeZoneIdentifierParameter time
  * zone identifier} property parameters can be specified on this
  * property.</p>

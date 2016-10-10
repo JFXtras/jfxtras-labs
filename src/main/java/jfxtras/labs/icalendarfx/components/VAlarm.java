@@ -17,7 +17,6 @@ import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -100,7 +99,6 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
  *  <li>The following are OPTIONAL, and MAY occur more than once.
  *    <ul>
  *    <li>{@link Attachment ATTACH}
- *    <li>{@link IANAProperty IANA-PROP}
  *    <li>{@link NonStandardProperty X-PROP}
  *    </ul>
  *  </ul>

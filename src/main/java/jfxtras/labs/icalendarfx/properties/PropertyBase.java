@@ -20,7 +20,6 @@ import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -29,7 +28,6 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -124,15 +122,15 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             {
                 throw new RuntimeException("Non-standard properties must begin with X-");                
             }
-        } else if (propertyType().equals(PropertyType.IANA_PROPERTY))
-        {
-            if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(name))
-            {
-                propertyName.set(name);
-            } else
-            {
-                throw new RuntimeException(name + " is not an IANA-registered property name.  The name can be registered by adding it to the IANAProperty.registeredIANAPropertys list");
-            }
+//        } else if (propertyType().equals(PropertyType.IANA_PROPERTY))
+//        {
+//            if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(name))
+//            {
+//                propertyName.set(name);
+//            } else
+//            {
+//                throw new RuntimeException(name + " is not an IANA-registered property name.  The name can be registered by adding it to the IANAProperty.registeredIANAPropertys list");
+//            }
         } else if (propertyType().toString().equals(name)) // let setting name to default value have no operation
         {
             propertyName.set(name);
@@ -291,76 +289,76 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         return (U) this;
     }
     
-    /**
-     * IANA PARAMETERS
-     * 
-     *<p>Allows other properties registered
-     * with IANA to be specified in any calendar components.</p>
-     */
-    @Override
-    public ObjectProperty<ObservableList<IANAParameter>> IANAParameter()
-    {
-        if (ianaParams == null)
-        {
-            ianaParams = new SimpleObjectProperty<>(this, ParameterType.IANA_PARAMETER.toString());
-        }
-        return ianaParams;
-    }
-    @Override
-    public ObservableList<IANAParameter> getIana()
-    {
-        return (ianaParams == null) ? null : ianaParams.get();
-    }
-    private ObjectProperty<ObservableList<IANAParameter>> ianaParams;
-    @Override
-    public void setIana(ObservableList<IANAParameter> ianaParams)
-    {
-        if (ianaParams != null)
-        {
-            orderer().registerSortOrderProperty(ianaParams);
-        } else
-        {
-            orderer().unregisterSortOrderProperty(IANAParameter().get());
-        }
-        IANAParameter().set(ianaParams);
-    }
-    /**
-     * Sets the value of the {@link #IANAParameter()} by parsing a vararg of
-     * iCalendar content text representing individual {@link IANAParameter} objects.
-     * 
-     * @return - this class for chaining
-     */
-    public U withIana(String...ianaParams)
-    {
-        List<IANAParameter> a = Arrays.stream(ianaParams)
-                .map(c -> IANAParameter.parse(c))
-                .collect(Collectors.toList());
-        setIana(FXCollections.observableArrayList(a));
-        return (U) this;
-    }
-    /**
-     * Sets the value of the {@link #nonStandardProperty()}
-     * 
-     * @return - this class for chaining
-     */
-    public U withIana(ObservableList<IANAParameter> ianaParams)
-    {
-        setIana(ianaParams);
-        return (U) this;
-    }
-    /**
-     * Sets the value of the {@link #IANAParameter()} from a vararg of {@link IANAParameter} objects.
-     * 
-     * @return - this class for chaining
-     */    
-    public U withIana(IANAParameter...ianaParams)
-    {
-        setIana(FXCollections.observableArrayList(ianaParams));
-        return (U) this;
-    }
+//    /**
+//     * IANA PARAMETERS
+//     * 
+//     *<p>Allows other properties registered
+//     * with IANA to be specified in any calendar components.</p>
+//     */
+//    @Override
+//    public ObjectProperty<ObservableList<IANAParameter>> IANAParameter()
+//    {
+//        if (ianaParams == null)
+//        {
+//            ianaParams = new SimpleObjectProperty<>(this, ParameterType.IANA_PARAMETER.toString());
+//        }
+//        return ianaParams;
+//    }
+//    @Override
+//    public ObservableList<IANAParameter> getIana()
+//    {
+//        return (ianaParams == null) ? null : ianaParams.get();
+//    }
+//    private ObjectProperty<ObservableList<IANAParameter>> ianaParams;
+//    @Override
+//    public void setIana(ObservableList<IANAParameter> ianaParams)
+//    {
+//        if (ianaParams != null)
+//        {
+//            orderer().registerSortOrderProperty(ianaParams);
+//        } else
+//        {
+//            orderer().unregisterSortOrderProperty(IANAParameter().get());
+//        }
+//        IANAParameter().set(ianaParams);
+//    }
+//    /**
+//     * Sets the value of the {@link #IANAParameter()} by parsing a vararg of
+//     * iCalendar content text representing individual {@link IANAParameter} objects.
+//     * 
+//     * @return - this class for chaining
+//     */
+//    public U withIana(String...ianaParams)
+//    {
+//        List<IANAParameter> a = Arrays.stream(ianaParams)
+//                .map(c -> IANAParameter.parse(c))
+//                .collect(Collectors.toList());
+//        setIana(FXCollections.observableArrayList(a));
+//        return (U) this;
+//    }
+//    /**
+//     * Sets the value of the {@link #nonStandardProperty()}
+//     * 
+//     * @return - this class for chaining
+//     */
+//    public U withIana(ObservableList<IANAParameter> ianaParams)
+//    {
+//        setIana(ianaParams);
+//        return (U) this;
+//    }
+//    /**
+//     * Sets the value of the {@link #IANAParameter()} from a vararg of {@link IANAParameter} objects.
+//     * 
+//     * @return - this class for chaining
+//     */    
+//    public U withIana(IANAParameter...ianaParams)
+//    {
+//        setIana(FXCollections.observableArrayList(ianaParams));
+//        return (U) this;
+//    }
 
     @Override
-    public Callback<VChild, Void> copyChildCallback()
+    public Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
         {
@@ -410,7 +408,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         orderer().registerSortOrderProperty(valueTypeProperty());
         propertyType = PropertyType.enumFromClass(getClass());
         // test propertyType.toString()
-        if (propertyType != PropertyType.IANA_PROPERTY && propertyType != PropertyType.NON_STANDARD)
+        if (propertyType != PropertyType.NON_STANDARD)
         {
             setPropertyName(propertyType.toString());
         }
@@ -480,10 +478,10 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             String propertyName = (endNameIndex > 0) ? unfoldedContent.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isMatch = propertyName.equals(propertyType.toString());
             boolean isNonStandardProperty = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
-            boolean isIANAProperty = propertyType.equals(PropertyType.IANA_PROPERTY);
-            if (isMatch || isNonStandardProperty || isIANAProperty)
+//            boolean isIANAProperty = propertyType.equals(PropertyType.IANA_PROPERTY);
+            if (isMatch || isNonStandardProperty)
             {
-                if (isNonStandardProperty || isIANAProperty)
+                if (isNonStandardProperty)
                 {
                     setPropertyName(unfoldedContent.substring(0,endNameIndex));
                 }
@@ -538,16 +536,17 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
                             setUnknownValue(propertyValueString);
                         }
                     }
-                } else if ((entry.getKey() != null) && (entry.getValue() != null))
-                { // unknown parameter - store as String in other parameter
-                    if ((IANAParameter.getRegisteredIANAParameters() != null) && IANAParameter.getRegisteredIANAParameters().contains(entry.getKey()))
-                    {
-                        ParameterType.IANA_PARAMETER.parse(this, entry.getKey() + "=" + entry.getValue());
-                    } else
-                    {
-                        // ignore unrecognized parameter (RFC 5545, 3.2 Property Parameters, page 14)
-                    }
-                } // if parameter doesn't contain both a key and a value it is ignored
+                }
+                // else if ((entry.getKey() != null) && (entry.getValue() != null))
+//                { // unknown parameter - store as String in other parameter
+//                    if ((IANAParameter.getRegisteredIANAParameters() != null) && IANAParameter.getRegisteredIANAParameters().contains(entry.getKey()))
+//                    {
+//                        ParameterType.IANA_PARAMETER.parse(this, entry.getKey() + "=" + entry.getValue());
+//                    } else
+//                    {
+//                        // ignore unrecognized parameter (RFC 5545, 3.2 Property Parameters, page 14)
+//                    }
+//                } // if parameter doesn't contain both a key and a value it is ignored
             });
         
         if (! isValid())
@@ -595,7 +594,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     {
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
         boolean isUnknownType = value.equals(ValueType.UNKNOWN);
-        boolean isNonStandardProperty = propertyType().equals(PropertyType.NON_STANDARD) || propertyType().equals(PropertyType.IANA_PROPERTY);
+        boolean isNonStandardProperty = propertyType().equals(PropertyType.NON_STANDARD);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
 

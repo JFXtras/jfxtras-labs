@@ -17,7 +17,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
@@ -33,7 +32,6 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * 
  * for the following properties:
  * @see NonStandardProperty
- * @see IANAProperty
  * 
  * @author David Bal
  *
@@ -43,39 +41,30 @@ public class BaseTest
     @Test
     public void canBuildBase() throws InstantiationException, IllegalAccessException
     {
-        IANAProperty.setRegisteredIANAPropertys(Arrays.asList("TESTPROP2"));
         List<VComponentBase> components = Arrays.asList(
                 new VEvent()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VTodo()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VJournal()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VFreeBusy()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VAlarm()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VTimeZone()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new DaylightSavingTime()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new StandardTime()
                     .withNonStandard(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
-                    .withIana(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandard(NonStandardProperty.parse("X-TEST-OBJ:testid"))
                 );
         
@@ -89,7 +78,6 @@ public class BaseTest
             
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
-                    "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
 

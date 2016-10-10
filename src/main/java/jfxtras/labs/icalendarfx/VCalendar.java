@@ -1031,7 +1031,7 @@ public class VCalendar extends VParentBase
 //    };
     
     @Override
-    protected Callback<VChild, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
         {

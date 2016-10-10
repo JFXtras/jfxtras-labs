@@ -1,13 +1,15 @@
 package jfxtras.labs.icalendaragenda.trial;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -15,10 +17,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.scene.layout.HBox;
 
 /**
- * Demo that allows importing an ics file
+ * Demo that imports an ics file
  * 
  * @author David Bal
  *
@@ -31,7 +34,9 @@ public class ImportICSFileTrial extends Application
 
     @Override
     public void start(Stage primaryStage) {
-        VCalendar mainVCalendar = new VCalendar();
+        VCalendar mainVCalendar = new VCalendar()
+                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+                .withVersion(); // uses default VERSION 2.0
 
         // setup control
         BorderPane root = new BorderPane();
@@ -41,10 +46,11 @@ public class ImportICSFileTrial extends Application
         // Buttons
         Button increaseWeek = new Button(">");
         Button decreaseWeek = new Button("<");
-        Button openButton = new Button("Import an ics file");
-        HBox space = new HBox();
-        space.setPadding(new Insets(0,10,0,10));
-        HBox buttonHBox = new HBox(decreaseWeek, increaseWeek, space, openButton);
+        HBox weekButtonHBox = new HBox(decreaseWeek, increaseWeek);
+        Button importButton = new Button("Import an ics file");
+        Button exportButton = new Button("Export an ics file");
+        HBox buttonHBox = new HBox(weekButtonHBox, importButton, exportButton);
+        buttonHBox.setSpacing(10);
         root.setTop(buttonHBox);
         
         // weekly increase/decrease functionality
@@ -62,7 +68,7 @@ public class ImportICSFileTrial extends Application
         // file chooser functionality
         FileChooser fileChooser = new FileChooser();
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("ics files", "*.ics"));
-        openButton.setOnAction(e ->
+        importButton.setOnAction(e ->
         {
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null && file.toString().lastIndexOf("ics") > 0)
@@ -83,6 +89,25 @@ public class ImportICSFileTrial extends Application
             } else
             {
                 throw new IllegalArgumentException("Invalid file:" + file + ". Select a valid ics file.");
+            }
+        });
+        
+        exportButton.setOnAction(e ->
+        {
+            VCalendar publishMessage = new VCalendar()
+                    .withMethod(MethodType.PUBLISH);
+            publishMessage.copyChildrenFrom(mainVCalendar);
+            mainVCalendar.copyInto(publishMessage);
+            File file = fileChooser.showSaveDialog(primaryStage);
+            BufferedWriter writer = null;
+            try
+            {
+                writer = new BufferedWriter(new FileWriter(file));
+                writer.write(publishMessage.toContent());
+                writer.close();
+            } catch ( IOException e2)
+            {
+                e2.printStackTrace();
             }
         });
         

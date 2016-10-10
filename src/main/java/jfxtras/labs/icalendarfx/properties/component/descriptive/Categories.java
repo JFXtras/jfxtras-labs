@@ -9,7 +9,6 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
@@ -25,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
 
    <p>Value Type:  TEXT
 
-   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard}, and {@link Language language property}
+   <p>Property Parameters:  IANA, {@link NonStandardParameter non-standard}, and {@link Language language property}
       parameters can be specified on this property.
 
    <p>Conformance:  The property can be specified within {@link VEvent VEVENT}, {@link VTodo VTODO},

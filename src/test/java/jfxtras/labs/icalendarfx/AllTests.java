@@ -63,7 +63,6 @@ import jfxtras.labs.icalendarfx.property.DurationTest;
 import jfxtras.labs.icalendarfx.property.ExceptionsTest;
 import jfxtras.labs.icalendarfx.property.FreeBusyTimeTest;
 import jfxtras.labs.icalendarfx.property.GeneralPropertyTest;
-import jfxtras.labs.icalendarfx.property.IANATest;
 import jfxtras.labs.icalendarfx.property.LocationTest;
 import jfxtras.labs.icalendarfx.property.NonStandardTest;
 import jfxtras.labs.icalendarfx.property.OrganizerTest;
@@ -160,7 +159,6 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         ExceptionsTest.class,
         FreeBusyTimeTest.class,
         GeneralPropertyTest.class,
-        IANATest.class,
         LocationTest.class,
         NonStandardTest.class,
         OrganizerTest.class,

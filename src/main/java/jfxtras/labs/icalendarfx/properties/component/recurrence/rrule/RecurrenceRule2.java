@@ -387,7 +387,7 @@ public class RecurrenceRule2 extends VParentBase implements VChild
 //    };
     
     @Override
-    protected Callback<VChild, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyIntoCallback()
     {        
         return (child) ->
         {

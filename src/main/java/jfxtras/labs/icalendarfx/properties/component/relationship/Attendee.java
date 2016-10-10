@@ -13,7 +13,6 @@ import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.Delegators;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntry;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole;
@@ -31,7 +30,7 @@ import jfxtras.labs.icalendarfx.parameters.SentBy;
 
    <p>Value Type:  CAL-ADDRESS</p>
 
-   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
+   <p>Property Parameters:  IANA, {@link NonStandardParameter non-standard},
       {@link Language language}, {@link CalendarUser calendar user type},
       {@link GroupMembership group or list membership}, {@link ParticipationRole participation role},
       {@link ParticipationStatus participation status}, {@link RSVP RSVP expectation},

@@ -16,20 +16,19 @@ import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleTy
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropAltText;
 import jfxtras.labs.icalendarfx.properties.PropAttachment;
 import jfxtras.labs.icalendarfx.properties.PropAttendee;
-import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
 import jfxtras.labs.icalendarfx.properties.PropBaseLanguage;
 import jfxtras.labs.icalendarfx.properties.PropDateTime;
 import jfxtras.labs.icalendarfx.properties.PropFreeBusy;
 import jfxtras.labs.icalendarfx.properties.PropRecurrenceID;
 import jfxtras.labs.icalendarfx.properties.PropRelationship;
+import jfxtras.labs.icalendarfx.properties.Property;
+import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.ValueType;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
 import jfxtras.labs.icalendarfx.utilities.StringConverters;
 
@@ -356,51 +355,51 @@ public enum ParameterType
             castDestination.setFreeBusyType(parameterCopy);
         }
     },
-    @Deprecated
-    IANA_PARAMETER (null,  // name specified in IANAParameter registeredIANAParameters
-            IANAParameter.class) {
-        @Override
-        public void parse(Property<?> property, String content)
-        {
-            final ObservableList<IANAParameter> list;
-            if (property.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                property.setIana(list);
-            } else
-            {
-                list = property.getIana();
-            }
-            list.add(IANAParameter.parse(content));
-        }
-
-        @Override
-        public Object getParameter(Property<?> parent)
-        {
-            return parent.getIana();
-        }
-
-        @Override
-        public void copyParameter(Parameter<?> child, Property<?> destination)
-        {
-            final ObservableList<IANAParameter> list;
-            if (destination.getIana() == null)
-            {
-                list = FXCollections.observableArrayList();
-                destination.setIana(list);
-            } else
-            {
-                list = destination.getIana();
-            }
-            list.add(new IANAParameter((IANAParameter) child));
-        }
-
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
-        }
-    },
+//    @Deprecated
+//    IANA_PARAMETER (null,  // name specified in IANAParameter registeredIANAParameters
+//            IANAParameter.class) {
+//        @Override
+//        public void parse(Property<?> property, String content)
+//        {
+//            final ObservableList<IANAParameter> list;
+//            if (property.getIana() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                property.setIana(list);
+//            } else
+//            {
+//                list = property.getIana();
+//            }
+//            list.add(IANAParameter.parse(content));
+//        }
+//
+//        @Override
+//        public Object getParameter(Property<?> parent)
+//        {
+//            return parent.getIana();
+//        }
+//
+//        @Override
+//        public void copyParameter(Parameter<?> child, Property<?> destination)
+//        {
+//            final ObservableList<IANAParameter> list;
+//            if (destination.getIana() == null)
+//            {
+//                list = FXCollections.observableArrayList();
+//                destination.setIana(list);
+//            } else
+//            {
+//                list = destination.getIana();
+//            }
+//            list.add(new IANAParameter((IANAParameter) child));
+//        }
+//
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return (StringConverter<T>) StringConverters.defaultStringConverterWithQuotes();
+//        }
+//    },
     // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
     LANGUAGE ("LANGUAGE", Language.class) {
         @Override
@@ -899,9 +898,9 @@ public enum ParameterType
         if (isNonStanderd)
         {
             prop = ParameterType.NON_STANDARD;
-        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(parameterName))
-        {
-            prop = ParameterType.IANA_PARAMETER;            
+//        } else if ((IANAProperty.getRegisteredIANAPropertys() != null) && IANAProperty.getRegisteredIANAPropertys().contains(parameterName))
+//        {
+//            prop = ParameterType.IANA_PARAMETER;            
         } else
         {
             prop = enumFromNameMap.get(parameterName);   

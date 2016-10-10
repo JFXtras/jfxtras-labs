@@ -5,7 +5,6 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
-import jfxtras.labs.icalendarfx.parameters.IANAParameter;
 import jfxtras.labs.icalendarfx.parameters.Language;
 import jfxtras.labs.icalendarfx.parameters.NonStandardParameter;
 import jfxtras.labs.icalendarfx.properties.PropBaseAltText;
@@ -21,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.ValueType;
 
    <p>Value Type:  {@link ValueType.TEXT TEXT}</p>
 
-   <p>Property Parameters:  {@link IANAParameter IANA}, {@link NonStandardParameter non-standard},
+   <p>Property Parameters:  IANA, {@link NonStandardParameter non-standard},
       {@link AlternateText alternate text representation}, and {@link Language language property} parameters can be specified
       on this property.</p>
 
