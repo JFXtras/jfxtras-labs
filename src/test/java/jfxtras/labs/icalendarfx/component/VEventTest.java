@@ -139,7 +139,7 @@ public class VEventTest extends ICalendarTestAbstract
     {
         VEvent e = getYearly1();
         VEvent e2 = new VEvent();
-        e2.copyChildrenFrom(e);
+        e.copyInto(e2);
         assertEquals(e, e2);
     }
 
@@ -159,7 +159,7 @@ public class VEventTest extends ICalendarTestAbstract
         try
         {
             VComponent e2 = e.getClass().newInstance();
-            e2.copyChildrenFrom(e);
+            e.copyInto(e2);
             assertEquals(e, e2);
             assertFalse(e == e2);
         } catch (InstantiationException | IllegalAccessException e1)

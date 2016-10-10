@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarComponent;
-import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
@@ -34,21 +32,17 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
-    @Deprecated
-    public void copyFrom(VComponent source)
-    {
-        myParent = source.getParent();
-        copyChildrenFrom(source);
-    }
+//    @Deprecated
+//    public void copyFrom(VComponent source)
+//    {
+//        myParent = source.getParent();
+//        copyChildrenFrom(source);
+//    }
     
     @Override
     public void copyInto(VParent destination)
     {
-        if (! (destination instanceof Property))
-        {
-            throw new IllegalArgumentException("A VComponent can only be copied into another VComponent not a " + destination.getClass().getSimpleName());
-        }
-//        ((VChild) destination).setParent(getParent());
+        super.copyInto(destination);
         childrenUnmodifiable().forEach((child) -> 
         {
             PropertyType type = PropertyType.enumFromClass(child.getClass());
@@ -60,20 +54,20 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         });
     }
         
-    @Override
-    protected Callback<VChild, Void> copyIntoCallback()
-    {        
-        return (childSource) ->
-        {
-            PropertyType type = PropertyType.enumFromClass(childSource.getClass());
-            if (type != null)
-            { /* Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
-               * and copying happens in overridden version of this method in subclasses */
-                type.copyProperty((Property<?>) childSource, this);
-            }
-            return null;
-        };
-    }
+//    @Override
+//    protected Callback<VChild, Void> copyIntoCallback()
+//    {        
+//        return (childSource) ->
+//        {
+//            PropertyType type = PropertyType.enumFromClass(childSource.getClass());
+//            if (type != null)
+//            { /* Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
+//               * and copying happens in overridden version of this method in subclasses */
+//                type.copyProperty((Property<?>) childSource, this);
+//            }
+//            return null;
+//        };
+//    }
     
     final private String componentName;
     @Override
@@ -101,7 +95,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     VComponentBase(VComponentBase source)
     {
         this();
-        copyFrom(source);
+        source.copyInto(this);
+//        copyFrom(source);
     }
     
     @Override

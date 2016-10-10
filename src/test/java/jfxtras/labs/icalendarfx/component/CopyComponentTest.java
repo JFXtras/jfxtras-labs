@@ -123,7 +123,10 @@ public class CopyComponentTest extends ICalendarTestAbstract
    "END:VEVENT";
         
         VEvent component1 = VEvent.parse(content);
+        System.out.println("getVAlarms:" + component1.getVAlarms().size());
+        System.out.println("hash:" + System.identityHashCode(component1));
         VEvent component2 = new VEvent(component1);
+//        System.out.println(component2);
         assertEquals(component1, component2);
         assertEquals(component1.toContent(), component2.toContent());
     }
@@ -170,7 +173,8 @@ END:VEVENT
     {
         VEvent component1 = getWeekly3();
         VEvent component2 = getYearly1();
-        component1.copyChildrenFrom(component2);
+        component2.copyInto(component1);
+//        component1.copyChildrenFrom(component2);
         String expectedContent = 
             "BEGIN:VEVENT" + System.lineSeparator() +
             "DTSTART:20151109T100000" + System.lineSeparator() +
@@ -193,7 +197,8 @@ END:VEVENT
     {
         VEvent component2 = getYearly1();
         VEvent component1 = component2.getClass().newInstance();
-        component1.copyChildrenFrom(component2);
+        component2.copyInto(component1);
+//        component1.copyChildrenFrom(component2);
         assertEquals(component1, component2);
         assertTrue(component1 != component2);
     }
@@ -203,7 +208,7 @@ END:VEVENT
     {
         VEvent component1 = getWeekly3();
         VEvent component2 = getYearly1();
-        component2.copyChildrenFrom(component1);
+        component1.copyInto(component2);
         String expectedContent = 
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group13" + System.lineSeparator() +

@@ -219,7 +219,8 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         try
         {
             vComponentEditedCopy = (U) getVComponentEdited().getClass().newInstance();
-            vComponentEditedCopy.copyFrom(getVComponentEdited());
+//            vComponentEditedCopy.copyFrom(getVComponentEdited());
+            getVComponentEdited().copyInto(vComponentEditedCopy);
         } catch (InstantiationException | IllegalAccessException e)
         {
             e.printStackTrace();
@@ -229,7 +230,8 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         try
         {
             vComponentOriginalCopy = (U) getVComponentOriginal().getClass().newInstance();
-            vComponentOriginalCopy.copyFrom(getVComponentOriginal());
+//            vComponentOriginalCopy.copyFrom(getVComponentOriginal());
+            getVComponentOriginal().copyInto(vComponentOriginalCopy);
         } catch (InstantiationException | IllegalAccessException e)
         {
             e.printStackTrace();
@@ -416,7 +418,8 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     try
                     {
                         VDisplayable<?> vCopy = v.getClass().newInstance();
-                        vCopy.copyFrom(v);
+                        v.copyInto(vCopy);
+//                        vCopy.copyFrom(v);
                         vCopy.setRecurrenceId(new RecurrenceId(newRecurreneId));
                         return vCopy;
                     } catch (Exception e)

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.content.ContentLineStrategy;
 import jfxtras.labs.icalendarfx.utilities.Orderer;
 import jfxtras.labs.icalendarfx.utilities.OrdererBase;
@@ -40,12 +39,12 @@ public abstract class VParentBase implements VParent
         this.contentLineGenerator = contentLineGenerator;
     }
     
-    /** Strategy to copy subclass's children
-     * This method MUST be overridden in subclasses */
-    protected Callback<VChild, Void> copyIntoCallback()
-    {
-        throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
-    };
+//    /** Strategy to copy subclass's children
+//     * This method MUST be overridden in subclasses */
+//    protected Callback<VChild, Void> copyIntoCallback()
+//    {
+//        throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
+//    };
 
     @Override
     public List<VChild> childrenUnmodifiable()
@@ -58,25 +57,29 @@ public abstract class VParentBase implements VParent
                 );
     }
     
-    /** Copy parameters, properties, and subcomponents from source into this component,
-    * essentially making a copy of source 
-    * 
-    * Note: this method only overwrites properties found in source.  If there are properties in
-    * this component that are not present in source then those will remain unchanged.
-    * */
-    @Override
-    @Deprecated
-    public void copyChildrenFrom(VParent source)
-    {
-        source.childrenUnmodifiable().forEach((e) -> copyIntoCallback().call(e));
-    }
-    
+//    /** Copy parameters, properties, and subcomponents from source into this component,
+//    * essentially making a copy of source 
+//    * 
+//    * Note: this method only overwrites properties found in source.  If there are properties in
+//    * this component that are not present in source then those will remain unchanged.
+//    * */
 //    @Override
-//    public void copyInto(VParent destination)
+//    @Deprecated
+//    public void copyChildrenFrom(VParent source)
 //    {
-//        ((VChild) destination).setParent(getParent());
-//        // copy children in subclasses
+//        source.childrenUnmodifiable().forEach((e) -> copyIntoCallback().call(e));
 //    }
+    
+    @Override
+    public void copyInto(VParent destination)
+    {
+        if (! destination.getClass().equals(getClass()))
+        {
+            throw new IllegalArgumentException("Property class types must be equal (" + getClass().getSimpleName() +
+                    "," + destination.getClass().getSimpleName() + ")");
+        }
+        // Note: copy functionality in subclasses
+    }
     
     @Override
     public List<String> errors()

@@ -15,10 +15,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
@@ -359,27 +357,22 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //        return (U) this;
 //    }
 
-    @Override
-    @Deprecated
-    public Callback<VChild, Void> copyIntoCallback()
-    {        
-        return (child) ->
-        {
-            ParameterType type = ParameterType.enumFromClass(child.getClass());
-            type.copyParameter((Parameter<?>) child, this);
-            return null;
-        };
-    }
+//    @Override
+//    @Deprecated
+//    public Callback<VChild, Void> copyIntoCallback()
+//    {        
+//        return (child) ->
+//        {
+//            ParameterType type = ParameterType.enumFromClass(child.getClass());
+//            type.copyParameter((Parameter<?>) child, this);
+//            return null;
+//        };
+//    }
     
     @Override
     public void copyInto(VParent destination)
     {
-        if (! destination.getClass().equals(getClass()))
-        {
-            throw new IllegalArgumentException("Property class types must be equal (" + getClass().getSimpleName() +
-                    "," + destination.getClass().getSimpleName() + ")");
-//            throw new IllegalArgumentException("A Property can only be copied into another Property not a " + destination.getClass().getSimpleName());
-        }
+        super.copyInto(destination);
         PropertyBase<T,U> castDestination = (PropertyBase<T,U>) destination;
         castDestination.setConverter(getConverter());
         T valueCopy = copyValue(getValue());
@@ -460,7 +453,8 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     {
         this();
         setConverter(source.getConverter());
-        copyChildrenFrom(source);
+        source.copyInto(this);
+//        copyChildrenFrom(source);
         T valueCopy = copyValue(source.getValue());
         setValue(valueCopy);
         setPropertyName(source.name());

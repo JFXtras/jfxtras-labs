@@ -129,7 +129,8 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
         try
         {
             vComponent = (U) getVComponent().getClass().newInstance();
-            vComponent.copyFrom(getVComponent());
+            getVComponent().copyInto(vComponent);
+//            vComponent.copyFrom(getVComponent());
         } catch (InstantiationException | IllegalAccessException e)
         {
             e.printStackTrace();

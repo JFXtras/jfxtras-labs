@@ -20,7 +20,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.SimpleVComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
@@ -1030,35 +1029,32 @@ public class VCalendar extends VParentBase
 //        return null;
 //    };
     
-    @Override
-    @Deprecated
-    protected Callback<VChild, Void> copyIntoCallback()
-    {        
-        return (child) ->
-        {
-            CalendarComponent type = CalendarComponent.enumFromClass(child.getClass());
-            if (type != null)
-            {
-                type.copyChild(child, this);
-            } else
-            {
-                CalendarProperty property = CalendarProperty.enumFromClass(child.getClass());
-                if (property != null)
-                {
-                    property.copyChild(child, this);
-                }
-            }
-            return null;
-        };
-    }
+//    @Override
+//    @Deprecated
+//    protected Callback<VChild, Void> copyIntoCallback()
+//    {        
+//        return (child) ->
+//        {
+//            CalendarComponent type = CalendarComponent.enumFromClass(child.getClass());
+//            if (type != null)
+//            {
+//                type.copyChild(child, this);
+//            } else
+//            {
+//                CalendarProperty property = CalendarProperty.enumFromClass(child.getClass());
+//                if (property != null)
+//                {
+//                    property.copyChild(child, this);
+//                }
+//            }
+//            return null;
+//        };
+//    }
     
     @Override
     public void copyInto(VParent destination)
     {
-        if (! (destination instanceof VCalendar))
-        {
-            throw new IllegalArgumentException("A VCalendar can only be copied into another VCalendar not a " + destination.getClass().getSimpleName());
-        }
+        super.copyInto(destination);
         childrenUnmodifiable().forEach((childSource) -> 
         {
             CalendarComponent componentType = CalendarComponent.enumFromClass(childSource.getClass());
@@ -1096,7 +1092,8 @@ public class VCalendar extends VParentBase
     public VCalendar(VCalendar source)
     {
         this();
-        copyChildrenFrom(source);    
+        source.copyInto(this);
+//        copyChildrenFrom(source);    
     }
 
     /*

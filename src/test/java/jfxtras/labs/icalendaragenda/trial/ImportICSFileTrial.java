@@ -96,7 +96,6 @@ public class ImportICSFileTrial extends Application
         {
             VCalendar publishMessage = new VCalendar()
                     .withMethod(MethodType.PUBLISH);
-            publishMessage.copyChildrenFrom(mainVCalendar);
             mainVCalendar.copyInto(publishMessage);
             File file = fileChooser.showSaveDialog(primaryStage);
             BufferedWriter writer = null;

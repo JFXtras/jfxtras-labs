@@ -406,37 +406,36 @@ public abstract class VLocatable<T> extends VDisplayable<T> implements VDescriba
         }        
     }
     
-    /** copy VAlarms */
-    @Override
-    @Deprecated
-    public void copyChildrenFrom(VParent source)
-    {
-        super.copyChildrenFrom(source);
-        VLocatable<?> castSource = (VLocatable<?>) source;
-        if (castSource.getVAlarms() != null)
-        {
-            if (getVAlarms() == null)
-            {
-                setVAlarms(FXCollections.observableArrayList());
-            }
-            castSource.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
-        }
-    }
+//    /** copy VAlarms */
+//    @Override
+//    @Deprecated
+//    public void copyChildrenFrom(VParent source)
+//    {
+//        super.copyChildrenFrom(source);
+//        VLocatable<?> castSource = (VLocatable<?>) source;
+//        if (castSource.getVAlarms() != null)
+//        {
+//            if (getVAlarms() == null)
+//            {
+//                setVAlarms(FXCollections.observableArrayList());
+//            }
+//            castSource.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
+//        }
+//    }
     
     @Override
     public void copyInto(VParent destination)
     {
         super.copyInto(destination);
-
         ((VChild) destination).setParent(getParent());
         VLocatable<?> castDestination = (VLocatable<?>) destination;
         if (getVAlarms() != null)
         {
             if (castDestination.getVAlarms() == null)
             {
-                setVAlarms(FXCollections.observableArrayList());
+                castDestination.setVAlarms(FXCollections.observableArrayList());
             }
-            castDestination.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
+            getVAlarms().forEach(a -> castDestination.getVAlarms().add(new VAlarm(a)));
         }
     }
     

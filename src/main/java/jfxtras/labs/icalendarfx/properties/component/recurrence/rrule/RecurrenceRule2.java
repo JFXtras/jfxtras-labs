@@ -23,7 +23,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
@@ -386,27 +385,23 @@ public class RecurrenceRule2 extends VParentBase implements VChild
 //        return null;
 //    };
     
-    @Override
-    @Deprecated
-
-    protected Callback<VChild, Void> copyIntoCallback()
-    {        
-        return (child) ->
-        {
-            RRuleElementType type = RRuleElementType.enumFromClass(child.getClass());
-            type.copyElement((RRuleElement<?>) child, this);
-            return null;
-        };
-    }
+//    @Override
+//    @Deprecated
+//
+//    protected Callback<VChild, Void> copyIntoCallback()
+//    {        
+//        return (child) ->
+//        {
+//            RRuleElementType type = RRuleElementType.enumFromClass(child.getClass());
+//            type.copyElement((RRuleElement<?>) child, this);
+//            return null;
+//        };
+//    }
     
     @Override
     public void copyInto(VParent destination)
     {
-        if (! (destination instanceof RecurrenceRule2))
-        {
-            throw new IllegalArgumentException("A RecurrenceRule2 can only be copied into another RecurrenceRule2 not a " + destination.getClass().getSimpleName());
-        }
-//        ((VChild) destination).setParent(getParent());
+        super.copyInto(destination);
         childrenUnmodifiable().forEach((childSource) -> 
         {
             RRuleElementType type = RRuleElementType.enumFromClass(childSource.getClass());
@@ -480,7 +475,8 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     public RecurrenceRule2(RecurrenceRule2 source)
     {
         this();
-        copyChildrenFrom(source);
+        source.copyInto(this);
+//        copyChildrenFrom(source);
     }
     
     /** Parse component from content line */

@@ -10,6 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
@@ -451,35 +452,65 @@ public class VTimeZone extends VCommon<VTimeZone> implements VLastModified<VTime
         }
     }
     
-    /** copy STANDARD and DAYLIGHT subcomponents */
     @Override
-    public void copyChildrenFrom(VParent source)
+    public void copyInto(VParent destination)
     {
-        super.copyChildrenFrom(source);
-        VTimeZone castSource = (VTimeZone) source;
-        if (castSource.getStandardOrDaylight() != null)
+        super.copyInto(destination);
+        ((VChild) destination).setParent(getParent());
+        VTimeZone castDestination = (VTimeZone) destination;
+        if (getStandardOrDaylight() != null)
         {
-            if (getStandardOrDaylight() == null)
+            if (castDestination.getStandardOrDaylight() == null)
             {
-                setStandardOrDaylight(FXCollections.observableArrayList());
+                castDestination.setStandardOrDaylight(FXCollections.observableArrayList());
             }
-            castSource.getStandardOrDaylight().forEach(a -> 
+            getStandardOrDaylight().forEach(s -> 
             {
-                final StandardOrDaylight<?> newComponent;
-                if (a instanceof StandardTime)
+                final StandardOrDaylight<?> newSubcomponent;
+                if (s instanceof StandardTime)
                 {
-                    newComponent = new StandardTime((StandardTime) a);
-                } else if (a instanceof DaylightSavingTime)
+                    newSubcomponent = new StandardTime((StandardTime) s);
+                } else if (s instanceof DaylightSavingTime)
                 {
-                    newComponent = new DaylightSavingTime((DaylightSavingTime) a);                    
+                    newSubcomponent = new DaylightSavingTime((DaylightSavingTime) s);                    
                 } else
                 {
-                    throw new IllegalArgumentException("Unsupported time zone subcomponent class:" + a.getClass());
+                    throw new IllegalArgumentException("Unsupported time zone subcomponent class:" + s.getClass());
                 }
-                getStandardOrDaylight().add(newComponent);
+                castDestination.getStandardOrDaylight().add(newSubcomponent);
             });
         }
     }
+    
+//    /** copy STANDARD and DAYLIGHT subcomponents */
+//    @Override
+//    public void copyChildrenFrom(VParent source)
+//    {
+//        super.copyChildrenFrom(source);
+//        VTimeZone castSource = (VTimeZone) source;
+//        if (castSource.getStandardOrDaylight() != null)
+//        {
+//            if (getStandardOrDaylight() == null)
+//            {
+//                setStandardOrDaylight(FXCollections.observableArrayList());
+//            }
+//            castSource.getStandardOrDaylight().forEach(a -> 
+//            {
+//                final StandardOrDaylight<?> newComponent;
+//                if (a instanceof StandardTime)
+//                {
+//                    newComponent = new StandardTime((StandardTime) a);
+//                } else if (a instanceof DaylightSavingTime)
+//                {
+//                    newComponent = new DaylightSavingTime((DaylightSavingTime) a);                    
+//                } else
+//                {
+//                    throw new IllegalArgumentException("Unsupported time zone subcomponent class:" + a.getClass());
+//                }
+//                getStandardOrDaylight().add(newComponent);
+//            });
+//        }
+//    }
     
     @Override // include STANDARD or DAYLIGHT Subcomponents
     public boolean equals(Object obj)

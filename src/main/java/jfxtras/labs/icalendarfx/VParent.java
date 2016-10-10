@@ -19,13 +19,13 @@ public interface VParent extends VElement
      */
     List<VChild> childrenUnmodifiable();
     
-    /**
-     * Copy {@link VChild} elements from source into this {@link VParent}
-     */
-    void copyChildrenFrom(VParent source);
+//    /**
+//     * Copy {@link VChild} elements from source into this {@link VParent}
+//     */
+//    void copyChildrenFrom(VParent source);
     
     /**
-     * Copy {@link VChild} elements from this into destination {@link VParent}
+     * Copy this {@link VParent} into destination {@link VParent}
      */
     void copyInto(VParent destination);
 }
