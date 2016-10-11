@@ -638,11 +638,14 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     public boolean equals(Object obj)
     {
         boolean childrenEquals = super.equals(obj);
+        System.out.println("childrenEquals:" + childrenEquals);
         if (! childrenEquals) return false;
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
         boolean valueEquals = (getValue() == null) ? testObj.getValue() == null : getValue().equals(testObj.getValue());
+        System.out.println("valueEquals:" + valueEquals);
         if (! valueEquals) return false;
         boolean nameEquals = name().equals(testObj.name());
+        System.out.println("nameEquals:" + nameEquals);
         return nameEquals;
     }
 

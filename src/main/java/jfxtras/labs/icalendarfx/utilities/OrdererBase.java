@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -107,9 +108,12 @@ public class OrdererBase implements Orderer
         { // add existing elements to sort order
             list.forEach(vChild ->  
             {
-                elementSortOrderMap.put(vChild, sortOrderCounter);
-                vChild.setParent(parent);
-                sortOrderCounter += 100;
+                if (elementSortOrderMap.get(vChild) == null)
+                {
+                    elementSortOrderMap.put(vChild, sortOrderCounter);
+                    vChild.setParent(parent);
+                    sortOrderCounter += 100;
+                }
             });
         }
     }
@@ -163,5 +167,21 @@ public class OrdererBase implements Orderer
                 });
         
         return Collections.unmodifiableList(content);
+    }
+    
+    @Override
+    public void replaceList(ObservableList<? extends VChild> oldList, ObservableList<? extends VChild> newList)
+    {
+        Iterator<? extends VChild> newItemIterator = newList.iterator();
+        Iterator<Integer> oldSortValueIterator = oldList.stream()
+                .map(c -> elementSortOrderMap.get(c))
+                .iterator();
+        while (oldSortValueIterator.hasNext() && newItemIterator.hasNext())
+        {
+            VChild newItem = newItemIterator.next();
+            Integer value = oldSortValueIterator.next();
+            elementSortOrderMap.put(newItem, value);
+        }
+        oldList.clear();
     }
 }

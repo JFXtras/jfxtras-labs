@@ -57,7 +57,6 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
                 vComponentOriginal
         };
         List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponentCopy, params).revise();
-        System.out.println("save:" + result);
         iTIPMessagesProperty().set(result);
     }
     

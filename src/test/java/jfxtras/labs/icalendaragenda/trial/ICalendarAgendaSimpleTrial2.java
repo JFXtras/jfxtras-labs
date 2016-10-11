@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.trial;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -30,8 +31,8 @@ public class ICalendarAgendaSimpleTrial2 extends Application
     public void start(Stage primaryStage) {
         VCalendar vCalendar = new VCalendar();
         VEvent vEvent = new VEvent()
-                .withDateTimeStart(LocalDateTime.now().minusMonths(1))
-                .withDateTimeEnd(LocalDateTime.now().minusMonths(1).plusHours(1))
+                .withDateTimeStart(LocalDateTime.now().minusMonths(1).with(ChronoField.MILLI_OF_SECOND, 0))
+                .withDateTimeEnd(LocalDateTime.now().minusMonths(1).plusHours(1).with(ChronoField.MILLI_OF_SECOND, 0))
                 .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
                 .withSummary("Example Daily Event")
                 .withRecurrenceRule("RRULE:FREQ=DAILY")

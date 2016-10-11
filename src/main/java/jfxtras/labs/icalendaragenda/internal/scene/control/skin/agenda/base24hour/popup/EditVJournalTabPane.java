@@ -56,12 +56,14 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
     
     @Override
     public void setupData(
-            VJournal vComponent,
+            VJournal vComponentOriginal,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
-        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
-        vComponentOriginal = new VJournal(vComponent);
+        this.vComponentOriginal = vComponentOriginal;
+        vComponentCopy = new VJournal(vComponentOriginal);
+        super.setupData(vComponentCopy, startRecurrence, endRecurrence, categories);
+//        vComponentOriginal = new VJournal(vComponent);
     }
 }

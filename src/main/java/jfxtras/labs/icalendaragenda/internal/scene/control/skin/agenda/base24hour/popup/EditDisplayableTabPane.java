@@ -80,7 +80,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         loadFxml(EditDescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
-    @FXML    @Deprecated
+    @FXML
     void handleSaveButton()
     {
         removeEmptyProperties();
@@ -118,12 +118,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
     
     @FXML private void handleCancelButton()
     {
-        // TODO - WITH PUBLISH IN MIND, I THINK THIS SHOULD RETURN NULL (MUST BE EDITING A COPY OF ORIGINAL THAT IS ABANDONED)
-//        vComponents.remove(vComponent);
-//        vComponents.add(vComponentOriginalCopy);
         iTIPMessagesProperty().set(Collections.emptyList());
-//        newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden
-//        isFinished.set(true);
     }
     
     @FXML private void handleDeleteButton()

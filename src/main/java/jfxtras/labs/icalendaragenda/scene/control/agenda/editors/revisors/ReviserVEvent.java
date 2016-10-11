@@ -5,7 +5,6 @@ import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
 
-import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;

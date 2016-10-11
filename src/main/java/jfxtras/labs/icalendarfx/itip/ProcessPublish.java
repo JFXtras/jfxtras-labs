@@ -167,6 +167,7 @@ public class ProcessPublish implements Processable
                 log.add("Can't process non-displayble component method (not implemented):" + System.lineSeparator() + c.toContent());
             }
         });
+        System.out.println("log:" + log);
         return log;
     }
 

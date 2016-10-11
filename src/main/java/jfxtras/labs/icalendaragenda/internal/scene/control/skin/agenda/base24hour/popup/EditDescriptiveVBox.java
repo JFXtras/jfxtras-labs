@@ -227,7 +227,6 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
         // store group name changes by each character typed
         categoryTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
-            System.out.println("listener2:" + newSelection);
             int i = categorySelectionGridPane.getCategorySelected();
             if (! categories.get(i).equals(newSelection))
             {
@@ -241,7 +240,6 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
         // verify category is unique
         categoryTextField.focusedProperty().addListener((obs, oldValue, newValue) ->
         {
-            System.out.println("listener1:" + newValue);
             if (newValue)
             {
                 // save initial value
@@ -267,7 +265,6 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
             }
         });
         String initialCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
-        System.out.println("initialCategory:" + initialCategory);
         categorySelectionGridPane.setupData(initialCategory, categories);
         
         vComponentEdited.getDateTimeStart().valueProperty().addListener(dateTimeStartListener);
@@ -299,7 +296,6 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
      */
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
-        System.out.println("handleWholeDayChange:");
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         if (newSelection)

@@ -24,12 +24,15 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     
     @Override
     public void setupData(
-            VTodo vComponent,
+            VTodo vComponentOriginal,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
-        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
-        vComponentOriginal = new VTodo(vComponent);
+        this.vComponentOriginal = vComponentOriginal;
+        vComponentCopy = new VTodo(vComponentOriginal);
+        super.setupData(vComponentCopy, startRecurrence, endRecurrence, categories);
+//        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
+//        vComponentOriginal = new VTodo(vComponent);
     }
 }

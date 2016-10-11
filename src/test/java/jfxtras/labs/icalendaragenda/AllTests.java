@@ -21,7 +21,7 @@ import jfxtras.labs.icalendaragenda.misc.ComponentChangeDialogTest;
 import jfxtras.labs.icalendaragenda.misc.MakeAppointmentsTest;
 import jfxtras.labs.icalendaragenda.popup.PopupBindingsTest;
 import jfxtras.labs.icalendaragenda.popup.PopupRecurrenceDescriptionTest;
-import jfxtras.labs.icalendaragenda.popup.RecurrenceExceptionsTests;
+import jfxtras.labs.icalendaragenda.popup.ExceptionDateTests;
 import jfxtras.labs.icalendaragenda.popup.VEventMakeiTIPTest;
 import jfxtras.labs.icalendaragenda.popup.VJournalMakeiTIPTest;
 import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
@@ -47,7 +47,7 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     // popup tests
     PopupBindingsTest.class,
     PopupRecurrenceDescriptionTest.class,
-    RecurrenceExceptionsTests.class,
+    ExceptionDateTests.class,
     VEventMakeiTIPTest.class,
     VJournalMakeiTIPTest.class,
     VTodoMakeiTIPTest.class,

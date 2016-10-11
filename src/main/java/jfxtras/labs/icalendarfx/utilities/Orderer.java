@@ -62,4 +62,20 @@ public interface Orderer
     void registerSortOrderProperty(ObjectProperty<? extends VChild> property);
     /** Unregister an ObjectProperty with the {@link Orderer} */
     void unregisterSortOrderProperty(ObjectProperty<? extends VChild> property);
+
+    /**
+     * Replace the elements in the oldList with those in newList.  Copies sort order values from the
+     * elements of oldList when newList items are added to the elementSortOrderMap.
+     * 
+     * If the number of elements in oldList is less than or equal to the number of elements in the newList then all
+     * the elements in the newList get the sort order of the elements in the oldList, in the same order they are found in the map.
+     * 
+     * If the number of elements in the oldList is greater than the number of elements in the newList then only the
+     * number of elements in the oldList have their sort order copied to the newList elements.  Remaining newList elements
+     * will get new sort order values when they are added.
+     * 
+     * @param oldList
+     * @param newList
+     */
+    void replaceList(ObservableList<? extends VChild> oldList, ObservableList<? extends VChild> newList);
 }

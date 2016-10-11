@@ -48,7 +48,7 @@ public class ReviseOneTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
 
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
@@ -94,7 +94,7 @@ public class ReviseOneTest
                 .withStartOriginalRecurrence(startOriginalRecurrence2)
                 .withStartRecurrence(startRecurrence2)
                 .withVComponentEdited(vComponentEditedIndividual)
-                .withVComponentOriginalCopy(vComponentIndividualCopy);
+                .withVComponentOriginal(vComponentIndividualCopy);
         iTIPMessages = reviser2.revise();
         
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
@@ -145,7 +145,7 @@ public class ReviseOneTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));
@@ -204,7 +204,7 @@ public class ReviseOneTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
         iTIPMessages.forEach(inputVCalendar -> mainVCalendar.processITIPMessage(inputVCalendar));

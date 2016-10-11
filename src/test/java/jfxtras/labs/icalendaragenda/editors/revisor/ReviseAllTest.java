@@ -49,7 +49,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal)
+                .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
         String expectediTIPMessage =
@@ -97,7 +97,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal)
+                .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
         String expectediTIPMessage =
@@ -142,7 +142,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal)
+                .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
         String expectediTIPMessage =
@@ -193,7 +193,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =
@@ -258,7 +258,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
         
         String expectediTIPMessage =
@@ -351,7 +351,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
 
         String expectediTIPMessage =
@@ -429,7 +429,7 @@ public class ReviseAllTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginalCopy(vComponentOriginal);
+                .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
 
         String expectediTIPMessage =

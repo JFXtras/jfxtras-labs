@@ -30,17 +30,16 @@ import javafx.scene.layout.HBox;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditRecurrenceRuleVBox;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
+import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
 /**
@@ -49,25 +48,19 @@ import jfxtras.test.TestUtil;
  * @author David Bal
  *
  */
-public class RecurrenceExceptionsTests extends VEventPopupTestBase
+public class ExceptionDateTests extends VEventPopupTestBase
 {
     @Test
     public void canMakeExceptionList()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         
@@ -88,20 +81,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canMakeExceptionListWholeDay() // Whole day appointments
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         
@@ -144,20 +131,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canMakeExceptionListWeekly()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         
@@ -194,16 +175,8 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
         CheckBox th = (CheckBox) find("#thursdayCheckBox");
         CheckBox fr = (CheckBox) find("#fridayCheckBox");
         CheckBox sa = (CheckBox) find("#saturdayCheckBox");
-        
-        // Get weekly properties
-        RecurrenceRule2 rrule = vevent.getRecurrenceRule().getValue();
-        Frequency f = rrule.getFrequency();
-        assertEquals(FrequencyType.WEEKLY, f.getValue());
-        ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
 
         // Check initial state
-        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.TUESDAY);
-        assertEquals(expectedDOW, rule.dayOfWeekWithoutOrdinalList());
         HBox weeklyHBox = find("#weeklyHBox");
         assertTrue(weeklyHBox.isVisible());       
         assertFalse(su.isSelected());
@@ -327,6 +300,15 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
             assertEquals(expectedDates, exceptions);
         }
         
+        click("#saveRepeatButton");
+        List<VCalendar> messages = getEditComponentPopup().iTIPMessagesProperty().get();
+        assertEquals(1, messages.size());
+        VCalendar message = messages.get(0);
+        assertEquals(1, message.getVEvents().size());
+        VEvent newVEvent = message.getVEvents().get(0);
+        RecurrenceRule2 rrule = newVEvent.getRecurrenceRule().getValue();
+        ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
+        
         List<DayOfWeek> expectedDaysOfWeek = Arrays.asList(
                 DayOfWeek.MONDAY
               , DayOfWeek.TUESDAY
@@ -343,20 +325,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canMakeExceptionListMonthly()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
@@ -408,20 +384,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canMakeExceptionListYearly()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
@@ -449,20 +419,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canMakeExceptionListEndsCriteria()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+        
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
@@ -543,20 +507,14 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
     @Test
     public void canAddException2()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(1);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 10, 10, 0),
+                    LocalDateTime.of(2015, 11, 10, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
@@ -569,21 +527,9 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
         Temporal e1 = exceptionComboBox.getItems().get(2);
         TestUtil.runThenWaitForPaintPulse( () -> exceptionComboBox.getSelectionModel().select(e1) );
         click("#addExceptionButton");
+        
         {
-            Set<Temporal> vExceptions = vevent.getExceptionDates().get(0).getValue();
-            assertEquals(1, vExceptions.size());
-            List<Temporal> exceptions = vExceptions
-                    .stream()
-                    .map(a -> (LocalDateTime) a).sorted()
-                    .collect(Collectors.toList());
-            List<Temporal> expectedExceptions = new ArrayList<>(Arrays.asList(
-                    LocalDateTime.of(2015, 11, 11, 10, 0)
-                    ));
-            assertEquals(expectedExceptions, exceptions);
-            assertEquals(expectedExceptions, exceptionsListView.getItems());            
-        }
-
-        { // verify added exception is not in exceptionComboBox list
+            // verify date/time removal from exception combo box
             List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
@@ -594,6 +540,11 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
                   , LocalDateTime.of(2015, 11, 14, 10, 0)
                     ));
             assertEquals(expectedDates, exceptions);
+            // verify date/time addition to exception list
+            List<Temporal> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptionsListView.getItems()); 
         }
 
         // Add another exceptions and check
@@ -601,21 +552,7 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
         TestUtil.runThenWaitForPaintPulse( () -> exceptionComboBox.getSelectionModel().select(e2) );
         click("#addExceptionButton");
         {
-            Set<Temporal> vExceptions = vevent.getExceptionDates().get(0).getValue();
-            assertEquals(2, vExceptions.size());
-            List<LocalDateTime> exceptions = vExceptions
-                    .stream()
-                    .map(a -> (LocalDateTime) a).sorted()
-                    .collect(Collectors.toList());
-            List<LocalDateTime> expectedExceptions = new ArrayList<>(Arrays.asList(
-                    LocalDateTime.of(2015, 11, 9, 10, 0)
-                  , LocalDateTime.of(2015, 11, 11, 10, 0)
-                    ));
-            assertEquals(expectedExceptions, exceptions);
-            assertEquals(expectedExceptions, exceptionsListView.getItems()); 
-        }
-
-        { // verify added exceptions are not in exceptionComboBox list
+            // verify date/time removal from exception combo box
             List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
@@ -625,27 +562,41 @@ public class RecurrenceExceptionsTests extends VEventPopupTestBase
                   , LocalDateTime.of(2015, 11, 14, 10, 0)
                   , LocalDateTime.of(2015, 11, 15, 10, 0)
                     ));
+            // verify date/time addition to exception list
             assertEquals(expectedDates, exceptions);
+            List<LocalDateTime> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptionsListView.getItems()); 
         }
+        
+        click("#saveRepeatButton");
+        List<VCalendar> messages = getEditComponentPopup().iTIPMessagesProperty().get();
+        assertEquals(1, messages.size());
+        VCalendar message = messages.get(0);
+        
+        VCalendar expectedMessage = new VCalendar()
+                .withMethod(MethodType.REQUEST)
+                .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
+                .withVersion(Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION)
+                .withVEvents(ICalendarStaticComponents.getDaily1()
+                        .withExceptionDates(LocalDateTime.of(2015, 11, 9, 10, 0), LocalDateTime.of(2015, 11, 11, 10, 0))
+                        .withSequence(1));
+        assertEquals(expectedMessage, message);
     }
     
     @Test
     public void canRemoveException2()
     {
-        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDailyWithException1();
-        myCalendar.getVEvents().add(vevent);
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
+
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             getEditComponentPopup().setupData(
                     vevent,
-                    appointment.getStartTemporal(),
-                    appointment.getEndTemporal(),
+                    LocalDateTime.of(2015, 11, 9, 10, 0),
+                    LocalDateTime.of(2015, 11, 9, 11, 0),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");

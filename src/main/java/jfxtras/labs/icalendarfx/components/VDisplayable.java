@@ -97,6 +97,11 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     {
         if (attachments != null)
         {
+            if (this.attachments != null)
+            {
+                // replace sort order in new list
+                orderer().replaceList(this.attachments.get(), attachments);
+            }
             orderer().registerSortOrderProperty(attachments);
         } else
         {
@@ -113,20 +118,41 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    public ObservableList<Categories> getCategories() { return categories; }
-    private ObservableList<Categories> categories;
+    public ObjectProperty<ObservableList<Categories>> categoriesProperty()
+    {
+        if (categories == null)
+        {
+            categories = new SimpleObjectProperty<>(this, PropertyType.CATEGORIES.toString());
+        }
+        return categories;
+    }
+    public ObservableList<Categories> getCategories()
+    {
+        return (categories == null) ? null : categories.get();
+    }
+    private ObjectProperty<ObservableList<Categories>> categories;
     public void setCategories(ObservableList<Categories> categories)
     {
         if (categories != null)
         {
+            if (this.categories != null)
+            {
+                // replace sort order in new list
+                // TODO - Is there a way to encapsulate this in the orderer without this method call?
+                orderer().replaceList(this.categories.get(), categories);
+            }
             orderer().registerSortOrderProperty(categories);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.categories);
+            orderer().unregisterSortOrderProperty(this.categories.get());
         }
-        this.categories = categories;
+        categoriesProperty().set(categories);
     }
-    public T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
+    public T withCategories(ObservableList<Categories> categories)
+    {
+        setCategories(categories);
+        return (T) this;
+    }
     public T withCategories(String...categories)
     {
         if (categories != null)
@@ -406,6 +432,7 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
      * 
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
+    @Override
     public ObjectProperty<ObservableList<RecurrenceDates>> recurrenceDatesProperty()
     {
         if (recurrenceDates == null)
