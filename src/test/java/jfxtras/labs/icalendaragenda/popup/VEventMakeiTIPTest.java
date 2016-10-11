@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.control.CheckBox;
@@ -34,6 +35,7 @@ import jfxtras.test.TestUtil;
 public class VEventMakeiTIPTest extends VEventPopupTestBase
 {
     @Test // simple press save
+    @Ignore
     public void canSaveWithNoEdit()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -57,6 +59,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
+    @Ignore
     public void canCancelEdit()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -88,6 +91,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
+    @Ignore
     public void canEditSimpleVEvent()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -136,6 +140,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
+    @Ignore
     public void canEditThisAndFuture()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -206,6 +211,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
+    @Ignore
     public void canDeleteAll()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -247,6 +253,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     
     // edit descriptive properties of a repeating event to make a special recurrence instance
     @Test
+    @Ignore
     public void canEditDescribableProperties()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -360,9 +367,11 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
+//        TestUtil.sleep(3000);
     }
     
     @Test
+    @Ignore
     public void canChangeToWholeDayAll()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1()
@@ -377,6 +386,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
                     AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
+        TestUtil.sleep(3000);
         click(wholeDayCheckBox);
 
         LocalDateTextField start = find("#startDateTextField");
@@ -415,6 +425,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test // testing event that has LocalDate start on a different date that the zoned "Z" date challenges the popup UNTIL checker
+    @Ignore
     public void canChangeUntilToForever()
     {
         Until until = new Until(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 23, 30), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z")));
@@ -470,6 +481,7 @@ public class VEventMakeiTIPTest extends VEventPopupTestBase
     }
     
     @Test
+    @Ignore
     public void canChangeCountToForever()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1()

@@ -23,7 +23,7 @@ import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;
  * @author David Bal
  *
  */
-public class ICalendarAgendaTrial1 extends Application
+public class ICalendarAgendaAdvancedTrial extends Application
 {
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()
@@ -53,7 +53,7 @@ public class ICalendarAgendaTrial1 extends Application
 	{
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
-        mainLoader.setLocation(ICalendarAgendaTrial1.class.getResource("view/Calendar.fxml"));
+        mainLoader.setLocation(ICalendarAgendaAdvancedTrial.class.getResource("view/Calendar.fxml"));
         BorderPane root = mainLoader.load();
         CalendarController controller = mainLoader.getController();
         

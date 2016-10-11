@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Objects;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
@@ -357,17 +357,17 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //        return (U) this;
 //    }
 
-//    @Override
-//    @Deprecated
-//    public Callback<VChild, Void> copyIntoCallback()
-//    {        
-//        return (child) ->
-//        {
-//            ParameterType type = ParameterType.enumFromClass(child.getClass());
-//            type.copyParameter((Parameter<?>) child, this);
-//            return null;
-//        };
-//    }
+    @Override
+    @Deprecated
+    public Callback<VChild, Void> copyIntoCallback()
+    {        
+        return (child) ->
+        {
+            ParameterType type = ParameterType.enumFromClass(child.getClass());
+            type.copyParameter((Parameter<?>) child, this);
+            return null;
+        };
+    }
     
     @Override
     public void copyInto(VParent destination)
@@ -640,7 +640,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         boolean childrenEquals = super.equals(obj);
         if (! childrenEquals) return false;
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
-        boolean valueEquals = Objects.equal(this.getValue(), testObj.getValue());
+        boolean valueEquals = (getValue() == null) ? testObj.getValue() == null : getValue().equals(testObj.getValue());
         if (! valueEquals) return false;
         boolean nameEquals = name().equals(testObj.name());
         return nameEquals;

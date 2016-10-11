@@ -327,7 +327,7 @@ public class ICalendarAgenda extends Agenda
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
         VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
-        System.out.println(vComponent0.toContent());
+//        System.out.println(vComponent0.toContent());
 //        System.out.println(getVCalendar().toContent());
 
         alert.initOwner(this.getScene().getWindow());
@@ -478,7 +478,6 @@ public class ICalendarAgenda extends Agenda
                 vComponent = getVComponentFactory().createVComponent(appointment);
                 // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.
                 // Throwing an exception will leave the mouse unresponsive.
-//                System.out.println("ERROR: no component found - popup can't be displayed");
             }
 //            {
                 // make popup stage
@@ -493,6 +492,7 @@ public class ICalendarAgenda extends Agenda
                         getCategories()
                         };
                 EditDisplayableScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
+//                EditDisplayableScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
                 popupScene.getStylesheets().addAll(getUserAgentStylesheet(), ICalendarAgenda.ICALENDAR_STYLE_SHEET);
                 popupStage.setScene(popupScene);
                 
@@ -514,12 +514,11 @@ public class ICalendarAgenda extends Agenda
                  * Add listener to newVComponentsProperty to get resulting VComponents
                  * Remove SEQUENCE if Appointment is new
                  */
-//                Boolean isNew1 = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
-//                Boolean isNew2 = (isNew1 == null) ? false : isNew1;
                 popupScene.getEditDisplayableTabPane().iTIPMessagesProperty().addListener((obs, oldValue, newValue) ->
                 {
                     newValue.forEach(message -> getVCalendar().processITIPMessage(message));
                     popupStage.hide();
+                    refresh();
                 });
 //            }
             return null;

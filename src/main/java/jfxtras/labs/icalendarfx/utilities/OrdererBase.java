@@ -51,9 +51,12 @@ public class OrdererBase implements Orderer
                 {
                     change.getAddedSubList().forEach(vChild ->  
                     {
-                        elementSortOrderMap.put(vChild, sortOrderCounter);
-                        vChild.setParent(parent);
-                        sortOrderCounter += 100;
+                        if (vChild != null)
+                        {
+                            elementSortOrderMap.put(vChild, sortOrderCounter);
+                            vChild.setParent(parent);
+                            sortOrderCounter += 100;
+                        }
                     });
                 } else
                 {

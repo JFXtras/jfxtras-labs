@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.content.ContentLineStrategy;
 import jfxtras.labs.icalendarfx.utilities.Orderer;
 import jfxtras.labs.icalendarfx.utilities.OrdererBase;
@@ -39,12 +40,13 @@ public abstract class VParentBase implements VParent
         this.contentLineGenerator = contentLineGenerator;
     }
     
-//    /** Strategy to copy subclass's children
-//     * This method MUST be overridden in subclasses */
-//    protected Callback<VChild, Void> copyIntoCallback()
-//    {
-//        throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
-//    };
+    /** Strategy to copy subclass's children
+     * This method MUST be overridden in subclasses */
+    @Deprecated
+    protected Callback<VChild, Void> copyIntoCallback()
+    {
+        throw new RuntimeException("Can't copy children.  copyChildCallback isn't overridden in subclass." + this.getClass());
+    };
 
     @Override
     public List<VChild> childrenUnmodifiable()

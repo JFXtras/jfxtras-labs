@@ -19,6 +19,8 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VPrimary;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -186,14 +188,19 @@ public class SimplePublishTest
         assertEquals(2, vComponents.size());
         Collections.sort(vComponents, VPrimary.VPRIMARY_COMPARATOR);
         VEvent myComponentRepeats = vComponents.get(0);
-        
+
+        // confirm change
         assertEquals(vComponentOriginal, myComponentRepeats);
         VEvent myComponentIndividual = vComponents.get(1);
-        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentIndividual.getDateTimeStart().getValue());        
-        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentIndividual.getDateTimeEnd().getValue());        
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentRepeats.getDateTimeStart().getValue());        
-        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentRepeats.getDateTimeEnd().getValue()); 
-        assertEquals("Edited summary", myComponentIndividual.getSummary().getValue());
+        VEvent expectedComponentIndividual = ICalendarStaticComponents.getDaily1()
+                .withSummary("Edited summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 16, 9, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 16, 10, 30))
+                .withDateTimeStamp(new DateTimeStamp(myComponentIndividual.getDateTimeStamp()))
+                .withRecurrenceRule((RecurrenceRule) null)
+                .withRecurrenceId("20160516T100000")
+                .withSequence(1);
+        assertEquals(expectedComponentIndividual, myComponentIndividual);
                 
         // Check child components
         assertEquals(Arrays.asList(myComponentIndividual), myComponentRepeats.recurrenceChildren());
@@ -222,12 +229,21 @@ public class SimplePublishTest
 
         assertEquals(2, vComponents.size());
         
-        // Check child components
+        // confirm change
         VEvent myComponentIndividual2 = vComponents.get(1);
+        VEvent expectedComponentIndividual2 = ICalendarStaticComponents.getDaily1()
+                .withSummary("new summary")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 16, 12, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 16, 13, 0))
+                .withDateTimeStamp(new DateTimeStamp(myComponentIndividual2.getDateTimeStamp()))
+                .withRecurrenceRule((RecurrenceRule) null)
+                .withRecurrenceId("20160516T100000")
+                .withSequence(2);
+        assertEquals(expectedComponentIndividual2, myComponentIndividual2);
+
+        // Check child components
         assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.recurrenceChildren());
-        assertEquals("new summary", myComponentIndividual2.getSummary().getValue());
         assertEquals(Collections.emptyList(), myComponentIndividual2.recurrenceChildren());
-//        System.out.println(mainVCalendar);
     }
     
     /* edits a repeatable event, with one recurrence, with ALL-IGNORE-RECURRENCES selection.

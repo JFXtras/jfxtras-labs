@@ -31,14 +31,14 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
     {
         super.handleSaveButton();        
         Object[] params = new Object[] {
-                vComponentOriginalCopy,
+                vComponentOriginal,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK,
                 editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
-                vComponent,
-                vComponentOriginalCopy
+                vComponentCopy,
+                vComponentOriginal
         };
-        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponentCopy, params).revise();
         iTIPMessagesProperty().set(result);
 //        List<VJournal> result = (List<VJournal>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
 //        newVComponentsProperty().set(result);
@@ -50,7 +50,7 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
     {
         if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
         {
-            vComponent.setDescriptions(null);
+            vComponentCopy.setDescriptions(null);
         }
     }
     
@@ -62,6 +62,6 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
             List<String> categories)
     {
         super.setupData(vComponent, startRecurrence, endRecurrence, categories);
-        vComponentOriginalCopy = new VJournal(vComponent);
+        vComponentOriginal = new VJournal(vComponent);
     }
 }

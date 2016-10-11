@@ -43,7 +43,7 @@ public class ReviseNonRepeatingTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginal(vComponentOriginal);
+                .withVComponentOriginalCopy(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =
@@ -92,7 +92,7 @@ public class ReviseNonRepeatingTest
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginal(vComponentOriginal);
+                .withVComponentOriginalCopy(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
         String expectediTIPMessage =

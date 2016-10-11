@@ -88,31 +88,31 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
 
     void removeEmptyProperties()
     {
-        if (vComponent.getRecurrenceRule() != null)
+        if (vComponentCopy.getRecurrenceRule() != null)
         {
             if (recurrenceRuleVBox.frequencyComboBox.getValue() == FrequencyType.WEEKLY && recurrenceRuleVBox.dayOfWeekList.isEmpty())
             {
                 canNotHaveZeroDaysOfWeek();
-            } else if (! vComponent.getRecurrenceRule().isValid())
+            } else if (! vComponentCopy.getRecurrenceRule().isValid())
             {
-                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
+                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponentCopy.errors());
             }
         }
         
         if (editDescriptiveVBox.summaryTextField.getText().isEmpty())
         {
-            vComponent.setSummary((Summary) null); 
+            vComponentCopy.setSummary((Summary) null); 
         }
         
         if (editDescriptiveVBox.categoryTextField.getText().isEmpty())
         {
-            vComponent.setCategories(null); 
+            vComponentCopy.setCategories(null); 
         }
 
        // nullify Interval if value equals default (avoid unnecessary content output)
-        if ((vComponent.getRecurrenceRule() != null) && (recurrenceRuleVBox.intervalSpinner.getValue() == Interval.DEFAULT_INTERVAL))
+        if ((vComponentCopy.getRecurrenceRule() != null) && (recurrenceRuleVBox.intervalSpinner.getValue() == Interval.DEFAULT_INTERVAL))
         {
-            vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
+            vComponentCopy.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }
     }
     
@@ -134,7 +134,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
                 editDescriptiveVBox.startOriginalRecurrence
 //                vComponents
         };
-        List<VCalendar> result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+        List<VCalendar> result = SimpleDeleterFactory.newDeleter(vComponentCopy, params).delete();
         iTIPMessagesProperty().set(result);
 
         
@@ -151,38 +151,38 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
         }
     }
     
-    T vComponent;
-    T vComponentOriginalCopy;
+    T vComponentCopy;
+    T vComponentOriginal;
 //    List<T> vComponents;
 
     /**
      * Provide necessary data to setup
      * 
-     * @param vComponent - component to be edited
+     * @param vComponentCopy - component to be edited
      * @param startRecurrence - start of selected recurrence
      * @param endRecurrence - end of selected recurrence
      * @param categories - list of category names
      */
     public void setupData(
-            T vComponent,
+            T vComponentCopy,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories
             )
     {
-        this.vComponent = vComponent;
-        editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
+        this.vComponentCopy = vComponentCopy;
+        editDescriptiveVBox.setupData(vComponentCopy, startRecurrence, endRecurrence, categories);
         
         /* 
          * Shut off repeat tab if vComponent is not a parent
          * Components with RECURRENCE-ID can't add repeat rules (only parent can have repeat rules)
          */
-        if (vComponent.getRecurrenceId() != null)
+        if (vComponentCopy.getRecurrenceId() != null)
         {
             recurrenceRuleTab.setDisable(true);
             recurrenceRuleTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
-        recurrenceRuleVBox.setupData(vComponent, editDescriptiveVBox.startRecurrenceProperty);
+        recurrenceRuleVBox.setupData(vComponentCopy, editDescriptiveVBox.startRecurrenceProperty);
     }
     
     // Displays an alert notifying at least one day of week must be present for weekly frequency

@@ -49,11 +49,13 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     /*
      * VCOMPONENT EDITED
      */
-    /** Gets the value of the edited {@link VDisplayable} */
-    public U getVComponentEdited() { return vComponentEdited; }
-    private U vComponentEdited;
-    /** Sets the value of the edited {@link VDisplayable} */
-    public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
+    /** Gets the value of the edited {@link VDisplayable} copy.  Note: don't pass original or
+     * the changes will be instantaneous and cancel is not possible. */
+    public U getVComponentEdited() { return vComponentEditedCopy; }
+    private U vComponentEditedCopy;
+    /** Sets the value of the edited {@link VDisplayable} copy.  Note: don't pass original or
+     * the changes will be instantenous and cancel is not possible. */
+    public void setVComponentEdited(U vComponentEdited) { this.vComponentEditedCopy = vComponentEdited; }
     /**
      * Sets the value of the edited {@link VDisplayable}
      * 
@@ -76,7 +78,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
      * @return - this class for chaining
      * @see VCalendar
      */
-    public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
+    public T withVComponentOriginalCopy(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
 //    // TODO - CHANGE TO VCALENDAR
 //    /*

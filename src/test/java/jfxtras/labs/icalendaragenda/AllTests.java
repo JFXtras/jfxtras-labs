@@ -8,6 +8,7 @@ import jfxtras.labs.icalendaragenda.agenda.DeleteVEventTest;
 import jfxtras.labs.icalendaragenda.agenda.GraphicallyChangeTest;
 import jfxtras.labs.icalendaragenda.agenda.MakeNewVEventsTest;
 import jfxtras.labs.icalendaragenda.agenda.RenderVEventsTest;
+import jfxtras.labs.icalendaragenda.agenda.RevisePopupTest;
 import jfxtras.labs.icalendaragenda.agenda.VEventDisplayPopupTest;
 import jfxtras.labs.icalendaragenda.editors.deletor.DeleteAllTest;
 import jfxtras.labs.icalendaragenda.editors.deletor.DeleteOneTest;
@@ -57,6 +58,7 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     MakeNewVEventsTest.class,
     PopupRecurrenceDescriptionTest.class,
     RenderVEventsTest.class,
+    RevisePopupTest.class,
     VEventDisplayPopupTest.class,
     
               })

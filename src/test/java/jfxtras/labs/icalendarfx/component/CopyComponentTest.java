@@ -209,6 +209,7 @@ END:VEVENT
         VEvent component1 = getWeekly3();
         VEvent component2 = getYearly1();
         component1.copyInto(component2);
+//        component2.copyChildrenFrom(component1);
         String expectedContent = 
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group13" + System.lineSeparator() +

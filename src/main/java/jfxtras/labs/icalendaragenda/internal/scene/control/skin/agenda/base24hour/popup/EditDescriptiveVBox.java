@@ -211,12 +211,16 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
         if (vComponentEdited.getCategories() == null)
         {
             vComponentEdited.withCategories("");
+            categoryTextField.setDisable(true);
+            categoryTextField.setPromptText("Select a category color box"); // TODO - ADD TO RESOURCE BUNDLE
         }
         categorySelectionGridPane.categorySelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
                 Integer i = categorySelectionGridPane.getCategorySelected();
                 String newText = categories.get(i);
+                categoryTextField.setDisable(false);
+                categoryTextField.setPromptText("Enter category name"); // TODO - ADD TO RESOURCE BUNDLE
                 categoryTextField.setText(newText);
             });
 
@@ -263,6 +267,7 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
             }
         });
         String initialCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
+        System.out.println("initialCategory:" + initialCategory);
         categorySelectionGridPane.setupData(initialCategory, categories);
         
         vComponentEdited.getDateTimeStart().valueProperty().addListener(dateTimeStartListener);
@@ -294,6 +299,7 @@ public abstract class EditDescriptiveVBox<T extends VDisplayable<T>> extends VBo
      */
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
+        System.out.println("handleWholeDayChange:");
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         if (newSelection)

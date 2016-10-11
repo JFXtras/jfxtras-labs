@@ -36,9 +36,9 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
     @FXML void handleSaveButton()
     {
         super.handleSaveButton();
-        if (vComponent.getRecurrenceRule() != null)
+        if (vComponentCopy.getRecurrenceRule() != null)
         {
-            RecurrenceRule2 rrule = vComponent.getRecurrenceRule().getValue();
+            RecurrenceRule2 rrule = vComponentCopy.getRecurrenceRule().getValue();
             if (rrule.getFrequency().getValue() == FrequencyType.WEEKLY)
             {
                 if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
@@ -53,11 +53,11 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
                 editDescriptiveVBox.endNewRecurrence,
                 editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
-                vComponent,
-                vComponentOriginalCopy
+                vComponentCopy,
+                vComponentOriginal
         };
-        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
-//        System.out.println("save:" + result);
+        List<VCalendar> result = SimpleRevisorFactory.newReviser(vComponentCopy, params).revise();
+        System.out.println("save:" + result);
         iTIPMessagesProperty().set(result);
     }
     
@@ -67,11 +67,11 @@ public abstract class EditLocatableTabPane<T extends VLocatable<T>> extends Edit
         super.removeEmptyProperties();
         if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
         {
-            vComponent.setDescription((Description) null); 
+            vComponentCopy.setDescription((Description) null); 
         }
         if (editDescriptiveVBox.locationTextField.getText().isEmpty())
         {
-            vComponent.setLocation((Location) null); 
+            vComponentCopy.setLocation((Location) null); 
         }
     }
     

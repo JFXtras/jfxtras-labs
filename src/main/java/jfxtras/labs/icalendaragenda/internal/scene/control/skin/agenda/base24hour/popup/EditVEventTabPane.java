@@ -24,12 +24,13 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
     
     @Override
     public void setupData(
-            VEvent vComponent,
+            VEvent vComponentOriginal,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
     {
-        vComponentOriginalCopy = new VEvent(vComponent);
-        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
+        this.vComponentOriginal = vComponentOriginal;
+        vComponentCopy = new VEvent(vComponentOriginal);
+        super.setupData(vComponentCopy, startRecurrence, endRecurrence, categories);
     }
 }

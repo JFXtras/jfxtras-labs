@@ -37,6 +37,7 @@ public class SimpleEditSceneFactory
      * @param params - necessary parameters, packed in an array, to edit the VComponent
      * @return
      */
+    // TODO - REPLACE params WITH REGULAR PARAMETERS
     public static EditDisplayableScene newScene (VComponent vComponent, Object[] params)
     {
         // params[0] is VCalendar, handled below
@@ -49,7 +50,6 @@ public class SimpleEditSceneFactory
             return new EditVEventScene()
                     .setupData(
                         (VEvent) vComponent,                        // vComponent - component to edit
-//                        ((VCalendar) params[0]).getVEvents(),       // vComponents - collection of components that vComponent is a member
                         startRecurrence,                            // startRecurrence - start of selected recurrence
                         endRecurrence,                              // endRecurrence - end of selected recurrence
                         categories                                  // categories - available category names
@@ -59,7 +59,6 @@ public class SimpleEditSceneFactory
             return new EditVTodoScene()
                     .setupData(
                         (VTodo) vComponent,                        // vComponent - component to edit
-//                        ((VCalendar) params[0]).getVTodos(),       // vComponents - collection of components that vComponent is a member
                         startRecurrence,                           // startRecurrence - start of selected recurrence
                         endRecurrence,                             // endRecurrence - end of selected recurrence
                         categories                                 // categories - available category names
@@ -70,7 +69,70 @@ public class SimpleEditSceneFactory
             return new EditVJournalScene()
                     .setupData(
                         (VJournal) vComponent,                      // vComponent - component to edit
-//                        ((VCalendar) params[0]).getVJournals(),     // vComponents - collection of components that vComponent is a member
+                        startRecurrence,                            // startRecurrence - start of selected recurrence
+                        endRecurrence,                              // endRecurrence - end of selected recurrence
+                        categories                                  // categories - available category names
+                    );
+        } else if (vComponent instanceof VFreeBusy)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof VTimeZone)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof VAlarm)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof StandardTime)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof DaylightSavingTime)
+        {
+            throw new RuntimeException("not implemented");          
+        } else
+        {
+            throw new RuntimeException("Unsupported VComponent type" + vComponent.getClass());
+        }
+    }
+    
+    /**
+     * Create a Stage to edit the type of VComponent passed as a parameter
+     * 
+     * @param vComponent  component to edit
+     * @param startRecurrence  start of selected recurrence
+     * @param endRecurrence  end of selected recurrence
+     * @param categories  available category names
+     * @return  the new Stage containing an edit popup 
+     */
+    public static EditDisplayableScene newScene (
+            VComponent vComponent,
+            Temporal startRecurrence,
+            Temporal endRecurrence,
+            List<String> categories)
+    {
+        if (vComponent instanceof VEvent)
+        {
+            return new EditVEventScene()
+                    .setupData(
+                        (VEvent) vComponent,                        // vComponent - component to edit
+                        startRecurrence,                            // startRecurrence - start of selected recurrence
+                        endRecurrence,                              // endRecurrence - end of selected recurrence
+                        categories                                  // categories - available category names
+                    );
+        } else if (vComponent instanceof VTodo)
+        {
+            return new EditVTodoScene()
+                    .setupData(
+                        (VTodo) vComponent,                        // vComponent - component to edit
+                        startRecurrence,                           // startRecurrence - start of selected recurrence
+                        endRecurrence,                             // endRecurrence - end of selected recurrence
+                        categories                                 // categories - available category names
+                    );
+           
+        } else if (vComponent instanceof VJournal)
+        {
+            return new EditVJournalScene()
+                    .setupData(
+                        (VJournal) vComponent,                      // vComponent - component to edit
                         startRecurrence,                            // startRecurrence - start of selected recurrence
                         endRecurrence,                              // endRecurrence - end of selected recurrence
                         categories                                  // categories - available category names

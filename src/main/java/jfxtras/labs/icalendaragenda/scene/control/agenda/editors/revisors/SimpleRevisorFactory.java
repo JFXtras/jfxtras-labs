@@ -50,7 +50,7 @@ public class SimpleRevisorFactory
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
                     .withVComponentEdited((VEvent) params[4])
-                    .withVComponentOriginal((VEvent) params[5]);
+                    .withVComponentOriginalCopy((VEvent) params[5]);
         } else if (vComponent instanceof VTodo)
         {
             if (params.length != 6) throw new IllegalArgumentException("Can't create Reviser: Paramaters should be 6 not" + params.length);
@@ -60,7 +60,7 @@ public class SimpleRevisorFactory
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
                     .withVComponentEdited((VTodo) params[4])
-                    .withVComponentOriginal((VTodo) params[5]);
+                    .withVComponentOriginalCopy((VTodo) params[5]);
         } else if (vComponent instanceof VJournal)
         {
             // Note: array is different - endRecurrence is omitted
@@ -70,7 +70,7 @@ public class SimpleRevisorFactory
                     .withStartOriginalRecurrence((Temporal) params[1])
                     .withStartRecurrence((Temporal) params[2])
                     .withVComponentEdited((VJournal) params[3])
-                    .withVComponentOriginal((VJournal) params[4]);
+                    .withVComponentOriginalCopy((VJournal) params[4]);
         } else if (vComponent instanceof VFreeBusy)
         {
             throw new RuntimeException("not implemented");           

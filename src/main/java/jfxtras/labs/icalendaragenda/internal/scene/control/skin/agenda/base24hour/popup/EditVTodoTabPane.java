@@ -30,6 +30,6 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
             List<String> categories)
     {
         super.setupData(vComponent, startRecurrence, endRecurrence, categories);
-        vComponentOriginalCopy = new VTodo(vComponent);
+        vComponentOriginal = new VTodo(vComponent);
     }
 }
