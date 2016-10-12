@@ -36,6 +36,7 @@ import jfxtras.labs.icalendarfx.itip.HandleRecurrencesTest;
 import jfxtras.labs.icalendarfx.itip.SimpleCancelTest;
 import jfxtras.labs.icalendarfx.itip.SimplePublishTest;
 import jfxtras.labs.icalendarfx.itip.WholeDayTest;
+import jfxtras.labs.icalendarfx.misc.FoldingAndUnfoldingTest;
 import jfxtras.labs.icalendarfx.parameter.AlternateTextRepresentationTest;
 import jfxtras.labs.icalendarfx.parameter.CommonNameTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
@@ -98,7 +99,8 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
 @RunWith(Suite.class)
 @SuiteClasses({ 
         
-        // general tests
+        // misc tests
+        FoldingAndUnfoldingTest.class,
         OrdererTest.class,
         
         // iTIP tests

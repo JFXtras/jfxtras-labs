@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendaragenda.trial;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.geometry.Orientation;
@@ -19,8 +18,7 @@ import jfxtras.test.TestUtil;
 public class DemoTest extends AgendaTestAbstract
 {
     @Test
-    @Ignore
-    public void canMakeGraphicalDemo() // Can't figure out how to easily make video so not useful
+    public void canMakeGraphicalDemo() // Can't figure out how to easily make video from test so not useful
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {

@@ -15,13 +15,19 @@ import jfxtras.labs.icalendaragenda.editors.deletor.DeleteOneTest;
 import jfxtras.labs.icalendaragenda.editors.deletor.DeleteThisAndFutureTest;
 import jfxtras.labs.icalendaragenda.editors.revisor.CancelRevisionTest;
 import jfxtras.labs.icalendaragenda.editors.revisor.ReviseAllTest;
+import jfxtras.labs.icalendaragenda.editors.revisor.ReviseNonRepeatingTest;
 import jfxtras.labs.icalendaragenda.editors.revisor.ReviseOneTest;
 import jfxtras.labs.icalendaragenda.editors.revisor.ReviseThisAndFutureTest;
 import jfxtras.labs.icalendaragenda.misc.ComponentChangeDialogTest;
 import jfxtras.labs.icalendaragenda.misc.MakeAppointmentsTest;
+import jfxtras.labs.icalendaragenda.popup.ChangeDialogOptionsTest;
 import jfxtras.labs.icalendaragenda.popup.ExceptionDateTests;
-import jfxtras.labs.icalendaragenda.popup.PopupRecurrenceDescriptionTest;
-import jfxtras.labs.icalendaragenda.popup.VEventMakeiTIPTest;
+import jfxtras.labs.icalendaragenda.popup.MiscPopupTest;
+import jfxtras.labs.icalendaragenda.popup.PopupDeleteAllTest;
+import jfxtras.labs.icalendaragenda.popup.PopupReviseAllTest;
+import jfxtras.labs.icalendaragenda.popup.PopupReviseOneTest;
+import jfxtras.labs.icalendaragenda.popup.PopupReviseThisAndFutureTest;
+import jfxtras.labs.icalendaragenda.popup.RecurrenceRuleDescriptionTest;
 import jfxtras.labs.icalendaragenda.popup.VJournalMakeiTIPTest;
 import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
 
@@ -35,6 +41,7 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     // revise tests
     CancelRevisionTest.class,
     ReviseAllTest.class,
+    ReviseNonRepeatingTest.class,
     ReviseThisAndFutureTest.class,
     ReviseOneTest.class,
     
@@ -44,12 +51,14 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     DeleteOneTest.class,
     
     // popup tests
-    ReviseAllTest.class,
-    ReviseThisAndFutureTest.class,
-    ReviseOneTest.class,
-    PopupRecurrenceDescriptionTest.class,
+    ChangeDialogOptionsTest.class,
     ExceptionDateTests.class,
-    VEventMakeiTIPTest.class,
+    MiscPopupTest.class,
+    PopupDeleteAllTest.class,
+    PopupReviseAllTest.class,
+    PopupReviseThisAndFutureTest.class,
+    PopupReviseOneTest.class,
+    RecurrenceRuleDescriptionTest.class,
     VJournalMakeiTIPTest.class,
     VTodoMakeiTIPTest.class,
     
@@ -57,7 +66,6 @@ import jfxtras.labs.icalendaragenda.popup.VTodoMakeiTIPTest;
     DeleteVEventTest.class,
     GraphicallyChangeTest.class,
     MakeNewVEventsTest.class,
-    PopupRecurrenceDescriptionTest.class,
     RenderVEventsTest.class,
     RevisePopupTest.class,
     VEventDisplayPopupTest.class,

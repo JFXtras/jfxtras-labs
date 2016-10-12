@@ -41,7 +41,7 @@ import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.test.TestUtil;
 
-public class ReviseAllTest extends VEventPopupTestBase
+public class PopupReviseAllTest extends VEventPopupTestBase
 {
     @Test
     public void canEditSimpleVEvent()
@@ -431,7 +431,6 @@ public class ReviseAllTest extends VEventPopupTestBase
                 .map(v -> v.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         assertEquals(expectediTIPMessage, iTIPMessage);
-//        TestUtil.sleep(3000);
     }
     
     @Test
@@ -449,7 +448,6 @@ public class ReviseAllTest extends VEventPopupTestBase
                     AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
-        TestUtil.sleep(3000);
         click(wholeDayCheckBox);
 
         LocalDateTextField start = find("#startDateTextField");

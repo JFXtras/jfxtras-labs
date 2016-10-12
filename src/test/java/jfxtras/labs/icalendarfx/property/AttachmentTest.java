@@ -38,15 +38,6 @@ public class AttachmentTest
     }
     
     @Test
-    public void canParseAttachementSimpleOld() throws URISyntaxException
-    {
-        Attachment<URI> property = new Attachment<URI>(URI.class, "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
-        String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";
-        String madeContentLine = property.toContent();
-        assertEquals(expectedContentLine, madeContentLine);
-    }
-    
-    @Test
     public void canParseAttachementComplex() throws URISyntaxException
     {
         String contentLine = "ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/reports/r-960812.ps";

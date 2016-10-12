@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.test.TestUtil;
 
-public class ReviseThisAndFutureTest extends VEventPopupTestBase
+public class PopupReviseThisAndFutureTest extends VEventPopupTestBase
 {
     @Test
     public void canEditThisAndFuture()

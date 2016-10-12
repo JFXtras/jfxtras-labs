@@ -120,7 +120,7 @@ public class OrdererBase implements Orderer
     @Override
     public void unregisterSortOrderProperty(ObservableList<? extends VChild> list)
     {
-        if (! list.isEmpty())
+        if ((list != null) && ! list.isEmpty())
         { // remove existing elements to sort order
             list.forEach(vChild -> elementSortOrderMap.remove(vChild));
         }

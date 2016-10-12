@@ -41,6 +41,8 @@ public class ChangeDialogOptionsTest extends VEventPopupTestBase
         ComboBox<ChangeDialogOption> comboBox = find("#changeDialogComboBox");
         List<ChangeDialogOption> expectedItems = Arrays.asList(ChangeDialogOption.ONE, ChangeDialogOption.THIS_AND_FUTURE, ChangeDialogOption.ALL);
         assertEquals(expectedItems , comboBox.getItems());
+        click("#changeDialogCancelButton");
+        click("#cancelComponentButton");
     }
     
     @Test
@@ -66,5 +68,7 @@ public class ChangeDialogOptionsTest extends VEventPopupTestBase
         ComboBox<ChangeDialogOption> comboBox = find("#changeDialogComboBox");
         List<ChangeDialogOption> expectedItems = Arrays.asList(ChangeDialogOption.THIS_AND_FUTURE, ChangeDialogOption.ALL);
         assertEquals(expectedItems , comboBox.getItems());
+        click("#changeDialogCancelButton");
+        click("#cancelRepeatButton");
     }
 }

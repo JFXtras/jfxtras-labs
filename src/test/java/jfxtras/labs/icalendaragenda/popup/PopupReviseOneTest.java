@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.test.TestUtil;
 
-public class ReviseOneTest extends VEventPopupTestBase
+public class PopupReviseOneTest extends VEventPopupTestBase
 {
     @Test
     public void canEditOne()

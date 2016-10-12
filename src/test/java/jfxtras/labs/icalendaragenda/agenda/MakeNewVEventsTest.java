@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.loadui.testfx.exceptions.NoNodesFoundException;
 
@@ -76,7 +75,6 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
     }
     
     @Test
-    @Ignore
     public void canCreateAdvancedVEvent()
     {
         // Draw new appointment

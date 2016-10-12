@@ -31,6 +31,7 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.popup.EditRecurrenceRuleVBox;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
@@ -76,6 +77,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
                 .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
+        click("#cancelRepeatButton");
     }
     
     @Test
@@ -126,6 +128,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
                 .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
+        click("#cancelRepeatButton");
     }
     
     @Test
@@ -300,7 +303,12 @@ public class ExceptionDateTests extends VEventPopupTestBase
             assertEquals(expectedDates, exceptions);
         }
         
+        // save changes to all
         click("#saveRepeatButton");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+        
         List<VCalendar> messages = getEditComponentPopup().iTIPMessagesProperty().get();
         assertEquals(1, messages.size());
         VCalendar message = messages.get(0);
@@ -319,7 +327,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
               );
         List<DayOfWeek> daysOfWeek = rule.dayOfWeekWithoutOrdinalList();
         Collections.sort(daysOfWeek);
-        assertEquals(expectedDaysOfWeek, daysOfWeek);        
+        assertEquals(expectedDaysOfWeek, daysOfWeek);
     }
     
     @Test
@@ -379,6 +387,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
                     ));
             assertEquals(expectedDates, exceptions);
         }
+        click("#cancelRepeatButton");
     }
     
     @Test
@@ -414,6 +423,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
               , LocalDateTime.of(2019, 11, 9, 10, 0)
                 ));
         assertEquals(expectedDates, exceptions);
+        click("#cancelRepeatButton");
     }
     
     @Test
@@ -502,6 +512,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
                     .collect(Collectors.toList());
             assertEquals(expectedDates, exceptions);
         }
+        click("#cancelRepeatButton");
     }
     
     @Test
@@ -571,7 +582,8 @@ public class ExceptionDateTests extends VEventPopupTestBase
             assertEquals(expectedExceptions, exceptionsListView.getItems()); 
         }
         
-        click("#saveRepeatButton");
+        // save changes to all
+        click("#saveRepeatButton");       
         List<VCalendar> messages = getEditComponentPopup().iTIPMessagesProperty().get();
         assertEquals(1, messages.size());
         VCalendar message = messages.get(0);
@@ -683,5 +695,6 @@ public class ExceptionDateTests extends VEventPopupTestBase
                     ));
             assertEquals(expectedDates, exceptions);
         }
+        click("#cancelRepeatButton");
     }
 }

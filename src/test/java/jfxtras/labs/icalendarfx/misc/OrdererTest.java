@@ -2,10 +2,15 @@ package jfxtras.labs.icalendarfx.misc;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.URI;
+
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
+import jfxtras.labs.icalendarfx.properties.ValueType;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 
 public class OrdererTest
@@ -31,11 +36,40 @@ public class OrdererTest
     public void canReplaceListElement2()
     {
         VEvent v = new VEvent()
-                .withCategories("d")
-                .withCategories("new group name");
-        System.out.println(v);
-        System.out.println(v.getCategories());
-throw new RuntimeException("do a test with attachments - make sure works for all list-based properties");
+                .withAttachments(new Attachment<URI>(URI.class, "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
+                .withSummary("test")
+                .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"));
+        v.withAttachments(FXCollections.observableArrayList(
+                Attachment.parse("ATTACH;FMTTYPE=application/postscript:ftp://example.com/reports/r-960812.ps"),
+                new Attachment<String>(String.class, "TG9yZW")
+                .withFormatType("text/plain")
+                .withEncoding(EncodingType.BASE64)
+                .withValueType(ValueType.BINARY)
+                ));
+        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
+                "ATTACH;FMTTYPE=application/postscript:ftp://example.com/reports/r-960812.ps" + System.lineSeparator() +
+                "SUMMARY:test" + System.lineSeparator() +
+                "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW" + System.lineSeparator() +
+                "END:VEVENT";
+        VEvent expectedVEvent = VEvent.parse(expectedContent);
+        assertEquals(expectedVEvent, v);
+    }
+    
+    @Test
+    public void canReplaceIndividualElement()
+    {
+        VEvent v = new VEvent()
+                .withComments("dogs")
+                .withSummary("test")
+                .withDescription("cats");
+        v.setSummary("birds");
+        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
+                "COMMENT:dogs" + System.lineSeparator() +
+                "SUMMARY:birds" + System.lineSeparator() +
+                "DESCRIPTION:cats" + System.lineSeparator() +
+                "END:VEVENT";
+        VEvent expectedVEvent = VEvent.parse(expectedContent);
+        assertEquals(expectedVEvent, v);
     }
 
 }

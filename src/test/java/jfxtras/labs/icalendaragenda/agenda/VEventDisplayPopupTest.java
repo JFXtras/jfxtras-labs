@@ -11,7 +11,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
@@ -41,7 +40,7 @@ public class VEventDisplayPopupTest extends AgendaTestAbstract
         Node n = find("#editDisplayableTabPane");
 //        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
-        closeCurrentWindow();
+        click("#cancelComponentButton");
     }
     
     @Test
@@ -59,7 +58,7 @@ public class VEventDisplayPopupTest extends AgendaTestAbstract
         Node n = find("#editDisplayableTabPane");
 //      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
-        closeCurrentWindow();
+        click("#cancelComponentButton");
     }
     
     @Test
@@ -78,16 +77,13 @@ public class VEventDisplayPopupTest extends AgendaTestAbstract
         Node n = find("#editDisplayableTabPane");
 //      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
-        closeCurrentWindow();
+        click("#cancelComponentButton");
     }
 
     @Test
     public void canToggleRepeatableCheckBox()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
-        assertEquals(1, agenda.getVCalendar().getVEvents().size());
-        VEvent v = agenda.getVCalendar().getVEvents().get(0);
-        RecurrenceRule r = v.getRecurrenceRule();
 
         // Open edit popup
         move("#hourLine11");
@@ -101,15 +97,12 @@ public class VEventDisplayPopupTest extends AgendaTestAbstract
 
         // Check initial state
         assertTrue(repeatableCheckBox.isSelected());
-        assertTrue(v.getRecurrenceRule() != null);
         
         // Remove RRULE and verify state change
         TestUtil.runThenWaitForPaintPulse( () -> repeatableCheckBox.setSelected(false));
+        click("#saveRepeatButton");
+        assertEquals(1, agenda.getVCalendar().getVEvents().size());
+        VEvent v = agenda.getVCalendar().getVEvents().get(0);
         assertTrue(v.getRecurrenceRule() == null);
-        
-        // Change back and verify return to original state
-        TestUtil.runThenWaitForPaintPulse( () -> repeatableCheckBox.setSelected(true));
-        assertEquals(r, v.getRecurrenceRule());
-        closeCurrentWindow();
     }
 }

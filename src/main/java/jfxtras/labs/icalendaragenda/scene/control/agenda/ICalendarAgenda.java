@@ -747,15 +747,15 @@ public class ICalendarAgenda extends Agenda
             return null;
         } else
         {
-//            VComponent vComponentCopy = null;
-//            try
-//            {
-//                vComponentCopy = vComponent.getClass().newInstance();
-//            } catch (InstantiationException | IllegalAccessException e)
-//            {
-//                e.printStackTrace();
-//            }
-//            vComponentCopy.copyChildrenFrom(vComponent);
+            VComponent vComponentCopy = null;
+            try
+            {
+                vComponentCopy = vComponent.getClass().newInstance();
+            } catch (InstantiationException | IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            vComponent.copyInto(vComponentCopy);
             Temporal startOriginalRecurrence = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
             final Temporal startRecurrence;
             final Temporal endRecurrence;
@@ -786,7 +786,7 @@ public class ICalendarAgenda extends Agenda
                     startOriginalRecurrence,
                     startRecurrence,
 //                    getVCalendar().getVComponents(vComponent),
-                    vComponent, // edited
+                    vComponentCopy, // edited
                     vComponent  // original // TODO - THIS IS PROBABLY CAUSING THIS-AND-FUTURE DRAG-N-DROP TO FAIL - FIXTHIS
                  // Note: edited and original are the same here - can't edit descriptive properties with drag-n-drop
                     };
