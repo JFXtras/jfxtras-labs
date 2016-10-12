@@ -453,7 +453,6 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     Object p2 = t.getProperty(vComponentOriginalCopy);
                     if (! p1.equals(p2))
                     {
-                        System.out.println("props" + p1 + " " + p2);
                         changedProperties.add(t);
                     }
                 });
@@ -462,12 +461,10 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
          * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
          * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
          * question is answered. */
-        System.out.println("starts:" + startOriginalRecurrence + " " + startRecurrence + " " + startOriginalRecurrence.equals(startRecurrence));
         if (! startOriginalRecurrence.equals(startRecurrence))
         {
             changedProperties.add(PropertyType.DATE_TIME_START);
         }
-        System.out.println(changedProperties);
         return changedProperties;
     }
 
