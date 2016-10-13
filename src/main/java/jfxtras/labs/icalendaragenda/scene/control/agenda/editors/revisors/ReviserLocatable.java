@@ -64,11 +64,11 @@ public abstract class ReviserLocatable<T, U extends VLocatable<U>> extends Revis
         super.becomeNonRecurring(vComponentEditedCopy);
         if (getVComponentOriginal().getRecurrenceRule() != null)
         { // RRULE was removed, update DTSTART, DTEND or DURATION
-            getVComponentEdited().setDateTimeStart(new DateTimeStart(getStartRecurrence()));
-            if (getVComponentEdited().getDuration() != null)
+            getVComponentCopyEdited().setDateTimeStart(new DateTimeStart(getStartRecurrence()));
+            if (getVComponentCopyEdited().getDuration() != null)
             {
                 TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
-                getVComponentEdited().setDuration(duration);
+                getVComponentCopyEdited().setDuration(duration);
             }
         }
     }

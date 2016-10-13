@@ -79,9 +79,11 @@ public class Interval extends RRuleElementBase<Integer, Interval>
             return false;
         Interval other = (Interval) obj;
         
-        Integer value = (getValue() == null) ? DEFAULT_INTERVAL : getValue();
-        Integer otherValue = (other.getValue() == null) ? DEFAULT_INTERVAL : getValue();
-        return value.equals(otherValue);
+        return (getValue() == null) ? other.getValue() == null : getValue().equals(other.getValue());
+//        Integer value = (getValue() == null) ? DEFAULT_INTERVAL : getValue();
+//        Integer otherValue = (other.getValue() == null) ? DEFAULT_INTERVAL : other.getValue();
+//        System.out.println("values:" + value + " " + otherValue);
+//        return value.equals(otherValue);
     }
     
     @Override

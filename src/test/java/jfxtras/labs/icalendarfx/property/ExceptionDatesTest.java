@@ -23,7 +23,7 @@ import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
-public class ExceptionsTest
+public class ExceptionDatesTest
 {
     @Test
     public void canParseExceptions1()
@@ -119,6 +119,34 @@ public class ExceptionsTest
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
         ExceptionDates property1 = ExceptionDates.parse(content);
+        ExceptionDates property2 = new ExceptionDates(property1);
+        assertEquals(property1, property2);
+        assertFalse(property1 == property2);
+        assertFalse(property1.getValue() == property2.getValue());
+    }
+    
+    @Test
+    public void canCopyExceptions2()
+    {
+        String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
+        ExceptionDates property1 = ExceptionDates.parse(content);
+        ExceptionDates property2 = new ExceptionDates();
+        property1.copyInto(property2);
+        assertEquals(property1, property2);
+        assertFalse(property1 == property2);
+        assertFalse(property1.getValue() == property2.getValue());
+        
+        // make sure wrapped collection is different
+        Temporal first = property1.getValue().iterator().next();
+        property1.getValue().remove(first);
+        assertEquals(2, property1.getValue().size());
+        assertEquals(3, property2.getValue().size());
+    }
+    
+    @Test
+    public void canCopyEmptyExceptions()
+    {
+        ExceptionDates property1 = new ExceptionDates();
         ExceptionDates property2 = new ExceptionDates(property1);
         assertEquals(property1, property2);
         assertFalse(property1 == property2);

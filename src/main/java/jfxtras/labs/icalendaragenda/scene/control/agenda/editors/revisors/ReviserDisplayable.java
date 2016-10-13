@@ -43,7 +43,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
 {
     public ReviserDisplayable(U vComponent)
     {
-        setVComponentEdited(vComponent);
+        setVComponentCopyEdited(vComponent);
     }
 
     /*
@@ -51,18 +51,18 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
      */
     /** Gets the value of the edited {@link VDisplayable} copy.  Note: don't pass original or
      * the changes will be instantaneous and cancel is not possible. */
-    public U getVComponentEdited() { return vComponentEditedCopy; }
+    public U getVComponentCopyEdited() { return vComponentEditedCopy; }
     private U vComponentEditedCopy;
     /** Sets the value of the edited {@link VDisplayable} copy.  Note: don't pass original or
      * the changes will be instantenous and cancel is not possible. */
-    public void setVComponentEdited(U vComponentEdited) { this.vComponentEditedCopy = vComponentEdited; }
+    public void setVComponentCopyEdited(U vComponentEdited) { this.vComponentEditedCopy = vComponentEdited; }
     /**
      * Sets the value of the edited {@link VDisplayable}
      * 
      * @return - this class for chaining
      * @see VCalendar
      */
-    public T withVComponentEdited(U vComponentEdited) { setVComponentEdited(vComponentEdited); return (T) this; }
+    public T withVComponentCopyEdited(U vComponentEdited) { setVComponentCopyEdited(vComponentEdited); return (T) this; }
 
     /*
      * VCOMPONENT ORIGINAL
@@ -132,7 +132,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     /** Tests the object state is valid and revision can proceed.  Returns true if valid, false otherwise */
     boolean isValid()
     {
-        if (getVComponentEdited() == null)
+        if (getVComponentCopyEdited() == null)
         {
             System.out.println("vComponentEdited must not be null");
             return false;
@@ -168,7 +168,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
             throw new RuntimeException("Invalid parameters for component revision:");
         }
 
-        U vComponentEditedCopy = getVComponentEdited();
+        U vComponentEditedCopy = getVComponentCopyEdited();
 //        // Copy edited component for further changes (i.e. UID, date/time)
 //        U vComponentEditedCopy = null;
 //        try
@@ -220,7 +220,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
             List<PropertyType> changedProperties = findChangedProperties(vComponentEditedCopy, vComponentOriginal);
-//            changedProperties.forEach(System.out::println);
+//            System.out.println("changedProperties:" + changedProperties);
             /* Note:
              * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
              * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
@@ -365,7 +365,6 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
                     {
                         VDisplayable<?> vCopy = v.getClass().newInstance();
                         v.copyInto(vCopy);
-//                        vCopy.copyFrom(v);
                         vCopy.setRecurrenceId(new RecurrenceId(newRecurreneId));
                         return vCopy;
                     } catch (Exception e)
@@ -441,21 +440,28 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     {
         List<PropertyType> changedProperties = new ArrayList<>();
 
-//        vComponentEditedCopy.childrenUnmodifiable()
-        
-        vComponentEditedCopy.childrenUnmodifiable()
+        List<PropertyType> changedPropertiesToNonNull = vComponentEditedCopy.childrenUnmodifiable()
                 .stream()
                 .filter(c -> c instanceof Property<?>)
                 .map(p -> ((Property<?>) p).propertyType())
-                .forEach(t ->
+                .filter(t -> 
                 {
                     Object p1 = t.getProperty(vComponentEditedCopy);
                     Object p2 = t.getProperty(vComponentOriginalCopy);
-                    if (! p1.equals(p2))
-                    {
-                        changedProperties.add(t);
-                    }
-                });
+                    return ! p1.equals(p2);
+                })
+//                .peek(t -> System.out.println("changedPropertiesToNonNull:" + t))
+                .collect(Collectors.toList());
+        changedProperties.addAll(changedPropertiesToNonNull);
+        
+        List<PropertyType> propertiesChangedToNull = vComponentOriginalCopy.childrenUnmodifiable()
+                .stream()
+                .filter(c -> c instanceof Property<?>)
+                .map(p -> ((Property<?>) p).propertyType())
+                .filter(t -> t.getProperty(vComponentEditedCopy) == null)
+//                .peek(t -> System.out.println("propertiesChangedToNull:" + t))
+                .collect(Collectors.toList());
+        changedProperties.addAll(propertiesChangedToNull);
         
         /* Note:
          * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
@@ -661,7 +667,7 @@ public abstract class ReviserDisplayable<T, U extends VDisplayable<U>> implement
     @Deprecated
     private void thisAndFutureIgnoreRecurrences(List<U> revisedVComponents, U vComponentEditedCopy)
     {
-        List<VDisplayable<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
+        List<VDisplayable<?>> recurrenceChildren = getVComponentCopyEdited().recurrenceChildren();
         if (! recurrenceChildren.isEmpty())
         {
             recurrenceChildren.stream().forEach(c -> 

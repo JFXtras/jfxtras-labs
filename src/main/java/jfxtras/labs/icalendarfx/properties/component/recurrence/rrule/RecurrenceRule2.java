@@ -225,9 +225,18 @@ public class RecurrenceRule2 extends VParentBase implements VChild
         return interval;
     }
     private ObjectProperty<Interval> interval;
-    public Interval getInterval() { return (intervalProperty() == null) ? null : intervalProperty().get(); }
-    public void setInterval(Interval interval) { intervalProperty().set(interval); }
-    public void setInterval(Integer interval) { setInterval(new Interval(interval)); }
+    public Interval getInterval()
+    {
+        return (intervalProperty() == null) ? null : intervalProperty().get();
+    }
+    public void setInterval(Interval interval)
+    {
+        intervalProperty().set(interval);
+    }
+    public void setInterval(Integer interval)
+    {
+        setInterval(new Interval(interval));
+    }
     public RecurrenceRule2 withInterval(int interval)
     {
         setInterval(interval);

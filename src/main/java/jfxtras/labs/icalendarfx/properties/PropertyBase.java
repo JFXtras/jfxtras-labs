@@ -13,10 +13,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.content.SingleLineContent;
@@ -90,7 +88,13 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             {
                 if (getValue() instanceof Collection)
                 {
-                    return ((Collection<?>) getValue()).iterator().next().getClass();
+                    if (! ((Collection<?>) getValue()).isEmpty())
+                    {
+                        return ((Collection<?>) getValue()).iterator().next().getClass();
+                    } else
+                    {
+                        return null;
+                    }
                 }
                 return getValue().getClass();
             }
@@ -186,10 +190,24 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             throw new IllegalArgumentException("Invalid Value Date Type:" + valueType.getValue() + ", allowed = " + propertyType().allowedValueTypes());
         }
     }
-    public void setValueType(ValueType value) { setValueType(new ValueParameter(value)); }
-    public void setValueType(String value) { setValueType(ValueParameter.parse(value)); }
-    public U withValueType(ValueType value) { setValueType(value); return (U) this; } 
-    public U withValueType(String value) { setValueType(value); return (U) this; }
+    public void setValueType(ValueType value)
+    {
+        setValueType(new ValueParameter(value));
+    }
+    public void setValueType(String value)
+    {
+        setValueType(ValueParameter.parse(value));
+    }
+    public U withValueType(ValueType value)
+    {
+        setValueType(value);
+        return (U) this;
+    } 
+    public U withValueType(String value)
+    {
+        setValueType(value);
+        return (U) this;
+    }
     // Synch value with type produced by string converter
     private final ChangeListener<? super ValueParameter> valueParameterChangeListener = (observable, oldValue, newValue) ->
     {
@@ -357,17 +375,17 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //        return (U) this;
 //    }
 
-    @Override
-    @Deprecated
-    public Callback<VChild, Void> copyIntoCallback()
-    {        
-        return (child) ->
-        {
-            ParameterType type = ParameterType.enumFromClass(child.getClass());
-            type.copyParameter((Parameter<?>) child, this);
-            return null;
-        };
-    }
+//    @Override
+//    @Deprecated
+//    public Callback<VChild, Void> copyIntoCallback()
+//    {        
+//        return (child) ->
+//        {
+//            ParameterType type = ParameterType.enumFromClass(child.getClass());
+//            type.copyParameter((Parameter<?>) child, this);
+//            return null;
+//        };
+//    }
     
     @Override
     public void copyInto(VParent destination)

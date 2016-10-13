@@ -16,7 +16,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.layout.HBox;
 
 /**
- * Simple Demo of {@link ICalendarAgenda} with one event
+ * Simple Demo of {@link ICalendarAgenda} with one repeating event
  * 
  * @author David Bal
  *
@@ -38,11 +38,12 @@ public class ICalendarAgendaSimpleTrial2 extends Application
                 .withRecurrenceRule("RRULE:FREQ=DAILY")
                 .withOrganizer("mailto:david@balsoftware.net")
                 .withUniqueIdentifier("exampleuid000jfxtras.org");
+//        VEvent vEvent = ICalendarStaticComponents.getDailyWithException1();
         vCalendar.addVComponent(vEvent);
 
         // setup control
         BorderPane root = new BorderPane();
-        ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);        
+        ICalendarAgenda agenda = new ICalendarAgenda(vCalendar); // Agenda - displays the VCalendar information
         root.setCenter(agenda);
         
         // weekly increase/decrease buttons
@@ -51,7 +52,7 @@ public class ICalendarAgendaSimpleTrial2 extends Application
         HBox buttonHBox = new HBox(decreaseWeek, increaseWeek);
         root.setTop(buttonHBox);
         
-        // weekly increase/decrease functionality
+        // weekly increase/decrease event handlers
         increaseWeek.setOnAction((e) ->
         {
             LocalDateTime newDisplayedLocalDateTime = agenda.getDisplayedLocalDateTime().plus(Period.ofWeeks(1));
@@ -66,6 +67,7 @@ public class ICalendarAgendaSimpleTrial2 extends Application
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
         primaryStage.setTitle("ICalendar Agenda Simple Demo");
+        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent()));
         primaryStage.show();
     }
 }

@@ -608,7 +608,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
             getEditComponentPopup().setupData(
                     vevent,
                     LocalDateTime.of(2015, 11, 9, 10, 0),
-                    LocalDateTime.of(2015, 11, 9, 11, 0),
+                    LocalDateTime.of(2015, 11, 9, 11, 30),
                     AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
@@ -633,6 +633,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
 
         { // verify added exception is not in exceptionComboBox list
             List<Temporal> exceptions = exceptionComboBox.getItems().stream()
+                    .limit(4)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
                       LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -647,7 +648,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
         TestUtil.runThenWaitForPaintPulse( () -> exceptionsListView.getSelectionModel().select(LocalDateTime.of(2015, 11, 12, 10, 0)));
         click ("#removeExceptionButton");
         { // verify new state
-            Set<Temporal> vExceptions = vevent.getExceptionDates().get(0).getValue();
+            List<Temporal> vExceptions = exceptionsListView.getItems();
             List<Temporal> exceptions = vExceptions
                     .stream()
                     .map(a -> (LocalDateTime) a).sorted()
@@ -659,7 +660,8 @@ public class ExceptionDateTests extends VEventPopupTestBase
             assertEquals(expectedExceptions, exceptionsListView.getItems());            
         }
         { // verify added exception is not in exceptionComboBox list
-            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream()
+                    .limit(5)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
                       LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -674,7 +676,7 @@ public class ExceptionDateTests extends VEventPopupTestBase
         TestUtil.runThenWaitForPaintPulse( () -> exceptionsListView.getSelectionModel().select(LocalDateTime.of(2015, 11, 15, 10, 0)));
         click ("#removeExceptionButton");
         { // verify new state
-            Set<Temporal> vExceptions = vevent.getExceptionDates().get(0).getValue();
+            List<Temporal> vExceptions = exceptionsListView.getItems();
             List<Temporal> exceptions = vExceptions
                     .stream()
                     .map(a -> (LocalDateTime) a).sorted()
@@ -695,6 +697,29 @@ public class ExceptionDateTests extends VEventPopupTestBase
                     ));
             assertEquals(expectedDates, exceptions);
         }
-        click("#cancelRepeatButton");
+        click("#saveRepeatButton");
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group03" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T113000" + System.lineSeparator() +
+                "DESCRIPTION:Daily2 Description" + System.lineSeparator() +
+                "SUMMARY:Daily2 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-005@jfxtras.org" + System.lineSeparator() +
+                "RRULE:COUNT=6;FREQ=DAILY;INTERVAL=3" + System.lineSeparator() +
+                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR";
+        String iTIPMessage = getEditComponentPopup().iTIPMessagesProperty().get().stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        assertEquals(expectediTIPMessage, iTIPMessage);
     }
 }

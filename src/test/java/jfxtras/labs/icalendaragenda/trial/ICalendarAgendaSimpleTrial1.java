@@ -22,12 +22,14 @@ public class ICalendarAgendaSimpleTrial1 extends Application
     @Override
     public void start(Stage primaryStage) {
         VCalendar vCalendar = new VCalendar();
-        ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);
+        ICalendarAgenda agenda = new ICalendarAgenda(vCalendar); // Agenda - displays the VCalendar information
         
         BorderPane root = new BorderPane();
         root.setCenter(agenda);
+
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent()));
+        primaryStage.show();        
     }
 }

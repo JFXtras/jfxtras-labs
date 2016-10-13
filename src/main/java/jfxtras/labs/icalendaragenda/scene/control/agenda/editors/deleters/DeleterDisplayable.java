@@ -37,18 +37,21 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
     /*
      * VCOMPONENT EDITED
      */
-    /** Gets the value of the {@link VDisplayable} to be deleted */
-    public U getVComponent() { return vComponent; }
+    /** Gets the value of the {@link VDisplayable} to be deleted. Note: don't pass original or
+     * the changes will be instantaneous and cancel is not possible.  */
+    public U getVComponentCopy() { return vComponent; }
     private U vComponent;
-    /** Sets the value of the edited {@link VDisplayable} */
-    public void setVComponent(U vComponentEdited) { this.vComponent = vComponentEdited; }
+    /** Sets the value of the edited {@link VDisplayable} Note: don't pass original or
+     * the changes will be instantaneous and cancel is not possible. */
+    public void setVComponentCopy(U vComponentEdited) { this.vComponent = vComponentEdited; }
     /**
-     * Sets the value of the edited {@link VDisplayable}
+     * Sets the value of the edited {@link VDisplayable}.  Note: don't pass original or
+     * the changes will be instantaneous and cancel is not possible.
      * 
      * @return - this class for chaining
      * @see VCalendar
      */
-    public T withVComponentEdited(U vComponentEdited) { setVComponent(vComponentEdited); return (T) this; }
+    public T withVComponentCopy(U vComponentEdited) { setVComponentCopy(vComponentEdited); return (T) this; }
 
 
 //    /*
@@ -125,16 +128,17 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
         }
         
         // Copy VComponent to ensure original is unchanged
-        U vComponent = null;
-        try
-        {
-            vComponent = (U) getVComponent().getClass().newInstance();
-            getVComponent().copyInto(vComponent);
-//            vComponent.copyFrom(getVComponent());
-        } catch (InstantiationException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
+        U vComponent = getVComponentCopy();
+//        U vComponent = null;
+//        try
+//        {
+//            vComponent = (U) getVComponent().getClass().newInstance();
+//            getVComponent().copyInto(vComponent);
+////            vComponent.copyFrom(getVComponent());
+//        } catch (InstantiationException | IllegalAccessException e)
+//        {
+//            e.printStackTrace();
+//        }
         
         List<VCalendar> itipMessages = new ArrayList<>();
         boolean hasRRule = vComponent.getRecurrenceRule() != null;
@@ -171,7 +175,7 @@ public abstract class DeleterDisplayable<T, U extends VDisplayable<?>> implement
                 vComponent.setRecurrenceId(getStartOriginalRecurrence());
                 vComponent.setRecurrenceRule((RecurrenceRule) null);
                 itipMessages.add(cancelMessage);
-                
+
                 // REVISE APPROACH - accepted by Google
 //                // Add recurrence to EXDATE of parent
 //                Temporal recurrence = getStartOriginalRecurrence();

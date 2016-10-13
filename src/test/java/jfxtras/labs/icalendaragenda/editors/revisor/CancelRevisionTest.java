@@ -48,7 +48,7 @@ public class CancelRevisionTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         assertEquals(Collections.emptyList(), iTIPMessages);        

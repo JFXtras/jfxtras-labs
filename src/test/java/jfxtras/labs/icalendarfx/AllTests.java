@@ -33,6 +33,7 @@ import jfxtras.labs.icalendarfx.component.VTodoTest;
 import jfxtras.labs.icalendarfx.itip.CancelRecurrenceTest;
 import jfxtras.labs.icalendarfx.itip.ComboMessageTest;
 import jfxtras.labs.icalendarfx.itip.HandleRecurrencesTest;
+import jfxtras.labs.icalendarfx.itip.RequestTest;
 import jfxtras.labs.icalendarfx.itip.SimpleCancelTest;
 import jfxtras.labs.icalendarfx.itip.SimplePublishTest;
 import jfxtras.labs.icalendarfx.itip.WholeDayTest;
@@ -61,7 +62,7 @@ import jfxtras.labs.icalendarfx.property.DateTimeStampTest;
 import jfxtras.labs.icalendarfx.property.DateTimeStartTest;
 import jfxtras.labs.icalendarfx.property.DescriptionTest;
 import jfxtras.labs.icalendarfx.property.DurationTest;
-import jfxtras.labs.icalendarfx.property.ExceptionsTest;
+import jfxtras.labs.icalendarfx.property.ExceptionDatesTest;
 import jfxtras.labs.icalendarfx.property.FreeBusyTimeTest;
 import jfxtras.labs.icalendarfx.property.GeneralPropertyTest;
 import jfxtras.labs.icalendarfx.property.LocationTest;
@@ -107,6 +108,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         CancelRecurrenceTest.class,
         ComboMessageTest.class,
         HandleRecurrencesTest.class,
+        RequestTest.class,
         SimpleCancelTest.class,
         SimplePublishTest.class,
         WholeDayTest.class,
@@ -158,7 +160,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         DateTimeStartTest.class,
         DescriptionTest.class,
         DurationTest.class,
-        ExceptionsTest.class,
+        ExceptionDatesTest.class,
         FreeBusyTimeTest.class,
         GeneralPropertyTest.class,
         LocationTest.class,

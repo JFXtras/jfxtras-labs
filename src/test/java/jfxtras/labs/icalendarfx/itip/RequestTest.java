@@ -137,4 +137,41 @@ public class RequestTest
         
         assertEquals(vComponentExpected, vComponents.get(0));
     }
+    
+    @Test
+    public void canRemoveExceptionDate()
+    {
+        VCalendar mainVCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = mainVCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDailyWithException1();
+        vComponents.add(vComponentOriginal);
+
+        String iTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group03" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T113000" + System.lineSeparator() +
+                "DESCRIPTION:Daily2 Description" + System.lineSeparator() +
+                "SUMMARY:Daily2 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-005@jfxtras.org" + System.lineSeparator() +
+                "RRULE:COUNT=6;FREQ=DAILY;INTERVAL=3" + System.lineSeparator() +
+                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR"
+                ;
+        mainVCalendar.processITIPMessage(iTIPMessage);
+
+        assertEquals(1, vComponents.size());
+        VEvent vComponentExpected = ICalendarStaticComponents.getDaily2()
+                .withSequence(1);
+        
+        assertEquals(vComponentExpected, vComponents.get(0));
+    }
 }

@@ -127,6 +127,7 @@ public class RepeatableTest //extends Application
                     
             VComponent parsedComponent = builtComponent.getClass().newInstance();
             parsedComponent.parseContent(expectedContent);
+            System.out.println("parsedComponent:" + parsedComponent);
 
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());

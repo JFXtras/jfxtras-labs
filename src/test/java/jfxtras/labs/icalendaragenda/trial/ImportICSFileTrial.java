@@ -34,13 +34,14 @@ public class ImportICSFileTrial extends Application
 
     @Override
     public void start(Stage primaryStage) {
+        // setup VCalendar - holds all calendaring information (i.e events)
         VCalendar mainVCalendar = new VCalendar()
                 .withProductIdentifier(ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER)
                 .withVersion(); // uses default VERSION 2.0
 
-        // setup control
+        // setup controls
         BorderPane root = new BorderPane();
-        ICalendarAgenda agenda = new ICalendarAgenda(mainVCalendar);        
+        ICalendarAgenda agenda = new ICalendarAgenda(mainVCalendar); // Agenda - displays the VCalendar information
         root.setCenter(agenda);
         
         // Buttons
@@ -53,7 +54,7 @@ public class ImportICSFileTrial extends Application
         buttonHBox.setSpacing(10);
         root.setTop(buttonHBox);
         
-        // weekly increase/decrease functionality
+        // weekly increase/decrease event handlers
         increaseWeek.setOnAction(e ->
         {
             LocalDateTime newDisplayedLocalDateTime = agenda.getDisplayedLocalDateTime().plus(Period.ofWeeks(1));
@@ -65,7 +66,7 @@ public class ImportICSFileTrial extends Application
             agenda.setDisplayedLocalDateTime(newDisplayedLocalDateTime);
         });
         
-        // file chooser functionality
+        // import ics event handler
         FileChooser fileChooser = new FileChooser();
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("ics files", "*.ics"));
         importButton.setOnAction(e ->
@@ -81,7 +82,7 @@ public class ImportICSFileTrial extends Application
                     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> log.add(exception.getMessage()));
                     List<String> messageLog = mainVCalendar.processITIPMessage(iTIPMessage);
                     log.addAll(messageLog);
-                    log.forEach(System.out::println);
+//                    log.forEach(System.out::println);
                 } catch (Exception e1)
                 {
                     e1.printStackTrace();
@@ -92,11 +93,11 @@ public class ImportICSFileTrial extends Application
             }
         });
         
+        // export ics event handler
         exportButton.setOnAction(e ->
         {
             VCalendar publishMessage = new VCalendar()
                     .withMethod(MethodType.PUBLISH);
-//            publishMessage.copyChildrenFrom(mainVCalendar);
             mainVCalendar.copyInto(publishMessage);
             File file = fileChooser.showSaveDialog(primaryStage);
             BufferedWriter writer = null;

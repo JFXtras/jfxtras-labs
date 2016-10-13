@@ -52,13 +52,14 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     {
         List<PropertyType> changedProperties = super.findChangedProperties(vComponentEditedCopy, vComponentOriginalCopy);
         TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
-        TemporalAmount durationOriginal = getVComponentEdited().getActualDuration();
+        TemporalAmount durationOriginal = getVComponentCopyEdited().getActualDuration();
+
         if (! durationOriginal.equals(durationNew))
         {
-            if (getVComponentEdited().getDateTimeEnd() != null)
+            if (getVComponentCopyEdited().getDateTimeEnd() != null)
             {
                 changedProperties.add(PropertyType.DATE_TIME_END);                    
-            } else if (getVComponentEdited().getDuration() == null)
+            } else if (getVComponentCopyEdited().getDuration() == null)
             {
                 changedProperties.add(PropertyType.DURATION);                    
             }

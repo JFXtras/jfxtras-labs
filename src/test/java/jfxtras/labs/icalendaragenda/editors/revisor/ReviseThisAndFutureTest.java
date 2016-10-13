@@ -51,7 +51,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         iTIPMessages.forEach(message -> mainVCalendar.processITIPMessage(message));
@@ -133,7 +133,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
 
@@ -227,7 +227,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
 
@@ -315,7 +315,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
 
@@ -397,7 +397,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
@@ -486,7 +486,7 @@ public class ReviseThisAndFutureTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         

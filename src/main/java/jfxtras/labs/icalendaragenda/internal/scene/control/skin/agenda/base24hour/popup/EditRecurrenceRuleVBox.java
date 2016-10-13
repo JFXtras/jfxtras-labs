@@ -134,7 +134,6 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     @FXML private Button addExceptionButton;
     @FXML private ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
     @FXML private Button removeExceptionButton;
-//    private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
 
     public EditRecurrenceRuleVBox( )
@@ -272,9 +271,20 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         
         // visibility of monthlyVBox & weeklyHBox
         setFrequencyVisibility(newSel);
+        if (intervalSpinner.getValueFactory() != null)
+        {
+            setIntervalText(intervalSpinner.getValue());
+        }
+        
+        // Make summary and exceptions
+        refreshSummary();
+        refreshExceptionDates();
+    };
 
+    private void setIntervalText(int value)
+    {
         final String frequencyLabelText;
-        if (intervalSpinner.getValue() == 1)
+        if (value == 1)
         {
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.getValue());
         } else
@@ -282,11 +292,7 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.getValue());
         }
         frequencyLabel.setText(frequencyLabelText);
-        
-        // Make summary and exceptions
-        refreshSummary();
-        refreshExceptionDates();
-    };
+    }
 
     private void setFrequencyVisibility(FrequencyType f)
     {
@@ -327,18 +333,18 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
 
     private final ChangeListener<? super Integer> intervalSpinnerListener = (observable, oldValue, newValue) ->
     {
-        final String frequencyLabelText;
-        if (intervalSpinner.getValue() == 1)
+        if (newValue == 1)
         {
-            frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
-            rrule.setInterval((Interval) null); // rely on default value from omitted Interval
+            rrule.setInterval((Interval) null); // rely on default value of 1
         } else
         {
-            frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
-            Interval interval = (rrule.getInterval() == null) ? new Interval() : rrule.getInterval();
-            interval.setValue(newValue);
+            rrule.setInterval(new Interval(newValue));
+//            Interval interval = (rrule.getInterval() == null) ? new Interval() : rrule.getInterval();
+//            interval.setValue(newValue);
+//            rrule.setInterval(interval);
         }
-        frequencyLabel.setText(frequencyLabelText);
+        System.out.println("just changed interval:" + vComponent.getRecurrenceRule().getValue().toContent());
+        setIntervalText(newValue);
         refreshSummary();
         refreshExceptionDates();
     };
@@ -964,18 +970,10 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
     /* Set controls to values in rRule */
     private void setInitialValues(VDisplayable<?> vComponent)
     {
-        final int initialInterval;
-        if (rrule.getInterval() == null)
-        {
-            initialInterval = Interval.DEFAULT_INTERVAL;
-        } else
-        {
-            initialInterval = rrule.getInterval().getValue();
-        }
-        intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
 //        rrule.getInterval().valueProperty().bind(intervalSpinner.valueProperty());
         // TODO - OTHER LISTENERS MAY BE OBSOLETE WITH ABOVE BINDING
-
+        
+        // setup FREQUENCY
         FrequencyType frequencyType = rrule.getFrequency().getValue();
         frequencyComboBox.setValue(frequencyType); // will trigger frequencyListener
         switch(frequencyType)
@@ -999,6 +997,18 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         }
         rrule.getFrequency().valueProperty().bind(frequencyComboBox.valueProperty());
         setFrequencyVisibility(frequencyType);
+        
+        // setup INTERVAL
+        final int initialInterval;
+        if (rrule.getInterval() == null || rrule.getInterval().getValue().equals(1))
+        {
+            initialInterval = Interval.DEFAULT_INTERVAL;
+        } else
+        {
+            initialInterval = rrule.getInterval().getValue();
+        }
+        intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
+        setIntervalText(initialInterval);
         
         // ExDates
         if (vComponent.getExceptionDates() != null)
@@ -1177,7 +1187,14 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
         vComponent.getExceptionDates().get(0).getValue().remove(d);
         refreshExceptionDates();
         exceptionsListView.getItems().remove(d);
-        if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
+        if (exceptionsListView.getSelectionModel().getSelectedItem() == null)
+        {
+            removeExceptionButton.setDisable(true);
+        }
+        if (exceptionsListView.getItems().isEmpty())
+        {
+            vComponent.setExceptionDates(null);
+        }
     }
     
     

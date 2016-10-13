@@ -12,6 +12,7 @@ import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.properties.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 public class OrdererTest
 {
@@ -71,5 +72,20 @@ public class OrdererTest
         VEvent expectedVEvent = VEvent.parse(expectedContent);
         assertEquals(expectedVEvent, v);
     }
-
+    
+    @Test
+    public void canRemoveIndividualElement()
+    {
+        VEvent v = new VEvent()
+                .withComments("dogs")
+                .withSummary("test")
+                .withDescription("cats");
+        v.setSummary((Summary) null);
+        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
+                "COMMENT:dogs" + System.lineSeparator() +
+                "DESCRIPTION:cats" + System.lineSeparator() +
+                "END:VEVENT";
+        VEvent expectedVEvent = VEvent.parse(expectedContent);
+        assertEquals(expectedVEvent, v);
+    }
 }

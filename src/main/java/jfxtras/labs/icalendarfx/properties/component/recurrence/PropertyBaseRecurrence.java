@@ -107,7 +107,7 @@ public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<Observa
     
     public PropertyBaseRecurrence()
     {
-        super();
+        super(FXCollections.observableSet(new TreeSet<>(DateTimeUtilities.TEMPORAL_COMPARATOR)));
         setConverter(CONVERTER);
     }
 
@@ -196,6 +196,8 @@ public abstract class PropertyBaseRecurrence<U> extends PropBaseDateTime<Observa
     @Override
     protected ObservableSet<Temporal> copyValue(ObservableSet<Temporal> source)
     {
-        return FXCollections.observableSet(source);
+        ObservableSet<Temporal> newCollection = FXCollections.observableSet(new TreeSet<>(DateTimeUtilities.TEMPORAL_COMPARATOR));
+        newCollection.addAll(source);
+        return newCollection;
     }
 }

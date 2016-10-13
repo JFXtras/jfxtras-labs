@@ -48,5 +48,11 @@ public class CategoriesTest
         assertFalse(property1 == property2);
         assertFalse(property1.getValue() == property2.getValue());
         assertEquals("CATEGORIES:" + content, property2.toContent());
+        
+        // make sure wrapped collection is different
+        String first = property1.getValue().iterator().next();
+        property1.getValue().remove(first);
+        assertEquals(2, property1.getValue().size());
+        assertEquals(3, property2.getValue().size());
     }
 }

@@ -38,7 +38,6 @@ public class DeleteVEventTest extends AgendaTestAbstract
             comboBox.getSelectionModel().select(ChangeDialogOption.ONE);
         });
         click("#changeDialogOkButton");
-        
         assertEquals(5, agenda.appointments().size());
         List<Temporal> expectedStarts = Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0),

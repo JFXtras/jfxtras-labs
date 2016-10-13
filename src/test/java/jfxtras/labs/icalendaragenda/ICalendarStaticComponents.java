@@ -147,7 +147,8 @@ public final class ICalendarStaticComponents
         return new VEvent()
                 .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDuration(Duration.ofMinutes(90))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 30))
+//                .withDuration(Duration.ofMinutes(90))
                 .withDescription("Daily2 Description")
                 .withSummary("Daily2 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -155,7 +156,8 @@ public final class ICalendarStaticComponents
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withCount(6)
                         .withFrequency(FrequencyType.DAILY)
-                        .withInterval(3));
+                        .withInterval(3))
+                .withOrganizer("ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org");
     }
     
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T095959 */

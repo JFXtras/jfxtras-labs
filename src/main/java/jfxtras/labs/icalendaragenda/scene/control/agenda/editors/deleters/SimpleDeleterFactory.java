@@ -83,6 +83,54 @@ public class SimpleDeleterFactory
         }
     }
     
+    /**
+     * 
+     * @param vComponent - {@link VComponent} to have delete action acted upon
+     * @param params 
+     * @return New Deleter
+     */
+    public static Deleter newDeleter (
+            VComponent vComponent,
+            Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption> changeDialogCallback,
+            Temporal startOriginalRecurrence
+            )
+    {
+        if (vComponent instanceof VEvent)
+        {
+            return new DeleterVEvent((VEvent) vComponent)
+                    .withDialogCallback(changeDialogCallback)
+                    .withStartOriginalRecurrence(startOriginalRecurrence);
+        } else if (vComponent instanceof VTodo)
+        {
+            return new DeleterVTodo((VTodo) vComponent)
+                    .withDialogCallback(changeDialogCallback)
+                    .withStartOriginalRecurrence(startOriginalRecurrence);
+        } else if (vComponent instanceof VJournal)
+        {
+            return new DeleterVJournal((VJournal) vComponent)
+                    .withDialogCallback(changeDialogCallback)
+                    .withStartOriginalRecurrence(startOriginalRecurrence);
+        } else if (vComponent instanceof VFreeBusy)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof VTimeZone)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof VAlarm)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof StandardTime)
+        {
+            throw new RuntimeException("not implemented");
+        } else if (vComponent instanceof DaylightSavingTime)
+        {
+            throw new RuntimeException("not implemented");          
+        } else
+        {
+            throw new RuntimeException("Unsupported VComponent type" + vComponent.getClass());
+        }
+    }
+    
     public static Deleter newDeleter (VComponent vComponent)
     {
         if (vComponent instanceof VEvent)

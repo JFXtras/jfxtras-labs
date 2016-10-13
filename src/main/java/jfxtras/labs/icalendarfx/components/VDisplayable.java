@@ -193,13 +193,19 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         }
         return classification;
     }
-    public Classification getClassification() { return (classification == null) ? null : classificationProperty().get(); }
+    public Classification getClassification()
+    {
+        return (classification == null) ? null : classificationProperty().get();
+    }
     private ObjectProperty<Classification> classification;
     public void setClassification(String classification)
     {
         setClassification(Classification.parse(classification));
     }
-    public void setClassification(Classification classification) { classificationProperty().set(classification); }
+    public void setClassification(Classification classification)
+    {
+        classificationProperty().set(classification);
+    }
     public void setClassification(ClassificationType classification)
     {
         setClassification(new Classification(classification));            
@@ -1065,7 +1071,7 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         if (getDateTimeStart() != null)
         {
             DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            if (getExceptionDates() != null)
+            if ((getExceptionDates() != null) && (! getExceptionDates().get(0).getValue().isEmpty()))
             {
                 // assumes all exceptions are same Temporal type.  There is a listener to guarantee that assumption.
                 Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();

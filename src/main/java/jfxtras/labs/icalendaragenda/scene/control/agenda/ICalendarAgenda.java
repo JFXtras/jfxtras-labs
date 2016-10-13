@@ -326,7 +326,7 @@ public class ICalendarAgenda extends Agenda
     {
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
-        VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
+//        VDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
 //        System.out.println(vComponent0.toContent());
 //        System.out.println(getVCalendar().toContent());
 
@@ -354,12 +354,20 @@ public class ICalendarAgenda extends Agenda
                 } else if (buttonText.equals(Settings.resources.getString("delete")))
                 {
                     VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-                    Object[] params = new Object[] {
+                    VDisplayable<?> vComponentCopy = null;
+                    try
+                    {
+                        vComponentCopy = vComponent.getClass().newInstance();
+                        vComponent.copyInto(vComponentCopy);
+                    } catch (InstantiationException | IllegalAccessException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(
+                            vComponentCopy,
                             DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
-                            appointment.getStartTemporal(),
-                            getVCalendar().getVComponents(vComponent)
-                    };
-                    List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+                            appointment.getStartTemporal()
+                            ).delete();
                     getVCalendar().processITIPMessage(cancelMessage);
                     refresh();
                 }
@@ -565,7 +573,6 @@ public class ICalendarAgenda extends Agenda
                     {
                         Appointment appointment = change.getAddedSubList().get(0);
                         ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
-                        System.out.println("button:" + button);
                         // remove drawn appointment - it was replaced by one made when the newVComponent was added
                         appointments().remove(appointment);
                         switch (button)
@@ -575,7 +582,6 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE: // Create VComponent
                             {
-                                System.out.println("appointment crated:" );
                                 VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                                 VCalendar message = Reviser.emptyPublishiTIPMessage();
                                 message.addVComponent(newVComponent);
@@ -606,12 +612,21 @@ public class ICalendarAgenda extends Agenda
                     change.getRemoved().forEach(appointment ->
                     {
                         VDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-                        Object[] params = new Object[] {
-                                (Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) (choices) -> ChangeDialogOption.ONE,
-                                appointment.getStartTemporal(),
-                                getVCalendar().getVComponents(vComponent)
-                        };
-                        List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+                        // make copy for deleter
+                        VDisplayable<?> vComponentCopy = null;
+                        try
+                        {
+                            vComponentCopy = vComponent.getClass().newInstance();
+                            vComponent.copyInto(vComponentCopy);
+                        } catch (InstantiationException | IllegalAccessException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        List<VCalendar> cancelMessage = SimpleDeleterFactory.newDeleter(
+                                vComponentCopy,
+                                choices -> ChangeDialogOption.ONE,
+                                appointment.getStartTemporal()
+                                ).delete();
                         getVCalendar().processITIPMessage(cancelMessage);
                     });
                 }
@@ -630,6 +645,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (event.getCode().equals(KeyCode.DELETE) && (! selectedAppointments().isEmpty()))
                     {
+//                        System.out.println("selectedAppointments():" + selectedAppointments().size());
 //                        VComponent<?> v = appointmentVComponentMap.get(System.identityHashCode(selectedAppointments().get(0)));
                         appointments().removeAll(selectedAppointments());
                     }

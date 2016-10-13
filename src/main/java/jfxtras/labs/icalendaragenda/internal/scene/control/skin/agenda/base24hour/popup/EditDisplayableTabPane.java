@@ -26,6 +26,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -148,6 +149,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
     
     T vComponentCopy;
     T vComponentOriginal;
+    public static VComponent vo;
 //    List<T> vComponents;
 
     /**
@@ -166,6 +168,7 @@ public abstract class EditDisplayableTabPane<T extends VDisplayable<T>, U extend
             )
     {
         this.vComponentCopy = vComponentCopy;
+        vo = vComponentOriginal;
         editDescriptiveVBox.setupData(vComponentCopy, startRecurrence, endRecurrence, categories);
         
         /* 

@@ -48,7 +48,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
@@ -96,7 +96,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
@@ -141,7 +141,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal)
                 .revise();
         
@@ -192,7 +192,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> iTIPMessages = reviser.revise();
         
@@ -257,7 +257,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
         
@@ -350,7 +350,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
 
@@ -428,7 +428,7 @@ public class ReviseAllTest
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
-                .withVComponentEdited(vComponentEdited)
+                .withVComponentCopyEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         List<VCalendar> itipMessages = reviser.revise();
 
@@ -447,6 +447,53 @@ public class ReviseAllTest
                 "UID:20150110T080000-004@jfxtras.org" + System.lineSeparator() +
                 "RRULE:FREQ=DAILY" + System.lineSeparator() +
                 "ORGANIZER;CN=Papa Smurf:mailto:papa@smurf.org" + System.lineSeparator() +
+                "SEQUENCE:1" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                "END:VCALENDAR"
+                ;
+        String iTIPMessage = itipMessages.stream()
+                .map(v -> v.toContent())
+                .collect(Collectors.joining(System.lineSeparator()));
+        assertEquals(expectediTIPMessage, iTIPMessage);
+    }
+    
+    @Test
+    public void canRemoveException2()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDailyWithException1();
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentEdited = new VEvent(vComponentOriginal);
+        
+        // make changes
+        vComponentEdited.setExceptionDates(null);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+                .withDialogCallback((m) -> null) // not needed
+                .withEndRecurrence(LocalDateTime.of(2015, 11, 18, 11, 30))
+                .withStartOriginalRecurrence(LocalDateTime.of(2015, 11, 18, 10, 0))
+                .withStartRecurrence(LocalDateTime.of(2015, 11, 18, 10, 0))
+                .withVComponentCopyEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginal);
+        List<VCalendar> itipMessages = reviser.revise();
+
+        String expectediTIPMessage =
+                "BEGIN:VCALENDAR" + System.lineSeparator() +
+                "METHOD:REQUEST" + System.lineSeparator() +
+                "PRODID:" + ICalendarAgenda.DEFAULT_PRODUCT_IDENTIFIER + System.lineSeparator() +
+                "VERSION:" + Version.DEFAULT_ICALENDAR_SPECIFICATION_VERSION + System.lineSeparator() +
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "CATEGORIES:group03" + System.lineSeparator() +
+                "DTSTART:20151109T100000" + System.lineSeparator() +
+                "DTEND:20151109T113000" + System.lineSeparator() +
+                "DESCRIPTION:Daily2 Description" + System.lineSeparator() +
+                "SUMMARY:Daily2 Summary" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "UID:20150110T080000-005@jfxtras.org" + System.lineSeparator() +
+                "RRULE:COUNT=6;FREQ=DAILY;INTERVAL=3" + System.lineSeparator() +
+                "ORGANIZER;CN=Issac Newton:mailto:isaac@greatscientists.org" + System.lineSeparator() +
                 "SEQUENCE:1" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 "END:VCALENDAR"

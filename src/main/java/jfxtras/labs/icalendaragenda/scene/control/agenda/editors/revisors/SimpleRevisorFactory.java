@@ -49,7 +49,7 @@ public class SimpleRevisorFactory
                     .withEndRecurrence((Temporal) params[1])
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
-                    .withVComponentEdited((VEvent) params[4])
+                    .withVComponentCopyEdited((VEvent) params[4])
                     .withVComponentOriginal((VEvent) params[5]);
         } else if (vComponent instanceof VTodo)
         {
@@ -59,7 +59,7 @@ public class SimpleRevisorFactory
                     .withEndRecurrence((Temporal) params[1])
                     .withStartOriginalRecurrence((Temporal) params[2])
                     .withStartRecurrence((Temporal) params[3])
-                    .withVComponentEdited((VTodo) params[4])
+                    .withVComponentCopyEdited((VTodo) params[4])
                     .withVComponentOriginal((VTodo) params[5]);
         } else if (vComponent instanceof VJournal)
         {
@@ -69,7 +69,7 @@ public class SimpleRevisorFactory
                     .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
                     .withStartOriginalRecurrence((Temporal) params[1])
                     .withStartRecurrence((Temporal) params[2])
-                    .withVComponentEdited((VJournal) params[3])
+                    .withVComponentCopyEdited((VJournal) params[3])
                     .withVComponentOriginal((VJournal) params[4]);
         } else if (vComponent instanceof VFreeBusy)
         {
