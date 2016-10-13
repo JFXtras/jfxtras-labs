@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;
 
 /**
- * Demo of Agenda with ICalendarFX integrated
+ * Demo of ICalendarAgenda with multiple events added and other controls to change displayed dates
  * 
  * @author David Bal
  *

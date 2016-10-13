@@ -338,12 +338,8 @@ public abstract class EditRecurrenceRuleVBox<T extends VDisplayable<T>> extends 
             rrule.setInterval((Interval) null); // rely on default value of 1
         } else
         {
-            rrule.setInterval(new Interval(newValue));
-//            Interval interval = (rrule.getInterval() == null) ? new Interval() : rrule.getInterval();
-//            interval.setValue(newValue);
-//            rrule.setInterval(interval);
+            rrule.setInterval(newValue);
         }
-        System.out.println("just changed interval:" + vComponent.getRecurrenceRule().getValue().toContent());
         setIntervalText(newValue);
         refreshSummary();
         refreshExceptionDates();

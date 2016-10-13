@@ -2,8 +2,6 @@ package jfxtras.labs.icalendaragenda.trial;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,11 +10,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.layout.HBox;
 
 /**
- * Simple Demo of {@link ICalendarAgenda} with one repeating event
+ * Simple Demo of {@link ICalendarAgenda} with weekly increase/decrease buttons
  * 
  * @author David Bal
  *
@@ -29,20 +26,10 @@ public class ICalendarAgendaSimpleTrial2 extends Application
 
     @Override
     public void start(Stage primaryStage) {
-        VCalendar vCalendar = new VCalendar();
-        VEvent vEvent = new VEvent()
-                .withDateTimeStart(LocalDateTime.now().minusMonths(1).with(ChronoField.MILLI_OF_SECOND, 0))
-                .withDateTimeEnd(LocalDateTime.now().minusMonths(1).plusHours(1).with(ChronoField.MILLI_OF_SECOND, 0))
-                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
-                .withSummary("Example Daily Event")
-                .withRecurrenceRule("RRULE:FREQ=DAILY")
-                .withOrganizer("mailto:david@balsoftware.net")
-                .withUniqueIdentifier("exampleuid000jfxtras.org");
-//        VEvent vEvent = ICalendarStaticComponents.getDailyWithException1();
-        vCalendar.addVComponent(vEvent);
 
         // setup control
         BorderPane root = new BorderPane();
+        VCalendar vCalendar = new VCalendar(); // iCalendar model - contains calendaring information
         ICalendarAgenda agenda = new ICalendarAgenda(vCalendar); // Agenda - displays the VCalendar information
         root.setCenter(agenda);
         
@@ -67,7 +54,7 @@ public class ICalendarAgendaSimpleTrial2 extends Application
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
         primaryStage.setTitle("ICalendar Agenda Simple Demo");
-        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent()));
+        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent())); // prints resulting VCALENDAR on close
         primaryStage.show();
     }
 }

@@ -43,37 +43,7 @@ public class EditComponentPopupTrial extends Application
 
         VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-//        VEvent vevent = ICalendarStaticComponents.getWholeDayDaily4();
         myCalendar.addVComponent(vevent);
-//        VEvent vevent = new VEvent()
-//                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
-//                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 10, 0), ZoneId.of("America/Los_Angeles")))
-//                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
-//                .withDescription("Daily1 Description")
-//                .withSummary("Daily1 Summary")
-//                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-//                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-//                .withRecurrenceRule(new RecurrenceRule2()
-//                        .withFrequency(FrequencyType.WEEKLY)
-//                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))
-//                        .withCount(10));
-//                .withRecurrenceRule(new RecurrenceRule2()
-//                        .withFrequency(FrequencyType.DAILY)
-//                        .withInterval(3)
-//                        .withCount(10));
-
-//        VJournal vevent = new VJournal()
-//                .withDateTimeStart("20160518T110000")
-//                .withSummary("test journal")
-//                .withDateTimeStamp("20160518T232502Z")
-//                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
-
-//        VTodo vevent = new VTodo()
-//                .withDateTimeStart("20160518T110000")
-//                .withDuration(Duration.ofHours(1))
-//                .withSummary("test todo")
-//                .withDateTimeStamp("20160518T232502Z")
-//                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
         
         RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
         recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));

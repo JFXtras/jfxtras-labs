@@ -219,6 +219,12 @@ public class CalendarController
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
     }
+
+    @FXML private void handleToday()
+    {
+        LocalDate today = LocalDate.now();
+        localDatePicker.localDateProperty().set(today);
+    }
     
     @FXML private void handleDateIncrement() {
         LocalDate oldLocalDate = localDatePicker.getLocalDate();

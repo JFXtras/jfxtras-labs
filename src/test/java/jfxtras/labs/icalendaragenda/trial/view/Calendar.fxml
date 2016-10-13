@@ -11,7 +11,7 @@
    <top>
       <HBox styleClass="simple-border2" stylesheets="@../main.css" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="today">
+            <Button mnemonicParsing="false" onAction="#handleToday" text="today">
                <HBox.margin>
                   <Insets right="15.0" />
                </HBox.margin>

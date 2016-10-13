@@ -8,7 +8,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 
 /**
- * Simple Demo of an empty {@link ICalendarAgenda}
+ * Simplest Demo of an empty {@link ICalendarAgenda}
  * 
  * @author David Bal
  *
@@ -29,7 +29,7 @@ public class ICalendarAgendaSimpleTrial1 extends Application
 
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
-        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent()));
+        primaryStage.setOnCloseRequest(e -> System.out.println(vCalendar.toContent())); // prints resulting VCALENDAR on close
         primaryStage.show();        
     }
 }
