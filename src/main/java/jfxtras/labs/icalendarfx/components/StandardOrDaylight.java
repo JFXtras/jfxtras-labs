@@ -52,11 +52,19 @@ public abstract class StandardOrDaylight<T> extends VRepeatableBase<T>
         return timeZoneNames;
     }
     private ObjectProperty<ObservableList<TimeZoneName>> timeZoneNames;
-    public ObservableList<TimeZoneName> getTimeZoneNames() { return (timeZoneNames == null) ? null : timeZoneNames.get(); }
+    public ObservableList<TimeZoneName> getTimeZoneNames()
+    {
+        return (timeZoneNames == null) ? null : timeZoneNames.get();
+    }
     public void setTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames)
     {
         if (timeZoneNames != null)
         {
+            if ((this.timeZoneNames != null) && (this.timeZoneNames.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(timeZoneNamesProperty().get(), timeZoneNames);
+            }
             orderer().registerSortOrderProperty(timeZoneNames);
         } else
         {
@@ -94,7 +102,13 @@ public abstract class StandardOrDaylight<T> extends VRepeatableBase<T>
      */
     public T withTimeZoneNames(TimeZoneName...timeZoneNames)
     {
-        setTimeZoneNames(FXCollections.observableArrayList(timeZoneNames));
+        if (getTimeZoneNames() == null)
+        {
+            setTimeZoneNames(FXCollections.observableArrayList(timeZoneNames));
+        } else
+        {
+            getTimeZoneNames().addAll(timeZoneNames);
+        }
         return (T) this;
     }
     

@@ -39,20 +39,40 @@ public abstract class VPrimary<T> extends VCommon<T>
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    public ObservableList<Comment> getComments() { return comments; }
-    private ObservableList<Comment> comments;
+    public ObjectProperty<ObservableList<Comment>> commentsProperty()
+    {
+        if (comments == null)
+        {
+            comments = new SimpleObjectProperty<>(this, PropertyType.COMMENT.toString());
+        }
+        return comments;
+    }
+    public ObservableList<Comment> getComments()
+    {
+        return (comments == null) ? null : comments.get();
+    }
+    private ObjectProperty<ObservableList<Comment>> comments;
     public void setComments(ObservableList<Comment> comments)
     {
         if (comments != null)
         {
+            if (this.comments != null)
+            {
+                // replace sort order in new list
+                orderer().replaceList(this.comments.get(), comments);
+            }
             orderer().registerSortOrderProperty(comments);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.comments);
+            orderer().unregisterSortOrderProperty(commentsProperty().get());
         }
-        this.comments = comments;
+        commentsProperty().set(comments);
     }
-    public T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
+    public T withComments(ObservableList<Comment> comments)
+    {
+        setComments(comments);
+        return (T) this;
+    }
     public T withComments(String...comments)
     {
         Arrays.stream(comments).forEach(c -> PropertyType.COMMENT.parse(this, c));

@@ -293,18 +293,34 @@ public abstract class VLocatable<T> extends VDisplayable<T> implements VDescriba
      * RESOURCES:EASEL,PROJECTOR,VCR
      * RESOURCES;LANGUAGE=fr:Nettoyeur haute pression
      */
-    public ObservableList<Resources> getResources() { return resources; }
-    private ObservableList<Resources> resources;
+    public ObjectProperty<ObservableList<Resources>> resourcesProperty()
+    {
+        if (resources == null)
+        {
+            resources = new SimpleObjectProperty<>(this, PropertyType.RESOURCES.toString());
+        }
+        return resources;
+    }
+    public ObservableList<Resources> getResources()
+    {
+        return (resources == null) ? null : resources.get();
+    }
+    private ObjectProperty<ObservableList<Resources>> resources;
     public void setResources(ObservableList<Resources> resources)
     {
         if (resources != null)
         {
+            if ((this.resources != null) && (this.resources.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(resourcesProperty().get(), resources);
+            }
             orderer().registerSortOrderProperty(resources);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.resources);
+            orderer().unregisterSortOrderProperty(recurrenceDatesProperty().get());
         }
-        this.resources = resources;
+        resourcesProperty().set(resources);
     }
     public T withResources(ObservableList<Resources> resources)
     {

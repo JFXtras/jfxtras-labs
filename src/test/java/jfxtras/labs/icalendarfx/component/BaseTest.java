@@ -79,7 +79,8 @@ public class BaseTest
 
             VComponent parsedComponent = builtComponent.getClass().newInstance();
             parsedComponent.parseContent(expectedContent);
-
+System.out.println(builtComponent);
+System.out.println(parsedComponent);
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }

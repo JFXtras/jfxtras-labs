@@ -53,6 +53,11 @@ public abstract class VDescribableBase<T> extends VCommon<T> implements VDescrib
     {
         if (attachments != null)
         {
+            if ((this.attachments != null) && (this.attachments.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(attachmentsProperty().get(), attachments);
+            }
             orderer().registerSortOrderProperty(attachments);
         } else
         {

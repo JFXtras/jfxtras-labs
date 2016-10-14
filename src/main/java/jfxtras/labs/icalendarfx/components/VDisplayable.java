@@ -97,10 +97,10 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     {
         if (attachments != null)
         {
-            if (this.attachments != null)
+            if ((this.attachments != null) && (this.attachments.get() != null))
             {
                 // replace sort order in new list
-                orderer().replaceList(this.attachments.get(), attachments);
+                orderer().replaceList(attachmentsProperty().get(), attachments);
             }
             orderer().registerSortOrderProperty(attachments);
         } else
@@ -135,16 +135,16 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     {
         if (categories != null)
         {
-            if (this.categories != null)
+            if ((this.categories != null) && (this.categories.get() != null))
             {
                 // replace sort order in new list
                 // TODO - Is there a way to encapsulate this in the orderer without this method call?
-                orderer().replaceList(this.categories.get(), categories);
+                orderer().replaceList(categoriesProperty().get(), categories);
             }
             orderer().registerSortOrderProperty(categories);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.categories.get());
+            orderer().unregisterSortOrderProperty(categoriesProperty().get());
         }
         categoriesProperty().set(categories);
     }
@@ -238,20 +238,40 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
      *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
      *  +1-919-555-1234
      */
-    public ObservableList<Contact> getContacts() { return contacts; }
-    private ObservableList<Contact> contacts;
+    public ObjectProperty<ObservableList<Contact>> contactsProperty()
+    {
+        if (contacts == null)
+        {
+            contacts = new SimpleObjectProperty<>(this, PropertyType.CONTACT.toString());
+        }
+        return contacts;
+    }
+    public ObservableList<Contact> getContacts()
+    {
+        return (contacts == null) ? null : contacts.get();
+    }
+    private ObjectProperty<ObservableList<Contact>> contacts;
     public void setContacts(ObservableList<Contact> contacts)
     {
         if (contacts != null)
         {
+            if ((this.contacts != null) && (this.contacts.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(contactsProperty().get(), contacts);
+            }
             orderer().registerSortOrderProperty(contacts);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.contacts);
+            orderer().unregisterSortOrderProperty(contactsProperty().get());
         }
-        this.contacts = contacts;
+        contactsProperty().set(contacts);
     }
-    public T withContacts(ObservableList<Contact> contacts) { setContacts(contacts); return (T) this; }
+    public T withContacts(ObservableList<Contact> contacts)
+    {
+        setContacts(contacts);
+        return (T) this;
+    }
     public T withContacts(String...contacts)
     {
         Arrays.stream(contacts).forEach(c -> PropertyType.CONTACT.parse(this, c));
@@ -268,7 +288,6 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         }
         return (T) this;
     }
-    
     
     /**
      * CREATED: Date-Time Created
@@ -347,19 +366,24 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
         return (exceptionDates == null) ? null : exceptionDates.get();
     }
     private ObjectProperty<ObservableList<ExceptionDates>> exceptionDates;
-    public void setExceptionDates(ObservableList<ExceptionDates> exceptions)
+    public void setExceptionDates(ObservableList<ExceptionDates> exceptionDates)
     {
-        if (exceptions != null)
+        if (exceptionDates != null)
         {
-            orderer().registerSortOrderProperty(exceptions);
-            exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-            String error = checkRecurrencesConsistency(exceptions);
+            if ((this.exceptionDates != null) && (this.exceptionDates.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(exceptionDatesProperty().get(), exceptionDates);
+            }
+            orderer().registerSortOrderProperty(exceptionDates);
+            exceptionDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+            String error = checkRecurrencesConsistency(exceptionDates);
             if (error != null) throw new DateTimeException(error);
         } else
         {
             orderer().unregisterSortOrderProperty(exceptionDatesProperty().get());
         }
-        exceptionDatesProperty().set(exceptions);
+        exceptionDatesProperty().set(exceptionDates);
     }
     public T withExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
@@ -458,6 +482,11 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     {
         if (recurrenceDates != null)
         {
+            if ((this.recurrenceDates != null) && (this.recurrenceDates.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(recurrenceDatesProperty().get(), recurrenceDates);
+            }
             orderer().registerSortOrderProperty(recurrenceDates);
             recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
             String error = checkRecurrencesConsistency(recurrenceDates);
@@ -540,7 +569,6 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
     }
     public T withRecurrenceId(RecurrenceId recurrenceId)
     {
-        System.out.println("set rid:");
         if (getRecurrenceId() == null)
         {
             setRecurrenceId(recurrenceId);
@@ -626,18 +654,34 @@ public abstract class VDisplayable<T> extends VPersonal<T> implements VRepeatabl
      * Example:
      * RELATED-TO:19960401-080045-4000F192713-0052@example.com
      */
-    public ObservableList<RelatedTo> getRelatedTo() { return relatedTo; }
-    private ObservableList<RelatedTo> relatedTo;
+    public ObjectProperty<ObservableList<RelatedTo>> relatedToProperty()
+    {
+        if (relatedTo == null)
+        {
+            relatedTo = new SimpleObjectProperty<>(this, PropertyType.RELATED_TO.toString());
+        }
+        return relatedTo;
+    }
+    public ObservableList<RelatedTo> getRelatedTo()
+    {
+        return (relatedTo == null) ? null : relatedTo.get();
+    }
+    private ObjectProperty<ObservableList<RelatedTo>> relatedTo;
     public void setRelatedTo(ObservableList<RelatedTo> relatedTo)
     {
         if (relatedTo != null)
         {
+            if ((this.relatedTo != null) && (this.relatedTo.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(relatedToProperty().get(), relatedTo);
+            }
             orderer().registerSortOrderProperty(relatedTo);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.relatedTo);
+            orderer().unregisterSortOrderProperty(relatedToProperty().get());
         }
-        this.relatedTo = relatedTo;
+        relatedToProperty().set(relatedTo);
     }
     public T withRelatedTo(ObservableList<RelatedTo> relatedTo) { setRelatedTo(relatedTo); return (T) this; }
     public T withRelatedTo(String...relatedTo)

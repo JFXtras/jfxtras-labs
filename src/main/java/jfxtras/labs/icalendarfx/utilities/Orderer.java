@@ -73,9 +73,10 @@ public interface Orderer
      * If the number of elements in the oldList is greater than the number of elements in the newList then only the
      * number of elements in the oldList have their sort order copied to the newList elements.  Remaining newList elements
      * will get new sort order values when they are added.
+     * @param <T>
      * 
      * @param oldList
      * @param newList
      */
-    void replaceList(ObservableList<? extends VChild> oldList, ObservableList<? extends VChild> newList);
+    <T extends VChild> void replaceList(ObservableList<T> oldList, ObservableList<T> newList);
 }

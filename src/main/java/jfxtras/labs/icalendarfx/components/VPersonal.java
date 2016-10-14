@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.UnfoldingStringIterator;
  */
 public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
 {
-    /*
+    /**
      * ATTENDEE: Attendee
      * RFC 5545 iCalendar 3.8.4.1 page 107
      * This property defines an "Attendee" within a calendar component.
@@ -59,16 +59,24 @@ public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
     }
     private ObjectProperty<ObservableList<Attendee>> attendees;
     @Override
-    public ObservableList<Attendee> getAttendees() { return (attendees == null) ? null : attendees.get(); }
+    public ObservableList<Attendee> getAttendees()
+    {
+        return (attendees == null) ? null : attendees.get();
+    }
     @Override
     public void setAttendees(ObservableList<Attendee> attendees)
     {
         if (attendees != null)
         {
+            if ((this.attendees != null) && (this.attendees.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(attendeesProperty().get(), attendees);
+            }
             orderer().registerSortOrderProperty(attendees);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.attendees.get());
+            orderer().unregisterSortOrderProperty(attendeesProperty().get());
         }
         attendeesProperty().set(attendees);
     }
@@ -198,23 +206,40 @@ public abstract class VPersonal<T> extends VPrimary<T> implements VAttendee<T>
      *  mailto:jsmith@example.com
      * 
      */
-    public ObservableList<RequestStatus> getRequestStatus()
+    public ObjectProperty<ObservableList<RequestStatus>> requestStatusProperty()
     {
+        if (requestStatus == null)
+        {
+            requestStatus = new SimpleObjectProperty<>(this, PropertyType.REQUEST_STATUS.toString());
+        }
         return requestStatus;
     }
-    private ObservableList<RequestStatus> requestStatus;
+    public ObservableList<RequestStatus> getRequestStatus()
+    {
+        return (requestStatus == null) ? null : requestStatus.get();
+    }
+    private ObjectProperty<ObservableList<RequestStatus>> requestStatus;
     public void setRequestStatus(ObservableList<RequestStatus> requestStatus)
     {
         if (requestStatus != null)
         {
+            if ((this.requestStatus != null) && (this.requestStatus.get() != null))
+            {
+                // replace sort order in new list
+                orderer().replaceList(requestStatusProperty().get(), requestStatus);
+            }
             orderer().registerSortOrderProperty(requestStatus);
         } else
         {
-            orderer().unregisterSortOrderProperty(this.requestStatus);
+            orderer().unregisterSortOrderProperty(requestStatusProperty().get());
         }
-        this.requestStatus = requestStatus;
+        requestStatusProperty().set(requestStatus);
     }
-    public T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
+    public T withRequestStatus(ObservableList<RequestStatus> requestStatus)
+    {
+        setRequestStatus(requestStatus);
+        return (T) this;
+    }
     public T withRequestStatus(String...requestStatus)
     {
         Arrays.stream(requestStatus).forEach(c -> PropertyType.REQUEST_STATUS.parse(this, c));

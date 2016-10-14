@@ -170,15 +170,15 @@ public class OrdererBase implements Orderer
     }
     
     @Override
-    public void replaceList(ObservableList<? extends VChild> oldList, ObservableList<? extends VChild> newList)
+    public <T extends VChild> void replaceList(ObservableList<T> oldList, ObservableList<T> newList)
     {
-        Iterator<? extends VChild> newItemIterator = newList.iterator();
+        Iterator<T> newItemIterator = newList.iterator();
         Iterator<Integer> oldSortValueIterator = oldList.stream()
                 .map(c -> elementSortOrderMap.get(c))
                 .iterator();
         while (oldSortValueIterator.hasNext() && newItemIterator.hasNext())
         {
-            VChild newItem = newItemIterator.next();
+            T newItem = newItemIterator.next();
             Integer value = oldSortValueIterator.next();
             elementSortOrderMap.put(newItem, value);
         }
