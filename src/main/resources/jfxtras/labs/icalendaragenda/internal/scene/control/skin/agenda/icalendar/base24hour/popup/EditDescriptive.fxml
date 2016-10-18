@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import jfxtras.scene.control.*?>
-<?import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.*?>
+<?import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.icalendar.base24hour.*?>
 
 <fx:root fx:id="componentEditVBox" prefHeight="495.0" prefWidth="400.0" spacing="7.0" styleClass="background3" stylesheets="@PopupStyles.css" type="javafx.scene.layout.VBox" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
