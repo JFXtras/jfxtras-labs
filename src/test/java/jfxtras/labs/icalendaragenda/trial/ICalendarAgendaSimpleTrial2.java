@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.scene.layout.HBox;
 
@@ -29,7 +29,7 @@ public class ICalendarAgendaSimpleTrial2 extends Application
 
         // setup control
         BorderPane root = new BorderPane();
-        VCalendar vCalendar = new VCalendar(); // iCalendar model - contains calendaring information
+        VCalendar vCalendar = new VCalendar(); // iCalendarFx model - contains calendaring information
         ICalendarAgenda agenda = new ICalendarAgenda(vCalendar); // Agenda - displays the VCalendar information
         root.setCenter(agenda);
         

@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;

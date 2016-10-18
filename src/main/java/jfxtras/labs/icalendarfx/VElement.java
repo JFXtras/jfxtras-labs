@@ -33,6 +33,7 @@ public interface VElement
      * If element contains children {@link #parseContent(String)} is invoked recursively to parse child elements also
      * 
      * @param content  calendar content string to parse
+     * @return  log of information and error messages
      * @throws IllegalArgumentException  if calendar content is not valid, such as null
      */
     List<String> parseContent(String content) throws IllegalArgumentException;

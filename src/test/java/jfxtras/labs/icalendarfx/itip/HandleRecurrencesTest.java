@@ -12,7 +12,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;

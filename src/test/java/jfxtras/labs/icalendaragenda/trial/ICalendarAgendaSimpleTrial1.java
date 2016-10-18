@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 
 /**

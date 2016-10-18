@@ -11,7 +11,7 @@ import org.junit.Test;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.editors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.test.TestUtil;

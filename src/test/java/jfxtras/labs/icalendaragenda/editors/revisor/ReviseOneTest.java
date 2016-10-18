@@ -15,10 +15,10 @@ import org.junit.Test;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.ReviserVEvent;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.editors.revisors.ReviserVEvent;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.editors.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VPrimary;

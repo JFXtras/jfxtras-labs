@@ -12,7 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.agenda.AgendaTestAbstract;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.editors.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.editors.ChangeDialogOption;
 import jfxtras.test.TestUtil;
 
 public class DemoTest extends AgendaTestAbstract
