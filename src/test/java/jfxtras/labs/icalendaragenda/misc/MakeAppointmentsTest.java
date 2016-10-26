@@ -20,8 +20,8 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.factories.DefaultRecurrenceFactory;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.factories.RecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;

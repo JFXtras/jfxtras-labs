@@ -15,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.icalendar.ICalendarAgenda;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.calendar.Method.MethodType;
 import jfxtras.scene.layout.HBox;
