@@ -1,5 +1,6 @@
 package jfxtras.labs.scene.layout;
 
+import java.net.URL;
 import java.util.List;
 
 import javafx.beans.DefaultProperty;
@@ -43,9 +44,9 @@ import javafx.stage.Window;
 	 	</Layout>
 	 </layouts>
 	 
-	 <csses>
-	 	<Css width="800" file="table.css"/>
-	 </csses>
+	 <cssFiles>
+	 	<CSSFile width="800" url="table.css"/>
+	 </cssFiles>
 </ResponsivePane>
 */
 
@@ -85,7 +86,7 @@ public class ResponsivePane extends StackPane {
 	public ObservableList<Layout> getLayouts() {
 		return layouts;
 	}
-	private ObservableList<Layout> layouts = FXCollections.observableArrayList();
+	final private ObservableList<Layout> layouts = FXCollections.observableArrayList();
 
 	/**
 	 *
@@ -134,16 +135,62 @@ public class ResponsivePane extends StackPane {
 		}
 	}
 	
+	// -----------------------------------------------------------------------------------------------
+	// CSS files
+
+	/** cssFiles */
+	public ObservableList<CSSFile> getCSSFiles() {
+		return cssFiles;
+	}
+	final private ObservableList<CSSFile> cssFiles = FXCollections.observableArrayList();
+
+	/**
+	 *
+	 */
+	@DefaultProperty(value="url")
+	static public class CSSFile {
+		
+		public CSSFile() {
+			
+		}
+		
+		public CSSFile(double width, URL url) {
+			setWidth(width);
+			setURL(url);
+		}		
+		
+		/** URL */
+		public ObjectProperty<URL> urlProperty() { return urlProperty; }
+		final private SimpleObjectProperty<URL> urlProperty = new SimpleObjectProperty<>(this, "url", null);
+		public URL getURL() { return urlProperty.getValue(); }
+		public void setURL(URL value) { urlProperty.setValue(value); }
+		public CSSFile withURL(URL value) { setURL(value); return this; } 
+
+		/** Width */
+		public ObjectProperty<Double> widthProperty() { return widthProperty; }
+		final private SimpleObjectProperty<Double> widthProperty = new SimpleObjectProperty<>(this, "width", 0.0);
+		public Double getWidth() { return widthProperty.getValue(); }
+		public void setWidth(Double value) { widthProperty.setValue(value); }
+		public CSSFile withWidth(Double value) { setWidth(value); return this; } 
+	}
+	
+	/** ActiveCSSFile */
+	public ObjectProperty<CSSFile> activeCSSFileProperty() { return activeCSSFileProperty; }
+	final private SimpleObjectProperty<CSSFile> activeCSSFileProperty = new SimpleObjectProperty<CSSFile>(this, "activeCSSFile", null);
+	public CSSFile getActiveCSSFile() { return activeCSSFileProperty.getValue(); }
+	public void setActiveCSSFile(CSSFile value) { activeCSSFileProperty.setValue(value); }
+	public ResponsivePane withActiveCSSFile(CSSFile value) { setActiveCSSFile(value); return this; } 
+
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
 	
     @Override 
     protected void layoutChildren() {
     	this.getChildren().clear();
-    	
-    	// get active layout
-//    	Layout lLayout = getActiveLayout();
-    	Layout lLayout = determineBestFittingLayout();
+		double lActualWidth = determineActualWidth();
+
+    	// determine layout
+    	Layout lLayout = determineBestFittingLayout(lActualWidth);
     	setActiveLayout(lLayout);
     	if (lLayout != null) {
 
@@ -152,6 +199,13 @@ public class ResponsivePane extends StackPane {
     		fillRefs(lLayout);
     		this.getChildren().add(lLayout.getRoot());
     	}
+    	
+    	// determine css
+    	CSSFile lCSSFile = determineBestFittingCSSFile(lActualWidth);
+    	setActiveCSSFile(lCSSFile);
+
+		// switch to active CSS file
+		loadStylesheet(lCSSFile);
     	
     	// continue layout
     	super.layoutChildren();
@@ -230,11 +284,15 @@ public class ResponsivePane extends StackPane {
 		}
 
 		double width = lScene.getWidth() / dpiFactor;
+		System.out.println("determineActualWidth=" + lScene.getWidth() + " -> " + width);
 		return width;
 	}
 	
-	Layout determineBestFittingLayout() {
-		double lActualWidth = determineActualWidth();
+	/**
+	 * 
+	 * @return
+	 */
+	Layout determineBestFittingLayout(double lActualWidth) {
 		
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
@@ -245,6 +303,55 @@ public class ResponsivePane extends StackPane {
 			}
 		}
 		
+		System.out.println("determineBestFittingLayout=" + (lBestFittingLayout == null ? null : lBestFittingLayout.getWidth()));
 		return lBestFittingLayout;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	CSSFile determineBestFittingCSSFile(double lActualWidth) {
+		
+		CSSFile lBestFittingCSSFile = null;
+		for (CSSFile lCSSFile : cssFiles) {
+			if (lActualWidth >= lCSSFile.getWidth()) {
+				if (lBestFittingCSSFile == null || lBestFittingCSSFile.getWidth() < lCSSFile.getWidth()) {
+					lBestFittingCSSFile = lCSSFile;
+				}
+			}
+		}
+		
+		System.out.println("determineBestFittingCSSFile=" + (lBestFittingCSSFile == null ? null : lBestFittingCSSFile.getWidth() + " -> " + lBestFittingCSSFile.getURL()));
+		return lBestFittingCSSFile;
+	}
+	
+	/**
+	 * 
+	 * @param cssFile
+	 */	
+	void loadStylesheet(CSSFile cssFile) {
+		Scene scene = getScene();
+		String stylesheet = (cssFile == null ? null : cssFile.getURL().toExternalForm());
+		
+		// did the deviceType change
+//		System.out.println(scene.getStylesheets() +  " / " + stylesheet);
+		if (!scene.getStylesheets().contains(stylesheet) || stylesheet == null) {
+			
+			// remove old (there may be a delay, so we attempt to remove all)
+			for (CSSFile lCSSFile : cssFiles) {
+				String lStylesheet = lCSSFile.getURL().toExternalForm();
+				if (scene.getStylesheets().remove(lStylesheet)) {
+					System.out.println("Removed " + lStylesheet);
+				}			
+			}
+			
+			// load new
+			if (stylesheet != null) {
+				System.out.println("Loading " + stylesheet);
+				scene.getStylesheets().add(stylesheet);
+			}
+		}
+	}
+
 }
