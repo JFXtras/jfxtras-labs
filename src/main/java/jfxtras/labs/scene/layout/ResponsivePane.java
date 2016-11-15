@@ -1,26 +1,27 @@
 package jfxtras.labs.scene.layout;
 
 import java.net.URL;
-import java.util.List;
 
 import javafx.beans.DefaultProperty;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.Skin;
-import javafx.scene.control.SkinBase;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Window;
-import jfxtras.labs.scene.layout.ResponsivePane.Layout;
 
 /*
+ * TODO: FXML loading
+ * TODO: alias widths (desktop, tablets, etc)
+ * TODO: orientation
+ * 
 <ResponsivePane>
 	<refs>
 		<CalendarPicker id="yadda"/>
@@ -52,20 +53,59 @@ import jfxtras.labs.scene.layout.ResponsivePane.Layout;
 </ResponsivePane>
 */
 
+/**
+ * 
+ *
+ */
 public class ResponsivePane extends StackPane {
 	
 	
 	// ==========================================================================================================================================================================================================================================
 	// CONSTRUCTORS
 	
+	/**
+	 * 
+	 */
 	public ResponsivePane() {
+		
+		// react to changes in the scene
+		sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
+			
+			// by listening to it width
+			if (oldValue != null) {
+				oldValue.widthProperty().removeListener(sizeInvalidationListener);
+			}
+			if (newValue != null) {
+				newValue.widthProperty().addListener(sizeInvalidationListener);
+			}
+		});
 	}
+	
+	// react to changes in the size of the scene by (optionally) changing the layout 
+	final private InvalidationListener sizeInvalidationListener = new InvalidationListener() {
+		
+		@Override
+		public void invalidated(Observable observable) {
+			
+			// nothing to do yet
+			if (getScene() == null || getScene().getWindow() == null) {
+				return;
+			}
+			
+			// see if something needs to be changed
+			setupLayout();
+		}
+	};
+	
 	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
 
 	/** Id */
-	public ResponsivePane withId(String v) { setId(v); return this; }
+	public ResponsivePane withId(String v) { 
+		setId(v); 
+		return this; 
+	}
 
 	// -----------------------------------------------------------------------------------------------
 	// REFS
@@ -86,6 +126,21 @@ public class ResponsivePane extends StackPane {
 		node.setId(id);
 		getRefs().add(node);
 		return node;
+	}
+	
+	/**
+	 * 
+	 * @param refId
+	 * @return
+	 */
+	Node findRef(String refId) {
+		for (Node lNode : refs) {
+			if (refId.equals(lNode.getId())) {
+				return lNode;
+			}			
+		}
+		System.err.println("Could not fill reference " + refId);
+		return null;
 	}
 	
 	// -----------------------------------------------------------------------------------------------
@@ -138,7 +193,7 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane withActiveLayout(Layout value) { setActiveLayout(value); return this; } 
 
 	/**
-	 * 
+	 * This class represents a placeholder for nodes in the refs list
 	 */
 	static public class Ref extends StackPane {
 		public Ref (String id) { 
@@ -165,7 +220,7 @@ public class ResponsivePane extends StackPane {
 			
 			// find the reffered node
 			String lRefId = getId();
-			Node lReffedNode = lResponsivePane.findRef(lResponsivePane.getRefs(), lRefId);
+			Node lReffedNode = lResponsivePane.findRef(lRefId);
 
 			getChildren().clear();
 			if (lReffedNode != null) {
@@ -231,6 +286,20 @@ public class ResponsivePane extends StackPane {
 	
     @Override 
     protected void layoutChildren() {
+    	
+    	// this is only for the first initialization
+    	if (getActiveLayout() == null) {
+    		setupLayout();
+    	}
+    	
+    	// continue layout
+    	super.layoutChildren();
+    }
+    
+    /**
+     * 
+     */
+	void setupLayout() {
 		double lActualWidth = determineActualWidth();
 
     	// determine layout
@@ -241,8 +310,8 @@ public class ResponsivePane extends StackPane {
         	setActiveLayout(lLayout);
 
     		// switch to active layout
-        	this.getChildren().clear();
-    		this.getChildren().add(lLayout.getRoot());
+        	ResponsivePane.this.getChildren().clear();
+        	ResponsivePane.this.getChildren().add(lLayout.getRoot());
     	}
     	
     	// determine css
@@ -253,29 +322,11 @@ public class ResponsivePane extends StackPane {
     		setActiveCSSFile(lCSSFile);
 
 			// switch to active CSS file
-			loadStylesheet(lCSSFile);
+			load(lCSSFile);
     	}
-    	
-    	// continue layout
-    	super.layoutChildren();
-    }
-    
-	/**
-	 * 
-	 * @param refs2 
-	 * @param refId
-	 * @return
-	 */
-	Node findRef(List<Node> refs, String refId) {
-		for (Node lNode : refs) {
-			if (refId.equals(lNode.getId())) {
-				return lNode;
-			}			
-		}
-		System.err.println("Could not fill reference " + refId);
-		return null;
 	}
-	
+
+
 	/**
 	 * 
 	 * @return
@@ -352,27 +403,22 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 * @param cssFile
 	 */	
-	void loadStylesheet(CSSFile cssFile) {
+	void load(CSSFile cssFile) {
 		Scene scene = getScene();
 		String stylesheet = (cssFile.getURL() == null ? null : cssFile.getURL().toExternalForm());
 		
-		// did the deviceType change
-//		System.out.println(scene.getStylesheets() +  " / " + stylesheet);
-		if (!scene.getStylesheets().contains(stylesheet) || stylesheet == null) {
-			
-			// remove old (there may be a delay, so we attempt to remove all)
-			for (CSSFile lCSSFile : cssFiles) {
-				String lStylesheet = lCSSFile.getURL().toExternalForm();
-				if (scene.getStylesheets().remove(lStylesheet)) {
-					System.out.println("Removed " + lStylesheet);
-				}			
-			}
-			
-			// load new
-			if (stylesheet != null) {
-				System.out.println("Loading " + stylesheet);
-				scene.getStylesheets().add(stylesheet);
-			}
+		// remove old (there may be a delay, so we attempt to remove all)
+		for (CSSFile lCSSFile : cssFiles) {
+			String lStylesheet = lCSSFile.getURL().toExternalForm();
+			if (scene.getStylesheets().remove(lStylesheet)) {
+				System.out.println("Removed " + lStylesheet);
+			}			
+		}
+		
+		// load new
+		if (stylesheet != null) {
+			System.out.println("Loading " + stylesheet);
+			scene.getStylesheets().add(stylesheet);
 		}
 	}
 
