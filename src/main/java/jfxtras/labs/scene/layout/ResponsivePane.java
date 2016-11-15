@@ -11,12 +11,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Window;
+import jfxtras.labs.scene.layout.ResponsivePane.Layout;
 
 /*
 <ResponsivePane>
@@ -51,6 +53,13 @@ import javafx.stage.Window;
 */
 
 public class ResponsivePane extends StackPane {
+	
+	
+	// ==========================================================================================================================================================================================================================================
+	// CONSTRUCTORS
+	
+	public ResponsivePane() {
+	}
 	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
@@ -87,12 +96,24 @@ public class ResponsivePane extends StackPane {
 		return layouts;
 	}
 	final private ObservableList<Layout> layouts = FXCollections.observableArrayList();
+	
+	public void addLayout(Double width, Node root) {
+		layouts.add(new Layout(width, root));
+	}
 
 	/**
 	 *
 	 */
 	@DefaultProperty(value="root")
 	static public class Layout {
+		
+		public Layout() {
+			
+		}
+		public Layout(Double width, Node root) {
+			setWidth(width);
+			setRoot(root);
+		}
 		
 		/** Root */
 		public ObjectProperty<Node> rootProperty() { return rootProperty; }
@@ -119,17 +140,36 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
-	static public class Ref extends Pane {
+	static public class Ref extends StackPane {
 		public Ref (String id) { 
 			setId(id);
+			
+			// TODO: check if scene property is a good indicator when to pull the ref
+			sceneProperty().addListener( (observable) -> {
+				Scene scene = sceneProperty().get();
+//				System.out.println(id + ": Scene property changed: " + scene);
+				getChildren().clear();
+				if (scene != null) {
+					pullRef();
+				}
+			});
 		}
 
-		public void pullRef(List<Node> refs) {
+		void pullRef() {
+			// find my containing ResponsiveLayout
+			Node parent = this.getParent();
+			while (parent != null && !(parent instanceof ResponsivePane)) {
+				parent = parent.getParent();
+			}
+			ResponsivePane lResponsivePane = (ResponsivePane)parent;
+			
+			// find the reffered node
 			String lRefId = getId();
-			Node lReffedNode = findRef(refs, lRefId);
+			Node lReffedNode = lResponsivePane.findRef(lResponsivePane.getRefs(), lRefId);
 
 			getChildren().clear();
 			if (lReffedNode != null) {
+//				System.out.println(lRefId + ": setting content");
 				getChildren().add(lReffedNode);
 			}
 		}
@@ -143,6 +183,11 @@ public class ResponsivePane extends StackPane {
 		return cssFiles;
 	}
 	final private ObservableList<CSSFile> cssFiles = FXCollections.observableArrayList();
+
+	public void addCSSFile(double width, URL url) {
+		cssFiles.add(new CSSFile(width, url));
+	}
+
 
 	/**
 	 *
@@ -186,83 +231,48 @@ public class ResponsivePane extends StackPane {
 	
     @Override 
     protected void layoutChildren() {
-    	this.getChildren().clear();
 		double lActualWidth = determineActualWidth();
 
     	// determine layout
     	Layout lLayout = determineBestFittingLayout(lActualWidth);
-    	setActiveLayout(lLayout);
-    	if (lLayout != null) {
+    	if (!lLayout.equals(getActiveLayout())) {
+    		
+    		System.out.println("Activating layout " + lLayout.getWidth());
+        	setActiveLayout(lLayout);
 
     		// switch to active layout
-    		// TODO: only when there something has changed
-    		fillRefs(lLayout);
+        	this.getChildren().clear();
     		this.getChildren().add(lLayout.getRoot());
     	}
     	
     	// determine css
     	CSSFile lCSSFile = determineBestFittingCSSFile(lActualWidth);
-    	setActiveCSSFile(lCSSFile);
+    	if (!lCSSFile.equals(getActiveCSSFile())) {
+    		
+    		System.out.println("Activating CSS " + lCSSFile.getWidth());
+    		setActiveCSSFile(lCSSFile);
 
-		// switch to active CSS file
-		loadStylesheet(lCSSFile);
+			// switch to active CSS file
+			loadStylesheet(lCSSFile);
+    	}
     	
     	// continue layout
     	super.layoutChildren();
     }
     
-    void fillRefs(Layout layout) {
-   
-    	// no layout, nothing to do
-    	if (layout == null) {
-    		return;
-    	}
-   
-    	// scan through all the nodes
-    	// TODO: cache the found Refs per layout
-    	fillRefs(layout.getRoot());
-    }
-    
-	/**
-	 * 
-	 */
-	void fillRefs(Node n) {
-		if (n instanceof Ref) {
-			Ref lRef = (Ref)n;
-			lRef.pullRef(refs);
-		}
-		
-		// scan children
-		if (n instanceof Control) {
-			Control lControl = (Control)n;
-			Skin lSkin = lControl.getSkin();
-			if (lSkin instanceof SkinBase) {
-				SkinBase lSkinBase = (SkinBase)lSkin;
-				for (Object lChild : lSkinBase.getChildren()) {
-					fillRefs((Node)lChild);
-				}
-			}
-		}
-		else if (n instanceof Pane) {
-			Pane lPane = (Pane)n;
-			for (Node lChild : lPane.getChildren()) {
-				fillRefs(lChild);
-			}
-		}
-	}
-
 	/**
 	 * 
 	 * @param refs2 
 	 * @param refId
 	 * @return
 	 */
-	static Node findRef(List<Node> refs, String refId) {
+	Node findRef(List<Node> refs, String refId) {
 		for (Node lNode : refs) {
 			if (refId.equals(lNode.getId())) {
 				return lNode;
 			}			
 		}
+		System.err.println("Could not fill reference " + refId);
 		return null;
 	}
 	
@@ -284,7 +294,7 @@ public class ResponsivePane extends StackPane {
 		}
 
 		double width = lScene.getWidth() / dpiFactor;
-		System.out.println("determineActualWidth=" + lScene.getWidth() + " -> " + width);
+//		System.out.println("determineActualWidth=" + lScene.getWidth() + " -> " + width);
 		return width;
 	}
 	
@@ -303,9 +313,15 @@ public class ResponsivePane extends StackPane {
 			}
 		}
 		
-		System.out.println("determineBestFittingLayout=" + (lBestFittingLayout == null ? null : lBestFittingLayout.getWidth()));
+		// default layout
+		if (lBestFittingLayout == null) {
+			lBestFittingLayout = SINGULARITY_LAYOUT;
+		}
+		
+//		System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidth());
 		return lBestFittingLayout;
 	}
+	private final Layout SINGULARITY_LAYOUT = new Layout(0.0, new Label("?") );
 	
 	/**
 	 * 
@@ -322,9 +338,15 @@ public class ResponsivePane extends StackPane {
 			}
 		}
 		
-		System.out.println("determineBestFittingCSSFile=" + (lBestFittingCSSFile == null ? null : lBestFittingCSSFile.getWidth() + " -> " + lBestFittingCSSFile.getURL()));
+		// default CSSfile
+		if (lBestFittingCSSFile == null) {
+			lBestFittingCSSFile = SINGULAR_CSSFILE;
+		}
+		
+//		System.out.println("determineBestFittingCSSFile=" + lBestFittingCSSFile.getWidth() + " -> " + lBestFittingCSSFile.getURL());
 		return lBestFittingCSSFile;
 	}
+	final private CSSFile SINGULAR_CSSFILE = new CSSFile(0.0, null);
 	
 	/**
 	 * 
@@ -332,7 +354,7 @@ public class ResponsivePane extends StackPane {
 	 */	
 	void loadStylesheet(CSSFile cssFile) {
 		Scene scene = getScene();
-		String stylesheet = (cssFile == null ? null : cssFile.getURL().toExternalForm());
+		String stylesheet = (cssFile.getURL() == null ? null : cssFile.getURL().toExternalForm());
 		
 		// did the deviceType change
 //		System.out.println(scene.getStylesheets() +  " / " + stylesheet);
