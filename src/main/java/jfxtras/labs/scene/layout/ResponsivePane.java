@@ -1,6 +1,7 @@
 package jfxtras.labs.scene.layout;
 
 import java.net.URL;
+import java.util.List;
 
 import javafx.beans.DefaultProperty;
 import javafx.beans.InvalidationListener;
@@ -10,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -28,13 +30,13 @@ import javafx.stage.Window;
 	</refs>
 	
 	<layouts>
-	 	<Layout width="1024">
+	 	<Layout widthAtLeast="1024">
 	 		<MigPane>
 	 			<Ref id="yadda" cc="...."/>
 	 		</MigPane>
 	 	</Layout>
 	 	
-	 	<Layout width="600">
+	 	<Layout widthAtLeast="600">
 	 		<TabPane>
 	 			<tabs>
 	 				<Tab>
@@ -47,9 +49,9 @@ import javafx.stage.Window;
 	 	</Layout>
 	 </layouts>
 	 
-	 <cssFiles>
-	 	<CSSFile width="800" url="table.css"/>
-	 </cssFiles>
+	 <sceneStylesheets>
+	 	<Stylesheet widthAtLeast="800" url="table.css"/>
+	 </sceneStylesheets>
 </ResponsivePane>
 */
 
@@ -107,6 +109,20 @@ public class ResponsivePane extends StackPane {
 		return this; 
 	}
 
+	/** Debug: show rendering hints (for Ref) and prints out changes to the layout on the console */
+	public ObjectProperty<Boolean> debugProperty() { return debugProperty; }
+	final private SimpleObjectProperty<Boolean> debugProperty = new SimpleObjectProperty<Boolean>(this, "debug", Boolean.FALSE);
+	public Boolean getDebug() { return debugProperty.getValue(); }
+	public void setDebug(Boolean value) { debugProperty.setValue(value); }
+	public ResponsivePane withDebug(Boolean value) { setDebug(value); return this; } 
+
+	/** Trace: like debug, plus show calculations determining if changes are needed on the console */
+	public ObjectProperty<Boolean> traceProperty() { return traceProperty; }
+	final private SimpleObjectProperty<Boolean> traceProperty = new SimpleObjectProperty<Boolean>(this, "trace", Boolean.FALSE);
+	public Boolean getTrace() { return traceProperty.getValue(); }
+	public void setTrace(Boolean value) { traceProperty.setValue(value); }
+	public ResponsivePane withTrace(Boolean value) { setTrace(value); return this; } 
+
 	// -----------------------------------------------------------------------------------------------
 	// REFS
 	
@@ -133,13 +149,13 @@ public class ResponsivePane extends StackPane {
 	 * @param refId
 	 * @return
 	 */
-	Node findRef(String refId) {
+	Node findReferredNode(String refId) {
 		for (Node lNode : refs) {
 			if (refId.equals(lNode.getId())) {
 				return lNode;
 			}			
 		}
-		System.err.println("Could not fill reference " + refId);
+		System.err.println("Could not find reference " + refId);
 		return null;
 	}
 	
@@ -152,37 +168,8 @@ public class ResponsivePane extends StackPane {
 	}
 	final private ObservableList<Layout> layouts = FXCollections.observableArrayList();
 	
-	public void addLayout(Double width, Node root) {
-		layouts.add(new Layout(width, root));
-	}
-
-	/**
-	 *
-	 */
-	@DefaultProperty(value="root")
-	static public class Layout {
-		
-		public Layout() {
-			
-		}
-		public Layout(Double width, Node root) {
-			setWidth(width);
-			setRoot(root);
-		}
-		
-		/** Root */
-		public ObjectProperty<Node> rootProperty() { return rootProperty; }
-		final private SimpleObjectProperty<Node> rootProperty = new SimpleObjectProperty<>(this, "root", null);
-		public Node getRoot() { return rootProperty.getValue(); }
-		public void setRoot(Node value) { rootProperty.setValue(value); }
-		public Layout withRoot(Node value) { setRoot(value); return this; } 
-
-		/** Width */
-		public ObjectProperty<Double> widthProperty() { return widthProperty; }
-		final private SimpleObjectProperty<Double> widthProperty = new SimpleObjectProperty<>(this, "width", 0.0);
-		public Double getWidth() { return widthProperty.getValue(); }
-		public void setWidth(Double value) { widthProperty.setValue(value); }
-		public Layout withWidth(Double value) { setWidth(value); return this; } 
+	public void addLayout(Double widthAtLeast, Node root) {
+		layouts.add(new Layout(widthAtLeast, root));
 	}
 	
 	/** ActiveLayout */
@@ -193,93 +180,179 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane withActiveLayout(Layout value) { setActiveLayout(value); return this; } 
 
 	/**
+	 *
+	 */
+	@DefaultProperty("root")
+	static public class Layout {
+		
+		public Layout() {
+			
+		}
+		public Layout(Double widthAtLeast, Node root) {
+			setWidthAtLeast(widthAtLeast);
+			setRoot(root);
+		}
+		
+		/** Root */
+		public ObjectProperty<Node> rootProperty() { return rootProperty; }
+		final private SimpleObjectProperty<Node> rootProperty = new SimpleObjectProperty<>(this, "root", null);
+		public Node getRoot() { return rootProperty.getValue(); }
+		public void setRoot(Node value) { rootProperty.setValue(value); }
+		public Layout withRoot(Node value) { setRoot(value); return this; } 
+
+		/** WidthAtLeast */
+		public ObjectProperty<Double> widthAtLeastProperty() { return widthAtLeastProperty; }
+		final private SimpleObjectProperty<Double> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", 0.0);
+		public Double getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
+		public void setWidthAtLeast(Double value) { widthAtLeastProperty.setValue(value); }
+		public Layout withWidthAtLeast(Double value) { setWidthAtLeast(value); return this; } 
+	}
+
+	/**
 	 * This class represents a placeholder for nodes in the refs list
 	 */
 	static public class Ref extends StackPane {
-		public Ref (String id) { 
-			setId(id);
-			
-			// TODO: check if scene property is a good indicator when to pull the ref
+		
+		public Ref() {
+			construct();
+		}
+		
+		public Ref (String to) { 
+			setTo(to);
+			construct();
+		}
+		
+		private void construct() {
+			// when the scene changes to not null, pull the referred node  
 			sceneProperty().addListener( (observable) -> {
-				Scene scene = sceneProperty().get();
-//				System.out.println(id + ": Scene property changed: " + scene);
 				getChildren().clear();
-				if (scene != null) {
+				if (sceneProperty().get() != null) {
 					pullRef();
 				}
 			});
 		}
 
-		void pullRef() {
-			// find my containing ResponsiveLayout
-			Node parent = this.getParent();
-			while (parent != null && !(parent instanceof ResponsivePane)) {
-				parent = parent.getParent();
-			}
-			ResponsivePane lResponsivePane = (ResponsivePane)parent;
-			
-			// find the reffered node
-			String lRefId = getId();
-			Node lReffedNode = lResponsivePane.findRef(lRefId);
+		/** To */
+		public ObjectProperty<String> toProperty() { return toProperty; }
+		final private SimpleObjectProperty<String> toProperty = new SimpleObjectProperty<>(this, "to", null);
+		public String getTo() { return toProperty.getValue(); }
+		public void setTo(String value) { toProperty.setValue(value); }
+		public Ref withTo(String value) { setTo(value); return this; } 
 
+		
+		void pullRef() {
+			
+			// find my containing ResponsiveLayout
+			if (lResponsivePane == null) {
+				Node parent = this.getParent();
+				while (parent != null && !(parent instanceof ResponsivePane)) {
+					parent = parent.getParent();
+				}
+				lResponsivePane = (ResponsivePane)parent;
+			}
+			
+			// find the referred to node
+			String lRefTo = getTo();
+			Node lReferredNode = lResponsivePane.findReferredNode(lRefTo);
+			if (lResponsivePane.getTrace()) System.out.println("Ref " + getId() + " referring to " + lRefTo + " becomes " + lReferredNode);
+			
+			// pull the referred node into this ref
 			getChildren().clear();
-			if (lReffedNode != null) {
-//				System.out.println(lRefId + ": setting content");
-				getChildren().add(lReffedNode);
+			if (lReferredNode != null) {
+				getChildren().add(lReferredNode);
+			}
+			
+			// show debug information
+			if (!lResponsivePane.getDebug() && !lResponsivePane.getTrace()) {
+				setStyle(null);
+			}
+			else {
+				// draw a border around the reference
+				this.setStyle("-fx-border-color: blue; -fx-border-insets: 3; -fx-border-width: 2; -fx-border-style: dashed;");
+				
+				// and an ID in the top left
+				Label label = new Label((getId() == null ? "" : getId() + "->") + getTo());
+				label.setWrapText(true);
+				label.setStyle("-fx-text-fill: blue; -fx-background-color: white;");
+				getChildren().add(label);
+				StackPane.setAlignment(label, Pos.TOP_LEFT);
 			}
 		}
+		private ResponsivePane lResponsivePane = null;
 	}
 	
 	// -----------------------------------------------------------------------------------------------
-	// CSS files
+	// SceneStylesheets
 
-	/** cssFiles */
-	public ObservableList<CSSFile> getCSSFiles() {
-		return cssFiles;
+	/** sceneStylesheets */
+	public ObservableList<Stylesheet> getSceneStylesheets() {
+		return sceneStylesheets;
 	}
-	final private ObservableList<CSSFile> cssFiles = FXCollections.observableArrayList();
+	final private ObservableList<Stylesheet> sceneStylesheets = FXCollections.observableArrayList();
 
-	public void addCSSFile(double width, URL url) {
-		cssFiles.add(new CSSFile(width, url));
+	public void addSceneStylesheet(double widthAtLeast, URL url) {
+		sceneStylesheets.add(new Stylesheet(widthAtLeast, url));
 	}
+	
+	/** ActiveSceneStylesheet */
+	public ObjectProperty<Stylesheet> activeSceneStylesheetProperty() { return activeSceneStylesheetProperty; }
+	final private SimpleObjectProperty<Stylesheet> activeSceneStylesheetProperty = new SimpleObjectProperty<Stylesheet>(this, "activeSceneStylesheet", null);
+	public Stylesheet getActiveSceneStylesheet() { return activeSceneStylesheetProperty.getValue(); }
+	public void setActiveSceneStylesheet(Stylesheet value) { activeSceneStylesheetProperty.setValue(value); }
+	public ResponsivePane withActiveSceneStylesheet(Stylesheet value) { setActiveSceneStylesheet(value); return this; } 
 
+	// -----------------------------------------------------------------------------------------------
+	// MyStylesheets
+
+	/** myStylesheets */
+	public ObservableList<Stylesheet> getMyStylesheets() {
+		return myStylesheets;
+	}
+	final private ObservableList<Stylesheet> myStylesheets = FXCollections.observableArrayList();
+
+	public void addMyStylesheet(double widthAtLeast, URL url) {
+		myStylesheets.add(new Stylesheet(widthAtLeast, url));
+	}
+	
+	/** ActiveMyStylesheet */
+	public ObjectProperty<Stylesheet> activeMyStylesheetProperty() { return activeMyStylesheetProperty; }
+	final private SimpleObjectProperty<Stylesheet> activeMyStylesheetProperty = new SimpleObjectProperty<Stylesheet>(this, "activeMyStylesheet", null);
+	public Stylesheet getActiveMyStylesheet() { return activeMyStylesheetProperty.getValue(); }
+	public void setActiveMyStylesheet(Stylesheet value) { activeMyStylesheetProperty.setValue(value); }
+	public ResponsivePane withActiveMyStylesheet(Stylesheet value) { setActiveMyStylesheet(value); return this; } 
+
+	// -----------------------------------------------------------------------------------------------
+	// Stylesheet
 
 	/**
 	 *
 	 */
-	@DefaultProperty(value="url")
-	static public class CSSFile {
+	@DefaultProperty("url")
+	static public class Stylesheet {
 		
-		public CSSFile() {
+		public Stylesheet() {
 			
 		}
 		
-		public CSSFile(double width, URL url) {
-			setWidth(width);
-			setURL(url);
+		public Stylesheet(double widthAtLeast, URL url) {
+			setWidthAtLeast(widthAtLeast);
+			setUrl(url);
 		}		
 		
-		/** URL */
+		/** Url */
 		public ObjectProperty<URL> urlProperty() { return urlProperty; }
 		final private SimpleObjectProperty<URL> urlProperty = new SimpleObjectProperty<>(this, "url", null);
-		public URL getURL() { return urlProperty.getValue(); }
-		public void setURL(URL value) { urlProperty.setValue(value); }
-		public CSSFile withURL(URL value) { setURL(value); return this; } 
+		public URL getUrl() { return urlProperty.getValue(); }
+		public void setUrl(URL value) { urlProperty.setValue(value); }
+		public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
 
-		/** Width */
-		public ObjectProperty<Double> widthProperty() { return widthProperty; }
-		final private SimpleObjectProperty<Double> widthProperty = new SimpleObjectProperty<>(this, "width", 0.0);
-		public Double getWidth() { return widthProperty.getValue(); }
-		public void setWidth(Double value) { widthProperty.setValue(value); }
-		public CSSFile withWidth(Double value) { setWidth(value); return this; } 
+		/** WidthAtLeast */
+		public ObjectProperty<Double> widthAtLeastProperty() { return widthAtLeastProperty; }
+		final private SimpleObjectProperty<Double> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", 0.0);
+		public Double getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
+		public void setWidthAtLeast(Double value) { widthAtLeastProperty.setValue(value); }
+		public Stylesheet withWidthAtLeast(Double value) { setWidthAtLeast(value); return this; } 
 	}
-	
-	/** ActiveCSSFile */
-	public ObjectProperty<CSSFile> activeCSSFileProperty() { return activeCSSFileProperty; }
-	final private SimpleObjectProperty<CSSFile> activeCSSFileProperty = new SimpleObjectProperty<CSSFile>(this, "activeCSSFile", null);
-	public CSSFile getActiveCSSFile() { return activeCSSFileProperty.getValue(); }
-	public void setActiveCSSFile(CSSFile value) { activeCSSFileProperty.setValue(value); }
-	public ResponsivePane withActiveCSSFile(CSSFile value) { setActiveCSSFile(value); return this; } 
 
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
@@ -306,7 +379,7 @@ public class ResponsivePane extends StackPane {
     	Layout lLayout = determineBestFittingLayout(lActualWidth);
     	if (!lLayout.equals(getActiveLayout())) {
     		
-    		System.out.println("Activating layout " + lLayout.getWidth());
+    		if (getDebug() || getTrace()) System.out.println("Activating layout " + lLayout.getWidthAtLeast());
         	setActiveLayout(lLayout);
 
     		// switch to active layout
@@ -314,15 +387,28 @@ public class ResponsivePane extends StackPane {
         	ResponsivePane.this.getChildren().add(lLayout.getRoot());
     	}
     	
-    	// determine css
-    	CSSFile lCSSFile = determineBestFittingCSSFile(lActualWidth);
-    	if (!lCSSFile.equals(getActiveCSSFile())) {
-    		
-    		System.out.println("Activating CSS " + lCSSFile.getWidth());
-    		setActiveCSSFile(lCSSFile);
-
-			// switch to active CSS file
-			load(lCSSFile);
+    	// determine scene stylesheet
+    	{
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidth, sceneStylesheets);
+	    	if (!lStylesheet.equals(getActiveSceneStylesheet())) {
+	    		
+	    		setActiveSceneStylesheet(lStylesheet);
+	
+				// switch to active CSS file
+				load(lStylesheet, sceneStylesheets, getScene().getStylesheets());
+	    	}
+    	}
+    	
+    	// determine my stylesheet
+    	{
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidth, myStylesheets);
+	    	if (!lStylesheet.equals(getActiveMyStylesheet())) {
+	    		
+	    		setActiveMyStylesheet(lStylesheet);
+	
+				// switch to active CSS file
+				load(lStylesheet, myStylesheets, getStylesheets());
+	    	}
     	}
 	}
 
@@ -339,13 +425,13 @@ public class ResponsivePane extends StackPane {
 		Window window = lScene.getWindow();
 		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 		if (screensForRectangle.size() > 0) {
-//			System.out.println("screens of scene: " + screensForRectangle); 
+			// System.out.println("screens of scene: " + screensForRectangle); 
 			Screen lScreen = screensForRectangle.get(0);
 			dpiFactor = lScreen.getDpi() / 96.0;
 		}
 
 		double width = lScene.getWidth() / dpiFactor;
-//		System.out.println("determineActualWidth=" + lScene.getWidth() + " -> " + width);
+		if (getTrace()) System.out.println("Actual width=" + lScene.getWidth() + ", converted for widthAtLeast=" + width);
 		return width;
 	}
 	
@@ -357,8 +443,8 @@ public class ResponsivePane extends StackPane {
 		
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
-			if (lActualWidth >= lLayout.getWidth()) {
-				if (lBestFittingLayout == null || lBestFittingLayout.getWidth() < lLayout.getWidth()) {
+			if (lActualWidth >= lLayout.getWidthAtLeast()) {
+				if (lBestFittingLayout == null || lBestFittingLayout.getWidthAtLeast() < lLayout.getWidthAtLeast()) {
 					lBestFittingLayout = lLayout;
 				}
 			}
@@ -369,7 +455,7 @@ public class ResponsivePane extends StackPane {
 			lBestFittingLayout = SINGULARITY_LAYOUT;
 		}
 		
-//		System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidth());
+		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidthAtLeast());
 		return lBestFittingLayout;
 	}
 	private final Layout SINGULARITY_LAYOUT = new Layout(0.0, new Label("?") );
@@ -378,47 +464,46 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 * @return
 	 */
-	CSSFile determineBestFittingCSSFile(double lActualWidth) {
+	Stylesheet determineBestFittingStylesheet(double lActualWidth, List<Stylesheet> availableStylesheets) {
 		
-		CSSFile lBestFittingCSSFile = null;
-		for (CSSFile lCSSFile : cssFiles) {
-			if (lActualWidth >= lCSSFile.getWidth()) {
-				if (lBestFittingCSSFile == null || lBestFittingCSSFile.getWidth() < lCSSFile.getWidth()) {
-					lBestFittingCSSFile = lCSSFile;
+		Stylesheet lBestFittingStylesheet = null;
+		for (Stylesheet lStylesheet : availableStylesheets) {
+			if (lActualWidth >= lStylesheet.getWidthAtLeast()) {
+				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getWidthAtLeast() < lStylesheet.getWidthAtLeast()) {
+					lBestFittingStylesheet = lStylesheet;
 				}
 			}
 		}
 		
-		// default CSSfile
-		if (lBestFittingCSSFile == null) {
-			lBestFittingCSSFile = SINGULAR_CSSFILE;
+		// default Stylesheet
+		if (lBestFittingStylesheet == null) {
+			lBestFittingStylesheet = SINGULAR_Stylesheet;
 		}
 		
-//		System.out.println("determineBestFittingCSSFile=" + lBestFittingCSSFile.getWidth() + " -> " + lBestFittingCSSFile.getURL());
-		return lBestFittingCSSFile;
+		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getWidthAtLeast() + " -> " + lBestFittingStylesheet.getUrl());
+		return lBestFittingStylesheet;
 	}
-	final private CSSFile SINGULAR_CSSFILE = new CSSFile(0.0, null);
+	final private Stylesheet SINGULAR_Stylesheet = new Stylesheet(0.0, null);
 	
 	/**
 	 * 
-	 * @param cssFile
+	 * @param stylesheet
 	 */	
-	void load(CSSFile cssFile) {
-		Scene scene = getScene();
-		String stylesheet = (cssFile.getURL() == null ? null : cssFile.getURL().toExternalForm());
+	void load(Stylesheet stylesheet, List<Stylesheet> availableStylesheets, List<String> activeStylesheetUrls) {
+		String lStylesheetUrl = (stylesheet.getUrl() == null ? null : stylesheet.getUrl().toExternalForm());
 		
-		// remove old (there may be a delay, so we attempt to remove all)
-		for (CSSFile lCSSFile : cssFiles) {
-			String lStylesheet = lCSSFile.getURL().toExternalForm();
-			if (scene.getStylesheets().remove(lStylesheet)) {
-				System.out.println("Removed " + lStylesheet);
+		// remove all of the available stylesheets
+		for (Stylesheet lStylesheet : availableStylesheets) {
+			String lActiveStylesheetUrl = lStylesheet.getUrl().toExternalForm();
+			if (activeStylesheetUrls.remove(lActiveStylesheetUrl)) {
+				if (getDebug() || getTrace()) System.out.println("Removed " + lActiveStylesheetUrl);
 			}			
 		}
 		
 		// load new
-		if (stylesheet != null) {
-			System.out.println("Loading " + stylesheet);
-			scene.getStylesheets().add(stylesheet);
+		if (lStylesheetUrl != null) {
+			if (getDebug() || getTrace()) System.out.println("Loading " + lStylesheetUrl);
+			activeStylesheetUrls.add(lStylesheetUrl);
 		}
 	}
 

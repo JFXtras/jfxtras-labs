@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import jfxtras.scene.control.*?>
+<?import jfxtras.labs.scene.layout.*?>
+<?import java.net.*?>
+
+<ResponsivePane xmlns:fx="http://javafx.com/fxml" debug="true">
+	<refs>
+		<CalendarPicker id="id1"/>
+		<Button text="refButton" id="id2"/>
+	</refs>
+	
+	<layouts>
+		<ResponsivePane.Layout widthAtLeast="400.0">
+			<VBox>
+				<ResponsivePane.Ref to="id1"/>
+				<Label text="phone"/>
+			</VBox>
+		</ResponsivePane.Layout>
+		
+		<ResponsivePane.Layout widthAtLeast="1000.0">
+			<HBox>
+				<ResponsivePane.Ref to="id1" id="l2r1"/>
+				<ResponsivePane.Ref to="id2"/>
+				<Label text="tablet"/>
+			</HBox>
+		</ResponsivePane.Layout>		
+	</layouts>
+	
+	<sceneStylesheets>
+		<ResponsivePane.Stylesheet widthAtLeast="500.0">  <URL value="@phone.css"/> </ResponsivePane.Stylesheet>
+		<ResponsivePane.Stylesheet widthAtLeast="1200.0"> <URL value="@desktop.css"/> </ResponsivePane.Stylesheet>
+	</sceneStylesheets>
+	
+	<myStylesheets>
+		<ResponsivePane.Stylesheet widthAtLeast="800.0">  <URL value="@tablet.css"/> </ResponsivePane.Stylesheet>
+	</myStylesheets>
+</ResponsivePane>

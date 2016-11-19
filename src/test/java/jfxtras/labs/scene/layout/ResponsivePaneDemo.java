@@ -48,9 +48,9 @@ public class ResponsivePaneDemo extends Application {
 		lResponsivePane.addLayout(400.0, createPhoneLayout());
 		lResponsivePane.addLayout(1024.0, createDesktopLayout());		
 		// css
-		lResponsivePane.addCSSFile(500.0, getClass().getResource("phone.css"));
-		lResponsivePane.addCSSFile(800.0, getClass().getResource("tablet.css"));
-		lResponsivePane.addCSSFile(1200.0, getClass().getResource("desktop.css"));
+		lResponsivePane.addSceneStylesheet(500.0, getClass().getResource("phone.css"));
+		lResponsivePane.addSceneStylesheet(800.0, getClass().getResource("tablet.css"));
+		lResponsivePane.addSceneStylesheet(1200.0, getClass().getResource("desktop.css"));
 
 		// show
 		primaryStage.setScene(new Scene(lResponsivePane, 2000, 1000));
