@@ -10,8 +10,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.scene.control.login.Login;
+
 /**
- * Default login control demo
+ * Login customized with new image, css and resource bundle.
  * 
  * @author David Bal
  *
@@ -44,8 +45,10 @@ public class LoginDemo extends Application
 		};
 
         Locale myLocale = Locale.getDefault();
-		ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.scene.control.login.LoginDefault", myLocale);
+		ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.scene.control.login.trial.NewLogin", myLocale);
 		Login root = new Login(resources, username, loginCallback);
+		String style = LoginDemo.class.getResource("NewStylesheet.css").toExternalForm();
+		root.getStylesheets().add(style);
         Scene scene = new Scene(root, 300, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
