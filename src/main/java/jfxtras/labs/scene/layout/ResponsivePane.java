@@ -24,35 +24,6 @@ import javafx.stage.Window;
  * TODO: alias widths (desktop, tablets, etc)
  * TODO: orientation
  * 
-<ResponsivePane>
-	<refs>
-		<CalendarPicker id="yadda"/>
-	</refs>
-	
-	<layouts>
-	 	<Layout widthAtLeast="1024">
-	 		<MigPane>
-	 			<Ref id="yadda" cc="...."/>
-	 		</MigPane>
-	 	</Layout>
-	 	
-	 	<Layout widthAtLeast="600">
-	 		<TabPane>
-	 			<tabs>
-	 				<Tab>
-	 					<content>
-	 						<Ref id="yadda" cc="...."/>
-	 					</content>
-	 				</Tab>
-	 			</tabs>
-	 		</TabPane>
-	 	</Layout>
-	 </layouts>
-	 
-	 <sceneStylesheets>
-	 	<Stylesheet widthAtLeast="800" url="table.css"/>
-	 </sceneStylesheets>
-</ResponsivePane>
 */
 
 /**
@@ -168,8 +139,11 @@ public class ResponsivePane extends StackPane {
 	}
 	final private ObservableList<Layout> layouts = FXCollections.observableArrayList();
 	
-	public void addLayout(Double widthAtLeast, Node root) {
-		layouts.add(new Layout(widthAtLeast, root));
+	/**
+	 * 
+	 */
+	public void addLayout(Double widthInInchesAtLeast, Node root) {
+		layouts.add(new Layout(widthInInchesAtLeast, root));
 	}
 	
 	/** ActiveLayout */
@@ -188,8 +162,12 @@ public class ResponsivePane extends StackPane {
 		public Layout() {
 			
 		}
-		public Layout(Double widthAtLeast, Node root) {
-			setWidthAtLeast(widthAtLeast);
+		
+		/**
+		 * 
+		 */
+		public Layout(Double widthInInchesAtLeast, Node root) {
+			setWidthInInchesAtLeast(widthInInchesAtLeast);
 			setRoot(root);
 		}
 		
@@ -200,12 +178,12 @@ public class ResponsivePane extends StackPane {
 		public void setRoot(Node value) { rootProperty.setValue(value); }
 		public Layout withRoot(Node value) { setRoot(value); return this; } 
 
-		/** WidthAtLeast */
-		public ObjectProperty<Double> widthAtLeastProperty() { return widthAtLeastProperty; }
-		final private SimpleObjectProperty<Double> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", 0.0);
-		public Double getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
-		public void setWidthAtLeast(Double value) { widthAtLeastProperty.setValue(value); }
-		public Layout withWidthAtLeast(Double value) { setWidthAtLeast(value); return this; } 
+		/** WidthInInchesAtLeast (in inches) */
+		public ObjectProperty<Double> widthInInchesAtLeastProperty() { return widthInInchesAtLeastProperty; }
+		final private SimpleObjectProperty<Double> widthInInchesAtLeastProperty = new SimpleObjectProperty<>(this, "widthInInchesAtLeast", 0.0);
+		public Double getWidthInInchesAtLeast() { return widthInInchesAtLeastProperty.getValue(); }
+		public void setWidthInInchesAtLeast(Double value) { widthInInchesAtLeastProperty.setValue(value); }
+		public Layout withWidthInInchesAtLeast(Double value) { setWidthInInchesAtLeast(value); return this; } 
 	}
 
 	/**
@@ -268,12 +246,12 @@ public class ResponsivePane extends StackPane {
 			}
 			else {
 				// draw a border around the reference
-				this.setStyle("-fx-border-color: blue; -fx-border-insets: 3; -fx-border-width: 2; -fx-border-style: dashed;");
+				this.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
 				
 				// and an ID in the top left
 				Label label = new Label((getId() == null ? "" : getId() + "->") + getTo());
 				label.setWrapText(true);
-				label.setStyle("-fx-text-fill: blue; -fx-background-color: white;");
+				label.setStyle("-fx-text-fill: red; -fx-background-color: white;");
 				getChildren().add(label);
 				StackPane.setAlignment(label, Pos.TOP_LEFT);
 			}
@@ -290,8 +268,11 @@ public class ResponsivePane extends StackPane {
 	}
 	final private ObservableList<Stylesheet> sceneStylesheets = FXCollections.observableArrayList();
 
-	public void addSceneStylesheet(double widthAtLeast, URL url) {
-		sceneStylesheets.add(new Stylesheet(widthAtLeast, url));
+	/**
+	 * 
+	 */
+	public void addSceneStylesheet(double widthInInchesAtLeast, URL url) {
+		sceneStylesheets.add(new Stylesheet(widthInInchesAtLeast, url));
 	}
 	
 	/** ActiveSceneStylesheet */
@@ -310,8 +291,13 @@ public class ResponsivePane extends StackPane {
 	}
 	final private ObservableList<Stylesheet> myStylesheets = FXCollections.observableArrayList();
 
-	public void addMyStylesheet(double widthAtLeast, URL url) {
-		myStylesheets.add(new Stylesheet(widthAtLeast, url));
+	/**
+	 * 
+	 * @param widthInInchesAtLeast width in inches
+	 * @param url
+	 */
+	public void addMyStylesheet(double widthInInchesAtLeast, URL url) {
+		myStylesheets.add(new Stylesheet(widthInInchesAtLeast, url));
 	}
 	
 	/** ActiveMyStylesheet */
@@ -334,8 +320,13 @@ public class ResponsivePane extends StackPane {
 			
 		}
 		
-		public Stylesheet(double widthAtLeast, URL url) {
-			setWidthAtLeast(widthAtLeast);
+		/**
+		 * 
+		 * @param widthInInchesAtLeast width in inches
+		 * @param url
+		 */
+		public Stylesheet(double widthInInchesAtLeast, URL url) {
+			setWidthInInchesAtLeast(widthInInchesAtLeast);
 			setUrl(url);
 		}		
 		
@@ -346,12 +337,12 @@ public class ResponsivePane extends StackPane {
 		public void setUrl(URL value) { urlProperty.setValue(value); }
 		public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
 
-		/** WidthAtLeast */
-		public ObjectProperty<Double> widthAtLeastProperty() { return widthAtLeastProperty; }
-		final private SimpleObjectProperty<Double> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", 0.0);
-		public Double getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
-		public void setWidthAtLeast(Double value) { widthAtLeastProperty.setValue(value); }
-		public Stylesheet withWidthAtLeast(Double value) { setWidthAtLeast(value); return this; } 
+		/** WidthInInchesAtLeast (in inches) */
+		public ObjectProperty<Double> widthInInchesAtLeastProperty() { return widthInInchesAtLeastProperty; }
+		final private SimpleObjectProperty<Double> widthInInchesAtLeastProperty = new SimpleObjectProperty<>(this, "widthInInchesAtLeast", 0.0);
+		public Double getWidthInInchesAtLeast() { return widthInInchesAtLeastProperty.getValue(); }
+		public void setWidthInInchesAtLeast(Double value) { widthInInchesAtLeastProperty.setValue(value); }
+		public Stylesheet withWidthInInchesAtLeast(Double value) { setWidthInInchesAtLeast(value); return this; } 
 	}
 
 	// ==========================================================================================================================================================================================================================================
@@ -373,13 +364,13 @@ public class ResponsivePane extends StackPane {
      * 
      */
 	void setupLayout() {
-		double lActualWidth = determineActualWidth();
+		double lActualWidthInInches = determineActualWidthInInches();
 
     	// determine layout
-    	Layout lLayout = determineBestFittingLayout(lActualWidth);
+    	Layout lLayout = determineBestFittingLayout(lActualWidthInInches);
     	if (!lLayout.equals(getActiveLayout())) {
     		
-    		if (getDebug() || getTrace()) System.out.println("Activating layout " + lLayout.getWidthAtLeast());
+    		if (getDebug() || getTrace()) System.out.println("Activating layout " + lLayout.getWidthInInchesAtLeast() + " inch");
         	setActiveLayout(lLayout);
 
     		// switch to active layout
@@ -389,7 +380,7 @@ public class ResponsivePane extends StackPane {
     	
     	// determine scene stylesheet
     	{
-	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidth, sceneStylesheets);
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidthInInches, sceneStylesheets);
 	    	if (!lStylesheet.equals(getActiveSceneStylesheet())) {
 	    		
 	    		setActiveSceneStylesheet(lStylesheet);
@@ -401,7 +392,7 @@ public class ResponsivePane extends StackPane {
     	
     	// determine my stylesheet
     	{
-	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidth, myStylesheets);
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidthInInches, myStylesheets);
 	    	if (!lStylesheet.equals(getActiveMyStylesheet())) {
 	    		
 	    		setActiveMyStylesheet(lStylesheet);
@@ -417,34 +408,34 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 * @return
 	 */
-	double determineActualWidth() {
+	double determineActualWidthInInches() {
 		Scene lScene = getScene();
 		
 		// determine the DPI factor, so the thresholds become larger on screens with a higher DPI
-		double dpiFactor = 1.0; // based on 96 dpi
+		double lPPI = 100.0; // average dpi
 		Window window = lScene.getWindow();
 		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 		if (screensForRectangle.size() > 0) {
 			// System.out.println("screens of scene: " + screensForRectangle); 
 			Screen lScreen = screensForRectangle.get(0);
-			dpiFactor = lScreen.getDpi() / 96.0;
+			lPPI = lScreen.getDpi();
 		}
 
-		double width = lScene.getWidth() / dpiFactor;
-		if (getTrace()) System.out.println("Actual width=" + lScene.getWidth() + ", converted for widthAtLeast=" + width);
-		return width;
+		double lWidthInInches = lScene.getWidth() / lPPI;
+		if (getTrace()) System.out.println("Actual width=" + lScene.getWidth() + "px, in inches=" + lWidthInInches + " (ppi=" + lPPI + ")");
+		return lWidthInInches;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	Layout determineBestFittingLayout(double lActualWidth) {
+	Layout determineBestFittingLayout(double actualWidthInInches) {
 		
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
-			if (lActualWidth >= lLayout.getWidthAtLeast()) {
-				if (lBestFittingLayout == null || lBestFittingLayout.getWidthAtLeast() < lLayout.getWidthAtLeast()) {
+			if (actualWidthInInches >= lLayout.getWidthInInchesAtLeast()) {
+				if (lBestFittingLayout == null || lBestFittingLayout.getWidthInInchesAtLeast() < lLayout.getWidthInInchesAtLeast()) {
 					lBestFittingLayout = lLayout;
 				}
 			}
@@ -455,7 +446,7 @@ public class ResponsivePane extends StackPane {
 			lBestFittingLayout = SINGULARITY_LAYOUT;
 		}
 		
-		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidthAtLeast());
+		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidthInInchesAtLeast() + " inch");
 		return lBestFittingLayout;
 	}
 	private final Layout SINGULARITY_LAYOUT = new Layout(0.0, new Label("?") );
@@ -464,12 +455,12 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 * @return
 	 */
-	Stylesheet determineBestFittingStylesheet(double lActualWidth, List<Stylesheet> availableStylesheets) {
+	Stylesheet determineBestFittingStylesheet(double actualWidthInInches, List<Stylesheet> availableStylesheets) {
 		
 		Stylesheet lBestFittingStylesheet = null;
 		for (Stylesheet lStylesheet : availableStylesheets) {
-			if (lActualWidth >= lStylesheet.getWidthAtLeast()) {
-				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getWidthAtLeast() < lStylesheet.getWidthAtLeast()) {
+			if (actualWidthInInches >= lStylesheet.getWidthInInchesAtLeast()) {
+				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getWidthInInchesAtLeast() < lStylesheet.getWidthInInchesAtLeast()) {
 					lBestFittingStylesheet = lStylesheet;
 				}
 			}
@@ -480,7 +471,7 @@ public class ResponsivePane extends StackPane {
 			lBestFittingStylesheet = SINGULAR_Stylesheet;
 		}
 		
-		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getWidthAtLeast() + " -> " + lBestFittingStylesheet.getUrl());
+		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getWidthInInchesAtLeast() + " inch -> " + lBestFittingStylesheet.getUrl());
 		return lBestFittingStylesheet;
 	}
 	final private Stylesheet SINGULAR_Stylesheet = new Stylesheet(0.0, null);
