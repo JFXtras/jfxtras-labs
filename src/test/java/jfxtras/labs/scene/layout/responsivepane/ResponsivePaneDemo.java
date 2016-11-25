@@ -1,4 +1,4 @@
-package jfxtras.labs.scene.layout;
+package jfxtras.labs.scene.layout.responsivepane;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
@@ -17,7 +17,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.layout.ResponsivePane.Ref;
+import jfxtras.labs.scene.layout.responsivepane.Ref;
+import jfxtras.labs.scene.layout.responsivepane.ResponsivePane;
 import jfxtras.scene.control.CalendarPicker;
 import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;

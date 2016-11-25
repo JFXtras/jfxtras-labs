@@ -1,9 +1,8 @@
-package jfxtras.labs.scene.layout;
+package jfxtras.labs.scene.layout.responsivepane;
 
 import java.net.URL;
 import java.util.List;
 
-import javafx.beans.DefaultProperty;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
@@ -11,7 +10,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -153,112 +151,7 @@ public class ResponsivePane extends StackPane {
 	public void setActiveLayout(Layout value) { activeLayoutProperty.setValue(value); }
 	public ResponsivePane withActiveLayout(Layout value) { setActiveLayout(value); return this; } 
 
-	/**
-	 *
-	 */
-	@DefaultProperty("root")
-	static public class Layout {
 		
-		public Layout() {
-			
-		}
-		
-		/**
-		 * 
-		 */
-		public Layout(Double widthInInchesAtLeast, Node root) {
-			setWidthInInchesAtLeast(widthInInchesAtLeast);
-			setRoot(root);
-		}
-		
-		/** Root */
-		public ObjectProperty<Node> rootProperty() { return rootProperty; }
-		final private SimpleObjectProperty<Node> rootProperty = new SimpleObjectProperty<>(this, "root", null);
-		public Node getRoot() { return rootProperty.getValue(); }
-		public void setRoot(Node value) { rootProperty.setValue(value); }
-		public Layout withRoot(Node value) { setRoot(value); return this; } 
-
-		/** WidthInInchesAtLeast (in inches) */
-		public ObjectProperty<Double> widthInInchesAtLeastProperty() { return widthInInchesAtLeastProperty; }
-		final private SimpleObjectProperty<Double> widthInInchesAtLeastProperty = new SimpleObjectProperty<>(this, "widthInInchesAtLeast", 0.0);
-		public Double getWidthInInchesAtLeast() { return widthInInchesAtLeastProperty.getValue(); }
-		public void setWidthInInchesAtLeast(Double value) { widthInInchesAtLeastProperty.setValue(value); }
-		public Layout withWidthInInchesAtLeast(Double value) { setWidthInInchesAtLeast(value); return this; } 
-	}
-
-	/**
-	 * This class represents a placeholder for nodes in the refs list
-	 */
-	static public class Ref extends StackPane {
-		
-		public Ref() {
-			construct();
-		}
-		
-		public Ref (String to) { 
-			setTo(to);
-			construct();
-		}
-		
-		private void construct() {
-			// when the scene changes to not null, pull the referred node  
-			sceneProperty().addListener( (observable) -> {
-				getChildren().clear();
-				if (sceneProperty().get() != null) {
-					pullRef();
-				}
-			});
-		}
-
-		/** To */
-		public ObjectProperty<String> toProperty() { return toProperty; }
-		final private SimpleObjectProperty<String> toProperty = new SimpleObjectProperty<>(this, "to", null);
-		public String getTo() { return toProperty.getValue(); }
-		public void setTo(String value) { toProperty.setValue(value); }
-		public Ref withTo(String value) { setTo(value); return this; } 
-
-		
-		void pullRef() {
-			
-			// find my containing ResponsiveLayout
-			if (lResponsivePane == null) {
-				Node parent = this.getParent();
-				while (parent != null && !(parent instanceof ResponsivePane)) {
-					parent = parent.getParent();
-				}
-				lResponsivePane = (ResponsivePane)parent;
-			}
-			
-			// find the referred to node
-			String lRefTo = getTo();
-			Node lReferredNode = lResponsivePane.findReferredNode(lRefTo);
-			if (lResponsivePane.getTrace()) System.out.println("Ref " + getId() + " referring to " + lRefTo + " becomes " + lReferredNode);
-			
-			// pull the referred node into this ref
-			getChildren().clear();
-			if (lReferredNode != null) {
-				getChildren().add(lReferredNode);
-			}
-			
-			// show debug information
-			if (!lResponsivePane.getDebug() && !lResponsivePane.getTrace()) {
-				setStyle(null);
-			}
-			else {
-				// draw a border around the reference
-				this.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
-				
-				// and an ID in the top left
-				Label label = new Label((getId() == null ? "" : getId() + "->") + getTo());
-				label.setWrapText(true);
-				label.setStyle("-fx-text-fill: red; -fx-background-color: white;");
-				getChildren().add(label);
-				StackPane.setAlignment(label, Pos.TOP_LEFT);
-			}
-		}
-		private ResponsivePane lResponsivePane = null;
-	}
-	
 	// -----------------------------------------------------------------------------------------------
 	// SceneStylesheets
 
@@ -306,44 +199,7 @@ public class ResponsivePane extends StackPane {
 	public Stylesheet getActiveMyStylesheet() { return activeMyStylesheetProperty.getValue(); }
 	public void setActiveMyStylesheet(Stylesheet value) { activeMyStylesheetProperty.setValue(value); }
 	public ResponsivePane withActiveMyStylesheet(Stylesheet value) { setActiveMyStylesheet(value); return this; } 
-
-	// -----------------------------------------------------------------------------------------------
-	// Stylesheet
-
-	/**
-	 *
-	 */
-	@DefaultProperty("url")
-	static public class Stylesheet {
-		
-		public Stylesheet() {
-			
-		}
-		
-		/**
-		 * 
-		 * @param widthInInchesAtLeast width in inches
-		 * @param url
-		 */
-		public Stylesheet(double widthInInchesAtLeast, URL url) {
-			setWidthInInchesAtLeast(widthInInchesAtLeast);
-			setUrl(url);
-		}		
-		
-		/** Url */
-		public ObjectProperty<URL> urlProperty() { return urlProperty; }
-		final private SimpleObjectProperty<URL> urlProperty = new SimpleObjectProperty<>(this, "url", null);
-		public URL getUrl() { return urlProperty.getValue(); }
-		public void setUrl(URL value) { urlProperty.setValue(value); }
-		public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
-
-		/** WidthInInchesAtLeast (in inches) */
-		public ObjectProperty<Double> widthInInchesAtLeastProperty() { return widthInInchesAtLeastProperty; }
-		final private SimpleObjectProperty<Double> widthInInchesAtLeastProperty = new SimpleObjectProperty<>(this, "widthInInchesAtLeast", 0.0);
-		public Double getWidthInInchesAtLeast() { return widthInInchesAtLeastProperty.getValue(); }
-		public void setWidthInInchesAtLeast(Double value) { widthInInchesAtLeastProperty.setValue(value); }
-		public Stylesheet withWidthInInchesAtLeast(Double value) { setWidthInInchesAtLeast(value); return this; } 
-	}
+	
 
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
@@ -404,6 +260,9 @@ public class ResponsivePane extends StackPane {
 	}
 
 
+	// ==========================================================================================================================================================================================================================================
+	// SUPPORT
+	
 	/**
 	 * 
 	 * @return

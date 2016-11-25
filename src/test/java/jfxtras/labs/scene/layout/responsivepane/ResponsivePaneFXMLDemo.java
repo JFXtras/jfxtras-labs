@@ -1,4 +1,4 @@
-package jfxtras.labs.scene.layout;
+package jfxtras.labs.scene.layout.responsivepane;
 
 import java.io.IOException;
 import java.net.URL;
