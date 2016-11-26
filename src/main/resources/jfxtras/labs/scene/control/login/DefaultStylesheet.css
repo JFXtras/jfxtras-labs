@@ -4,11 +4,6 @@
   -fx-padding: 5 5 5 5;
 }
 
-.LoginSkin .background-gradient {
-	-fx-background-color:
-        radial-gradient(center 50% 0%, radius 100%, rgba(255,255,0,1), rgba(128,128,0,1));
-}
-
 .LoginSkin .organization-icon {
 	-fx-image: url("default_icon.png");
 }

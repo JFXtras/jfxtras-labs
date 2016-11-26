@@ -22,7 +22,7 @@ public class SimpleLoginDemo extends Application
     public void start(Stage primaryStage) throws Exception
     {
         Login root = new Login();
-        Scene scene = new Scene(root, 300, 400);
+        Scene scene = new Scene(root, 400, 270);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

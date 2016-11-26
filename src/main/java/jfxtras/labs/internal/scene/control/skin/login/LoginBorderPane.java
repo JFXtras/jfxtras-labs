@@ -22,6 +22,7 @@ public class LoginBorderPane extends BorderPane
 	@FXML TextField usernameTextField;
 	@FXML PasswordField passwordField;
 	@FXML Button signInButton;
+	@FXML Button cancelButton;
 	
     public LoginBorderPane(ResourceBundle resources, String initialUsername, Callback<Pair<String, String>, Void> loginCallback)
     {
@@ -31,6 +32,11 @@ public class LoginBorderPane extends BorderPane
         signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
         {
         	loginCallback.call(new Pair<>(usernameTextField.getText(), passwordField.getText()));
+        });
+        
+        cancelButton.setOnMouseClicked((event) -> 
+        {
+        	getParent().getScene().getWindow().hide();
         });
     }
     
