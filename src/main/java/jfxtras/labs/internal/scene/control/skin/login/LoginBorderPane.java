@@ -30,8 +30,9 @@ public class LoginBorderPane extends BorderPane
     {
         super();
         loadFxml(LoginBorderPane.class.getResource("Login.fxml"), this, resources);
-        System.out.println("usernameTextField:"  + usernameTextField);
         usernameTextField.setText(initialUsername);
+        
+        // Mouse click event handler calls client-provided callback
         signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
         {
             String[] strings = { 

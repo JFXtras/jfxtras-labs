@@ -57,9 +57,7 @@ public class LoginServerDemo extends Application
 	            Arrays.asList("LocalHost", "Apple", "Banana", "173.29.20.182")
 		        );
 		root.setSkin(skin);
-		String style = LoginServerDemo.class.getResource("NewStylesheet.css").toExternalForm();
-		root.getStylesheets().add(style);
-        Scene scene = new Scene(root, 400, 270);
+        Scene scene = new Scene(root, 400, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
 	}

@@ -22,5 +22,6 @@ public class LoginServerSkin extends SkinBase<Login>
 		borderPane.prefHeightProperty().bind(getSkinnable().heightProperty());
 		getChildren().add(borderPane);
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+        getSkinnable().getStyleClass().add(LoginSkin.class.getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
     }
 }

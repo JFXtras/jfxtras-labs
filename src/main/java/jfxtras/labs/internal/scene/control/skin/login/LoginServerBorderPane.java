@@ -17,10 +17,9 @@ public class LoginServerBorderPane extends LoginBorderPane
     {
         super(loginCallback, resources, initialUsername);
         LoginServerHBox serverHBox = new LoginServerHBox(resources, serverNames);
-        System.out.println("serverHBox:" + serverHBox);
+        getControlVBox().getChildren().add(2, serverHBox);
         
-        serverHBox.serverChoiceBox.getItems().addAll(serverNames);
-        
+        // Change LoginBorderPane's mouse click even handler to handle the server selection
         signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
         {
             String[] strings = { 
@@ -30,7 +29,5 @@ public class LoginServerBorderPane extends LoginBorderPane
                     };
             loginCallback.call(strings);
         });
-        
-        getControlVBox().getChildren().add(2, serverHBox);
     }
 }
