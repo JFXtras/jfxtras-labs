@@ -21,8 +21,8 @@ public class Stylesheet {
 	 * @param widthInInchesAtLeast width in inches
 	 * @param url
 	 */
-	public Stylesheet(double widthInInchesAtLeast, URL url) {
-		setWidthInInchesAtLeast(widthInInchesAtLeast);
+	public Stylesheet(Width widthAtLeast, URL url) {
+		setWidthAtLeast(widthAtLeast);
 		setUrl(url);
 	}		
 	
@@ -33,10 +33,10 @@ public class Stylesheet {
 	public void setUrl(URL value) { urlProperty.setValue(value); }
 	public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
 
-	/** WidthInInchesAtLeast (in inches) */
-	public ObjectProperty<Double> widthInInchesAtLeastProperty() { return widthInInchesAtLeastProperty; }
-	final private SimpleObjectProperty<Double> widthInInchesAtLeastProperty = new SimpleObjectProperty<>(this, "widthInInchesAtLeast", 0.0);
-	public Double getWidthInInchesAtLeast() { return widthInInchesAtLeastProperty.getValue(); }
-	public void setWidthInInchesAtLeast(Double value) { widthInInchesAtLeastProperty.setValue(value); }
-	public Stylesheet withWidthInInchesAtLeast(Double value) { setWidthInInchesAtLeast(value); return this; } 
+	/** WidthAtLeast (in inches) */
+	public ObjectProperty<Width> widthAtLeastProperty() { return widthAtLeastProperty; }
+	final private SimpleObjectProperty<Width> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", Width.inches(0.0));
+	public Width getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
+	public void setWidthAtLeast(Width value) { widthAtLeastProperty.setValue(value); }
+	public Stylesheet withWidthAtLeast(Width value) { setWidthAtLeast(value); return this; } 
 }

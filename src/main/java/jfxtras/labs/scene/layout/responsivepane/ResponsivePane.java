@@ -20,7 +20,6 @@ import javafx.stage.Window;
 /*
  * TODO: FXML loading
  * TODO: alias widths (desktop, tablets, etc)
- * TODO: orientation
  * 
 */
 
@@ -45,9 +44,11 @@ public class ResponsivePane extends StackPane {
 			// by listening to it width
 			if (oldValue != null) {
 				oldValue.widthProperty().removeListener(sizeInvalidationListener);
+				oldValue.heightProperty().removeListener(sizeInvalidationListener);
 			}
 			if (newValue != null) {
 				newValue.widthProperty().addListener(sizeInvalidationListener);
+				newValue.heightProperty().addListener(sizeInvalidationListener);
 			}
 		});
 	}
@@ -140,8 +141,15 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
-	public void addLayout(Double widthInInchesAtLeast, Node root) {
+	public void addLayout(Width widthInInchesAtLeast, Node root) {
 		layouts.add(new Layout(widthInInchesAtLeast, root));
+	}
+	
+	/**
+	 * 
+	 */
+	public void addLayout(Width widthInInchesAtLeast, Orientation orientation, Node root) {
+		layouts.add(new Layout(widthInInchesAtLeast, orientation, root));
 	}
 	
 	/** ActiveLayout */
@@ -164,7 +172,7 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
-	public void addSceneStylesheet(double widthInInchesAtLeast, URL url) {
+	public void addSceneStylesheet(Width widthInInchesAtLeast, URL url) {
 		sceneStylesheets.add(new Stylesheet(widthInInchesAtLeast, url));
 	}
 	
@@ -189,7 +197,7 @@ public class ResponsivePane extends StackPane {
 	 * @param widthInInchesAtLeast width in inches
 	 * @param url
 	 */
-	public void addMyStylesheet(double widthInInchesAtLeast, URL url) {
+	public void addMyStylesheet(Width widthInInchesAtLeast, URL url) {
 		myStylesheets.add(new Stylesheet(widthInInchesAtLeast, url));
 	}
 	
@@ -220,13 +228,12 @@ public class ResponsivePane extends StackPane {
      * 
      */
 	void setupLayout() {
-		double lActualWidthInInches = determineActualWidthInInches();
 
-    	// determine layout
-    	Layout lLayout = determineBestFittingLayout(lActualWidthInInches);
+    	// layout
+    	Layout lLayout = determineBestFittingLayout();
     	if (!lLayout.equals(getActiveLayout())) {
     		
-    		if (getDebug() || getTrace()) System.out.println("Activating layout " + lLayout.getWidthInInchesAtLeast() + " inch");
+    		if (getDebug() || getTrace()) System.out.println("Activating layout " + lLayout);
         	setActiveLayout(lLayout);
 
     		// switch to active layout
@@ -234,9 +241,9 @@ public class ResponsivePane extends StackPane {
         	ResponsivePane.this.getChildren().add(lLayout.getRoot());
     	}
     	
-    	// determine scene stylesheet
+    	// scene stylesheet
     	{
-	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidthInInches, sceneStylesheets);
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(sceneStylesheets);
 	    	if (!lStylesheet.equals(getActiveSceneStylesheet())) {
 	    		
 	    		setActiveSceneStylesheet(lStylesheet);
@@ -246,9 +253,9 @@ public class ResponsivePane extends StackPane {
 	    	}
     	}
     	
-    	// determine my stylesheet
+    	// my stylesheet
     	{
-	    	Stylesheet lStylesheet = determineBestFittingStylesheet(lActualWidthInInches, myStylesheets);
+	    	Stylesheet lStylesheet = determineBestFittingStylesheet(myStylesheets);
 	    	if (!lStylesheet.equals(getActiveMyStylesheet())) {
 	    		
 	    		setActiveMyStylesheet(lStylesheet);
@@ -276,7 +283,7 @@ public class ResponsivePane extends StackPane {
 		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 		if (screensForRectangle.size() > 0) {
 			// System.out.println("screens of scene: " + screensForRectangle); 
-			Screen lScreen = screensForRectangle.get(0);
+			Screen lScreen = screensForRectangle.get(0); // we just use the first screen
 			lPPI = lScreen.getDpi();
 		}
 
@@ -289,51 +296,77 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 * @return
 	 */
-	Layout determineBestFittingLayout(double actualWidthInInches) {
-		
+	Layout determineBestFittingLayout() {
+		double actualWidthInInches = determineActualWidthInInches();
+		Scene lScene = getScene();
+		Orientation lSceneOrientation = (lScene.getWidth() > lScene.getHeight() ? Orientation.LANDSCAPE : Orientation.PORTRAIT);
+
+		// find the best fitting layout
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
-			if (actualWidthInInches >= lLayout.getWidthInInchesAtLeast()) {
-				if (lBestFittingLayout == null || lBestFittingLayout.getWidthInInchesAtLeast() < lLayout.getWidthInInchesAtLeast()) {
-					lBestFittingLayout = lLayout;
+			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout);
+			if (actualWidthInInches >= lLayout.getWidthAtLeast().toInches()) {
+				if (getTrace()) System.out.println("determineBestFittingLayout, layout is candidate based on scene width: " + actualWidthInInches + "in");
+				if (lBestFittingLayout == null || lBestFittingLayout.getWidthAtLeast().toInches() <= lLayout.getWidthAtLeast().toInches()) {
+					if (getTrace()) System.out.println("determineBestFittingLayout, layout is a better candidate based on width vs best fitting so far: " + lBestFittingLayout);
+					
+					// Based on the width, this layout is a candidate. But is it also based on the orientation?
+					Orientation lBestFittingLayoutOrientation = (lBestFittingLayout == null ? null : lBestFittingLayout.getOrientation()); 
+					Orientation lLayoutOrientation = lLayout.getOrientation(); 
+					if ( lBestFittingLayout == null || lLayoutOrientation == null || lSceneOrientation.equals(lLayoutOrientation)) {
+						if (getTrace()) System.out.println("determineBestFittingLayout, layout is also candidate based on orientation");
+						
+						// Orientation also matches, do we prefer the one orientation of the other?
+						if ( (lBestFittingLayoutOrientation == null && lLayoutOrientation == null) 
+						  || (lBestFittingLayoutOrientation == null && lLayoutOrientation != null) // Prefer a layout with orientation above one without
+						   ) {
+							if (getTrace()) System.out.println("determineBestFittingLayout, layout is also a better candidate based on orientation vs best fitting so far: " + lBestFittingLayout);
+							lBestFittingLayout = lLayout;
+							if (getTrace()) System.out.println("determineBestFittingLayout, best fitting so far: " + lBestFittingLayout);
+						}
+					}
 				}
 			}
 		}
 		
-		// default layout
+		// if none found, use the default layout
 		if (lBestFittingLayout == null) {
 			lBestFittingLayout = SINGULARITY_LAYOUT;
 		}
 		
-		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout.getWidthInInchesAtLeast() + " inch");
+		// done
+		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout);
 		return lBestFittingLayout;
 	}
-	private final Layout SINGULARITY_LAYOUT = new Layout(0.0, new Label("?") );
+	private final Layout SINGULARITY_LAYOUT = new Layout(Width.ZERO, new Label("?") );
 	
 	/**
 	 * 
 	 * @return
 	 */
-	Stylesheet determineBestFittingStylesheet(double actualWidthInInches, List<Stylesheet> availableStylesheets) {
+	Stylesheet determineBestFittingStylesheet(List<Stylesheet> availableStylesheets) {
+		double actualWidthInInches = determineActualWidthInInches();
 		
+		// find the best fitting stylesheet
 		Stylesheet lBestFittingStylesheet = null;
 		for (Stylesheet lStylesheet : availableStylesheets) {
-			if (actualWidthInInches >= lStylesheet.getWidthInInchesAtLeast()) {
-				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getWidthInInchesAtLeast() < lStylesheet.getWidthInInchesAtLeast()) {
+			if (actualWidthInInches >= lStylesheet.getWidthAtLeast().toInches()) {
+				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getWidthAtLeast().toInches() < lStylesheet.getWidthAtLeast().toInches()) {
 					lBestFittingStylesheet = lStylesheet;
 				}
 			}
 		}
 		
-		// default Stylesheet
+		// if none found, use the default Stylesheet
 		if (lBestFittingStylesheet == null) {
-			lBestFittingStylesheet = SINGULAR_Stylesheet;
+			lBestFittingStylesheet = SINGULAR_STYLESHEET;
 		}
 		
-		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getWidthInInchesAtLeast() + " inch -> " + lBestFittingStylesheet.getUrl());
+		// done
+		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getWidthAtLeast() + " -> " + lBestFittingStylesheet.getUrl());
 		return lBestFittingStylesheet;
 	}
-	final private Stylesheet SINGULAR_Stylesheet = new Stylesheet(0.0, null);
+	final private Stylesheet SINGULAR_STYLESHEET = new Stylesheet(Width.ZERO, null);
 	
 	/**
 	 * 
@@ -346,13 +379,13 @@ public class ResponsivePane extends StackPane {
 		for (Stylesheet lStylesheet : availableStylesheets) {
 			String lActiveStylesheetUrl = lStylesheet.getUrl().toExternalForm();
 			if (activeStylesheetUrls.remove(lActiveStylesheetUrl)) {
-				if (getDebug() || getTrace()) System.out.println("Removed " + lActiveStylesheetUrl);
+				if (getDebug() || getTrace()) System.out.println("Removed stylesheet " + lStylesheet.getWidthAtLeast() + " -> " + lActiveStylesheetUrl);
 			}			
 		}
 		
 		// load new
 		if (lStylesheetUrl != null) {
-			if (getDebug() || getTrace()) System.out.println("Loading " + lStylesheetUrl);
+			if (getDebug() || getTrace()) System.out.println("Loading stylesheet " + stylesheet.getWidthAtLeast() + " -> " + lStylesheetUrl);
 			activeStylesheetUrls.add(lStylesheetUrl);
 		}
 	}
