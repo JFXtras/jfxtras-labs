@@ -12,7 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import jfxtras.test.AssertNode;
 import jfxtras.test.JFXtrasGuiTest;
 
@@ -25,10 +24,10 @@ public class LoginTest extends JFXtrasGuiTest
 	@Override
     public Parent getRootNode()
     {
-		Callback<Pair<String, String>, Void> loginCallback = (credentials) ->
+		Callback<String[], Void> loginCallback = (credentials) ->
 		{
-			username = credentials.getKey();
-			String password = credentials.getValue();
+            username = credentials[0];
+            String password = credentials[1];
 			if (username.equals("David") && password.equals("password"))
 			{
 				result = "login ok";
@@ -42,7 +41,7 @@ public class LoginTest extends JFXtrasGuiTest
 
         Locale myLocale = Locale.getDefault();
 		ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.scene.control.login.LoginDefault", myLocale);
-		Login root = new Login(resources, "David", loginCallback);
+		Login root = new Login(loginCallback, resources, "David");
 		root.setPrefSize(300, 400);
     	return root;
     }

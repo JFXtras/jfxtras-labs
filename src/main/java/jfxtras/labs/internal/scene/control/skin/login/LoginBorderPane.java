@@ -13,31 +13,43 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
 public class LoginBorderPane extends BorderPane
 {
 	@FXML Label organizationNameLabel;
+    @FXML VBox controlVBox;
 	@FXML TextField usernameTextField;
 	@FXML PasswordField passwordField;
 	@FXML Button signInButton;
 	@FXML Button cancelButton;
 	
-    public LoginBorderPane(ResourceBundle resources, String initialUsername, Callback<Pair<String, String>, Void> loginCallback)
+    public LoginBorderPane(Callback<String[], Void> loginCallback, ResourceBundle resources, String initialUsername)
     {
         super();
         loadFxml(LoginBorderPane.class.getResource("Login.fxml"), this, resources);
+        System.out.println("usernameTextField:"  + usernameTextField);
         usernameTextField.setText(initialUsername);
         signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
         {
-        	loginCallback.call(new Pair<>(usernameTextField.getText(), passwordField.getText()));
+            String[] strings = { 
+                    usernameTextField.getText(),
+                    passwordField.getText()
+                    };
+            loginCallback.call(strings);
         });
         
         cancelButton.setOnMouseClicked((event) -> 
         {
         	getParent().getScene().getWindow().hide();
         });
+    }
+    
+    Pane getControlVBox()
+    {
+        return controlVBox;
     }
     
     protected static void loadFxml(URL fxmlFile, Object rootController, ResourceBundle resources)

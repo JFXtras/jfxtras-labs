@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import jfxtras.labs.internal.scene.control.skin.login.LoginSkin;
 
 public class Login extends Control
@@ -40,17 +39,20 @@ public class Login extends Control
     }
 
     /* Log in callback */
-    private Callback<Pair<String, String>, Void> loginCallback = (credentials) -> null;
+    private Callback<String[], Void> loginCallback = (credentials) -> null;
     /** Gets callback that is executed on clicking "sign in" */
-    public Callback<Pair<String, String>, Void> getLoginCallback()
+    public Callback<String[], Void> getLoginCallback()
     {
         return loginCallback;
     }
     /** Sets callback that is executed on clicking "sign in" */
-    public void setSigninCallback(Callback<Pair<String, String>, Void> loginCallback)
+    public void setSigninCallback(Callback<String[], Void> loginCallback)
     {
         this.loginCallback = loginCallback;
     }
+
+    /* Array of additional arguments for skins */
+    private Object[] args;
     
     /**
      * No-arg constructor uses default English bundle, empty initial username, and no-op callback
@@ -62,14 +64,14 @@ public class Login extends Control
         setId("Login-" + resources.getString("organization"));
     }
     
-    public Login(ResourceBundle resources, String initialUsername, Callback<Pair<String, String>, Void> loginCallback)
+    public Login(Callback<String[], Void> loginCallback, ResourceBundle resources, String initialUsername)
     {
         this();
         this.resources = resources;
         this.initialUsername = initialUsername;
         this.loginCallback = loginCallback;
     }
-
+    
     @Override
     public Skin<?> createDefaultSkin() {
         return new LoginSkin(

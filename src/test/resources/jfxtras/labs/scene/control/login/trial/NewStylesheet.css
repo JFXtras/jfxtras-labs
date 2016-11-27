@@ -1,8 +1,3 @@
-.LoginSkin .background-gradient {
-	-fx-background-color:
-        radial-gradient(center 50% 0%, radius 100%, rgba(0,255,0,1), rgba(0,128,0,1));
-}
-
 .LoginSkin .organization-icon {
 	-fx-image: url("jfxtras_logo1_white.png");
 }
