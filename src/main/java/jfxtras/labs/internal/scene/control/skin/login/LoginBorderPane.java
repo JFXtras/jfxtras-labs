@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,26 +24,29 @@ public class LoginBorderPane extends BorderPane
 	@FXML Button signInButton;
 	@FXML Button cancelButton;
 	
+	Callback<String[], Void> loginCallback;
+	
     public LoginBorderPane(Callback<String[], Void> loginCallback, ResourceBundle resources, String initialUsername)
     {
         super();
+        this.loginCallback = loginCallback;
         loadFxml(LoginBorderPane.class.getResource("Login.fxml"), this, resources);
         usernameTextField.setText(initialUsername);
         
         // Mouse click event handler calls client-provided callback
-        signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
-        {
-            String[] strings = { 
-                    usernameTextField.getText(),
-                    passwordField.getText()
-                    };
-            loginCallback.call(strings);
-        });
+//        signInButton.setOnMouseClicked((EventHandler<? super MouseEvent>) (event) -> 
+//        {
+//            String[] strings = { 
+//                    usernameTextField.getText(),
+//                    passwordField.getText()
+//                    };
+//            loginCallback.call(strings);
+//        });
         
-        cancelButton.setOnMouseClicked((event) -> 
-        {
-        	getParent().getScene().getWindow().hide();
-        });
+//        cancelButton.setOnMouseClicked((event) -> 
+//        {
+//        	getParent().getScene().getWindow().hide();
+//        });
     }
     
     Pane getControlVBox()
@@ -65,5 +66,25 @@ public class LoginBorderPane extends BorderPane
         catch(IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    @FXML private void handleCancel()
+    {
+        getParent().getScene().getWindow().hide();
+    }
+    
+    @FXML void handleSignin()
+    {
+        String[] strings = { 
+                usernameTextField.getText(),
+                passwordField.getText()
+                };
+        System.out.println("strings:" + strings);
+        loginCallback.call(strings);
+    }
+    
+    @FXML private void handleKeyPress()
+    {
+        handleSignin();
     }
 }

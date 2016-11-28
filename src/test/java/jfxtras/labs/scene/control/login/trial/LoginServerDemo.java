@@ -38,6 +38,7 @@ public class LoginServerDemo extends Application
 			if (username.equals("David") && password.equals("password") && server.equals("LocalHost"))
 			{
 				result = "login ok";
+				primaryStage.hide();
 			} else
 			{
 				result  = "login failed";

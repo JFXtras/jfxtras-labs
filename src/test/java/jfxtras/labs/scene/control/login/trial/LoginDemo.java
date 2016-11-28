@@ -35,6 +35,7 @@ public class LoginDemo extends Application
 			if (username.equals("David") && password.equals("password"))
 			{
 				result = "login ok";
+				primaryStage.hide();
 			} else
 			{
 				result  = "login failed";
