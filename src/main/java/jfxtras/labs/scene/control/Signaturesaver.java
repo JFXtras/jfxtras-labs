@@ -1,13 +1,14 @@
-```java
+
 class Signaturesaver extends Canvas{
+
     //Signature Saver is node that can be put on gui for users to pen their signatures and save them to a file.
     //could be useful in a number of different applications
-    //fields
+    
+    
     double inx;
     double iny;
     private String savebuttontext;
-    Button saveButton = new Button(savebuttontext);
-    //Group root = new Group();
+    Button saveButton = new Button(savebuttontext);  
     GraphicsContext gc;
     WritableImage signature;
     final FileChooser fc = new FileChooser();
@@ -18,6 +19,7 @@ class Signaturesaver extends Canvas{
         //if they dont provide a primary stage, the image will be saved to a default filename in the current dir;
         this(null);
     }
+    
     public Signaturesaver(Stage currentstage){
         
         //the user can either call getsaveButton() and add that to this one to their container along with the Signaturesave canvas
@@ -75,15 +77,14 @@ class Signaturesaver extends Canvas{
     public Button getSaveButton(){
             return saveButton;
     }
+    
     public void setSaveButtonText(String text){
         savebuttontext = text;
     }
+    
     public void setButton(Button savebutton){
         this.saveButton = savebutton;
     }
-    
-    
-    
-    
+   
 }
-```java
+
