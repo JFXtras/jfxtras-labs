@@ -21,16 +21,16 @@ public class Layout {
 	/**
 	 * 
 	 */
-	public Layout(Width widthAtLeast, Node root) {
-		setWidthAtLeast(widthAtLeast);
+	public Layout(Diagonal sizeAtLeast, Node root) {
+		setSizeAtLeast(sizeAtLeast);
 		setRoot(root);
 	}
 	
 	/**
 	 * 
 	 */
-	public Layout(Width widthAtLeast, Orientation orientation, Node root) {
-		setWidthAtLeast(widthAtLeast);
+	public Layout(Diagonal sizeAtLeast, Orientation orientation, Node root) {
+		setSizeAtLeast(sizeAtLeast);
 		setOrientation(orientation);
 		setRoot(root);
 	}
@@ -42,12 +42,12 @@ public class Layout {
 	public void setRoot(Node value) { rootProperty.setValue(value); }
 	public Layout withRoot(Node value) { setRoot(value); return this; } 
 
-	/** WidthAtLeast */
-	public ObjectProperty<Width> widthAtLeastProperty() { return widthAtLeastProperty; }
-	final private SimpleObjectProperty<Width> widthAtLeastProperty = new SimpleObjectProperty<>(this, "widthAtLeast", Width.inches(0.0));
-	public Width getWidthAtLeast() { return widthAtLeastProperty.getValue(); }
-	public void setWidthAtLeast(Width value) { widthAtLeastProperty.setValue(value); }
-	public Layout withWidthAtLeast(Width value) { setWidthAtLeast(value); return this; }
+	/** sizeAtLeast */
+	public ObjectProperty<Diagonal> sizeAtLeastProperty() { return sizeAtLeastProperty; }
+	final private SimpleObjectProperty<Diagonal> sizeAtLeastProperty = new SimpleObjectProperty<>(this, "sizeAtLeast", Diagonal.inches(0.0));
+	public Diagonal getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
+	public void setSizeAtLeast(Diagonal value) { sizeAtLeastProperty.setValue(value); }
+	public Layout withSizeAtLeast(Diagonal value) { setSizeAtLeast(value); return this; }
 
 	/** Orientation */
 	public ObjectProperty<Orientation> orientationProperty() { return orientationProperty; }
@@ -57,6 +57,6 @@ public class Layout {
 	public Layout withOrientation(Orientation value) { setOrientation(value); return this; }
 	
 	public String toString() {
-		return getWidthAtLeast() + (getOrientation() == null ? "" : "-" + getOrientation());
+		return getSizeAtLeast() + (getOrientation() == null ? "" : "-" + getOrientation());
 	}
 }

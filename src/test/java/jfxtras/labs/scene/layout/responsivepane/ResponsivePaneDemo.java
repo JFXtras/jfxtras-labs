@@ -37,7 +37,7 @@ public class ResponsivePaneDemo extends Application {
 		// layout
 		ResponsivePane lResponsivePane = new ResponsivePane();
 		lResponsivePane.setDebug(true);
-		lResponsivePane.setTrace(true);
+		//lResponsivePane.setTrace(true);
 		lResponsivePane.addRef("CalendarPicker", new CalendarPicker());
 		lResponsivePane.addRef("TreeView", new TreeView());
 		lResponsivePane.addRef("TableView", new TableView());
@@ -48,14 +48,14 @@ public class ResponsivePaneDemo extends Application {
 		lResponsivePane.addRef("Logo", new Button("Logo"));
 		lResponsivePane.addRef("version", new Label("v1.0"));
 		//
-		lResponsivePane.addLayout(Width.inches(4.0), createPhoneLayout());
-		lResponsivePane.addLayout(Width.inches(12.0), createDesktopLayout());		
-		lResponsivePane.addLayout(Width.inches(18.0), Orientation.PORTRAIT, new Label("12.0P"));	
-		lResponsivePane.addLayout(Width.inches(18.0), Orientation.LANDSCAPE, new Label("12.0L"));	
+		lResponsivePane.addLayout(Diagonal.inches(4.0), createPhoneLayout());
+		lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
+		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.PORTRAIT, new Label("18.0P"));	
+		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.LANDSCAPE, new Label("18.0L"));	
 		// css
-		lResponsivePane.addSceneStylesheet(Width.inches(4.0), getClass().getResource("phone.css"));
-		lResponsivePane.addSceneStylesheet(Width.inches(6.0), getClass().getResource("tablet.css"));
-		lResponsivePane.addSceneStylesheet(Width.inches(12.0), getClass().getResource("desktop.css"));
+		lResponsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));
+		lResponsivePane.addSceneStylesheet(Diagonal.inches(6.0), getClass().getResource("tablet.css"));
+		lResponsivePane.addSceneStylesheet(Diagonal.inches(12.0), getClass().getResource("desktop.css"));
 
 		// show
 		primaryStage.setScene(new Scene(lResponsivePane, 1700, 1000));

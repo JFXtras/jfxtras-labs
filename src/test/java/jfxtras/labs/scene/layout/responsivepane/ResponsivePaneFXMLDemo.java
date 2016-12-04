@@ -31,7 +31,7 @@ public class ResponsivePaneFXMLDemo extends Application {
 			Parent lRoot = (Parent)FXMLLoader.load(lURL, null, new JFXtrasBuilderFactory());
 
 			// show
-			primaryStage.setScene(new Scene(lRoot, 2000, 1000));
+			primaryStage.setScene(new Scene(lRoot, 1200, 800));
 			primaryStage.sizeToScene();
 			primaryStage.show();
 		}

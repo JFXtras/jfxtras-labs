@@ -9,21 +9,21 @@
 <?import jfxtras.labs.scene.layout.responsivepane.*?>
 <?import java.net.*?>
 
-<ResponsivePane xmlns:fx="http://javafx.com/fxml" debug="true">
+<ResponsivePane xmlns:fx="http://javafx.com/fxml" debug="true" trace="false">
 	<refs>
 		<CalendarPicker id="id1"/>
 		<Button text="refButton" id="id2"/>
 	</refs>
 	
 	<layouts>
-		<Layout widthAtLeast="4.0in">
+		<Layout sizeAtLeast="4.0in">
 			<VBox>
 				<Ref to="id1"/>
 				<Label text="phone"/>
 			</VBox>
 		</Layout>
 		
-		<Layout widthAtLeast="10.0in">
+		<Layout sizeAtLeast="10.0in">
 			<HBox>
 				<Ref to="id1" id="l2r1"/>
 				<Ref to="id2"/>
@@ -33,11 +33,11 @@
 	</layouts>
 	
 	<sceneStylesheets>
-		<Stylesheet widthAtLeast="4.0in">  <URL value="@phone.css"/> </Stylesheet>
-		<Stylesheet widthAtLeast="10.0in"> <URL value="@desktop.css"/> </Stylesheet>
+		<Stylesheet sizeAtLeast="4.0in">  <URL value="@phone.css"/> </Stylesheet>
+		<Stylesheet sizeAtLeast="10.0in"> <URL value="@desktop.css"/> </Stylesheet>
 	</sceneStylesheets>
 	
 	<myStylesheets>
-		<Stylesheet widthAtLeast="8.0in">  <URL value="@tablet.css"/> </Stylesheet>
+		<Stylesheet sizeAtLeast="8.0in">  <URL value="@tablet.css"/> </Stylesheet>
 	</myStylesheets>
 </ResponsivePane>
