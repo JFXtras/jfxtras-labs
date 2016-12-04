@@ -48,7 +48,7 @@ public class ResponsivePaneDemo extends Application {
 		lResponsivePane.addRef("Logo", new Button("Logo"));
 		lResponsivePane.addRef("version", new Label("v1.0"));
 		//
-		lResponsivePane.addLayout(Diagonal.inches(4.0), createPhoneLayout());
+		lResponsivePane.addLayout(Diagonal.device(Device.PHONE), createPhoneLayout());
 		lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
 		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.PORTRAIT, new Label("18.0P"));	
 		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.LANDSCAPE, new Label("18.0L"));	

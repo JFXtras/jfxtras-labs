@@ -1,7 +1,9 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -18,7 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Window;
 
 /*
- * TODO: FXML loading
+ * TODO: controller in FXML
  * TODO: alias widths (desktop, tablets, etc)
  * 
 */
@@ -37,6 +39,11 @@ public class ResponsivePane extends StackPane {
 	 * 
 	 */
 	public ResponsivePane() {
+		
+		// default device sizes
+		deviceToSizeMap.put(Device.PHONE.toString(), Diagonal.inches(3.5));
+		deviceToSizeMap.put(Device.TABLET.toString(), Diagonal.inches(7.0));
+		deviceToSizeMap.put(Device.DESKTOP.toString(), Diagonal.inches(10.5));
 		
 		// react to changes in the scene
 		sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
@@ -208,6 +215,37 @@ public class ResponsivePane extends StackPane {
 	public void setActiveMyStylesheet(Stylesheet value) { activeMyStylesheetProperty.setValue(value); }
 	public ResponsivePane withActiveMyStylesheet(Stylesheet value) { setActiveMyStylesheet(value); return this; } 
 	
+	// ==========================================================================================================================================================================================================================================
+	// DEVICE
+	
+	/**
+	 * 
+	 * @param device
+	 * @param size
+	 */
+	public void setDeviceSize(Device device, Diagonal size) {
+		setDeviceSize(device.toString(), size);
+	}
+	public Diagonal getDeviceSize(Device device) {
+		return getDeviceSize(device.toString());
+	}
+	
+	/**
+	 * 
+	 * @param device
+	 * @param size
+	 */
+	public void setDeviceSize(String device, Diagonal size) {
+		deviceToSizeMap.put(device, size);
+	}
+	public Diagonal getDeviceSize(String device) {
+		if (!deviceToSizeMap.containsKey(device)) {
+			throw new IllegalArgumentException("Unknown device '" +  device + "', not found in " + deviceToSizeMap.keySet());
+		}
+		return deviceToSizeMap.get(device);
+	}
+	final Map<String, Diagonal> deviceToSizeMap = new HashMap<>();
+
 
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
@@ -307,9 +345,9 @@ public class ResponsivePane extends StackPane {
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
 			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout);
-			if (actualSizeInInches >= lLayout.getSizeAtLeast().toInches()) {
+			if (actualSizeInInches >= lLayout.getSizeAtLeast().toInches(this)) {
 				if (getTrace()) System.out.println("determineBestFittingLayout, layout is candidate based on scene width: " + actualSizeInInches + "in");
-				if (lBestFittingLayout == null || lBestFittingLayout.getSizeAtLeast().toInches() <= lLayout.getSizeAtLeast().toInches()) {
+				if (lBestFittingLayout == null || lBestFittingLayout.getSizeAtLeast().toInches(this) <= lLayout.getSizeAtLeast().toInches(this)) {
 					if (getTrace()) System.out.println("determineBestFittingLayout, layout is a better candidate based on width vs best fitting so far: " + lBestFittingLayout);
 					
 					// Based on the width, this layout is a candidate. But is it also based on the orientation?
@@ -352,8 +390,8 @@ public class ResponsivePane extends StackPane {
 		// find the best fitting stylesheet
 		Stylesheet lBestFittingStylesheet = null;
 		for (Stylesheet lStylesheet : availableStylesheets) {
-			if (actualSizeInInches >= lStylesheet.getSizeAtLeast().toInches()) {
-				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getSizeAtLeast().toInches() < lStylesheet.getSizeAtLeast().toInches()) {
+			if (actualSizeInInches >= lStylesheet.getSizeAtLeast().toInches(this)) {
+				if (lBestFittingStylesheet == null || lBestFittingStylesheet.getSizeAtLeast().toInches(ResponsivePane.this) < lStylesheet.getSizeAtLeast().toInches(ResponsivePane.this)) {
 					lBestFittingStylesheet = lStylesheet;
 				}
 			}

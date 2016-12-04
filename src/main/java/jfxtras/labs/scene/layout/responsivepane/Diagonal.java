@@ -4,25 +4,47 @@ public class Diagonal {
 	
 	public final static Diagonal ZERO = new Diagonal(0.0000000000, Unit.INCH);
 	
+	Unit unit;	
+	double value;
+	String device;
+
 	/**
 	 * 
 	 * @param value
 	 * @param unit
 	 */
-	public Diagonal(double value, Unit unit) {
+	Diagonal(double value, Unit unit) {
 		this.value = value;
 		this.unit = unit;
+		this.device = null;
 	}
-	final Unit unit;	
-	final double value;
+	/**
+	 * 
+	 * @param device
+	 */
+	Diagonal(String device) {
+		this.value = 0.0;
+		this.unit = null;
+		this.device = device;
+	}
+	
+	// ========================================================================================================================================================================================================
+	// Actual relevant size
 	
 	/**
 	 * Convert the width to inches
+	 * @param responsivePane 
 	 * @return
 	 */
-	public double toInches() {
+	double toInches(ResponsivePane responsivePane) {
+		if (device != null && unit == null) {
+			Diagonal lDiagonal = responsivePane.getDeviceSize(device);
+			value = lDiagonal.value;
+			unit = lDiagonal.unit;
+		}
 		return unit.toInches(value);
 	}
+
 	
 	// ========================================================================================================================================================================================================
 	// Unit
@@ -47,6 +69,14 @@ public class Diagonal {
 		return new Diagonal(v, Unit.INCH);
 	}
 	
+	static public Diagonal device(Device v) {
+		return new Diagonal(v.toString());
+	}
+	
+	static public Diagonal device(String v) {
+		return new Diagonal(v.toString());
+	}
+	
 	
 	// ========================================================================================================================================================================================================
 	// FXML
@@ -67,6 +97,7 @@ public class Diagonal {
 	// SUPPORT
 	
 	public String toString() {
-		return value + unit.suffix;
+		return value + unit.suffix
+		     + (device == null ? "" : " (" + device + ")");
 	}
 }
