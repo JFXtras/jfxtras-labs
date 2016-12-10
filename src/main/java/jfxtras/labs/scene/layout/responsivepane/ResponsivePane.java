@@ -19,15 +19,100 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 
-/*
- * TODO: controller in FXML
- * TODO: alias widths (desktop, tablets, etc)
- * 
-*/
-
 /**
+ * = ResponsivePane
  * 
+ * This layout chooses the best fitting layout and stylesheet for a given stage size.
+ * 
+ * ResponsivePane is loosely based on responsive design as advocated by website designs, and implemented in for example the Twitter Bootstrap project.
+ * But there is a twist in the logic; responsive design assumes a given width and unlimited vertical space with the use of a scrollbar.
+ * For websites this is ok, but applications do not have unlimited vertical space. 
+ * Take for example a webbrowser; it contains a webview with a scrollbar, but it does not run inside a scrollpane itself.
+ * So for applications there is no such thing as unlimited vertical space!
+ * It has to use scalable controls, like lists, tables ort webview, to dynamically fill its horizontal and vertical space, just like we are used to in Swing and JavaFX for ages.
+ * But given large screen size differences, from 4 inch phones to 32 inch desktops, it is ridiculous to think that a single layout can adapt to all sizes: on a phone you may choose to use a TabbedPane with less controls visible, and on desktop you go all out with a MigPane and a number of gimmicks.   
+ * ResponsiveLayout allows you to define reusable nodes and have specific screen size related layouts, using the reusable nodes.
+ * It will then use what layout fits best.  
+ * 
+ * A typical use of ResponsivePane would look like this:
+ * [source,java]
+ * --
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+    
+        // create pane with reusable nodes
+        ResponsivePane lResponsivePane = new ResponsivePane();
+        lResponsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
+        lResponsivePane.addReusableNode("TreeView", new TreeView());
+        lResponsivePane.addReusableNode("TableView", new TableView());
+        lResponsivePane.addReusableNode("save", new Button("save"));
+        lResponsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
+        lResponsivePane.addReusableNode("-", new Button("-"));
+        lResponsivePane.addReusableNode("+", new Button("+"));
+        lResponsivePane.addReusableNode("Logo", new Button("Logo"));
+        lResponsivePane.addReusableNode("version", new Label("v1.0"));
+        
+        // define layouts
+        lResponsivePane.addLayout(Diagonal.inches(3.5), createPhoneLayout());
+        lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());
+                
+        // define css
+        lResponsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));
+        lResponsivePane.addSceneStylesheet(Diagonal.inches(6.0), getClass().getResource("tablet.css"));
+        lResponsivePane.addSceneStylesheet(Diagonal.inches(12.0), getClass().getResource("desktop.css"));
+    }
+    
+    private Node createDesktopLayout() {
+        MigPane migPane = new MigPane();
+        migPane.add(new Ref("Logo"), new CC());
+        migPane.add(new Ref("version"), new CC().spanX(2).alignX("right").alignY("top").wrap());
+        migPane.add(new Ref("CalendarPicker"), new CC().alignY("top"));
+        migPane.add(new Ref("TreeView"), new CC().grow().pushX().spanY(3).wrap());
+        ...
+        
+        return migPane;
+    }
+    
+    private Node createPhoneLayout() {
+        TabPane tabPane = new TabPane();
+        tabPane.getTabs().add(createTab("Date", "Calendar", new Ref("CalendarPicker")));
+        tabPane.getTabs().add(createTab("Tree", "Projectboom", new Ref("TreeView")));
+        tabPane.getTabs().add(createTab("Calc", "Totalen", new Ref("TreeView")));
+        ... 
+           
+        return tabPane;
+    }
+
+ * --
+ * 
+ * The exact implementation of createPhoneLayout() and createDesktopLayout() is not relevant, except that they use "Ref" nodes to include the reusable nodes.
+ *  
+ * == Reusable nodes:
+ * 
+ * Reusable nodes are identified by their id, this is done for ease of use in FXML. 
+ * They can then be used in the different layouts via a "new Ref(<id>)". 
+ * Be aware that you cannot reuse Refs, they are place holders and each layout needs a Ref instance on its own. 
+ * 
+ * 
+ * == Stylesheets:
+ * Like layouts it is also possible to associated a stylesheet based on the size of the stage. 
+ * A stylesheet can be assigned to the scene (applicable for everything on the scene) or to the layout (applicable for the underlying node).
+ * Responsive design assigned classes to the nodes, based on the size. 
+ * Test have shown that this approach works ok when running the application on a desktop computer, with enough CPU power (GUI Garage's implementation does this), but on mobile these changes have a sever performance impact.
+ * So ResponsivePane does not assign classes, but instead it replaces whole CSS files; for the CSS engine this is a single change and it needs to rerender only once.
+ * In those CSS files you can assign behavior to the CSS classes, or not.  
  *
+ * == Size:
+ * Determining the size is an interesting topic. 
+ * Responsive design only looks at the width in pixel, but it is already clear that ResponsivePane does not assume unlimited vertical space, so the height must also be taking into account.
+ * So size is expressed as a diagonal.
+ * But also the pixels that responsive design uses to denote width is debatable; after all a 1000 pixels on a 100 ppi screen is something completely different from a 350 ppi screen; the first is 10 inches in real life, the second not even 3 inch!
+ * ResponsivePane therefore per default uses the diagonal size in inches, as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
+ * 
+ * But because some situations may prefer using width based logic. 
+ * So it also is possible to specify size using Width; it will be at runtime converted to diagonal using the actual height of the layout. 
+ *  
+ * TODO: device
  */
 public class ResponsivePane extends StackPane {
 	
@@ -41,9 +126,9 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane() {
 		
 		// default device sizes
-		deviceToSizeMap.put(Device.PHONE.toString(), Diagonal.inches(3.5));
-		deviceToSizeMap.put(Device.TABLET.toString(), Diagonal.inches(7.0));
-		deviceToSizeMap.put(Device.DESKTOP.toString(), Diagonal.inches(10.5));
+		deviceToSizeMap.put(DeviceType.PHONE.toString(), Diagonal.inches(3.5));
+		deviceToSizeMap.put(DeviceType.TABLET.toString(), Diagonal.inches(7.0));
+		deviceToSizeMap.put(DeviceType.DESKTOP.toString(), Diagonal.inches(10.5));
 		
 		// react to changes in the scene
 		sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
@@ -104,10 +189,10 @@ public class ResponsivePane extends StackPane {
 	// REFS
 	
 	/** refs */
-	public ObservableList<Node> getRefs() {
+	public ObservableList<Node> getReusableNodes() {
 		return refs;
 	}
-	private ObservableList<Node> refs = FXCollections.observableArrayList();
+	final private ObservableList<Node> refs = FXCollections.observableArrayList();
 	
 	/**
 	 * 
@@ -115,9 +200,23 @@ public class ResponsivePane extends StackPane {
 	 * @param node
 	 * @return
 	 */
-	public Node addRef(String id, Node node) {
+	public Node addReusableNode(String id, Node node) {
 		node.setId(id);
-		getRefs().add(node);
+		getReusableNodes().add(node);
+		return node;
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param node
+	 * @return
+	 */
+	public Node addReusableNode(Node node) {
+		if (node.getId() == null || node.getId().trim().length() == 0) {
+			throw new IllegalArgumentException("A reusable node must have an id");
+		}
+		getReusableNodes().add(node);
 		return node;
 	}
 	
@@ -126,7 +225,7 @@ public class ResponsivePane extends StackPane {
 	 * @param refId
 	 * @return
 	 */
-	Node findReferredNode(String refId) {
+	Node findResuableNode(String refId) {
 		for (Node lNode : refs) {
 			if (refId.equals(lNode.getId())) {
 				return lNode;
@@ -148,14 +247,14 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
-	public void addLayout(Diagonal sizeAtLeast, Node root) {
+	public void addLayout(Size sizeAtLeast, Node root) {
 		layouts.add(new Layout(sizeAtLeast, root));
 	}
 	
 	/**
 	 * 
 	 */
-	public void addLayout(Diagonal sizeAtLeast, Orientation orientation, Node root) {
+	public void addLayout(Size sizeAtLeast, Orientation orientation, Node root) {
 		layouts.add(new Layout(sizeAtLeast, orientation, root));
 	}
 	
@@ -179,7 +278,7 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
-	public void addSceneStylesheet(Diagonal sizeAtLeast, URL url) {
+	public void addSceneStylesheet(Size sizeAtLeast, URL url) {
 		sceneStylesheets.add(new Stylesheet(sizeAtLeast, url));
 	}
 	
@@ -204,7 +303,7 @@ public class ResponsivePane extends StackPane {
 	 * @param sizeAtLeast size in inches
 	 * @param url
 	 */
-	public void addMyStylesheet(Diagonal sizeAtLeast, URL url) {
+	public void addMyStylesheet(Size sizeAtLeast, URL url) {
 		myStylesheets.add(new Stylesheet(sizeAtLeast, url));
 	}
 	
@@ -223,10 +322,10 @@ public class ResponsivePane extends StackPane {
 	 * @param device
 	 * @param size
 	 */
-	public void setDeviceSize(Device device, Diagonal size) {
+	public void setDeviceSize(DeviceType device, Size size) {
 		setDeviceSize(device.toString(), size);
 	}
-	public Diagonal getDeviceSize(Device device) {
+	public Size getDeviceSize(DeviceType device) {
 		return getDeviceSize(device.toString());
 	}
 	
@@ -235,16 +334,16 @@ public class ResponsivePane extends StackPane {
 	 * @param device
 	 * @param size
 	 */
-	public void setDeviceSize(String device, Diagonal size) {
+	public void setDeviceSize(String device, Size size) {
 		deviceToSizeMap.put(device, size);
 	}
-	public Diagonal getDeviceSize(String device) {
+	public Size getDeviceSize(String device) {
 		if (!deviceToSizeMap.containsKey(device)) {
 			throw new IllegalArgumentException("Unknown device '" +  device + "', not found in " + deviceToSizeMap.keySet());
 		}
 		return deviceToSizeMap.get(device);
 	}
-	final Map<String, Diagonal> deviceToSizeMap = new HashMap<>();
+	final Map<String, Size> deviceToSizeMap = new HashMap<>();
 
 
 	// ==========================================================================================================================================================================================================================================
@@ -307,6 +406,23 @@ public class ResponsivePane extends StackPane {
 
 	// ==========================================================================================================================================================================================================================================
 	// SUPPORT
+
+	/**
+	 * Determine the pixels-per-inch of the screen we are on
+	 * @return
+	 */
+	double determinePPI() {
+		// determine the DPI factor, so the thresholds become larger on screens with a higher DPI
+		double lPPI = 100.0; // average dpi
+		Window window = getScene().getWindow();
+		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
+		if (screensForRectangle.size() > 0) {
+			// System.out.println("screens of scene: " + screensForRectangle); 
+			Screen lScreen = screensForRectangle.get(0); // we just use the first screen
+			lPPI = lScreen.getDpi();
+		}
+		return lPPI;		
+	}
 	
 	/**
 	 * 
@@ -316,19 +432,11 @@ public class ResponsivePane extends StackPane {
 		Scene lScene = getScene();
 		
 		// determine the DPI factor, so the thresholds become larger on screens with a higher DPI
-		double lPPI = 100.0; // average dpi
-		Window window = lScene.getWindow();
-		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
-		if (screensForRectangle.size() > 0) {
-			// System.out.println("screens of scene: " + screensForRectangle); 
-			Screen lScreen = screensForRectangle.get(0); // we just use the first screen
-			lPPI = lScreen.getDpi();
-		}
-
+		double lPPI = determinePPI();
 		double lWidthInInches = lScene.getWidth() / lPPI;
 		double lHeightInInches = lScene.getHeight() / lPPI;
 		double lSizeInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches * lHeightInInches) );
-		if (getTrace()) System.out.println("Actual size=" + lScene.getWidth() + "x" + lScene.getHeight() + "px, diagonal in inches=" + lSizeInInches + " (ppi=" + lPPI + ")");
+		if (getTrace()) System.out.println("Actual size=" + lScene.getWidth() + "x" + lScene.getHeight() + "px, size in inches=" + lSizeInInches + " (ppi=" + lPPI + ")");
 		return lSizeInInches;
 	}
 	
@@ -378,7 +486,7 @@ public class ResponsivePane extends StackPane {
 		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout);
 		return lBestFittingLayout;
 	}
-	private final Layout SINGULARITY_LAYOUT = new Layout(Diagonal.ZERO, new Label("?") );
+	private final Layout SINGULARITY_LAYOUT = new Layout(Size.ZERO, new Label("?") );
 	
 	/**
 	 * 
@@ -406,7 +514,7 @@ public class ResponsivePane extends StackPane {
 		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getSizeAtLeast() + " -> " + lBestFittingStylesheet.getUrl());
 		return lBestFittingStylesheet;
 	}
-	final private Stylesheet SINGULAR_STYLESHEET = new Stylesheet(Diagonal.ZERO, null);
+	final private Stylesheet SINGULAR_STYLESHEET = new Stylesheet(Size.ZERO, null);
 	
 	/**
 	 * 

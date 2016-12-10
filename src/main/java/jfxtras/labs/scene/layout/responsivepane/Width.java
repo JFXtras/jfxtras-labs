@@ -1,15 +1,23 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
-public class Device extends Size {
+import javafx.scene.Scene;
+
+public class Width extends Size {
+	
+	public final static Width ZERO = new Width(0.0000000000, Unit.INCH);
+	
+	Unit unit;	
+	double value;
 
 	/**
 	 * 
-	 * @param device
+	 * @param value
+	 * @param unit
 	 */
-	Device(String device) {
-		this.device = device;
+	Width(double value, Unit unit) {
+		this.value = value;
+		this.unit = unit;
 	}
-	final String device;
 	
 	// ========================================================================================================================================================================================================
 	// Actual relevant size
@@ -20,23 +28,22 @@ public class Device extends Size {
 	 * @return
 	 */
 	double toInches(ResponsivePane responsivePane) {
-		size = responsivePane.getDeviceSize(device);
-		return size.toInches(responsivePane);
+		
+		// convert width to diagonal by using the current size of the pane
+		Scene lScene = responsivePane.getScene();
+		double lHeightInInches = lScene.getHeight() / responsivePane.determinePPI();
+		double lWidthInInches = unit.toInches(value);		
+		double lDiagonalInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches + lHeightInInches));
+		return lDiagonalInInches;
 	}
-	private Size size; // for logging in toString
 
-	
+
 	// ========================================================================================================================================================================================================
 	// CONVENIENCE
 	
-	static public Device size(DeviceType v) {
-		return new Device(v.toString());
+	static public Width inches(double v) {
+		return new Width(v, Unit.INCH);
 	}
-	
-	static public Device size(String v) {
-		return new Device(v);
-	}
-	
 	
 	// ========================================================================================================================================================================================================
 	// FXML
@@ -45,8 +52,11 @@ public class Device extends Size {
 	 * @param s
 	 * @return
 	 */
-	static public Device valueOf(String s) {
-		return size(s);
+	static public Width valueOf(String s) {
+		if (s.endsWith(Unit.INCH.suffix)) {
+			return inches(Double.parseDouble(s.substring(0, s.length() - Unit.INCH.suffix.length())));
+		}
+		throw new IllegalArgumentException("Don't know how to parse '" + s + "'");
 	}
 	
 	
@@ -54,6 +64,6 @@ public class Device extends Size {
 	// SUPPORT
 	
 	public String toString() {
-		return size + " (" + device + ")";
+		return "width=" + value + unit.suffix;
 	}
 }

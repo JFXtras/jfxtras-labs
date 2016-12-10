@@ -1,12 +1,9 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
-public class Diagonal {
+public class Diagonal extends Size {
 	
-	public final static Diagonal ZERO = new Diagonal(0.0000000000, Unit.INCH);
-	
-	Unit unit;	
-	double value;
-	String device;
+	final Unit unit;	
+	final double value;
 
 	/**
 	 * 
@@ -16,16 +13,6 @@ public class Diagonal {
 	Diagonal(double value, Unit unit) {
 		this.value = value;
 		this.unit = unit;
-		this.device = null;
-	}
-	/**
-	 * 
-	 * @param device
-	 */
-	Diagonal(String device) {
-		this.value = 0.0;
-		this.unit = null;
-		this.device = device;
 	}
 	
 	// ========================================================================================================================================================================================================
@@ -37,44 +24,15 @@ public class Diagonal {
 	 * @return
 	 */
 	double toInches(ResponsivePane responsivePane) {
-		if (device != null && unit == null) {
-			Diagonal lDiagonal = responsivePane.getDeviceSize(device);
-			value = lDiagonal.value;
-			unit = lDiagonal.unit;
-		}
 		return unit.toInches(value);
 	}
 
-	
-	// ========================================================================================================================================================================================================
-	// Unit
-	
-	enum Unit {
-		INCH("in");
-		
-		private Unit(String suffix){
-	        this.suffix = suffix;
-	    }
-	    private final String suffix;
-	    
-		public double toInches(double value) {
-			return value;
-		}	    
-	}
-	
+
 	// ========================================================================================================================================================================================================
 	// CONVENIENCE
 	
 	static public Diagonal inches(double v) {
 		return new Diagonal(v, Unit.INCH);
-	}
-	
-	static public Diagonal device(Device v) {
-		return new Diagonal(v.toString());
-	}
-	
-	static public Diagonal device(String v) {
-		return new Diagonal(v.toString());
 	}
 	
 	
@@ -97,7 +55,6 @@ public class Diagonal {
 	// SUPPORT
 	
 	public String toString() {
-		return value + unit.suffix
-		     + (device == null ? "" : " (" + device + ")");
+		return value + unit.suffix;
 	}
 }

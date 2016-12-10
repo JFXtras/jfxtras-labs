@@ -9,11 +9,11 @@
 <?import jfxtras.labs.scene.layout.responsivepane.*?>
 <?import java.net.*?>
 
-<ResponsivePane xmlns:fx="http://javafx.com/fxml" debug="true" trace="false">
-	<refs>
+<ResponsivePane xmlns:fx="http://javafx.com/fxml" debug="true" trace="false" fx:controller="jfxtras.labs.scene.layout.responsivepane.SimpleController">
+	<reusableNodes>
 		<CalendarPicker id="id1"/>
 		<Button text="refButton" id="id2"/>
-	</refs>
+	</reusableNodes>
 	
 	<layouts>
 		<Layout sizeAtLeast="4.0in">

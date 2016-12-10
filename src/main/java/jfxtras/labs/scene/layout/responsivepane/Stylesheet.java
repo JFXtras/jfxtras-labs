@@ -11,9 +11,11 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 @DefaultProperty("url")
 public class Stylesheet {
-	
+
+	/**
+	 * For FXML
+	 */
 	public Stylesheet() {
-		
 	}
 	
 	/**
@@ -21,7 +23,7 @@ public class Stylesheet {
 	 * @param sizeInInchesAtLeast size in inches
 	 * @param url
 	 */
-	public Stylesheet(Diagonal sizeAtLeast, URL url) {
+	public Stylesheet(Size sizeAtLeast, URL url) {
 		setSizeAtLeast(sizeAtLeast);
 		setUrl(url);
 	}		
@@ -34,9 +36,9 @@ public class Stylesheet {
 	public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
 
 	/** SizeAtLeast (in inches) */
-	public ObjectProperty<Diagonal> sizeAtLeastProperty() { return sizeAtLeastProperty; }
-	final private SimpleObjectProperty<Diagonal> sizeAtLeastProperty = new SimpleObjectProperty<>(this, "sizeAtLeast", Diagonal.inches(0.0));
-	public Diagonal getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
-	public void setSizeAtLeast(Diagonal value) { sizeAtLeastProperty.setValue(value); }
-	public Stylesheet withSizeAtLeast(Diagonal value) { setSizeAtLeast(value); return this; } 
+	public ObjectProperty<Size> sizeAtLeastProperty() { return sizeAtLeastProperty; }
+	final private SimpleObjectProperty<Size> sizeAtLeastProperty = new SimpleObjectProperty<>(this, "sizeAtLeast", Size.ZERO);
+	public Size getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
+	public void setSizeAtLeast(Size value) { sizeAtLeastProperty.setValue(value); }
+	public Stylesheet withSizeAtLeast(Size value) { setSizeAtLeast(value); return this; } 
 }

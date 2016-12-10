@@ -38,17 +38,17 @@ public class ResponsivePaneDemo extends Application {
 		ResponsivePane lResponsivePane = new ResponsivePane();
 		lResponsivePane.setDebug(true);
 		//lResponsivePane.setTrace(true);
-		lResponsivePane.addRef("CalendarPicker", new CalendarPicker());
-		lResponsivePane.addRef("TreeView", new TreeView());
-		lResponsivePane.addRef("TableView", new TableView());
-		lResponsivePane.addRef("save", new Button("save"));
-		lResponsivePane.addRef("saveAndTomorrow", new Button("saveAndTomorrow"));
-		lResponsivePane.addRef("-", new Button("-"));
-		lResponsivePane.addRef("+", new Button("+"));
-		lResponsivePane.addRef("Logo", new Button("Logo"));
-		lResponsivePane.addRef("version", new Label("v1.0"));
+		lResponsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
+		lResponsivePane.addReusableNode("TreeView", new TreeView());
+		lResponsivePane.addReusableNode("TableView", new TableView());
+		lResponsivePane.addReusableNode("save", new Button("save"));
+		lResponsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
+		lResponsivePane.addReusableNode("-", new Button("-"));
+		lResponsivePane.addReusableNode("+", new Button("+"));
+		lResponsivePane.addReusableNode("Logo", new Button("Logo"));
+		lResponsivePane.addReusableNode("version", new Label("v1.0"));
 		//
-		lResponsivePane.addLayout(Diagonal.device(Device.PHONE), createPhoneLayout());
+		lResponsivePane.addLayout(Device.size(DeviceType.PHONE), createPhoneLayout());
 		lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
 		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.PORTRAIT, new Label("18.0P"));	
 		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.LANDSCAPE, new Label("18.0L"));	
@@ -71,62 +71,36 @@ public class ResponsivePaneDemo extends Application {
     	lMigPane.add(new Ref("CalendarPicker"), new CC().alignY("top"));
     	lMigPane.add(new Button("cardTabPane"), new CC().grow().pushX());
     	lMigPane.add(new Ref("TreeView"), new CC().grow().pushX().spanY(3).wrap());
+    	
     	ScrollPane scrollPane = new ScrollPane(new Ref("TableView"));
 		scrollPane.setFitToHeight(true);
 		scrollPane.setFitToWidth(true);
 		lMigPane.add(new BorderPane(scrollPane, null, new VBox(new Ref("-"), new Ref("+")).withSpacing(5.0), null, null), new CC().spanX(2).grow().pushY().wrap());
+		
 		lMigPane.add(new HBox(new Ref("save"), new Ref("saveAndTomorrow")).withSpacing(5.0), new CC().spanX(2));
 		return lMigPane;
 	}
 	
     private Node createPhoneLayout() {
-        TabPane mainTabPane;
-        Tab mainTabCalendar;
-        Tab mainTabHours;
-        Tab mainTabProject;
-        Tab mainTabCards;
-
-    	mainTabPane = new TabPane();
-    	mainTabPane.setSide(Side.LEFT);
-    	mainTabPane.setPadding(new Insets(10.0)); // to CSS
-    	{
-    		mainTabCalendar = new Tab();
-    		mainTabCalendar.setText("Date");
-    		mainTabCalendar.setTooltip(new Tooltip("Kalender"));
-    		mainTabCalendar.setClosable(false);
-    		mainTabPane.getTabs().add(mainTabCalendar);
-    	}
-    	{
-    		mainTabHours = new Tab();
-    		mainTabHours.setText("Time");
-    		mainTabHours.setTooltip(new Tooltip("Uren"));
-    		mainTabHours.setClosable(false);
-    		mainTabPane.getTabs().add(mainTabHours);
-    	}
-    	{
-    		mainTabProject = new Tab();
-    		mainTabProject.setText("Tree");
-    		mainTabProject.setTooltip(new Tooltip("Projectboom"));
-    		mainTabProject.setClosable(false);
-    		mainTabPane.getTabs().add(mainTabProject);
-    	}
-    	{
-    		mainTabCards = new Tab();
-    		mainTabCards.setText("Calc");
-    		mainTabCards.setTooltip(new Tooltip("Totalen"));
-    		mainTabCards.setClosable(false);
-    		mainTabPane.getTabs().add(mainTabCards);
-    	}
-    	
-   		mainTabCalendar.setContent(new Ref("CalendarPicker"));
-   		mainTabProject.setContent(new Ref("TreeView"));
-   		mainTabCards.setContent(new Button("cardTabPane"));
-
+        TabPane mainTabPane = new TabPane();
+   		mainTabPane.getTabs().add(createTab("Date", "Calendar", new Ref("CalendarPicker")));
+   		mainTabPane.getTabs().add(createTab("Tree", "Projectboom", new Ref("TreeView")));
+   		mainTabPane.getTabs().add(createTab("Calc", "Totalen", new Ref("TreeView")));
+   		
 		BorderPane lBorderPane = new BorderPane(new Ref("TableView"));
 		lBorderPane.setRight(new VBox(new Ref("-"), new Ref("+")));
 		lBorderPane.setBottom(new HBox(new Ref("save"), new Ref("saveAndTomorrow")).withSpacing(5.0));
-   		mainTabHours.setContent(lBorderPane);
+   		mainTabPane.getTabs().add(createTab("Time", "Hours", lBorderPane));
+   		
    		return mainTabPane;
     }
 
+    private Tab createTab(String label, String tooltip, Node content) {
+		Tab tab = new Tab();
+		tab.setText(label);
+		tab.setTooltip(new Tooltip(tooltip));
+		tab.setClosable(false);
+   		tab.setContent(content);
+		return tab;
+    }
 }

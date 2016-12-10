@@ -52,7 +52,7 @@ public class Ref extends StackPane {
 		
 		// find the referred to node
 		String lRefTo = getTo();
-		Node lReferredNode = lResponsivePane.findReferredNode(lRefTo);
+		Node lReferredNode = lResponsivePane.findResuableNode(lRefTo);
 		if (lResponsivePane.getTrace()) System.out.println("Ref " + getId() + " referring to " + lRefTo + " becomes " + lReferredNode);
 		
 		// pull the referred node into this ref

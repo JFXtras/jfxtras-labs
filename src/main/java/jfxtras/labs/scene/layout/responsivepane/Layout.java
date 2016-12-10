@@ -12,16 +12,15 @@ import javafx.scene.Node;
 public class Layout {
 	
 	/**
-	 * 
+	 * For FXML
 	 */
 	public Layout() {
-		
 	}
 	
 	/**
 	 * 
 	 */
-	public Layout(Diagonal sizeAtLeast, Node root) {
+	public Layout(Size sizeAtLeast, Node root) {
 		setSizeAtLeast(sizeAtLeast);
 		setRoot(root);
 	}
@@ -29,7 +28,7 @@ public class Layout {
 	/**
 	 * 
 	 */
-	public Layout(Diagonal sizeAtLeast, Orientation orientation, Node root) {
+	public Layout(Size sizeAtLeast, Orientation orientation, Node root) {
 		setSizeAtLeast(sizeAtLeast);
 		setOrientation(orientation);
 		setRoot(root);
@@ -43,11 +42,11 @@ public class Layout {
 	public Layout withRoot(Node value) { setRoot(value); return this; } 
 
 	/** sizeAtLeast */
-	public ObjectProperty<Diagonal> sizeAtLeastProperty() { return sizeAtLeastProperty; }
-	final private SimpleObjectProperty<Diagonal> sizeAtLeastProperty = new SimpleObjectProperty<>(this, "sizeAtLeast", Diagonal.inches(0.0));
-	public Diagonal getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
-	public void setSizeAtLeast(Diagonal value) { sizeAtLeastProperty.setValue(value); }
-	public Layout withSizeAtLeast(Diagonal value) { setSizeAtLeast(value); return this; }
+	public ObjectProperty<Size> sizeAtLeastProperty() { return sizeAtLeastProperty; }
+	final private SimpleObjectProperty<Size> sizeAtLeastProperty = new SimpleObjectProperty<>(this, "sizeAtLeast", Size.ZERO);
+	public Size getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
+	public void setSizeAtLeast(Size value) { sizeAtLeastProperty.setValue(value); }
+	public Layout withSizeAtLeast(Size value) { setSizeAtLeast(value); return this; }
 
 	/** Orientation */
 	public ObjectProperty<Orientation> orientationProperty() { return orientationProperty; }
