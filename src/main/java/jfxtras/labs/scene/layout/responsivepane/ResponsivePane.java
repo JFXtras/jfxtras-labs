@@ -11,6 +11,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -143,6 +144,26 @@ public class ResponsivePane extends StackPane {
 				newValue.heightProperty().addListener(sizeInvalidationListener);
 			}
 		});
+		
+		// react to changes in the available layouts and stylesheets
+		layouts.addListener(new ListChangeListener<Layout>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Layout> c) {
+				setupLayout();
+			}
+		});
+		sceneStylesheets.addListener(new ListChangeListener<Stylesheet>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) {
+				setupLayout();
+			}
+		});
+		myStylesheets.addListener(new ListChangeListener<Stylesheet>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) {
+				setupLayout();
+			}
+		});
 	}
 	
 	// react to changes in the size of the scene by (optionally) changing the layout 
@@ -186,13 +207,13 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane withTrace(Boolean value) { setTrace(value); return this; } 
 
 	// -----------------------------------------------------------------------------------------------
-	// REFS
+	// Reusable nodes
 	
 	/** refs */
 	public ObservableList<Node> getReusableNodes() {
-		return refs;
+		return reusableNodes;
 	}
-	final private ObservableList<Node> refs = FXCollections.observableArrayList();
+	final private ObservableList<Node> reusableNodes = FXCollections.observableArrayList();
 	
 	/**
 	 * 
@@ -226,7 +247,7 @@ public class ResponsivePane extends StackPane {
 	 * @return
 	 */
 	Node findResuableNode(String refId) {
-		for (Node lNode : refs) {
+		for (Node lNode : reusableNodes) {
 			if (refId.equals(lNode.getId())) {
 				return lNode;
 			}			
