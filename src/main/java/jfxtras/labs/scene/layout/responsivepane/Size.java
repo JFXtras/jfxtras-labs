@@ -29,6 +29,6 @@ public abstract class Size {
 		}
 		
 		// else it is a device
-		return Device.valueOf(s);
+		return DeviceSize.valueOf(s);
 	}
 }

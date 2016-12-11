@@ -33,7 +33,8 @@ public class Width extends Size {
 		Scene lScene = responsivePane.getScene();
 		double lHeightInInches = lScene.getHeight() / responsivePane.determinePPI();
 		double lWidthInInches = unit.toInches(value);		
-		double lDiagonalInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches + lHeightInInches));
+		double lDiagonalInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches * lHeightInInches));
+		if (responsivePane.getTrace()) System.out.println(toString()+ " using the actual scene height of " + lHeightInInches +"in (" + lScene.getHeight() + "px), results in a diagonal of " + lDiagonalInInches + "in");
 		return lDiagonalInInches;
 	}
 

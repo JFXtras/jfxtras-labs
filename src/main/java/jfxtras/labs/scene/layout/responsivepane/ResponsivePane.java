@@ -115,6 +115,7 @@ import javafx.stage.Window;
  *  
  * TODO: device
  */
+// TODO: clip debug labels
 public class ResponsivePane extends StackPane {
 	
 	
@@ -127,12 +128,12 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane() {
 		
 		// default device sizes
-		deviceToSizeMap.put(DeviceType.PHONE.toString(), Diagonal.inches(3.5));
-		deviceToSizeMap.put(DeviceType.TABLET.toString(), Diagonal.inches(7.0));
-		deviceToSizeMap.put(DeviceType.DESKTOP.toString(), Diagonal.inches(10.5));
+		deviceToSizeMap.put(Device.PHONE.toString(), Diagonal.inches(3.5));
+		deviceToSizeMap.put(Device.TABLET.toString(), Diagonal.inches(7.0));
+		deviceToSizeMap.put(Device.DESKTOP.toString(), Diagonal.inches(10.5));
 		
 		// react to changes in the scene
-		sceneProperty().addListener((ChangeListener<Scene>) (observable, oldValue, newValue) -> {
+		sceneProperty().addListener( (observable, oldValue, newValue) -> {
 			
 			// by listening to it width
 			if (oldValue != null) {
@@ -146,23 +147,17 @@ public class ResponsivePane extends StackPane {
 		});
 		
 		// react to changes in the available layouts and stylesheets
-		layouts.addListener(new ListChangeListener<Layout>() {
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Layout> c) {
-				setupLayout();
-			}
+		layouts.addListener( (javafx.collections.ListChangeListener.Change<? extends Layout> c) -> {
+			if (getTrace()) System.out.println(">>> requestLayout from changes in layouts, size=" + layouts.size());
+			requestLayout();
 		});
-		sceneStylesheets.addListener(new ListChangeListener<Stylesheet>() {
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) {
-				setupLayout();
-			}
+		sceneStylesheets.addListener( (javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) -> {
+			if (getTrace()) System.out.println(">>> requestLayout from changes in scene stylesheets, size=" + sceneStylesheets.size());
+			requestLayout();
 		});
-		myStylesheets.addListener(new ListChangeListener<Stylesheet>() {
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) {
-				setupLayout();
-			}
+		myStylesheets.addListener( (javafx.collections.ListChangeListener.Change<? extends Stylesheet> c) -> {
+			if (getTrace()) System.out.println(">>> requestLayout from changes in my stylesheets, size=" + myStylesheets.size());
+			requestLayout();
 		});
 	}
 	
@@ -173,12 +168,14 @@ public class ResponsivePane extends StackPane {
 		public void invalidated(Observable observable) {
 			
 			// nothing to do yet
-			if (getScene() == null || getScene().getWindow() == null) {
+			Scene lScene = getScene();
+			if (lScene == null || lScene.getWindow() == null) {
 				return;
 			}
 			
 			// see if something needs to be changed
-			setupLayout();
+			if (getTrace()) System.out.println(">>> requestLayout from changes in scene size (" + lScene.getWidth() + "x" + lScene.getHeight() + ")" );
+			requestLayout();
 		}
 	};
 	
@@ -321,7 +318,7 @@ public class ResponsivePane extends StackPane {
 
 	/**
 	 * 
-	 * @param sizeAtLeast size in inches
+	 * @param sizeAtLeast 
 	 * @param url
 	 */
 	public void addMyStylesheet(Size sizeAtLeast, URL url) {
@@ -343,10 +340,10 @@ public class ResponsivePane extends StackPane {
 	 * @param device
 	 * @param size
 	 */
-	public void setDeviceSize(DeviceType device, Size size) {
+	public void setDeviceSize(Device device, Size size) {
 		setDeviceSize(device.toString(), size);
 	}
-	public Size getDeviceSize(DeviceType device) {
+	public Size getDeviceSize(Device device) {
 		return getDeviceSize(device.toString());
 	}
 	
@@ -373,10 +370,7 @@ public class ResponsivePane extends StackPane {
     @Override 
     protected void layoutChildren() {
     	
-    	// this is only for the first initialization
-    	if (getActiveLayout() == null) {
-    		setupLayout();
-    	}
+   		setupLayout();
     	
     	// continue layout
     	super.layoutChildren();
@@ -387,7 +381,11 @@ public class ResponsivePane extends StackPane {
      */
 	void setupLayout() {
 
+		// recalculate ppi
+		ppi = null;
+		
     	// layout
+		if (getTrace()) System.out.println("====================================================");
     	Layout lLayout = determineBestFittingLayout();
     	if (!lLayout.equals(getActiveLayout())) {
     		
@@ -400,6 +398,7 @@ public class ResponsivePane extends StackPane {
     	}
     	
     	// scene stylesheet
+		if (getTrace()) System.out.println("----------------------------------------------------");
     	{
 	    	Stylesheet lStylesheet = determineBestFittingStylesheet(sceneStylesheets);
 	    	if (!lStylesheet.equals(getActiveSceneStylesheet())) {
@@ -412,6 +411,7 @@ public class ResponsivePane extends StackPane {
     	}
     	
     	// my stylesheet
+		if (getTrace()) System.out.println("----------------------------------------------------");
     	{
 	    	Stylesheet lStylesheet = determineBestFittingStylesheet(myStylesheets);
 	    	if (!lStylesheet.equals(getActiveMyStylesheet())) {
@@ -422,6 +422,7 @@ public class ResponsivePane extends StackPane {
 				load(lStylesheet, myStylesheets, getStylesheets());
 	    	}
     	}
+		if (getTrace()) System.out.println("====================================================");
 	}
 
 
@@ -433,32 +434,37 @@ public class ResponsivePane extends StackPane {
 	 * @return
 	 */
 	double determinePPI() {
+		if (ppi != null) {
+			return ppi;
+		}
+		
 		// determine the DPI factor, so the thresholds become larger on screens with a higher DPI
-		double lPPI = 100.0; // average dpi
+		ppi = 100.0; // average dpi
 		Window window = getScene().getWindow();
 		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 		if (screensForRectangle.size() > 0) {
-			// System.out.println("screens of scene: " + screensForRectangle); 
 			Screen lScreen = screensForRectangle.get(0); // we just use the first screen
-			lPPI = lScreen.getDpi();
+			ppi = lScreen.getDpi();
+			if (getTrace()) System.out.println("screens of scene: " + screensForRectangle + ", using the first then PPI=" + ppi); 
 		}
-		return lPPI;		
+		return ppi;		
 	}
+	Double ppi;
 	
 	/**
 	 * 
 	 * @return
 	 */
-	double determineActualSizeInInches() {
+	double determineActualDiagonalInInches() {
 		Scene lScene = getScene();
 		
 		// determine the DPI factor, so the thresholds become larger on screens with a higher DPI
 		double lPPI = determinePPI();
 		double lWidthInInches = lScene.getWidth() / lPPI;
 		double lHeightInInches = lScene.getHeight() / lPPI;
-		double lSizeInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches * lHeightInInches) );
-		if (getTrace()) System.out.println("Actual size=" + lScene.getWidth() + "x" + lScene.getHeight() + "px, size in inches=" + lSizeInInches + " (ppi=" + lPPI + ")");
-		return lSizeInInches;
+		double lDiagonalInInches = Math.sqrt( (lWidthInInches * lWidthInInches) + (lHeightInInches * lHeightInInches) );
+		if (getTrace()) System.out.println("Actual scene size=" + lScene.getWidth() + "x" + lScene.getHeight() + "px, scene diagonal in inches=" + lDiagonalInInches + " (ppi=" + lPPI + ")");
+		return lDiagonalInInches;
 	}
 	
 	/**
@@ -466,7 +472,7 @@ public class ResponsivePane extends StackPane {
 	 * @return
 	 */
 	Layout determineBestFittingLayout() {
-		double actualSizeInInches = determineActualSizeInInches();
+		double actualDiagonalInInches = determineActualDiagonalInInches();
 		Scene lScene = getScene();
 		Orientation lSceneOrientation = (lScene.getWidth() > lScene.getHeight() ? Orientation.LANDSCAPE : Orientation.PORTRAIT);
 
@@ -474,22 +480,22 @@ public class ResponsivePane extends StackPane {
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
 			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout);
-			if (actualSizeInInches >= lLayout.getSizeAtLeast().toInches(this)) {
-				if (getTrace()) System.out.println("determineBestFittingLayout, layout is candidate based on scene width: " + actualSizeInInches + "in");
+			if (actualDiagonalInInches >= lLayout.getSizeAtLeast().toInches(this)) {
+				if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is candidate based on scene diagonal: " + actualDiagonalInInches + "in");
 				if (lBestFittingLayout == null || lBestFittingLayout.getSizeAtLeast().toInches(this) <= lLayout.getSizeAtLeast().toInches(this)) {
-					if (getTrace()) System.out.println("determineBestFittingLayout, layout is a better candidate based on width vs best fitting so far: " + lBestFittingLayout);
+					if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is a better candidate based on diagonal vs best fitting so far: " + lBestFittingLayout);
 					
 					// Based on the width, this layout is a candidate. But is it also based on the orientation?
 					Orientation lBestFittingLayoutOrientation = (lBestFittingLayout == null ? null : lBestFittingLayout.getOrientation()); 
 					Orientation lLayoutOrientation = lLayout.getOrientation(); 
 					if ( lBestFittingLayout == null || lLayoutOrientation == null || lSceneOrientation.equals(lLayoutOrientation)) {
-						if (getTrace()) System.out.println("determineBestFittingLayout, layout is also candidate based on orientation");
+						if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is also candidate based on orientation");
 						
 						// Orientation also matches, do we prefer the one orientation of the other?
 						if ( (lBestFittingLayoutOrientation == null && lLayoutOrientation == null) 
 						  || (lBestFittingLayoutOrientation == null && lLayoutOrientation != null) // Prefer a layout with orientation above one without
 						   ) {
-							if (getTrace()) System.out.println("determineBestFittingLayout, layout is also a better candidate based on orientation vs best fitting so far: " + lBestFittingLayout);
+							if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is also a better candidate based on orientation vs best fitting so far: " + lBestFittingLayout);
 							lBestFittingLayout = lLayout;
 							if (getTrace()) System.out.println("determineBestFittingLayout, best fitting so far: " + lBestFittingLayout);
 						}
@@ -514,7 +520,7 @@ public class ResponsivePane extends StackPane {
 	 * @return
 	 */
 	Stylesheet determineBestFittingStylesheet(List<Stylesheet> availableStylesheets) {
-		double actualSizeInInches = determineActualSizeInInches();
+		double actualSizeInInches = determineActualDiagonalInInches();
 		
 		// find the best fitting stylesheet
 		Stylesheet lBestFittingStylesheet = null;
