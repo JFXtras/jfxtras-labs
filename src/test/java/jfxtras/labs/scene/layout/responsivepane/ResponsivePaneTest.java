@@ -33,11 +33,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
 import jfxtras.scene.control.CalendarPicker;
 import jfxtras.test.TestUtil;
 
@@ -53,15 +51,6 @@ public class ResponsivePaneTest extends GuiTest {
 	public Parent getRootNode() {
 		responsivePane = new ResponsivePane();
 //		responsivePane.setTrace(true);
-		responsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
-		responsivePane.addReusableNode("TreeView", new TreeView<String>());
-		responsivePane.addReusableNode("TableView", new TableView<String>());
-		responsivePane.addReusableNode("save", new Button("save"));
-		responsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
-		responsivePane.addReusableNode("-", new Button("-"));
-		responsivePane.addReusableNode("+", new Button("+"));
-		responsivePane.addReusableNode("Logo", new Button("Logo"));
-		responsivePane.addReusableNode("version", new Label("v1.0"));
 		return responsivePane;
 	}
 	private ResponsivePane responsivePane = null;
@@ -185,6 +174,44 @@ public class ResponsivePaneTest extends GuiTest {
 		Assert.assertTrue(responsivePane.getActiveLayout().getSizeAtLeast().toString().contains("PHABLET"));
 	}
 
+
+	/**
+	 * 
+	 */
+	@Test
+	public void moveReusableNode() {
+		
+		// GIVEN a pane with some layouts and on each a ref 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageDiagonalSizeInInch(5.0);
+			responsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
+			responsivePane.addLayout(Diagonal.inches(1.0), new Ref("CalendarPicker", "ref1"));
+			responsivePane.addLayout(Diagonal.inches(3.0), new Ref("CalendarPicker", "ref2"));
+		});
+		Node lCalendarPickerNode = responsivePane.getReusableNodes().get(0);
+		Ref lRef1 = (Ref)responsivePane.getLayouts().get(0).getRoot();
+		Ref lRef2 = (Ref)responsivePane.getLayouts().get(1).getRoot();
+		
+		// THEN the second layout should be active
+		Assert.assertEquals("3.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		// AND the second ref should hold the calendar picker
+		Assert.assertEquals(0, lRef1.getChildren().size());
+		Assert.assertEquals(1, lRef2.getChildren().size());
+		Assert.assertEquals(lCalendarPickerNode, lRef2.getChildren().get(0));
+		
+		// WHEN the pane is sized smaller 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageDiagonalSizeInInch(2.0);
+		});
+		
+		// THEN the first layout should be active
+		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		// AND the first ref should now hold the calendar picker
+		Assert.assertEquals(1, lRef1.getChildren().size());
+		Assert.assertEquals(0, lRef2.getChildren().size());
+		Assert.assertEquals(lCalendarPickerNode, lRef1.getChildren().get(0));
+	}
+	
 	// ---------------------------------------
 	// scene stylesheets
 	

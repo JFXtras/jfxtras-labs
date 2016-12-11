@@ -87,33 +87,117 @@ import javafx.stage.Window;
  * The exact implementation of createPhoneLayout() and createDesktopLayout() is not relevant, except that they use "Ref" nodes to include the reusable nodes.
  *  
  * == Reusable nodes:
- * 
  * Reusable nodes are identified by their id, this is done for ease of use in FXML. 
  * They can then be used in the different layouts via a "new Ref(<id>)". 
  * Be aware that you cannot reuse Refs, they are place holders and each layout needs a Ref instance on its own. 
  * 
  * 
  * == Stylesheets:
- * Like layouts it is also possible to associated a stylesheet based on the size of the stage. 
+ * Like layouts it is also possible to activate stylesheets based on the size of the stage. 
  * A stylesheet can be assigned to the scene (applicable for everything on the scene) or to the layout (applicable for the underlying node).
  * Responsive design assigned classes to the nodes, based on the size. 
  * Test have shown that this approach works ok when running the application on a desktop computer, with enough CPU power (GUI Garage's implementation does this), but on mobile these changes have a sever performance impact.
  * So ResponsivePane does not assign classes, but instead it replaces whole CSS files; for the CSS engine this is a single change and it needs to rerender only once.
- * In those CSS files you can assign behavior to the CSS classes, or not.  
+ * In those CSS files you can assign behavior to the CSS classes, or not.
+ * 
+ * [source,java]
+ * --
+		// scene stylesheet
+		responsivePane.addSceneStylesheet(Diagonal.inches(1.0), getClass().getResource("phone.css"));
+			
+		// layout stylesheer
+		responsivePane.addMyStylesheet(Diagonal.inches(3.0), getClass().getResource("tablet.css"));
+ * --
  *
+ * There can only be one scene or layout stylesheet active at a given time.
+ * 
  * == Size:
  * Determining the size is an interesting topic. 
- * Responsive design only looks at the width in pixel, but it is already clear that ResponsivePane does not assume unlimited vertical space, so the height must also be taking into account.
- * So size is expressed as a diagonal.
- * But also the pixels that responsive design uses to denote width is debatable; after all a 1000 pixels on a 100 ppi screen is something completely different from a 350 ppi screen; the first is 10 inches in real life, the second not even 3 inch!
- * ResponsivePane therefore per default uses the diagonal size in inches, as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
+ * Responsive design only looks at the width in pixel, but it is already explained that ResponsivePane does not assume unlimited vertical space, so the height must also be taking into account.
+ * Therefore size is expressed as a diagonal instead of the width.
+ * However, responsive design specifies the width in pixels, but 1000 pixels on a 100 ppi screen is something completely different on a 350 ppi screen; the first is 10 inches in real life, the second not even 3 inch!
+ * ResponsivePane therefore (per default) expresses the size in inches, as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
+ * But as a compatibility behavior it also is possible to the width; it will be at runtime converted to diagonal using the actual height of the layout. 
  * 
- * But because some situations may prefer using width based logic. 
- * So it also is possible to specify size using Width; it will be at runtime converted to diagonal using the actual height of the layout. 
+ * There also is a third option to set the size; ResponsivePane has some default diagonals for typical devices in the Device class.
+ * But you can also defined custom devices.
+ * 
+ * So sizes for layout and stylesheets can be defined like:
+ * [source,java]
+ * --
+        responsivePane.addLayout(Diagonal.inches(3.5), ...);
+        responsivePane.addLayout(Width.inches(3.0), ...);
+        responsivePane.addLayout(Device.PHONE.size(), ...);
+        
+        responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+        responsivePane.addLayout(DeviceSize.of("PHABLET"), ...);
+
+ * --
+ * 
+ * == FXML
+ * ResponsivePane can of course also be used from FXML. 
+ * Interesting is the how the width-based size is specified.
  *  
- * TODO: device
+ * [source,xml]
+ * --
+	<?xml version="1.0" encoding="UTF-8"?>
+	
+	<?import java.lang.*?>
+	<?import java.util.*?>
+	<?import javafx.scene.control.*?>
+	<?import javafx.scene.layout.*?>
+	<?import javafx.scene.paint.*?>
+	<?import jfxtras.scene.control.*?>
+	<?import jfxtras.labs.scene.layout.responsivepane.*?>
+	<?import java.net.*?>
+	
+	<ResponsivePane xmlns:fx="http://javafx.com/fxml" fx:id="responsivePane" debug="true" trace="false">
+		<reusableNodes>
+			<Label text="refLabel" id="label"/>
+			<Button text="refButton" id="button"/>
+		</reusableNodes>
+		
+		<layouts>
+			<Layout sizeAtLeast="3.0in">
+				<VBox>
+					<Ref to="label"/>
+					<Label text="layout_3.0"/>
+				</VBox>
+			</Layout>
+			
+			<Layout sizeAtLeast="width:3.0in">
+				<HBox>
+					<Ref to="label" id="labelid"/>
+					<Ref to="button"/>
+					<Label text="layout_width3.0"/>
+				</HBox>
+			</Layout>		
+			
+			<Layout sizeAtLeast="TABLET">
+				<HBox>
+					<Ref to="label" id="labelid"/>
+					<Ref to="button"/>
+					<Label text="layout_tablet"/>
+				</HBox>
+			</Layout>		
+		</layouts>
+		
+		<sceneStylesheets>
+			<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+		</sceneStylesheets>
+		
+		<myStylesheets>
+			<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+		</myStylesheets>
+	</ResponsivePane>
+ * --
  */
-// TODO: clip debug labels
+// TODO: clip debug labels in Ref
+// TODO: custom device in FXML
 public class ResponsivePane extends StackPane {
 	
 	

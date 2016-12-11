@@ -11,21 +11,21 @@
 
 <ResponsivePane xmlns:fx="http://javafx.com/fxml" fx:id="responsivePane" debug="true" trace="true" fx:controller="jfxtras.labs.scene.layout.responsivepane.SimpleController">
 	<reusableNodes>
-		<CalendarPicker id="calendarPicker"/>
+		<Label text="refLabel" id="label"/>
 		<Button text="refButton" id="button"/>
 	</reusableNodes>
 	
 	<layouts>
 		<Layout sizeAtLeast="3.0in">
 			<VBox>
-				<Ref to="calendarPicker"/>
+				<Ref to="label"/>
 				<Label text="layout_3.0"/>
 			</VBox>
 		</Layout>
 		
 		<Layout sizeAtLeast="width:3.0in">
 			<HBox>
-				<Ref to="calendarPicker" id="calendarPickerid"/>
+				<Ref to="label" id="labelid"/>
 				<Ref to="button"/>
 				<Label text="layout_width3.0"/>
 			</HBox>
@@ -33,7 +33,7 @@
 		
 		<Layout sizeAtLeast="TABLET">
 			<HBox>
-				<Ref to="calendarPicker" id="calendarPickerid"/>
+				<Ref to="label" id="labelid"/>
 				<Ref to="button"/>
 				<Label text="layout_tablet"/>
 			</HBox>

@@ -41,6 +41,7 @@ import org.loadui.testfx.GuiTest;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import jfxtras.test.TestUtil;
 
@@ -97,6 +98,11 @@ public class ResponsivePaneFXMLTest extends GuiTest {
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(10.0);
 		});
+		
+		// THEN the reusable nodes all have been loaded
+		Assert.assertEquals(2, responsivePane.getReusableNodes().size());
+		Assert.assertTrue(responsivePane.getReusableNodes().get(0) instanceof Label);
+		Assert.assertTrue(responsivePane.getReusableNodes().get(1) instanceof Button);
 		
 		// THEN the layouts should all have been loaded
 		Assert.assertEquals(3, responsivePane.getLayouts().size());

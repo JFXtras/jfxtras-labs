@@ -16,8 +16,14 @@ public class Ref extends StackPane {
 		construct();
 	}
 	
-	public Ref (String to) { 
+	public Ref(String to) { 
 		setTo(to);
+		construct();
+	}
+	
+	public Ref(String to, String id) { 
+		setTo(to);
+		setId(id);
 		construct();
 	}
 	
