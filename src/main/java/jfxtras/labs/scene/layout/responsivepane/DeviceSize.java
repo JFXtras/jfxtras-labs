@@ -21,6 +21,9 @@ public class DeviceSize extends Size {
 	 */
 	double toInches(ResponsivePane responsivePane) {
 		size = responsivePane.getDeviceSize(device);
+		if (size == null) {
+			throw new IllegalStateException("Device '" + device + "' is not defined in responsive Pane");
+		}
 		return size.toInches(responsivePane);
 	}
 	private Size size; // for logging in toString

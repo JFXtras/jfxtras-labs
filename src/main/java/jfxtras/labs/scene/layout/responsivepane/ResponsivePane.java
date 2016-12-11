@@ -9,9 +9,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -480,9 +478,13 @@ public class ResponsivePane extends StackPane {
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
 			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout);
-			if (actualDiagonalInInches >= lLayout.getSizeAtLeast().toInches(this)) {
+			double lLayoutSizeAtLeast = lLayout.getSizeAtLeast().toInches(this);
+			if (actualDiagonalInInches >= lLayoutSizeAtLeast) {
 				if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is candidate based on scene diagonal: " + actualDiagonalInInches + "in");
-				if (lBestFittingLayout == null || lBestFittingLayout.getSizeAtLeast().toInches(this) <= lLayout.getSizeAtLeast().toInches(this)) {
+				
+				double lBestFittingLayoutSizeAtLeast = (lBestFittingLayout == null ? -1.0 : lBestFittingLayout.getSizeAtLeast().toInches(this));
+				if (getTrace()) System.out.println("determineBestFittingLayout, comparing best fitting layout " + lBestFittingLayout + " (" + lBestFittingLayoutSizeAtLeast + ") with " + lLayout + " (" + lLayoutSizeAtLeast + ")");
+				if (lBestFittingLayout == null || lBestFittingLayoutSizeAtLeast <= lLayoutSizeAtLeast) {
 					if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is a better candidate based on diagonal vs best fitting so far: " + lBestFittingLayout);
 					
 					// Based on the width, this layout is a candidate. But is it also based on the orientation?

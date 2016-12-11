@@ -42,8 +42,9 @@ import jfxtras.scene.control.CalendarPicker;
 import jfxtras.test.TestUtil;
 
 /**
- * Created by Tom Eugelink on 26-12-13.
+ * 
  */
+// TODO: reusableNodes and Refs
 public class ResponsivePaneTest extends GuiTest {
 
 	/**
