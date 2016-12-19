@@ -22,13 +22,13 @@ class Signaturesaver extends Canvas{
     //could be useful in a number of different applications
     
     
-    double inx;
-    double iny;
+    private double inx;
+    private double iny;
     private String savebuttontext;
-    Button saveButton = new Button(savebuttontext);  
-    GraphicsContext gc;
-    WritableImage signature;
-    final FileChooser fc = new FileChooser();
+    private Button saveButton = new Button(savebuttontext);  
+    private GraphicsContext gc;
+    private WritableImage signature;
+    private final FileChooser fc = new FileChooser();
     private Stage stage;
     private static int filecounter = 0;
     
