@@ -1,27 +1,29 @@
 // max bisesi
-public class Project1 extends Application {
-    
-    @Override
-    public void start(Stage primaryStage) {
-        Group root = new Group();
-        root.getChildren().add(new AllSphere(60));
-        Scene scene = new Scene(root, 300, 250);
-        
-        primaryStage.setTitle("Almighty Sphere");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Material;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Sphere;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
-   
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-}
-final class AllSphere extends Sphere{
+ class AllSphere extends Sphere{
 
-    Material material;
-    SequentialTransition st = new SequentialTransition();
+    private Material material;
+    private SequentialTransition st = new SequentialTransition();
     private TranslateTransition moveAway = new TranslateTransition(Duration.millis(300),this);
     private static Group root;
   
