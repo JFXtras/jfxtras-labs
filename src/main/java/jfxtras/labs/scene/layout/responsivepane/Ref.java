@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  * This class represents a placeholder for nodes in the refs list
@@ -76,11 +78,18 @@ public class Ref extends StackPane {
 			this.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
 			
 			// and an ID in the top left
-			Label label = new Label((getId() == null ? "" : getId() + "->") + getTo());
-			label.setWrapText(true);
-			label.setStyle("-fx-text-fill: red; -fx-background-color: white;");
+			Text label = new Text((getId() == null ? "" : getId() + "->") + getTo());
+			label.setStyle("-fx-fill:RED; -fx-effect: dropshadow(gaussian, WHITE, 3,1.0, 0,0);");
+			label.setManaged(false);
+			label.setLayoutX(3.0);
+			label.setLayoutY(label.prefHeight(0));
+			label.setMouseTransparent(true);
 			getChildren().add(label);
-			StackPane.setAlignment(label, Pos.TOP_LEFT);
+			// never push outside of the ref
+			Rectangle lClip = new Rectangle(0,-label.prefHeight(0),0,0);
+			lClip.widthProperty().bind(this.widthProperty().subtract(label.layoutXProperty())); 
+			lClip.heightProperty().bind(this.heightProperty());
+			label.setClip(lClip); // Not sure why this is not clipping right
 		}
 	}
 	private ResponsivePane lResponsivePane = null;

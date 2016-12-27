@@ -34,36 +34,22 @@ public class ResponsivePaneDemo extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
+		ResponsivePane responsivePane = new ResponsivePane();
+		responsivePane.setDebug(true);
+		// nodes
+		responsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
+		responsivePane.addReusableNode("save", new Button("save"));
+		responsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
 		// layout
-		ResponsivePane lResponsivePane = new ResponsivePane();
-		lResponsivePane.setDebug(true);
-		lResponsivePane.setTrace(true);
-		lResponsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
-		lResponsivePane.addReusableNode("TreeView", new TreeView());
-		lResponsivePane.addReusableNode("TableView", new TableView());
-		lResponsivePane.addReusableNode("save", new Button("save"));
-		lResponsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
-		lResponsivePane.addReusableNode("-", new Button("-"));
-		lResponsivePane.addReusableNode("+", new Button("+"));
-		lResponsivePane.addReusableNode("Logo", new Button("Logo"));
-		lResponsivePane.addReusableNode("version", new Label("v1.0"));
-		//
-//		lResponsivePane.addLayout(Device.size(DeviceType.PHONE), createPhoneLayout());
-//		lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
-//		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.PORTRAIT, new Label("18.0P"));	
-//		lResponsivePane.addLayout(Diagonal.inches(18.0), Orientation.LANDSCAPE, new Label("18.0L"));	
-		lResponsivePane.addLayout(Width.inches(400.0), new Label("400layout"));
-		lResponsivePane.addLayout(Width.inches(1.0), new Label("1layout"));
-		lResponsivePane.addLayout(Width.inches(3.0), new Label("3layout"));
-		lResponsivePane.addLayout(Width.inches(10.0), new Label("10layout"));
-		lResponsivePane.addLayout(Width.inches(500.0), new Label("500layout"));
+		responsivePane.addLayout(Device.PHONE.size(), createPhoneLayout());
+		responsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
 		// css
-//		lResponsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));
-//		lResponsivePane.addSceneStylesheet(Diagonal.inches(6.0), getClass().getResource("tablet.css"));
-//		lResponsivePane.addSceneStylesheet(Diagonal.inches(12.0), getClass().getResource("desktop.css"));
+		responsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));
+		responsivePane.addSceneStylesheet(Diagonal.inches(6.0), getClass().getResource("tablet.css"));
+		responsivePane.addSceneStylesheet(Diagonal.inches(12.0), getClass().getResource("desktop.css"));
 
 		// show
-		primaryStage.setScene(new Scene(lResponsivePane, 1700, 1000));
+		primaryStage.setScene(new Scene(responsivePane, 1700, 1000));
 		primaryStage.sizeToScene();
 		primaryStage.show();
 	}
@@ -82,7 +68,7 @@ public class ResponsivePaneDemo extends Application {
 		scrollPane.setFitToWidth(true);
 		lMigPane.add(new BorderPane(scrollPane, null, new VBox(new Ref("-"), new Ref("+")).withSpacing(5.0), null, null), new CC().spanX(2).grow().pushY().wrap());
 		
-		lMigPane.add(new HBox(new Ref("save"), new Ref("saveAndTomorrow")).withSpacing(5.0), new CC().spanX(2));
+		lMigPane.add(new HBox(new Ref("save", "thisRefHasALongId"), new Ref("saveAndTomorrow")).withSpacing(5.0), new CC().spanX(2));
 		return lMigPane;
 	}
 	
@@ -94,7 +80,7 @@ public class ResponsivePaneDemo extends Application {
    		
 		BorderPane lBorderPane = new BorderPane(new Ref("TableView"));
 		lBorderPane.setRight(new VBox(new Ref("-"), new Ref("+")));
-		lBorderPane.setBottom(new HBox(new Ref("save"), new Ref("saveAndTomorrow")).withSpacing(5.0));
+		lBorderPane.setBottom(new HBox(new Ref("save", "thisRefHasALongId"), new Ref("saveAndTomorrow")).withSpacing(5.0));
    		mainTabPane.getTabs().add(createTab("Time", "Hours", lBorderPane));
    		
    		return mainTabPane;

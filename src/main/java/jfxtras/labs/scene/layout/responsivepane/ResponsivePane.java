@@ -196,7 +196,6 @@ import javafx.stage.Window;
 	</ResponsivePane>
  * --
  */
-// TODO: clip debug labels in Ref
 // TODO: custom device in FXML
 public class ResponsivePane extends StackPane {
 	
@@ -214,20 +213,6 @@ public class ResponsivePane extends StackPane {
 		deviceToSizeMap.put(Device.TABLET.toString(), Diagonal.inches(7.0));
 		deviceToSizeMap.put(Device.DESKTOP.toString(), Diagonal.inches(10.5));
 		
-		// react to changes in the scene
-		sceneProperty().addListener( (observable, oldValue, newValue) -> {
-			
-			// by listening to it width
-			if (oldValue != null) {
-				oldValue.widthProperty().removeListener(sizeInvalidationListener);
-				oldValue.heightProperty().removeListener(sizeInvalidationListener);
-			}
-			if (newValue != null) {
-				newValue.widthProperty().addListener(sizeInvalidationListener);
-				newValue.heightProperty().addListener(sizeInvalidationListener);
-			}
-		});
-		
 		// react to changes in the available layouts and stylesheets
 		layouts.addListener( (javafx.collections.ListChangeListener.Change<? extends Layout> c) -> {
 			if (getTrace()) System.out.println(">>> requestLayout from changes in layouts, size=" + layouts.size());
@@ -242,24 +227,6 @@ public class ResponsivePane extends StackPane {
 			requestLayout();
 		});
 	}
-	
-	// react to changes in the size of the scene by (optionally) changing the layout 
-	final private InvalidationListener sizeInvalidationListener = new InvalidationListener() {
-		
-		@Override
-		public void invalidated(Observable observable) {
-			
-			// nothing to do yet
-			Scene lScene = getScene();
-			if (lScene == null || lScene.getWindow() == null) {
-				return;
-			}
-			
-			// see if something needs to be changed
-			if (getTrace()) System.out.println(">>> requestLayout from changes in scene size (" + lScene.getWidth() + "x" + lScene.getHeight() + ")" );
-			requestLayout();
-		}
-	};
 	
 	
 	// ==========================================================================================================================================================================================================================================
