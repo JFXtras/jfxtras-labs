@@ -50,7 +50,10 @@ import javafx.stage.Window;
         lResponsivePane.addReusableNode("+", new Button("+"));
         lResponsivePane.addReusableNode("Logo", new Button("Logo"));
         lResponsivePane.addReusableNode("version", new Label("v1.0"));
-        
+
+        // define custom device
+        lResponsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+
         // define layouts
         lResponsivePane.addLayout(Diagonal.inches(3.5), createPhoneLayout());
         lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());
@@ -119,8 +122,7 @@ import javafx.stage.Window;
  * ResponsivePane therefore (per default) expresses the size in inches, as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
  * But as a compatibility behavior it also is possible to the width; it will be at runtime converted to diagonal using the actual height of the layout. 
  * 
- * There also is a third option to set the size; ResponsivePane has some default diagonals for typical devices in the Device class.
- * But you can also defined custom devices.
+ * There also is a third option to set the size; ResponsivePane has some default diagonals for typical devices in the Device class, but you can also defined custom devices.
  * 
  * So sizes for layout and stylesheets can be defined like:
  * [source,java]
@@ -156,6 +158,8 @@ import javafx.stage.Window;
 			<Label text="refLabel" id="label"/>
 			<Button text="refButton" id="button"/>
 		</reusableNodes>
+		
+		<deviceSizes PHABLET="9.0in" Desktop="w:12in"/>
 		
 		<layouts>
 			<Layout sizeAtLeast="3.0in">
@@ -196,7 +200,6 @@ import javafx.stage.Window;
 	</ResponsivePane>
  * --
  */
-// TODO: custom device in FXML: Add size property to DeviceSize and change deviceToSizeMap into a List<DeviceSize>
 public class ResponsivePane extends StackPane {
 	
 	
@@ -312,28 +315,43 @@ public class ResponsivePane extends StackPane {
 	final private ObservableList<Layout> layouts = FXCollections.observableArrayList();
 	
 	/**
-	 * 
+	 * Convenience method for addLayout(Size, Node) 
 	 */
 	public void addLayout(Device device, Node root) {
 		addLayout(device.toString(), root);
 	}
 	
 	/**
-	 * 
+	 * Convenience method for addLayout(Size, Node)
 	 */
 	public void addLayout(String device, Node root) {
 		addLayout(deviceSizes.get(device), root);
 	}
 	
 	/**
-	 * 
+	 * Convenience method for getLayouts().add(new Layout(sizeAtLeast, root))
 	 */
 	public void addLayout(Size sizeAtLeast, Node root) {
 		layouts.add(new Layout(sizeAtLeast, root));
 	}
 	
+	
 	/**
-	 * 
+	 * Convenience method for addLayout(Size, Node) 
+	 */
+	public void addLayout(Device device, Orientation orientation, Node root) {
+		addLayout(device.toString(), orientation, root);
+	}
+	
+	/**
+	 * Convenience method for addLayout(Size, Node)
+	 */
+	public void addLayout(String device, Orientation orientation, Node root) {
+		addLayout(deviceSizes.get(device), orientation, root);
+	}
+	
+	/**
+	 * Convenience method for getLayouts().add(new Layout(sizeAtLeast, orientation, root))
 	 */
 	public void addLayout(Size sizeAtLeast, Orientation orientation, Node root) {
 		layouts.add(new Layout(sizeAtLeast, orientation, root));
@@ -357,21 +375,21 @@ public class ResponsivePane extends StackPane {
 	final private ObservableList<Stylesheet> sceneStylesheets = FXCollections.observableArrayList();
 
 	/**
-	 * 
+	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, URL url)
 	 */
 	public void addSceneStylesheet(Device device, URL url) {
 		addSceneStylesheet(device.toString(), url);
 	}
 	
 	/**
-	 * 
+	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, URL url)
 	 */
 	public void addSceneStylesheet(String device, URL url) {
 		addSceneStylesheet(deviceSizes.get(device), url);
 	}
 	
 	/**
-	 * 
+	 * Convenience method for getSceneStylesheets().add(new Stylesheet(sizeAtLeast, url));
 	 */
 	public void addSceneStylesheet(Size sizeAtLeast, URL url) {
 		sceneStylesheets.add(new Stylesheet(sizeAtLeast, url));
@@ -394,23 +412,21 @@ public class ResponsivePane extends StackPane {
 	final private ObservableList<Stylesheet> myStylesheets = FXCollections.observableArrayList();
 
 	/**
-	 * 
+	 * Convenience method for addMyStylesheet(Size sizeAtLeast, URL url)
 	 */
 	public void addMyStylesheet(Device device, URL url) {
 		addMyStylesheet(device.toString(), url);
 	}
 	
 	/**
-	 * 
+	 * Convenience method for addMyStylesheet(Size sizeAtLeast, URL url)
 	 */
 	public void addMyStylesheet(String device, URL url) {
 		addMyStylesheet(deviceSizes.get(device), url);
 	}
 	
 	/**
-	 * 
-	 * @param sizeAtLeast 
-	 * @param url
+	 * Convenience method for getMyStylesheets().add(new Stylesheet(sizeAtLeast, url));
 	 */
 	public void addMyStylesheet(Size sizeAtLeast, URL url) {
 		myStylesheets.add(new Stylesheet(sizeAtLeast, url));
@@ -432,28 +448,28 @@ public class ResponsivePane extends StackPane {
 	final ObservableMap<String, Size> deviceSizes = FXCollections.observableMap(new TreeMap<String, Size>(String.CASE_INSENSITIVE_ORDER));
 	
 	/**
-	 * 
+	 * Convenience method for deviceSizes.put(device.toString(), size)
 	 */
 	public void setDeviceSize(Device device, Size size) {
 		setDeviceSize(device.toString(), size);
 	}
 
 	/**
-	 * 
+	 * Convenience method for deviceSizes.put(device, size)
 	 */
 	public void setDeviceSize(String device, Size size) {
 		deviceSizes.put(device, size);
 	}
 
 	/**
-	 * 
+	 * Convienience method for getDeviceSize(device.toString())
 	 */
 	public Size getDeviceSize(Device device) {
 		return getDeviceSize(device.toString());
 	}
 
 	/**
-	 * 
+	 * Convienience method for getDeviceSize(device)
 	 */
 	public Size getDeviceSize(String device) {
 		return deviceSizes.get(device);
