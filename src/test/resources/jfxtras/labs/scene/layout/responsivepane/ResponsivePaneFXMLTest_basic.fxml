@@ -43,14 +43,14 @@
 	</layouts>
 	
 	<sceneStylesheets>
-		<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
-		<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
-		<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+		<Stylesheet sizeAtLeast="3.0in" file="@phone.css"/>
+		<Stylesheet sizeAtLeast="width:3.0in" file="@desktop.css"/>
+		<Stylesheet sizeAtLeast="TABLET" file="@tablet.css"/>
 	</sceneStylesheets>
 	
 	<myStylesheets>
-		<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
-		<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
-		<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+		<Stylesheet sizeAtLeast="3.0in" file="@phone.css"/>
+		<Stylesheet sizeAtLeast="width:3.0in" file="@desktop.css"/>
+		<Stylesheet sizeAtLeast="TABLET" file="@tablet.css"/>
 	</myStylesheets>
 </ResponsivePane>

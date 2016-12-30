@@ -1,8 +1,5 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -187,15 +184,15 @@ import javafx.stage.Window;
 		</layouts>
 		
 		<sceneStylesheets>
-			<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
-			<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
-			<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="3.0in" file="@phone.css"/>
+			<Stylesheet sizeAtLeast="width:3.0in" file="@desktop.css"/>
+			<Stylesheet sizeAtLeast="TABLET" file="@tablet.css"/>
 		</sceneStylesheets>
 		
 		<myStylesheets>
-			<Stylesheet sizeAtLeast="3.0in">  <URL value="@phone.css"/> </Stylesheet>
-			<Stylesheet sizeAtLeast="width:3.0in"> <URL value="@desktop.css"/> </Stylesheet>
-			<Stylesheet sizeAtLeast="TABLET"> <URL value="@tablet.css"/> </Stylesheet>
+			<Stylesheet sizeAtLeast="3.0in" file="@phone.css"/>
+			<Stylesheet sizeAtLeast="width:3.0in" file="@desktop.css"/>
+			<Stylesheet sizeAtLeast="TABLET" file="@tablet.css"/>
 		</myStylesheets>
 	</ResponsivePane>
  * --
@@ -375,24 +372,24 @@ public class ResponsivePane extends StackPane {
 	final private ObservableList<Stylesheet> sceneStylesheets = FXCollections.observableArrayList();
 
 	/**
-	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, URL url)
+	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, String file)
 	 */
-	public void addSceneStylesheet(Device device, URL url) {
-		addSceneStylesheet(device.toString(), url);
+	public void addSceneStylesheet(Device device, String file) {
+		addSceneStylesheet(device.toString(), file);
 	}
 	
 	/**
-	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, URL url)
+	 * Convenience method for addSceneStylesheet(Size sizeAtLeast, String file)
 	 */
-	public void addSceneStylesheet(String device, URL url) {
-		addSceneStylesheet(deviceSizes.get(device), url);
+	public void addSceneStylesheet(String device, String file) {
+		addSceneStylesheet(deviceSizes.get(device), file);
 	}
 	
 	/**
-	 * Convenience method for getSceneStylesheets().add(new Stylesheet(sizeAtLeast, url));
+	 * Convenience method for getSceneStylesheets().add(new Stylesheet(sizeAtLeast, file));
 	 */
-	public void addSceneStylesheet(Size sizeAtLeast, URL url) {
-		sceneStylesheets.add(new Stylesheet(sizeAtLeast, url));
+	public void addSceneStylesheet(Size sizeAtLeast, String file) {
+		sceneStylesheets.add(new Stylesheet(sizeAtLeast, file));
 	}
 	
 	/** ActiveSceneStylesheet */
@@ -412,24 +409,24 @@ public class ResponsivePane extends StackPane {
 	final private ObservableList<Stylesheet> myStylesheets = FXCollections.observableArrayList();
 
 	/**
-	 * Convenience method for addMyStylesheet(Size sizeAtLeast, URL url)
+	 * Convenience method for addMyStylesheet(Size sizeAtLeast, String file)
 	 */
-	public void addMyStylesheet(Device device, URL url) {
-		addMyStylesheet(device.toString(), url);
+	public void addMyStylesheet(Device device, String file) {
+		addMyStylesheet(device.toString(), file);
 	}
 	
 	/**
-	 * Convenience method for addMyStylesheet(Size sizeAtLeast, URL url)
+	 * Convenience method for addMyStylesheet(Size sizeAtLeast, String file)
 	 */
-	public void addMyStylesheet(String device, URL url) {
-		addMyStylesheet(deviceSizes.get(device), url);
+	public void addMyStylesheet(String device, String file) {
+		addMyStylesheet(deviceSizes.get(device), file);
 	}
 	
 	/**
-	 * Convenience method for getMyStylesheets().add(new Stylesheet(sizeAtLeast, url));
+	 * Convenience method for getMyStylesheets().add(new Stylesheet(sizeAtLeast, file));
 	 */
-	public void addMyStylesheet(Size sizeAtLeast, URL url) {
-		myStylesheets.add(new Stylesheet(sizeAtLeast, url));
+	public void addMyStylesheet(Size sizeAtLeast, String file) {
+		myStylesheets.add(new Stylesheet(sizeAtLeast, file));
 	}
 	
 	/** ActiveMyStylesheet */
@@ -653,7 +650,7 @@ public class ResponsivePane extends StackPane {
 		}
 		
 		// done
-		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getSizeAtLeast() + " -> " + lBestFittingStylesheet.getUrl());
+		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getSizeAtLeast() + " -> " + lBestFittingStylesheet.getFile());
 		return lBestFittingStylesheet;
 	}
 	final private Stylesheet SINGULAR_STYLESHEET = new Stylesheet(Size.ZERO, null);
@@ -663,20 +660,20 @@ public class ResponsivePane extends StackPane {
 	 * @param stylesheet
 	 */	
 	void load(Stylesheet stylesheet, List<Stylesheet> availableStylesheets, List<String> activeStylesheetUrls) {
-		String lStylesheetUrl = (stylesheet.getUrl() == null ? null : stylesheet.getUrl().toExternalForm());
+		String lStylesheetFile = stylesheet.getFile();
 		
 		// remove all of the available stylesheets
 		for (Stylesheet lStylesheet : availableStylesheets) {
-			String lActiveStylesheetUrl = lStylesheet.getUrl().toExternalForm();
+			String lActiveStylesheetUrl = lStylesheet.getFile();
 			if (activeStylesheetUrls.remove(lActiveStylesheetUrl)) {
 				if (getDebug() || getTrace()) System.out.println("Removed stylesheet " + lStylesheet.getSizeAtLeast() + " -> " + lActiveStylesheetUrl);
 			}			
 		}
 		
 		// load new
-		if (lStylesheetUrl != null) {
-			if (getDebug() || getTrace()) System.out.println("Loading stylesheet " + stylesheet.getSizeAtLeast() + " -> " + lStylesheetUrl);
-			activeStylesheetUrls.add(lStylesheetUrl);
+		if (lStylesheetFile != null) {
+			if (getDebug() || getTrace()) System.out.println("Loading stylesheet " + stylesheet.getSizeAtLeast() + " -> " + lStylesheetFile);
+			activeStylesheetUrls.add(lStylesheetFile);
 		}
 	}
 

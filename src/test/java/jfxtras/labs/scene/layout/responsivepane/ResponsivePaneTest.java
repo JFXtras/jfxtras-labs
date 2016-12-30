@@ -224,10 +224,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some scene stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
-			responsivePane.addSceneStylesheet(Diagonal.inches(40.0), getClass().getResource("desktop.css"));
-			responsivePane.addSceneStylesheet(Diagonal.inches(1.0), getClass().getResource("phone.css"));
-			responsivePane.addSceneStylesheet(Diagonal.inches(3.0), getClass().getResource("tablet.css"));
-			responsivePane.addSceneStylesheet(Diagonal.inches(400.0), getClass().getResource("desktop.css"));
+			responsivePane.addSceneStylesheet(Diagonal.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inches(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -255,10 +255,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some scene stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
-			responsivePane.addSceneStylesheet(Width.inches(40.0), getClass().getResource("desktop.css"));
-			responsivePane.addSceneStylesheet(Width.inches(1.0), getClass().getResource("phone.css"));
-			responsivePane.addSceneStylesheet(Width.inches(3.0), getClass().getResource("tablet.css"));
-			responsivePane.addSceneStylesheet(Width.inches(10.0), getClass().getResource("desktop.css"));
+			responsivePane.addSceneStylesheet(Width.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inches(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -282,9 +282,9 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some scene stylesheets  
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(9.5); 
-			responsivePane.addSceneStylesheet(Device.DESKTOP, getClass().getResource("desktop.css"));
-			responsivePane.addSceneStylesheet(Device.TABLET, getClass().getResource("tablet.css"));
-			responsivePane.addSceneStylesheet(Device.PHONE, getClass().getResource("phone.css"));
+			responsivePane.addSceneStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
 		});
 		
 		// THEN the tablet stylesheet should be active
@@ -308,11 +308,11 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some layouts and one custom device size 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(9.5); 
-			responsivePane.addSceneStylesheet(Device.DESKTOP, getClass().getResource("desktop.css"));
-			responsivePane.addSceneStylesheet(Device.TABLET, getClass().getResource("tablet.css"));
-			responsivePane.addSceneStylesheet(Device.PHONE, getClass().getResource("phone.css"));
+			responsivePane.addSceneStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
 			responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
-			responsivePane.addSceneStylesheet("PHABLET", getClass().getResource("desktop.css"));
+			responsivePane.addSceneStylesheet("PHABLET", ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the phablet layout should be active
@@ -331,10 +331,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some own stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
-			responsivePane.addMyStylesheet(Diagonal.inches(40.0), getClass().getResource("desktop.css"));
-			responsivePane.addMyStylesheet(Diagonal.inches(1.0), getClass().getResource("phone.css"));
-			responsivePane.addMyStylesheet(Diagonal.inches(3.0), getClass().getResource("tablet.css"));
-			responsivePane.addMyStylesheet(Diagonal.inches(400.0), getClass().getResource("desktop.css"));
+			responsivePane.addMyStylesheet(Diagonal.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inches(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -362,10 +362,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some My stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
-			responsivePane.addMyStylesheet(Width.inches(40.0), getClass().getResource("desktop.css"));
-			responsivePane.addMyStylesheet(Width.inches(1.0), getClass().getResource("phone.css"));
-			responsivePane.addMyStylesheet(Width.inches(3.0), getClass().getResource("tablet.css"));
-			responsivePane.addMyStylesheet(Width.inches(10.0), getClass().getResource("desktop.css"));
+			responsivePane.addMyStylesheet(Width.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inches(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -389,9 +389,9 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some My stylesheets  
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(9.5); 
-			responsivePane.addMyStylesheet(Device.DESKTOP, getClass().getResource("desktop.css"));
-			responsivePane.addMyStylesheet(Device.TABLET, getClass().getResource("tablet.css"));
-			responsivePane.addMyStylesheet(Device.PHONE, getClass().getResource("phone.css"));
+			responsivePane.addMyStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
 		});
 		
 		// THEN the tablet stylesheet should be active
@@ -415,11 +415,11 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some layouts and one custom device size 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(9.5); 
-			responsivePane.addMyStylesheet(Device.DESKTOP, getClass().getResource("desktop.css"));
-			responsivePane.addMyStylesheet(Device.TABLET, getClass().getResource("tablet.css"));
-			responsivePane.addMyStylesheet(Device.PHONE, getClass().getResource("phone.css"));
+			responsivePane.addMyStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
 			responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
-			responsivePane.addMyStylesheet("PHABLET", getClass().getResource("desktop.css"));
+			responsivePane.addMyStylesheet("PHABLET", ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the phablet layout should be active

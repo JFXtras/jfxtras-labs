@@ -1,7 +1,5 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
-import java.net.URL;
-
 import javafx.beans.DefaultProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  *
  */
-@DefaultProperty("url")
+@DefaultProperty("file")
 public class Stylesheet {
 
 	/**
@@ -21,19 +19,19 @@ public class Stylesheet {
 	/**
 	 * 
 	 * @param sizeInInchesAtLeast size in inches
-	 * @param url
+	 * @param file
 	 */
-	public Stylesheet(Size sizeAtLeast, URL url) {
+	public Stylesheet(Size sizeAtLeast, String file) {
 		setSizeAtLeast(sizeAtLeast);
-		setUrl(url);
+		setFile(file);
 	}		
 	
-	/** Url */
-	public ObjectProperty<URL> urlProperty() { return urlProperty; }
-	final private SimpleObjectProperty<URL> urlProperty = new SimpleObjectProperty<>(this, "url", null);
-	public URL getUrl() { return urlProperty.getValue(); }
-	public void setUrl(URL value) { urlProperty.setValue(value); }
-	public Stylesheet withUrl(URL value) { setUrl(value); return this; } 
+	/** File */
+	public ObjectProperty<String> fileProperty() { return fileProperty; }
+	final private SimpleObjectProperty<String> fileProperty = new SimpleObjectProperty<>(this, "file", null);
+	public String getFile() { return fileProperty.getValue(); }
+	public void setFile(String value) { fileProperty.setValue(value); }
+	public Stylesheet withFile(String value) { setFile(value); return this; } 
 
 	/** SizeAtLeast (in inches) */
 	public ObjectProperty<Size> sizeAtLeastProperty() { return sizeAtLeastProperty; }
