@@ -41,7 +41,7 @@ public class ResponsivePaneDemo extends Application {
 		responsivePane.addReusableNode("save", new Button("save"));
 		responsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
 		// layout
-		responsivePane.addLayout(Device.PHONE.size(), createPhoneLayout());
+		responsivePane.addLayout(Device.PHONE, createPhoneLayout());
 		responsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
 		// css
 		responsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));

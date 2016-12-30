@@ -108,19 +108,25 @@ public class ResponsivePaneFXMLTest extends GuiTest {
 		Assert.assertEquals(3, responsivePane.getLayouts().size());
 		Assert.assertEquals("3.0in", responsivePane.getLayouts().get(0).getSizeAtLeast().toString());
 		Assert.assertEquals("width=3.0in", responsivePane.getLayouts().get(1).getSizeAtLeast().toString());
-		Assert.assertTrue(responsivePane.getLayouts().get(2).getSizeAtLeast().toString().contains("TABLET"));
+		System.out.println(">>>" + responsivePane.getLayouts().get(2).getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getLayouts().get(2).getSizeAtLeast().toString());
 		
 		// THEN the scene stylesheets should all have been loaded
 		Assert.assertEquals(3, responsivePane.getSceneStylesheets().size());
 		Assert.assertEquals("3.0in", responsivePane.getSceneStylesheets().get(0).getSizeAtLeast().toString());
 		Assert.assertEquals("width=3.0in", responsivePane.getSceneStylesheets().get(1).getSizeAtLeast().toString());
-		Assert.assertTrue(responsivePane.getSceneStylesheets().get(2).getSizeAtLeast().toString().contains("TABLET"));
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getSceneStylesheets().get(2).getSizeAtLeast().toString());
 		
 		// THEN the my stylesheets should all have been loaded
 		Assert.assertEquals(3, responsivePane.getMyStylesheets().size());
 		Assert.assertEquals("3.0in", responsivePane.getMyStylesheets().get(0).getSizeAtLeast().toString());
 		Assert.assertEquals("width=3.0in", responsivePane.getMyStylesheets().get(1).getSizeAtLeast().toString());
-		Assert.assertTrue(responsivePane.getMyStylesheets().get(2).getSizeAtLeast().toString().contains("TABLET"));
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getMyStylesheets().get(2).getSizeAtLeast().toString());
+		
+		// THEN the custom device should have been added
+		Assert.assertEquals(4, responsivePane.getDeviceSizes().size());
+		// AND the desktop size should have been changed
+		Assert.assertEquals("w:12in", "" + responsivePane.getDeviceSizes().get(Device.DESKTOP.toString()));
 	}
 
 	// ==========================================================================================================================================================================================================================================

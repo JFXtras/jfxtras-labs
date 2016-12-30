@@ -1,3 +1,5 @@
+package jfxtras.labs.animation;
+
 // max bisesi
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;

@@ -23,12 +23,33 @@ public abstract class Size {
 			return Width.valueOf(s.substring("width:".length()));
 		}
 		
-		// if numeric, it must be a diagonal
+		// else it must be a diagonal
 		if (Character.isDigit(s.charAt(0))) {
 			return Diagonal.valueOf(s);
 		}
 		
 		// else it is a device
-		return DeviceSize.valueOf(s);
+		return new DeviceSizePlaceHolder(s);
 	}
+	
+	public static class DeviceSizePlaceHolder extends Size {
+
+		DeviceSizePlaceHolder(String device) {
+			this.device = device;
+		}
+		
+		final String device;
+		
+		@Override
+		double toInches(ResponsivePane responsivePane) {
+			size = responsivePane.getDeviceSizes().get(device);
+			return size.toInches(responsivePane);
+		}
+		Size size;
+		
+		public String toString() {
+			return (size == null? "null" : size.toString());
+		}
+	}
+
 }

@@ -1,16 +1,16 @@
 package jfxtras.labs.scene.layout.responsivepane;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -196,7 +196,7 @@ import javafx.stage.Window;
 	</ResponsivePane>
  * --
  */
-// TODO: custom device in FXML
+// TODO: custom device in FXML: Add size property to DeviceSize and change deviceToSizeMap into a List<DeviceSize>
 public class ResponsivePane extends StackPane {
 	
 	
@@ -209,9 +209,9 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane() {
 		
 		// default device sizes
-		deviceToSizeMap.put(Device.PHONE.toString(), Diagonal.inches(3.5));
-		deviceToSizeMap.put(Device.TABLET.toString(), Diagonal.inches(7.0));
-		deviceToSizeMap.put(Device.DESKTOP.toString(), Diagonal.inches(10.5));
+		setDeviceSize(Device.PHONE.toString(), Diagonal.inches(3.5));
+		setDeviceSize(Device.TABLET.toString(), Diagonal.inches(7.0));
+		setDeviceSize(Device.DESKTOP.toString(), Diagonal.inches(10.5));
 		
 		// react to changes in the available layouts and stylesheets
 		layouts.addListener( (javafx.collections.ListChangeListener.Change<? extends Layout> c) -> {
@@ -314,6 +314,20 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
+	public void addLayout(Device device, Node root) {
+		addLayout(device.toString(), root);
+	}
+	
+	/**
+	 * 
+	 */
+	public void addLayout(String device, Node root) {
+		addLayout(deviceSizes.get(device), root);
+	}
+	
+	/**
+	 * 
+	 */
 	public void addLayout(Size sizeAtLeast, Node root) {
 		layouts.add(new Layout(sizeAtLeast, root));
 	}
@@ -345,6 +359,20 @@ public class ResponsivePane extends StackPane {
 	/**
 	 * 
 	 */
+	public void addSceneStylesheet(Device device, URL url) {
+		addSceneStylesheet(device.toString(), url);
+	}
+	
+	/**
+	 * 
+	 */
+	public void addSceneStylesheet(String device, URL url) {
+		addSceneStylesheet(deviceSizes.get(device), url);
+	}
+	
+	/**
+	 * 
+	 */
 	public void addSceneStylesheet(Size sizeAtLeast, URL url) {
 		sceneStylesheets.add(new Stylesheet(sizeAtLeast, url));
 	}
@@ -367,6 +395,20 @@ public class ResponsivePane extends StackPane {
 
 	/**
 	 * 
+	 */
+	public void addMyStylesheet(Device device, URL url) {
+		addMyStylesheet(device.toString(), url);
+	}
+	
+	/**
+	 * 
+	 */
+	public void addMyStylesheet(String device, URL url) {
+		addMyStylesheet(deviceSizes.get(device), url);
+	}
+	
+	/**
+	 * 
 	 * @param sizeAtLeast 
 	 * @param url
 	 */
@@ -384,34 +426,38 @@ public class ResponsivePane extends StackPane {
 	// ==========================================================================================================================================================================================================================================
 	// DEVICE
 	
+	public final ObservableMap<String, Size> getDeviceSizes() {
+		return deviceSizes;
+	}
+	final ObservableMap<String, Size> deviceSizes = FXCollections.observableMap(new TreeMap<String, Size>(String.CASE_INSENSITIVE_ORDER));
+	
 	/**
 	 * 
-	 * @param device
-	 * @param size
 	 */
 	public void setDeviceSize(Device device, Size size) {
 		setDeviceSize(device.toString(), size);
 	}
+
+	/**
+	 * 
+	 */
+	public void setDeviceSize(String device, Size size) {
+		deviceSizes.put(device, size);
+	}
+
+	/**
+	 * 
+	 */
 	public Size getDeviceSize(Device device) {
 		return getDeviceSize(device.toString());
 	}
-	
+
 	/**
 	 * 
-	 * @param device
-	 * @param size
 	 */
-	public void setDeviceSize(String device, Size size) {
-		deviceToSizeMap.put(device, size);
-	}
 	public Size getDeviceSize(String device) {
-		if (!deviceToSizeMap.containsKey(device)) {
-			throw new IllegalArgumentException("Unknown device '" +  device + "', not found in " + deviceToSizeMap.keySet());
-		}
-		return deviceToSizeMap.get(device);
+		return deviceSizes.get(device);
 	}
-	final Map<String, Size> deviceToSizeMap = new HashMap<>();
-
 
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
@@ -617,5 +663,6 @@ public class ResponsivePane extends StackPane {
 			activeStylesheetUrls.add(lStylesheetUrl);
 		}
 	}
+
 
 }
