@@ -105,11 +105,11 @@ public class ResponsivePaneFXMLTest extends GuiTest {
 		Assert.assertTrue(responsivePane.getReusableNodes().get(1) instanceof Button);
 		
 		// THEN the layouts should all have been loaded
-		Assert.assertEquals(3, responsivePane.getLayouts().size());
+		Assert.assertEquals(4, responsivePane.getLayouts().size());
 		Assert.assertEquals("3.0in", responsivePane.getLayouts().get(0).getSizeAtLeast().toString());
 		Assert.assertEquals("width=3.0in", responsivePane.getLayouts().get(1).getSizeAtLeast().toString());
-		System.out.println(">>>" + responsivePane.getLayouts().get(2).getSizeAtLeast().toString());
 		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getLayouts().get(2).getSizeAtLeast().toString());
+		Assert.assertEquals("100.0cm", responsivePane.getLayouts().get(3).getSizeAtLeast().toString());
 		
 		// THEN the scene stylesheets should all have been loaded
 		Assert.assertEquals(3, responsivePane.getSceneStylesheets().size());

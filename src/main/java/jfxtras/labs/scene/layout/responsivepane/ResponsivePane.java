@@ -49,16 +49,16 @@ import javafx.stage.Window;
         lResponsivePane.addReusableNode("version", new Label("v1.0"));
 
         // define custom device
-        lResponsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+        lResponsivePane.setDeviceSize("PHABLET", Diagonal.inch(9.0));
 
         // define layouts
-        lResponsivePane.addLayout(Diagonal.inches(3.5), createPhoneLayout());
-        lResponsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());
+        lResponsivePane.addLayout(Diagonal.inch(3.5), createPhoneLayout());
+        lResponsivePane.addLayout(Diagonal.inch(12.0), createDesktopLayout());
                 
         // define css
-        lResponsivePane.addSceneStylesheet(Diagonal.inches(4.0), getClass().getResource("phone.css"));
-        lResponsivePane.addSceneStylesheet(Diagonal.inches(6.0), getClass().getResource("tablet.css"));
-        lResponsivePane.addSceneStylesheet(Diagonal.inches(12.0), getClass().getResource("desktop.css"));
+        lResponsivePane.addSceneStylesheet(Diagonal.inch(4.0), getClass().getResource("phone.css").toExternalForm());
+        lResponsivePane.addSceneStylesheet(Diagonal.inch(6.0), getClass().getResource("tablet.css").toExternalForm());
+        lResponsivePane.addSceneStylesheet(Diagonal.inch(12.0), getClass().getResource("desktop.css").toExternalForm());
     }
     
     private Node createDesktopLayout() {
@@ -103,10 +103,10 @@ import javafx.stage.Window;
  * [source,java]
  * --
 		// scene stylesheet
-		responsivePane.addSceneStylesheet(Diagonal.inches(1.0), getClass().getResource("phone.css"));
+		responsivePane.addSceneStylesheet(Diagonal.inch(1.0), getClass().getResource("phone.css").toExternalForm());
 			
-		// layout stylesheer
-		responsivePane.addMyStylesheet(Diagonal.inches(3.0), getClass().getResource("tablet.css"));
+		// pane stylesheet
+		responsivePane.addMyStylesheet(Diagonal.inch(3.0), getClass().getResource("tablet.css").toExternalForm());
  * --
  *
  * There can only be one scene or layout stylesheet active at a given time.
@@ -116,7 +116,7 @@ import javafx.stage.Window;
  * Responsive design only looks at the width in pixel, but it is already explained that ResponsivePane does not assume unlimited vertical space, so the height must also be taking into account.
  * Therefore size is expressed as a diagonal instead of the width.
  * However, responsive design specifies the width in pixels, but 1000 pixels on a 100 ppi screen is something completely different on a 350 ppi screen; the first is 10 inches in real life, the second not even 3 inch!
- * ResponsivePane therefore (per default) expresses the size in inches, as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
+ * ResponsivePane therefore (per default) expresses the size in inches (or cm), as we are used to do when talking about devices; a 4 inch phone, a 27 inch monitor.
  * But as a compatibility behavior it also is possible to the width; it will be at runtime converted to diagonal using the actual height of the layout. 
  * 
  * There also is a third option to set the size; ResponsivePane has some default diagonals for typical devices in the Device class, but you can also defined custom devices.
@@ -124,11 +124,11 @@ import javafx.stage.Window;
  * So sizes for layout and stylesheets can be defined like:
  * [source,java]
  * --
-        responsivePane.addLayout(Diagonal.inches(3.5), ...);
-        responsivePane.addLayout(Width.inches(3.0), ...);
-        responsivePane.addLayout(Device.PHONE.size(), ...);
+        responsivePane.addLayout(Diagonal.inch(3.5), ...);
+        responsivePane.addLayout(Width.inch(3.0), ...);
+        responsivePane.addLayout(Device.PHONE, ...);
         
-        responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+        responsivePane.setDeviceSize("PHABLET", Diagonal.inch(9.0));
         responsivePane.addLayout(DeviceSize.of("PHABLET"), ...);
 
  * --
@@ -180,7 +180,14 @@ import javafx.stage.Window;
 					<Ref to="button"/>
 					<Label text="layout_tablet"/>
 				</HBox>
-			</Layout>		
+			</Layout>
+		
+			<Layout sizeAtLeast="100.0cm">
+				<HBox>
+					<Ref to="label"/>
+					<Label text="layout_100cm"/>
+				</HBox>
+			</Layout>						
 		</layouts>
 		
 		<sceneStylesheets>
@@ -209,9 +216,9 @@ public class ResponsivePane extends StackPane {
 	public ResponsivePane() {
 		
 		// default device sizes
-		setDeviceSize(Device.PHONE.toString(), Diagonal.inches(3.5));
-		setDeviceSize(Device.TABLET.toString(), Diagonal.inches(7.0));
-		setDeviceSize(Device.DESKTOP.toString(), Diagonal.inches(10.5));
+		setDeviceSize(Device.PHONE, Diagonal.inch(3.5));
+		setDeviceSize(Device.TABLET, Diagonal.inch(7.0));
+		setDeviceSize(Device.DESKTOP, Diagonal.inch(10.5));
 		
 		// react to changes in the available layouts and stylesheets
 		layouts.addListener( (javafx.collections.ListChangeListener.Change<? extends Layout> c) -> {

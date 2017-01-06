@@ -79,10 +79,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some layouts 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
-			responsivePane.addLayout(Diagonal.inches(400.0), new Label("400layout"));
-			responsivePane.addLayout(Diagonal.inches(1.0), new Label("1layout"));
-			responsivePane.addLayout(Diagonal.inches(3.0), new Label("3layout"));
-			responsivePane.addLayout(Diagonal.inches(500.0), new Label("500layout"));
+			responsivePane.addLayout(Diagonal.inch(400.0), new Label("400layout"));
+			responsivePane.addLayout(Diagonal.inch(1.0), new Label("1layout"));
+			responsivePane.addLayout(Diagonal.inch(3.0), new Label("3layout"));
+			responsivePane.addLayout(Diagonal.inch(500.0), new Label("500layout"));
 		});
 		
 		// THEN the correct one should be active
@@ -97,6 +97,37 @@ public class ResponsivePaneTest extends GuiTest {
 		
 		// THEN the correct one should be active
 		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals(1, responsivePane.getChildren().size());
+		Assert.assertEquals("1layout", ((Label)responsivePane.getChildren().get(0)).getText());
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void pickCorrectLayoutUsingCM() {
+		
+		// GIVEN a pane with some layouts 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageDiagonalSizeInInch(5.0);
+			responsivePane.addLayout(Diagonal.cm(1016.0), new Label("400layout"));
+			responsivePane.addLayout(Diagonal.cm(2.54), new Label("1layout"));
+			responsivePane.addLayout(Diagonal.cm(7.62), new Label("3layout"));
+			responsivePane.addLayout(Diagonal.cm(1270.0), new Label("500layout"));
+		});
+		
+		// THEN the correct one should be active
+		Assert.assertEquals("7.62cm", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals(1, responsivePane.getChildren().size());
+		Assert.assertEquals("3layout", ((Label)responsivePane.getChildren().get(0)).getText());
+		
+		// WHEN the pane is sized smaller 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageDiagonalSizeInInch(2.0);
+		});
+		
+		// THEN the correct one should be active
+		Assert.assertEquals("2.54cm", responsivePane.getActiveLayout().getSizeAtLeast().toString());
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("1layout", ((Label)responsivePane.getChildren().get(0)).getText());
 	}
@@ -166,14 +197,13 @@ public class ResponsivePaneTest extends GuiTest {
 			responsivePane.addLayout(Device.DESKTOP, new Label("desktop"));
 			responsivePane.addLayout(Device.TABLET, new Label("tablet"));
 			responsivePane.addLayout(Device.PHONE, new Label("phone"));
-			responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+			responsivePane.setDeviceSize("PHABLET", Diagonal.inch(9.0));
 			responsivePane.addLayout("PHABLET", new Label("desktop"));
 		});
 		
 		// THEN the phablet layout should be active
 		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveLayout().getSizeAtLeast().toString());
 	}
-
 
 	/**
 	 * 
@@ -185,8 +215,8 @@ public class ResponsivePaneTest extends GuiTest {
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
 			responsivePane.addReusableNode("CalendarPicker", new CalendarPicker());
-			responsivePane.addLayout(Diagonal.inches(1.0), new Ref("CalendarPicker", "ref1"));
-			responsivePane.addLayout(Diagonal.inches(3.0), new Ref("CalendarPicker", "ref2"));
+			responsivePane.addLayout(Diagonal.inch(1.0), new Ref("CalendarPicker", "ref1"));
+			responsivePane.addLayout(Diagonal.inch(3.0), new Ref("CalendarPicker", "ref2"));
 		});
 		Node lCalendarPickerNode = responsivePane.getReusableNodes().get(0);
 		Ref lRef1 = (Ref)responsivePane.getLayouts().get(0).getRoot();
@@ -224,10 +254,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some scene stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
-			responsivePane.addSceneStylesheet(Diagonal.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Diagonal.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Diagonal.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Diagonal.inches(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inch(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inch(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inch(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Diagonal.inch(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -311,7 +341,7 @@ public class ResponsivePaneTest extends GuiTest {
 			responsivePane.addSceneStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 			responsivePane.addSceneStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
 			responsivePane.addSceneStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+			responsivePane.setDeviceSize("PHABLET", Diagonal.inch(9.0));
 			responsivePane.addSceneStylesheet("PHABLET", ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
@@ -331,10 +361,10 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some own stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageDiagonalSizeInInch(5.0);
-			responsivePane.addMyStylesheet(Diagonal.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
-			responsivePane.addMyStylesheet(Diagonal.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.addMyStylesheet(Diagonal.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-			responsivePane.addMyStylesheet(Diagonal.inches(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inch(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inch(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inch(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Diagonal.inch(400.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
@@ -418,7 +448,7 @@ public class ResponsivePaneTest extends GuiTest {
 			responsivePane.addMyStylesheet(Device.DESKTOP, ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 			responsivePane.addMyStylesheet(Device.TABLET, ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
 			responsivePane.addMyStylesheet(Device.PHONE, ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.setDeviceSize("PHABLET", Diagonal.inches(9.0));
+			responsivePane.setDeviceSize("PHABLET", Diagonal.inch(9.0));
 			responsivePane.addMyStylesheet("PHABLET", ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
@@ -435,7 +465,7 @@ public class ResponsivePaneTest extends GuiTest {
 	
 		// GIVEN a pane with an overridden device size 
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			responsivePane.setDeviceSize("desktop", Diagonal.inches(13.0));
+			responsivePane.setDeviceSize("desktop", Diagonal.inch(13.0));
 		});
 		
 		// THEN the device size should be the overridden value

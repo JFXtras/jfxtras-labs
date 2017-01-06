@@ -31,8 +31,12 @@ public class Diagonal extends Size {
 	// ========================================================================================================================================================================================================
 	// CONVENIENCE
 	
-	static public Diagonal inches(double v) {
+	static public Diagonal inch(double v) {
 		return new Diagonal(v, Unit.INCH);
+	}
+	
+	static public Diagonal cm(double v) {
+		return new Diagonal(v, Unit.CM);
 	}
 	
 	
@@ -44,8 +48,12 @@ public class Diagonal extends Size {
 	 * @return
 	 */
 	static public Diagonal valueOf(String s) {
+		s = s.trim();
 		if (s.endsWith(Unit.INCH.suffix)) {
-			return inches(Double.parseDouble(s.substring(0, s.length() - Unit.INCH.suffix.length())));
+			return inch(Double.parseDouble(s.substring(0, s.length() - Unit.INCH.suffix.length())));
+		}
+		if (s.endsWith(Unit.CM.suffix)) {
+			return cm(Double.parseDouble(s.substring(0, s.length() - Unit.CM.suffix.length())));
 		}
 		throw new IllegalArgumentException("Don't know how to parse '" + s + "'");
 	}

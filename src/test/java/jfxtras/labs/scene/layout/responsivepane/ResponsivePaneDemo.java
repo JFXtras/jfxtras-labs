@@ -42,11 +42,11 @@ public class ResponsivePaneDemo extends Application {
 		responsivePane.addReusableNode("saveAndTomorrow", new Button("saveAndTomorrow"));
 		// layout
 		responsivePane.addLayout(Device.PHONE, createPhoneLayout());
-		responsivePane.addLayout(Diagonal.inches(12.0), createDesktopLayout());		
+		responsivePane.addLayout(Diagonal.inch(12.0), createDesktopLayout());		
 		// css
-		responsivePane.addSceneStylesheet(Diagonal.inches(4.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-		responsivePane.addSceneStylesheet(Diagonal.inches(6.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-		responsivePane.addSceneStylesheet(Diagonal.inches(12.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+		responsivePane.addSceneStylesheet(Diagonal.inch(4.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+		responsivePane.addSceneStylesheet(Diagonal.inch(6.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+		responsivePane.addSceneStylesheet(Diagonal.inch(12.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 
 		// show
 		primaryStage.setScene(new Scene(responsivePane, 1700, 1000));

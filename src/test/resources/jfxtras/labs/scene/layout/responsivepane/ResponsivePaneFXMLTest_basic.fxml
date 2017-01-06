@@ -40,6 +40,14 @@
 				<Label text="layout_tablet"/>
 			</HBox>
 		</Layout>		
+		
+		<Layout sizeAtLeast="100.0cm">
+			<HBox>
+				<Ref to="label"/>
+				<Ref to="button"/>
+				<Label text="layout_100cm"/>
+			</HBox>
+		</Layout>		
 	</layouts>
 	
 	<sceneStylesheets>
