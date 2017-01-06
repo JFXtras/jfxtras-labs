@@ -39,4 +39,8 @@ public class Stylesheet {
 	public Size getSizeAtLeast() { return sizeAtLeastProperty.getValue(); }
 	public void setSizeAtLeast(Size value) { sizeAtLeastProperty.setValue(value); }
 	public Stylesheet withSizeAtLeast(Size value) { setSizeAtLeast(value); return this; } 
+		
+	public String describeSizeConstraints() {
+		return getSizeAtLeast() + "";
+	}
 }

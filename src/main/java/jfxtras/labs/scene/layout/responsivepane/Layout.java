@@ -55,7 +55,7 @@ public class Layout {
 	public void setOrientation(Orientation value) { orientationProperty.setValue(value); }
 	public Layout withOrientation(Orientation value) { setOrientation(value); return this; }
 	
-	public String toString() {
+	public String describeSizeConstraints() {
 		return getSizeAtLeast() + (getOrientation() == null ? "" : "-" + getOrientation());
 	}
 }

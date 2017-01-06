@@ -205,6 +205,8 @@ import javafx.stage.Window;
  * --
  */
 public class ResponsivePane extends StackPane {
+	// TODO: should stylesheets also support orientation?
+	// TODO: should we refactor to have a single 'SizeBasedResource' beneath both Layout and Stylesheet?
 	
 	
 	// ==========================================================================================================================================================================================================================================
@@ -341,14 +343,14 @@ public class ResponsivePane extends StackPane {
 	
 	
 	/**
-	 * Convenience method for addLayout(Size, Node) 
+	 * Convenience method for addLayout(Size, Orientation, Node) 
 	 */
 	public void addLayout(Device device, Orientation orientation, Node root) {
 		addLayout(device.toString(), orientation, root);
 	}
 	
 	/**
-	 * Convenience method for addLayout(Size, Node)
+	 * Convenience method for addLayout(Size, Orientation, Node)
 	 */
 	public void addLayout(String device, Orientation orientation, Node root) {
 		addLayout(deviceSizes.get(device), orientation, root);
@@ -594,29 +596,29 @@ public class ResponsivePane extends StackPane {
 		// find the best fitting layout
 		Layout lBestFittingLayout = null;
 		for (Layout lLayout : layouts) {
-			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout);
+			if (getTrace()) System.out.println("determineBestFittingLayout, examining layout: " + lLayout.describeSizeConstraints());
 			double lLayoutSizeAtLeast = lLayout.getSizeAtLeast().toInches(this);
 			if (actualDiagonalInInches >= lLayoutSizeAtLeast) {
-				if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is candidate based on scene diagonal: " + actualDiagonalInInches + "in");
+				if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout.describeSizeConstraints() + " is candidate based on scene diagonal: " + actualDiagonalInInches + "in");
 				
 				double lBestFittingLayoutSizeAtLeast = (lBestFittingLayout == null ? -1.0 : lBestFittingLayout.getSizeAtLeast().toInches(this));
-				if (getTrace()) System.out.println("determineBestFittingLayout, comparing best fitting layout " + lBestFittingLayout + " (" + lBestFittingLayoutSizeAtLeast + ") with " + lLayout + " (" + lLayoutSizeAtLeast + ")");
+				if (getTrace()) System.out.println("determineBestFittingLayout, comparing best fitting layout " + (lBestFittingLayout == null ? "null" : lBestFittingLayout.describeSizeConstraints()) + " (" + lBestFittingLayoutSizeAtLeast + ") with " + lLayout.describeSizeConstraints() + " (" + lLayoutSizeAtLeast + ")");
 				if (lBestFittingLayout == null || lBestFittingLayoutSizeAtLeast <= lLayoutSizeAtLeast) {
-					if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is a better candidate based on diagonal vs best fitting so far: " + lBestFittingLayout);
+					if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout.describeSizeConstraints() + " is a better or equal candidate based on diagonal vs best fitting so far: " + (lBestFittingLayout == null ? "null" : lBestFittingLayout.describeSizeConstraints()));
 					
 					// Based on the width, this layout is a candidate. But is it also based on the orientation?
 					Orientation lBestFittingLayoutOrientation = (lBestFittingLayout == null ? null : lBestFittingLayout.getOrientation()); 
 					Orientation lLayoutOrientation = lLayout.getOrientation(); 
 					if ( lBestFittingLayout == null || lLayoutOrientation == null || lSceneOrientation.equals(lLayoutOrientation)) {
-						if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is also candidate based on orientation");
+						if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout.describeSizeConstraints() + " is also candidate based on orientation");
 						
 						// Orientation also matches, do we prefer the one orientation of the other?
 						if ( (lBestFittingLayoutOrientation == null && lLayoutOrientation == null) 
 						  || (lBestFittingLayoutOrientation == null && lLayoutOrientation != null) // Prefer a layout with orientation above one without
 						   ) {
-							if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout + " is also a better candidate based on orientation vs best fitting so far: " + lBestFittingLayout);
+							if (getTrace()) System.out.println("determineBestFittingLayout, layout " + lLayout.describeSizeConstraints() + " is also a better candidate based on orientation vs best fitting so far: " + (lBestFittingLayout == null ? "null" : lBestFittingLayout.describeSizeConstraints()));
 							lBestFittingLayout = lLayout;
-							if (getTrace()) System.out.println("determineBestFittingLayout, best fitting so far: " + lBestFittingLayout);
+							if (getTrace()) System.out.println("determineBestFittingLayout, best fitting so far: " + lBestFittingLayout.describeSizeConstraints());
 						}
 					}
 				}
@@ -629,7 +631,7 @@ public class ResponsivePane extends StackPane {
 		}
 		
 		// done
-		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout);
+		if (getTrace()) System.out.println("determineBestFittingLayout=" + lBestFittingLayout.describeSizeConstraints());
 		return lBestFittingLayout;
 	}
 	private final Layout SINGULARITY_LAYOUT = new Layout(Size.ZERO, new Label("?") );
@@ -657,7 +659,7 @@ public class ResponsivePane extends StackPane {
 		}
 		
 		// done
-		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.getSizeAtLeast() + " -> " + lBestFittingStylesheet.getFile());
+		if (getTrace()) System.out.println("determineBestFittingStylesheet=" + lBestFittingStylesheet.describeSizeConstraints() + " -> " + lBestFittingStylesheet.getFile());
 		return lBestFittingStylesheet;
 	}
 	final private Stylesheet SINGULAR_STYLESHEET = new Stylesheet(Size.ZERO, null);

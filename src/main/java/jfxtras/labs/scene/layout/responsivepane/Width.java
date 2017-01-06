@@ -42,8 +42,12 @@ public class Width extends Size {
 	// ========================================================================================================================================================================================================
 	// CONVENIENCE
 	
-	static public Width inches(double v) {
+	static public Width inch(double v) {
 		return new Width(v, Unit.INCH);
+	}
+	
+	static public Width cm(double v) {
+		return new Width(v, Unit.CM);
 	}
 	
 	// ========================================================================================================================================================================================================
@@ -55,7 +59,10 @@ public class Width extends Size {
 	 */
 	static public Width valueOf(String s) {
 		if (s.endsWith(Unit.INCH.suffix)) {
-			return inches(Double.parseDouble(s.substring(0, s.length() - Unit.INCH.suffix.length())));
+			return inch(Double.parseDouble(s.substring(0, s.length() - Unit.INCH.suffix.length())));
+		}
+		if (s.endsWith(Unit.CM.suffix)) {
+			return cm(Double.parseDouble(s.substring(0, s.length() - Unit.CM.suffix.length())));
 		}
 		throw new IllegalArgumentException("Don't know how to parse '" + s + "'");
 	}

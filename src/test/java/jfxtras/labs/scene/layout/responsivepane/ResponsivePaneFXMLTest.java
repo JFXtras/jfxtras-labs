@@ -83,9 +83,9 @@ public class ResponsivePaneFXMLTest extends GuiTest {
 		responsivePane = (ResponsivePane)find("#responsivePane");
 		// THEN the default (size 0.0) settings should be active
 		Assert.assertNotNull(responsivePane);
-		Assert.assertEquals("0.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
-		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
-		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveLayout().describeSizeConstraints());
+		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
+		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -105,23 +105,24 @@ public class ResponsivePaneFXMLTest extends GuiTest {
 		Assert.assertTrue(responsivePane.getReusableNodes().get(1) instanceof Button);
 		
 		// THEN the layouts should all have been loaded
-		Assert.assertEquals(4, responsivePane.getLayouts().size());
-		Assert.assertEquals("3.0in", responsivePane.getLayouts().get(0).getSizeAtLeast().toString());
-		Assert.assertEquals("width=3.0in", responsivePane.getLayouts().get(1).getSizeAtLeast().toString());
-		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getLayouts().get(2).getSizeAtLeast().toString());
-		Assert.assertEquals("100.0cm", responsivePane.getLayouts().get(3).getSizeAtLeast().toString());
+		Assert.assertEquals(5, responsivePane.getLayouts().size());
+		Assert.assertEquals("3.0in", responsivePane.getLayouts().get(0).describeSizeConstraints());
+		Assert.assertEquals("width=3.0in", responsivePane.getLayouts().get(1).describeSizeConstraints());
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getLayouts().get(2).describeSizeConstraints());
+		Assert.assertEquals("100.0cm", responsivePane.getLayouts().get(3).describeSizeConstraints());
+		Assert.assertEquals("100.0cm-LANDSCAPE", responsivePane.getLayouts().get(4).describeSizeConstraints());
 		
 		// THEN the scene stylesheets should all have been loaded
 		Assert.assertEquals(3, responsivePane.getSceneStylesheets().size());
-		Assert.assertEquals("3.0in", responsivePane.getSceneStylesheets().get(0).getSizeAtLeast().toString());
-		Assert.assertEquals("width=3.0in", responsivePane.getSceneStylesheets().get(1).getSizeAtLeast().toString());
-		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getSceneStylesheets().get(2).getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getSceneStylesheets().get(0).describeSizeConstraints());
+		Assert.assertEquals("width=3.0in", responsivePane.getSceneStylesheets().get(1).describeSizeConstraints());
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getSceneStylesheets().get(2).describeSizeConstraints());
 		
 		// THEN the my stylesheets should all have been loaded
 		Assert.assertEquals(3, responsivePane.getMyStylesheets().size());
-		Assert.assertEquals("3.0in", responsivePane.getMyStylesheets().get(0).getSizeAtLeast().toString());
-		Assert.assertEquals("width=3.0in", responsivePane.getMyStylesheets().get(1).getSizeAtLeast().toString());
-		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getMyStylesheets().get(2).getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getMyStylesheets().get(0).describeSizeConstraints());
+		Assert.assertEquals("width=3.0in", responsivePane.getMyStylesheets().get(1).describeSizeConstraints());
+		Assert.assertEquals(responsivePane.getDeviceSizes().get("TABLET").toString(), responsivePane.getMyStylesheets().get(2).describeSizeConstraints());
 		
 		// THEN the custom device should have been added
 		Assert.assertEquals(4, responsivePane.getDeviceSizes().size());

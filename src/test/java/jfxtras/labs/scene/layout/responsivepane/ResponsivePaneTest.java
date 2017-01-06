@@ -62,9 +62,9 @@ public class ResponsivePaneTest extends GuiTest {
 	public void empty() {
 		// GIVEN a pane without any configuration
 		// THEN the default (size 0.0) settings should be active
-		Assert.assertEquals("0.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
-		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
-		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveLayout().describeSizeConstraints());
+		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
+		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 		// AND question mark label should be shown
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("?", ((Label)responsivePane.getChildren().get(0)).getText());
@@ -86,7 +86,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("3.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("3layout", ((Label)responsivePane.getChildren().get(0)).getText());
 		
@@ -96,7 +96,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("1layout", ((Label)responsivePane.getChildren().get(0)).getText());
 	}
@@ -117,7 +117,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("7.62cm", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("7.62cm", responsivePane.getActiveLayout().describeSizeConstraints());
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("3layout", ((Label)responsivePane.getChildren().get(0)).getText());
 		
@@ -127,7 +127,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("2.54cm", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("2.54cm", responsivePane.getActiveLayout().describeSizeConstraints());
 		Assert.assertEquals(1, responsivePane.getChildren().size());
 		Assert.assertEquals("1layout", ((Label)responsivePane.getChildren().get(0)).getText());
 	}
@@ -141,14 +141,14 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some layouts 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
-			responsivePane.addLayout(Width.inches(400.0), new Label("400layout"));
-			responsivePane.addLayout(Width.inches(1.0), new Label("1layout"));
-			responsivePane.addLayout(Width.inches(3.0), new Label("3layout"));
-			responsivePane.addLayout(Width.inches(10.0), new Label("10layout"));
+			responsivePane.addLayout(Width.inch(400.0), new Label("400layout"));
+			responsivePane.addLayout(Width.inch(1.0), new Label("1layout"));
+			responsivePane.addLayout(Width.inch(3.0), new Label("3layout"));
+			responsivePane.addLayout(Width.inch(10.0), new Label("10layout"));
 		});
 		
 		// THEN even though the diagonal size is >11, because we are using width, then 3 inch layout should be active
-		Assert.assertEquals("width=3.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("width=3.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 		
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -156,7 +156,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN even though the diagonal size is >10, because we are using width, then 1 inch layout should be active
-		Assert.assertEquals("width=1.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("width=1.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the tablet layout should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveLayout().describeSizeConstraints());
 		
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -182,7 +182,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN phone layout should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveLayout().describeSizeConstraints());
 	}
 
 	/**
@@ -202,7 +202,39 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the phablet layout should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveLayout().describeSizeConstraints());
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void pickCorrectLayoutOrientation() {
+	
+responsivePane.setTrace(true);		
+		// GIVEN a pane with some layouts 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
+			responsivePane.addLayout(Diagonal.inch(10.0), new Label("10layout"));
+			responsivePane.addLayout(Diagonal.inch(10.0), Orientation.PORTRAIT, new Label("10layoutPortrait"));
+			responsivePane.addLayout(Diagonal.inch(10.0), Orientation.LANDSCAPE, new Label("10layoutLandscape"));
+		});
+		
+		// WHEN the pane is in portrait 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageSizeInInch(9.0, 11.0);
+		});
+		
+		// THEN the PORTRAIT should be picked
+		Assert.assertEquals("10.0in-PORTRAIT", responsivePane.getActiveLayout().describeSizeConstraints());
+		
+		// WHEN the pane is flipped to landscape 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			setStageSizeInInch(11.0, 9.0);
+		});
+		
+		// THEN the PORTRAIT should be picked
+		Assert.assertEquals("10.0in-LANDSCAPE", responsivePane.getActiveLayout().describeSizeConstraints());
 	}
 
 	/**
@@ -223,7 +255,7 @@ public class ResponsivePaneTest extends GuiTest {
 		Ref lRef2 = (Ref)responsivePane.getLayouts().get(1).getRoot();
 		
 		// THEN the second layout should be active
-		Assert.assertEquals("3.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 		// AND the second ref should hold the calendar picker
 		Assert.assertEquals(0, lRef1.getChildren().size());
 		Assert.assertEquals(1, lRef2.getChildren().size());
@@ -235,7 +267,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the first layout should be active
-		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().getSizeAtLeast().toString());
+		Assert.assertEquals("1.0in", responsivePane.getActiveLayout().describeSizeConstraints());
 		// AND the first ref should now hold the calendar picker
 		Assert.assertEquals(1, lRef1.getChildren().size());
 		Assert.assertEquals(0, lRef2.getChildren().size());
@@ -261,9 +293,9 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("3.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 		Assert.assertTrue(responsivePane.getScene().getStylesheets().get(0).endsWith("tablet.css"));
-		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -271,9 +303,9 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("1.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("1.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 		Assert.assertTrue(responsivePane.getScene().getStylesheets().get(0).endsWith("phone.css"));
-		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -285,14 +317,14 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some scene stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
-			responsivePane.addSceneStylesheet(Width.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Width.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Width.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-			responsivePane.addSceneStylesheet(Width.inches(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inch(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inch(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inch(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addSceneStylesheet(Width.inch(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("width=3.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("width=3.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -300,7 +332,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("width=1.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("width=1.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -318,7 +350,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the tablet stylesheet should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 		
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -326,7 +358,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN phone stylesheet should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -346,7 +378,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the phablet layout should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 	}
 
 	// ---------------------------------------
@@ -368,9 +400,9 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("3.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("3.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 		Assert.assertTrue(responsivePane.getStylesheets().get(0).endsWith("tablet.css"));
-		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -378,9 +410,9 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("1.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("1.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 		Assert.assertTrue(responsivePane.getStylesheets().get(0).endsWith("phone.css"));
-		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("0.0in", responsivePane.getActiveSceneStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -392,14 +424,14 @@ public class ResponsivePaneTest extends GuiTest {
 		// GIVEN a pane with some My stylesheets 
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			setStageSizeInInch(5.0, 10.0); // this is a diagonal size of over 11, but the width is only 5
-			responsivePane.addMyStylesheet(Width.inches(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
-			responsivePane.addMyStylesheet(Width.inches(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-			responsivePane.addMyStylesheet(Width.inches(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-			responsivePane.addMyStylesheet(Width.inches(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inch(40.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inch(1.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inch(3.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+			responsivePane.addMyStylesheet(Width.inch(10.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("width=3.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("width=3.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -407,7 +439,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the correct one should be active
-		Assert.assertEquals("width=1.0in", responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals("width=1.0in", responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -425,7 +457,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the tablet stylesheet should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("TABLET").toString(), responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 		
 		// WHEN the pane is sized smaller 
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -433,7 +465,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN phone stylesheet should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHONE").toString(), responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 	}
 
 	/**
@@ -453,7 +485,7 @@ public class ResponsivePaneTest extends GuiTest {
 		});
 		
 		// THEN the phablet layout should be active
-		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveMyStylesheet().getSizeAtLeast().toString());
+		Assert.assertEquals(responsivePane.getDeviceSize("PHABLET").toString(), responsivePane.getActiveMyStylesheet().describeSizeConstraints());
 	}
 
 
