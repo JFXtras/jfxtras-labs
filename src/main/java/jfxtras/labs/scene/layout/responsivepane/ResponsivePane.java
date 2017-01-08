@@ -220,7 +220,7 @@ public class ResponsivePane extends StackPane {
 		// default device sizes
 		setDeviceSize(Device.PHONE, Diagonal.inch(3.5));
 		setDeviceSize(Device.TABLET, Diagonal.inch(7.0));
-		setDeviceSize(Device.DESKTOP, Diagonal.inch(10.5));
+		setDeviceSize(Device.DESKTOP, Diagonal.inch(13.0));
 		
 		// react to changes in the available layouts and stylesheets
 		layouts.addListener( (javafx.collections.ListChangeListener.Change<? extends Layout> c) -> {
