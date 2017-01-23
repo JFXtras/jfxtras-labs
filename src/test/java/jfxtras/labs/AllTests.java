@@ -37,6 +37,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ BigDecimalFieldTest.class
+, jfxtras.labs.scene.layout.responsivepane.ResponsivePaneTest.class
+, jfxtras.labs.scene.layout.responsivepane.ResponsivePaneFXMLTest.class
 })
 public class AllTests {
 
