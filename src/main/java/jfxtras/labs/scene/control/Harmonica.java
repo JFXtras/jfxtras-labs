@@ -2,6 +2,8 @@ package jfxtras.labs.scene.control;
 
 import java.util.Calendar;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -65,6 +67,25 @@ public class Harmonica extends Control {
 	/** tabs */
 	public ObservableList<Tab> tabs() { return tabs; }
 	final private ObservableList<Tab> tabs =  javafx.collections.FXCollections.observableArrayList();
+	
+	/**
+	 * Convenience method
+	 * @param name
+	 * @param node
+	 * @return
+	 */
+	public Tab addTab(String name, Node node) {
+		Tab lTab = new Tab(name, node);
+		tabs.add(lTab);
+		return lTab;
+	}
+	
+	/** visibleTab: enable the specifying of the time part in a Calendar. Only applicable in SINGLE mode. */
+	public ObjectProperty<Tab> visibleTabProperty() { return visibleTabObjectProperty; }
+	volatile private ObjectProperty<Tab> visibleTabObjectProperty = new SimpleObjectProperty<Tab>(this, "visibleTab", null);
+	public Tab getVisibleTab() { return visibleTabObjectProperty.getValue(); }
+	public void setVisibleTab(Tab value) { visibleTabObjectProperty.setValue(value); }
+	public Harmonica withVisibleTab(Tab value) { setVisibleTab(value); return this; }
 
 	// ==================================================================================================================
 	// TAB
@@ -84,6 +105,13 @@ public class Harmonica extends Control {
 		
 		public Node getNode() {
 			return node;
+		}
+		
+		public String toString() {
+			return super.toString() 
+			     + ", name=" + name
+			     + ", node=" + node
+			     ;
 		}
 	}
 }
