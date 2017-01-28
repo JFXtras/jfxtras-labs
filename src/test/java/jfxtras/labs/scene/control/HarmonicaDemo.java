@@ -1,29 +1,11 @@
 package jfxtras.labs.scene.control;
 
-import org.tbee.javafx.scene.layout.fxml.MigPane;
-
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.layout.responsivepane.Ref;
-import jfxtras.labs.scene.layout.responsivepane.ResponsivePane;
-import jfxtras.scene.control.CalendarPicker;
-import jfxtras.scene.layout.HBox;
-import jfxtras.scene.layout.VBox;
-import net.miginfocom.layout.CC;
-import net.miginfocom.layout.LC;
 
 public class HarmonicaDemo extends Application {
 
@@ -36,12 +18,22 @@ public class HarmonicaDemo extends Application {
 		
 		Harmonica lHarmonica = new Harmonica();
 		lHarmonica.tabs().add(new Harmonica.Tab("test1", new Label("test 1")));
-		lHarmonica.tabs().add(new Harmonica.Tab("test2", new Label("test 2")));
-		lHarmonica.tabs().add(new Harmonica.Tab("test3", new Label("test 3")));
+		lHarmonica.tabs().add(new Harmonica.Tab("test2", createTree(5) ));
+		lHarmonica.tabs().add(new Harmonica.Tab("test3", createTree(500) ));
 
 		// show
 		primaryStage.setScene(new Scene(lHarmonica, 1700, 1000));
 		primaryStage.sizeToScene();
 		primaryStage.show();
+	}
+	
+	private TreeView<String> createTree(int size) {
+		TreeItem<String> rootItem = new TreeItem<String>("Tree " + size);
+		rootItem.setExpanded(true);
+		for (int i = 0; i < size; i++) {
+			rootItem.getChildren().add(new TreeItem<String>("Item " + i));
+		}
+		TreeView<String> treeView = new TreeView<String>(rootItem);
+		return treeView;
 	}
 }
