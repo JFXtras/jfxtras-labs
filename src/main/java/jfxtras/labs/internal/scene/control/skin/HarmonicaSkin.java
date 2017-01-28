@@ -91,9 +91,13 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 	private void setVGrow(Node node) {
 		for (Node lNode : vbox.getChildren()) {
 			if (lNode instanceof BorderPane) {
+				BorderPane lBorderPane = (BorderPane)lNode;
 				lNode.setVisible(node == lNode);
 				lNode.setManaged(lNode.isVisible());
 				VBox.setVgrow(lNode, (lNode.isVisible() ? Priority.ALWAYS : Priority.NEVER) );
+				if (lNode.isVisible()) {
+					lBorderPane.getCenter().requestFocus();
+				}
 			}
 		}
 	}

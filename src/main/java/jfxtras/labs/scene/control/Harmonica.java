@@ -44,13 +44,13 @@ public class Harmonica extends Control {
 		this.getStyleClass().add(Harmonica.class.getSimpleName());
 	}
 
-//	/**
-//	 * Return the path to the CSS file so things are setup right
-//	 */
-//	@Override public String getUserAgentStylesheet()
-//	{
-//		return Harmonica.class.getResource("/jfxtras/internal/scene/control/" + Harmonica.class.getSimpleName() + ".css").toExternalForm();
-//	}
+	/**
+	 * Return the path to the CSS file so things are setup right
+	 */
+	@Override public String getUserAgentStylesheet()
+	{
+		return Harmonica.class.getResource("/jfxtras/labs/internal/scene/control/" + Harmonica.class.getSimpleName() + ".css").toExternalForm();
+	}
 	
 	@Override public Skin<?> createDefaultSkin() {
 		return new jfxtras.labs.internal.scene.control.skin.HarmonicaSkin(this); 
