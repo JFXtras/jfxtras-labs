@@ -21,6 +21,19 @@ public class Harmonica extends Control {
 		construct();
 	}
 	
+	/**
+	 * 
+	 */
+	public Harmonica(Tab... tabs)
+	{
+		construct();
+		
+		// add tabs
+		for (Tab lTab : tabs) {
+			this.tabs.add(lTab);
+		}
+	}
+	
 	/*
 	 * 
 	 */
