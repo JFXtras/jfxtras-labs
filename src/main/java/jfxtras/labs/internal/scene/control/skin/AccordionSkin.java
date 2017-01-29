@@ -6,16 +6,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
-import jfxtras.labs.scene.control.Harmonica;
-import jfxtras.labs.scene.control.Harmonica.Tab;
+import jfxtras.labs.scene.control.AccordionPane;
+import jfxtras.labs.scene.control.AccordionPane.Tab;
 import jfxtras.scene.layout.VBox;
 
-public class HarmonicaSkin extends SkinBase<Harmonica> {
+public class AccordionSkin extends SkinBase<AccordionPane> {
 
 	/**
 	 * 
 	 */
-	public HarmonicaSkin(Harmonica control) {
+	public AccordionSkin(AccordionPane control) {
 		super(control);
 		construct();
 	}
@@ -44,18 +44,17 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 	private void monitorTabs()
 	{
 		// react to changes
-		getSkinnable().tabs().addListener(new ListChangeListener<Harmonica.Tab>() 
+		getSkinnable().tabs().addListener(new ListChangeListener<AccordionPane.Tab>() 
 		{
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Harmonica.Tab> change)
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends AccordionPane.Tab> change)
 			{
 				try {
 					while (change.next()) {
-						for (Harmonica.Tab lTab : change.getAddedSubList()) {
+						for (AccordionPane.Tab lTab : change.getAddedSubList()) {
 							addTab(lTab);
 						}
-						for (Harmonica.Tab lTab : change.getRemoved()) {
-							System.out.println("Removing " + lTab);
+						for (AccordionPane.Tab lTab : change.getRemoved()) {
 							removeTab(lTab);
 						}
 					}
@@ -66,7 +65,7 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 		});
 		
 		// add any already existing tabs
-		for (Harmonica.Tab lTab : getSkinnable().tabs()) {
+		for (AccordionPane.Tab lTab : getSkinnable().tabs()) {
 			addTab(lTab);
 		}
 	}
@@ -89,22 +88,20 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 	 * 
 	 * @param tab
 	 */
-	private void addTab(Harmonica.Tab tab) {
+	private void addTab(AccordionPane.Tab tab) {
 		
 		// check
-		if (tab.getName() == null) {
-			throw new NullPointerException("Harmonica tabs must have name set");
-		}
 		if (tab.getNode() == null) {
 			throw new NullPointerException("Harmonica tabs must have node set");
 		}
+		idCounter++;
 		
 		// add the tab button
-		TabButton lTabButton = new TabButton(tab.getName());
+		TabButton lTabButton = new TabButton(tab);
 		vbox.add(lTabButton, new VBox.C().maxWidth(Double.MAX_VALUE));
 		
 		// add the tab pane
-		TabPane lTabPane = new TabPane(tab.getNode());
+		TabPane lTabPane = new TabPane(tab);
 		vbox.add(lTabPane, new VBox.C().maxWidth(Double.MAX_VALUE).vgrow(Priority.ALWAYS)); // since only one TabPane is visible at any given time, all TabPanes can be ALWAYS
 
 		// on click of the button, make the pane visible (and hide any visible ones)
@@ -120,6 +117,7 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 		// make sure the display is up to date
 		refresh();
 	}
+	private long idCounter = 0l;
 
 	/**
 	 * TODO: what if the visible tab is removed
@@ -185,14 +183,18 @@ public class HarmonicaSkin extends SkinBase<Harmonica> {
 	}
 	
 	class TabButton extends Button {
-		TabButton(String name) {
-			super(name);
+		TabButton(AccordionPane.Tab tab) {
+			super();
+			setId(this.getClass().getSimpleName() + "-" + idCounter);
+			textProperty().bind(tab.textProperty());
+			graphicProperty().bind(tab.iconProperty());
 		}
 	}
 	
 	class TabPane extends BorderPane {
-		TabPane(Node node) {
-			super(node);
+		TabPane(AccordionPane.Tab tab) {
+			super(tab.getNode());
+			setId(this.getClass().getSimpleName() + "-" + idCounter);
 			//for debugging setStyle("-fx-border-color:red; -fx-border-width:1px;"); 
 		}
 		

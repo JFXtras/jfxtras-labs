@@ -7,19 +7,19 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 
-public class HarmonicaDemo extends Application {
+public class AccordionDemo extends Application {
 
 	public static void main(final String[] args) {
-		Application.launch(HarmonicaDemo.class, args);
+		Application.launch(AccordionDemo.class, args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		Harmonica lHarmonica = new Harmonica();
-		lHarmonica.tabs().add(new Harmonica.Tab("test1", new Label("test 1")));
-		lHarmonica.tabs().add(new Harmonica.Tab("test2", createTree(5) ));
-		lHarmonica.tabs().add(new Harmonica.Tab("test3", createTree(500) ));
+		AccordionPane lHarmonica = new AccordionPane();
+		lHarmonica.addTab("test1", new Label("test 1"));
+		lHarmonica.addTab("test2", createTree(5) );
+		lHarmonica.addTab("test3", createTree(500));
 
 		// show
 		primaryStage.setScene(new Scene(lHarmonica, 1700, 1000));

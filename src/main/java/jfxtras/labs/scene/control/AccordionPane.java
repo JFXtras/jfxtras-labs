@@ -11,14 +11,14 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import jfxtras.scene.control.CalendarPicker;
 
-public class Harmonica extends Control {
+public class AccordionPane extends Control {
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	
 	/**
 	 * 
 	 */
-	public Harmonica()
+	public AccordionPane()
 	{
 		construct();
 	}
@@ -26,7 +26,7 @@ public class Harmonica extends Control {
 	/**
 	 * 
 	 */
-	public Harmonica(Tab... tabs)
+	public AccordionPane(Tab... tabs)
 	{
 		construct();
 		
@@ -43,7 +43,7 @@ public class Harmonica extends Control {
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(Harmonica.class.getSimpleName());
+		this.getStyleClass().add(AccordionPane.class.getSimpleName());
 	}
 
 	/**
@@ -51,18 +51,18 @@ public class Harmonica extends Control {
 	 */
 	@Override public String getUserAgentStylesheet()
 	{
-		return Harmonica.class.getResource("/jfxtras/labs/internal/scene/control/" + Harmonica.class.getSimpleName() + ".css").toExternalForm();
+		return AccordionPane.class.getResource("/jfxtras/labs/internal/scene/control/" + AccordionPane.class.getSimpleName() + ".css").toExternalForm();
 	}
 	
 	@Override public Skin<?> createDefaultSkin() {
-		return new jfxtras.labs.internal.scene.control.skin.HarmonicaSkin(this); 
+		return new jfxtras.labs.internal.scene.control.skin.AccordionSkin(this); 
 	}
 
 	// ==================================================================================================================
 	// PROPERTIES
 
 	/** Id: for a fluent API */
-	public Harmonica withId(String value) { setId(value); return this; }
+	public AccordionPane withId(String value) { setId(value); return this; }
 
 	/** tabs */
 	public ObservableList<Tab> tabs() { return tabs; }
@@ -75,42 +75,47 @@ public class Harmonica extends Control {
 	 * @return
 	 */
 	public Tab addTab(String name, Node node) {
-		Tab lTab = new Tab(name, node);
+		Tab lTab = new Tab().withText(name).withNode(node);
 		tabs.add(lTab);
 		return lTab;
 	}
 	
-	/** visibleTab: enable the specifying of the time part in a Calendar. Only applicable in SINGLE mode. */
+	/** visibleTab */
 	public ObjectProperty<Tab> visibleTabProperty() { return visibleTabObjectProperty; }
 	volatile private ObjectProperty<Tab> visibleTabObjectProperty = new SimpleObjectProperty<Tab>(this, "visibleTab", null);
 	public Tab getVisibleTab() { return visibleTabObjectProperty.getValue(); }
 	public void setVisibleTab(Tab value) { visibleTabObjectProperty.setValue(value); }
-	public Harmonica withVisibleTab(Tab value) { setVisibleTab(value); return this; }
+	public AccordionPane withVisibleTab(Tab value) { setVisibleTab(value); return this; }
 
 	// ==================================================================================================================
 	// TAB
 
 	public static class Tab {
 
-		public Tab(String name, Node node) {
-			this.name = name;
-			this.node = node;
-		}
-		final private String name;
-		final private Node node;
+		/** text */
+		public ObjectProperty<String> textProperty() { return textObjectProperty; }
+		volatile private ObjectProperty<String> textObjectProperty = new SimpleObjectProperty<String>(this, "text", null);
+		public String getText() { return textObjectProperty.getValue(); }
+		public void setText(String value) { textObjectProperty.setValue(value); }
+		public Tab withText(String value) { setText(value); return this; }
 		
-		public String getName() {
-			return name;
-		}
+		/** icon */
+		public ObjectProperty<Node> iconProperty() { return iconObjectProperty; }
+		volatile private ObjectProperty<Node> iconObjectProperty = new SimpleObjectProperty<Node>(this, "icon", null);
+		public Node getIcon() { return iconObjectProperty.getValue(); }
+		public void setIcon(Node value) { iconObjectProperty.setValue(value); }
+		public Tab withIcon(Node value) { setIcon(value); return this; }
 		
-		public Node getNode() {
-			return node;
-		}
+		/** node */
+		public ObjectProperty<Node> nodeProperty() { return nodeObjectProperty; }
+		volatile private ObjectProperty<Node> nodeObjectProperty = new SimpleObjectProperty<Node>(this, "node", null);
+		public Node getNode() { return nodeObjectProperty.getValue(); }
+		public void setNode(Node value) { nodeObjectProperty.setValue(value); }
+		public Tab withNode(Node value) { setNode(value); return this; }
 		
 		public String toString() {
 			return super.toString() 
-			     + ", name=" + name
-			     + ", node=" + node
+			     + ", text=" + getText()
 			     ;
 		}
 	}
