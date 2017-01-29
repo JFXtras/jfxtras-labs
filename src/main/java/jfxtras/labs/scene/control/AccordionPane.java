@@ -70,14 +70,29 @@ public class AccordionPane extends Control {
 	
 	/**
 	 * Convenience method
-	 * @param name
-	 * @param node
-	 * @return
 	 */
-	public Tab addTab(String name, Node node) {
+	public AccordionPane addTab(String name, Node node) {
 		Tab lTab = new Tab().withText(name).withNode(node);
 		tabs.add(lTab);
-		return lTab;
+		return this;
+	}
+	
+	/**
+	 * Convenience method
+	 */
+	public AccordionPane addTab(String name, Node icon, Node node) {
+		Tab lTab = new Tab().withText(name).withIcon(icon).withNode(node);
+		tabs.add(lTab);
+		return this;
+	}
+	
+	/**
+	 * Convenience method
+	 */
+	public AccordionPane addTab(Node icon, Node node) {
+		Tab lTab = new Tab().withIcon(icon).withNode(node);
+		tabs.add(lTab);
+		return this;
 	}
 	
 	/** visibleTab */
