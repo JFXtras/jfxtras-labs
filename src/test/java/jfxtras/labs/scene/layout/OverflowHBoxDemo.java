@@ -15,8 +15,8 @@ public class OverflowHBoxDemo extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		
 		OverflowHBox lOverflowHBox = new OverflowHBox();
-		for (int i = 1; i < 10; i++) {
-			lOverflowHBox.add(new Button("label " + i));
+		for (int i = 1; i < 7; i++) {
+			lOverflowHBox.add(new Button("much longer label " + i));
 		}
 		
 		// show
