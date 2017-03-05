@@ -1,29 +1,52 @@
 package jfxtras.labs.scene.layout;
 
 
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import jfxtras.scene.layout.HBox;
+import jfxtras.scene.layout.VBox;
 import jfxtras.util.NodeUtil;
 
 //TODO: can we just use Pane and just place the hbox and button?
 public class OverflowHBox extends StackPane { 
 	
 	public OverflowHBox() {
-		super();
-		createNodes();
-		
-		hbox.widthProperty().addListener( (observable) -> {
-		});
+		this(0.0, 0.0);
 	}
 	
+	public OverflowHBox(double hboxSpacing, double vboxSpacing) {
+		super();
+		this.hboxSpacing = hboxSpacing;
+		this.vboxSpacing = vboxSpacing;
+		
+		// create nodes
+		createNodes();
+
+		// modify the style classes depending on in which collection they are
+		hbox.getChildren().addListener((ListChangeListener<Node>) change -> {
+			while(change.next()) {
+				for (Node n : change.getAddedSubList()) {
+					n.getStyleClass().add(OUTSIDE_CLASS);
+					n.getStyleClass().remove(POPUP_CLASS);
+				}
+				for (Node n : change.getRemoved()) {
+					n.getStyleClass().remove(OUTSIDE_CLASS);
+					n.getStyleClass().add(POPUP_CLASS);
+				}
+			}
+		});
+	}
+	final private double hboxSpacing;
+	final private double vboxSpacing;
+	private final String OUTSIDE_CLASS = OverflowHBox.class.getSimpleName() + "_outside";
+	private final String POPUP_CLASS = OverflowHBox.class.getSimpleName() + "_popup";
+	
+
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
 	
@@ -31,11 +54,23 @@ public class OverflowHBox extends StackPane {
 		hbox.getChildren().add(node);
 	}
 	
+	public void add(Node node, HBox.C hboxC, VBox.C vboxC) {
+		hbox.getChildren().add(node);
+		hbox.setConstraint(node, hboxC);
+		vbox.setConstraint(node, vboxC);
+	}
+	
 	// ==========================================================================================================================================================================================================================================
 	// NODE
 	
 	private void createNodes() {
-//		borderPane.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
+		hbox = new HBox(hboxSpacing);
+		vbox = new VBox(vboxSpacing);
+		dropDown = new ToggleButton("V");
+		borderPane = new MyBorderPane();
+		popup = new Popup();
+
+		//		borderPane.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
 //		hbox.setStyle("-fx-border-color: green; -fx-border-width: 1; -fx-border-style: dashed;");
 		getChildren().add(borderPane);
 		dropDown.onActionProperty().set(event -> {
@@ -47,12 +82,15 @@ public class OverflowHBox extends StackPane {
         popup.setHideOnEscape(true);
         popup.getContent().add(vbox);
         popup.onHiddenProperty().addListener((observable) -> dropDown.setSelected(false) ); // TODO: not working
+        popup.focusedProperty().addListener((observable) -> {
+        	System.out.println("focus " + popup.isFocused());
+        });
 	}
-	private HBox hbox = new HBox();
-	private ToggleButton dropDown = new ToggleButton("V");
-	private MyBorderPane borderPane = new MyBorderPane();
-	private VBox vbox = new VBox();
-	private Popup popup = new Popup();
+	private HBox hbox;
+	private ToggleButton dropDown;
+	private MyBorderPane borderPane;
+	private VBox vbox;
+	private Popup popup;
 	
 	class MyBorderPane extends BorderPane {
 		public MyBorderPane() {
@@ -78,11 +116,13 @@ public class OverflowHBox extends StackPane {
 	
 	// ==========================================================================================================================================================================================================================================
 	// LAYOUT
-	
+
     @Override 
     protected void layoutChildren() {
     	super.layoutChildren();
-    	// TODO: what hebbens with insets?
+    	
+    	// TODO: what happens with spacing?
+    	// TODO: what happens with insets?
     	
     	// should we remove a node?
 		while (hbox.getChildren().size() > 0) {
@@ -92,7 +132,7 @@ public class OverflowHBox extends StackPane {
 			if (lActualWidth <= lPreferredWidth) {
 				ObservableList<Node> children = hbox.getChildren();
 				Node removedNode = children.remove(children.size() - 1);
-				System.out.println("removing " + removedNode.prefWidth(-1));				
+				System.out.println("removing " + removedNode.prefWidth(-1));
 				vbox.getChildren().add(0, removedNode);
 		    	super.layoutChildren();
 			}
@@ -104,15 +144,15 @@ public class OverflowHBox extends StackPane {
 		// should we add a node?
 		while (vbox.getChildren().size() > 0) {
 			ObservableList<Node> children = vbox.getChildren();
-			Node candidateToBeAdded = children.get(0);
-			double candidatePrefWidth = Math.ceil(candidateToBeAdded.prefWidth(-1)); // if a node is removed from the hbox, the hbox resizes with its ceiled integer. This may cause the node to be added again here immediately.
+			Node candidateToBeAddedNode = children.get(0);
+			double candidatePrefWidth = Math.ceil(candidateToBeAddedNode.prefWidth(-1) + vbox.getSpacing()); // if a node is removed from the hbox, the hbox resizes with its ceiled integer. This may cause the node to be added again here immediately.
 			double lActualWidth = getWidth();
 			double lPreferredWidth = hbox.prefWidth(-1) + dropDown.prefWidth(-1) + candidatePrefWidth;
 	    	System.out.println("add " + lActualWidth + " > " + hbox.prefWidth(-1) + " + " + dropDown.prefWidth(-1) + " + " + candidatePrefWidth + " (" + lPreferredWidth + ")");
 			if (lActualWidth > lPreferredWidth) {
 				System.out.println("adding");
-				children.remove(candidateToBeAdded);
-				hbox.getChildren().add(candidateToBeAdded);
+				children.remove(candidateToBeAddedNode);
+				hbox.getChildren().add(candidateToBeAddedNode);
 		    	super.layoutChildren();
 			}
 			else {
