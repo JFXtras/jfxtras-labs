@@ -50,7 +50,10 @@ repositories {
 dependencies {
     compile "org.jfxtras:jfxtras-all:${project.version}"
     testCompile "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
-    testCompile "org.loadui:testFx:3.1.2"
+	testCompile "org.testfx:testfx-core:4.0.+"
+	testCompile "org.testfx:testfx-junit:4.0.+", {
+		exclude group: "junit", module: "junit"
+	}
     testCompile "org.jfxtras:jfxtras-test-support:${project.version}"
     testCompile "org.jfxtras:jfxtras-controls:${project.version}"
 	testCompile 'com.miglayout:miglayout-javafx:5.1-SNAPSHOT'
