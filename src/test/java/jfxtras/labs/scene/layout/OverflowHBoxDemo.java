@@ -25,8 +25,8 @@ public class OverflowHBoxDemo extends Application {
 		
 		for (int i = 1; i < 10; i++) {
 			Button node = new Button("much longer label " + i);			
-			lOverflowHBox.add(node, new HBox.C().margin(new Insets(10.0,10.0,10.0,10.0)), new VBox.C().margin(new Insets(10.0,10.0,10.0,10.0)));
-//			lOverflowHBox.add(node);
+//			lOverflowHBox.add(node, new HBox.C().margin(new Insets(10.0,10.0,10.0,10.0)), new VBox.C().margin(new Insets(10.0,10.0,10.0,10.0)));
+			lOverflowHBox.add(node);
 			node.setOnAction(event -> {
 				lTextField.requestFocus();
 			});

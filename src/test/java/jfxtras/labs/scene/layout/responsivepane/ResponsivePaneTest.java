@@ -31,11 +31,11 @@ package jfxtras.labs.scene.layout.responsivepane;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.loadui.testfx.GuiTest;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import jfxtras.labs.test.JFXtrasGuiTest;
 import jfxtras.scene.control.CalendarPicker;
 import jfxtras.test.TestUtil;
 
@@ -43,7 +43,7 @@ import jfxtras.test.TestUtil;
  * 
  */
 // TODO: reusableNodes and Refs
-public class ResponsivePaneTest extends GuiTest {
+public class ResponsivePaneTest extends JFXtrasGuiTest {
 
 	/**
 	 * 

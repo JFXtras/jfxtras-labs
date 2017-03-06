@@ -47,6 +47,14 @@ public class OverflowHBox extends StackPane {
 	private final String POPUP_CLASS = OverflowHBox.class.getSimpleName() + "_popup";
 	
 
+	/**
+	 * Return the path to the CSS file so things are setup right
+	 */
+	@Override public String getUserAgentStylesheet()
+	{
+		return NodeUtil.deriveCssFile(this);
+	}
+	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
 	
@@ -65,17 +73,22 @@ public class OverflowHBox extends StackPane {
 	
 	private void createNodes() {
 		hbox = new HBox(hboxSpacing);
-		vbox = new VBox(vboxSpacing);
+		vbox = new VBox(vboxSpacing){
+			// As of 1.8.0_40 CSS files are added in the scope of a control, the popup does not fall under the control, so the stylesheet must be reapplied 
+			// When JFxtras is based on 1.8.0_40+: @Override 
+			public String getUserAgentStylesheet() {
+				return OverflowHBox.this.getUserAgentStylesheet();
+			}
+		};
+		vbox.getStyleClass().add(OverflowHBox.class.getSimpleName() + "Popup");
 		dropDown = new ToggleButton("V");
-		borderPane = new MyBorderPane();
-		popup = new Popup();
-
-		//		borderPane.setStyle("-fx-border-color: red; -fx-border-width: 1; -fx-border-style: dashed;");
-//		hbox.setStyle("-fx-border-color: green; -fx-border-width: 1; -fx-border-style: dashed;");
-		getChildren().add(borderPane);
 		dropDown.onActionProperty().set(event -> {
 			showPopup();
 		});
+
+		borderPane = new MyBorderPane();
+		getChildren().add(borderPane);
+
 		popup = new Popup();
         popup.setAutoFix(true);
         popup.setAutoHide(true);
@@ -85,6 +98,7 @@ public class OverflowHBox extends StackPane {
         popup.focusedProperty().addListener((observable) -> {
         	System.out.println("focus " + popup.isFocused());
         });
+        
 	}
 	private HBox hbox;
 	private ToggleButton dropDown;

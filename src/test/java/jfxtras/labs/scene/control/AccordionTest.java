@@ -31,13 +31,10 @@ package jfxtras.labs.scene.control;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.loadui.testfx.GuiTest;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import jfxtras.scene.control.CalendarPicker;
 import jfxtras.test.JFXtrasGuiTest;
 import jfxtras.test.TestUtil;
 

@@ -29,10 +29,6 @@
 
 package jfxtras.labs.test;
 
-import javafx.scene.input.KeyCode;
-
-import org.loadui.testfx.GuiTest;
-
 /**
  * 
  * @author Tom Eugelink
