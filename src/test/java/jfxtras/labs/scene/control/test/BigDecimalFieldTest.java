@@ -29,27 +29,26 @@
 
 package jfxtras.labs.scene.control.test;
 
+import static javafx.scene.input.KeyCode.ENTER;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import jfxtras.labs.scene.control.BigDecimalField;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.loadui.testfx.GuiTest;
-
-import static javafx.scene.input.KeyCode.ENTER;
+import jfxtras.labs.test.JFXtrasGuiTest;
 
 /**
  * GUI-Test for {@link jfxtras.labs.scene.control.BigDecimalField}
  * Created by Thomas Bolz on 01.01.14.
  */
-public class BigDecimalFieldTest extends GuiTest {
+public class BigDecimalFieldTest extends JFXtrasGuiTest {
 
     public Parent getRootNode() {
         StackPane root = new StackPane();
