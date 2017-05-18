@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.HBox" spacing="10.0" styleClass="bordered-titled-border" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="table" editable="true" onKeyPressed="#tableKeyPressed" prefHeight="120.0" prefWidth="670.0">
+         <columns>
+            <TableColumn fx:id="dataColumn" prefWidth="189.0" text="data" />
+            <TableColumn fx:id="nameColumn" prefWidth="177.0" text="%name" />
+            <TableColumn fx:id="primaryColumn" prefWidth="75.0" text="%primary" />
+         </columns>
+      </TableView>
+      <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#handleDelete" text="%delete" />
+   </children>
+</fx:root>
