@@ -7,12 +7,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -45,20 +43,6 @@ import javafx.util.Callback;
 
 public abstract class TripleHBox<T> extends HBox
 {
-	@FXML final protected ResourceBundle resources;
-	static private String language = "en";
-	static private Locale myLocale = new Locale(language);
-	static private ResourceBundle defaultResources  = ResourceBundle.getBundle("jfxtras.labs.scene.control.triple.Bundle", myLocale);
-	
-	private List<T> beanList;
-	public List<T> getBeanList() {
-		return beanList;
-	}
-	public void setBeanList(List<T> beanList) {
-		this.beanList = beanList;
-	}
-
-	//	@FXML protected ObservableList<Triple> tableList;
 	// initialize tableList with extractor so change listeners fire when properties change.
 	@FXML protected final ObservableList<Triple> tableList = FXCollections.observableArrayList(e -> new Observable[] {
 			e.labelProperty(),
@@ -70,6 +54,24 @@ public abstract class TripleHBox<T> extends HBox
 	@FXML protected TableColumn<Triple, String> nameColumn;
 	@FXML protected TableColumn<Triple, Boolean> primaryColumn;
 	@FXML private Button deleteButton;
+	
+	@FXML final protected ResourceBundle resources;
+	static private String language = "en";
+	static private Locale myLocale = new Locale(language);
+	static private ResourceBundle defaultResources  = ResourceBundle.getBundle("jfxtras.labs.scene.control.triple.Bundle", myLocale);
+	
+	private List<T> beanList;
+	public List<T> getBeanList() {
+		return beanList;
+	}
+	public void setBeanList(List<T> beanList) {
+		this.beanList = beanList;
+		List<Triple> tripleList = beanList.stream()
+			.map(e -> converter.fromBeanElement(e))
+			.collect(Collectors.toList());
+		tableList.clear();
+		tableList.addAll(tripleList);
+	}
 	
 	String emptyString = "empty"; // TODO - USE ResourceBundle
 	Callback<CellDataFeatures<Triple, String>, ObservableValue<String>> tripleValueCellValueFactory = (cellData) ->
@@ -83,24 +85,27 @@ public abstract class TripleHBox<T> extends HBox
         }
 	};
 	
-	private Predicate<String> validateElement;
-	private String valueName;
-	private String[] alertTexts;
-	private String[] nameOptions;
-
+	private final Predicate<String> validateValue;
+	private final String valueName;
+	private final String[] alertTexts;
+	private final String[] nameOptions;
+	private final TripleConverter<T> converter;
+	
 	// CONSTRUCTOR
 	public TripleHBox(
-			Predicate<String> validateElement,
+			Predicate<String> validateValue,
 			String valueName,
-			Callback<Triple, T> createBeanItemCallback,
+			TripleConverter<T> converter,
+//			Callback<Triple, T> createBeanItemCallback,
 			String[] alertTexts,
 			String[] nameOptions,
 			ResourceBundle resources
 			)
 	{
 		super();
-		this.validateElement = validateElement;
+		this.validateValue = validateValue;
 		this.valueName = valueName;
+		this.converter = converter;
 		this.alertTexts = alertTexts;
 		this.nameOptions = nameOptions;
 		this.resources = (resources == null) ? defaultResources : resources;
@@ -119,8 +124,9 @@ public abstract class TripleHBox<T> extends HBox
                 	for (int i=from; i<to; i++)
                 	{
                 		Triple t = change.getList().get(i);
-                		validateElement.test(t.getValue());
-                		T e = createBeanItemCallback.call(t);
+                		validateValue.test(t.getValue());
+                		T e = converter.toBeanElement(t);
+//                		T e = createBeanItemCallback.call(t);
                 		System.out.println("index:"+i + " " + e + " " + beanList);
                 		if (i < beanList.size()-1)
                 		{
@@ -242,7 +248,7 @@ public abstract class TripleHBox<T> extends HBox
 //        	T n = createNewElementCallback.call(null);
 //        	T n = getNewInstance(myClass);  // new instance to get validate predicate and possibly to add empty row
 //        	Predicate<String> vaildate = n.getVaildate();
-			boolean ok = validateElement.test(t.getNewValue());
+			boolean ok = validateValue.test(t.getNewValue());
           if (ok) {
               t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getNewValue());
 //              triggerProperty.set(! triggerProperty.getValue());  // flip trigger to fire change listener to write new data
@@ -285,47 +291,53 @@ public abstract class TripleHBox<T> extends HBox
         }
     }
     
-    protected class Triple
-    {
-        private final StringProperty label = new SimpleStringProperty(this, "label");
-        public StringProperty labelProperty() { return label; }
-        public void setLabel(String label) { this.label.set(label); }
-        public String getLabel() { return label.getValue(); }
-        public Triple withLabel(String value) { setLabel(value); return this; }
-
-        private final StringProperty value;
-        public StringProperty valueProperty() { return value; }
-        public String getValue() { return value.getValue(); }
-        public boolean setValue(String value) {
-            if (value != null) {
-                boolean ok = validateElement.test(value);
-                System.out.println("value ok:" + ok + " " + value);
-                if (ok)
-                {
-                    if (this.value == null)
-                        this.value.set(value);
-                    else
-                        this.value.set(value);
-                }
-                return ok;
-            }
-            return false;
-        }
-        public boolean isEmpty() { return value.getValue() == null; }
-        public Triple withValue(String value) { setValue(value); return this; }
-
-        private final BooleanProperty primary = new SimpleBooleanProperty(this, "primary", false);
-        public BooleanProperty primaryProperty() { return primary; }
-        public void setPrimary(Boolean primary) { this.primary.set(primary); }
-        public Boolean isPrimary() { return primary.getValue(); }
-        public Triple withPrimary(boolean value) { setPrimary(value); return this; }
-        
-        // Constructor
-        public Triple(String valueName)
-        {
-            value = new SimpleStringProperty(this, valueName);
-        }
-    }
+//    public class Triple
+//    {
+//        private final StringProperty label = new SimpleStringProperty(this, "label");
+//        public StringProperty labelProperty() { return label; }
+//        public void setLabel(String label) { this.label.set(label); }
+//        public String getName() { return label.getValue(); }
+//        public Triple withLabel(String value) { setLabel(value); return this; }
+//
+//        private final StringProperty value;
+//        public StringProperty valueProperty() { return value; }
+//        public String getValue() { return value.getValue(); }
+//        public boolean setValue(String value) {
+//            if (value != null) {
+//                boolean ok = validateValue.test(value);
+//                System.out.println("value ok:" + ok + " " + value);
+//                if (ok)
+//                {
+//                    if (this.value == null)
+//                        this.value.set(value);
+//                    else
+//                        this.value.set(value);
+//                }
+//                return ok;
+//            }
+//            return false;
+//        }
+//        public boolean isEmpty() { return value.getValue() == null; }
+//        public Triple withValue(String value) { setValue(value); return this; }
+//
+//        private final BooleanProperty primary = new SimpleBooleanProperty(this, "primary", false);
+//        public BooleanProperty primaryProperty() { return primary; }
+//        public void setPrimary(Boolean primary) { this.primary.set(primary); }
+//        public Boolean isPrimary() { return primary.getValue(); }
+//        public Triple withPrimary(boolean value) { setPrimary(value); return this; }
+//        
+//        // Constructor
+//        public Triple(String valueName)
+//        {
+//            value = new SimpleStringProperty(this, valueName);
+//        }
+//    }
+    
+//    public interface tripleConverter
+//    {
+//    	abstract Triple fromBeanElement(T beanElement);
+//    	abstract T toBeanElement(Triple triple);
+//    }
     
     private class EditCell3<T, E> extends TableCell<T, String>
     {
