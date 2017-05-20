@@ -1,7 +1,5 @@
 package jfxtras.labs.scene.control.triple;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -16,17 +14,16 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -38,10 +35,10 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
-public abstract class TripleHBox<T> extends HBox
+// TODO - make control instead of HBox?
+public abstract class TripleEditTable<T> extends Control
 {
 	// initialize tableList with extractor so change listeners fire when properties change.
 	@FXML protected final ObservableList<Triple> tableList = FXCollections.observableArrayList(e -> new Observable[] {
@@ -73,8 +70,8 @@ public abstract class TripleHBox<T> extends HBox
 		tableList.addAll(tripleList);
 	}
 	
-	String emptyString = "empty"; // TODO - USE ResourceBundle
-	Callback<CellDataFeatures<Triple, String>, ObservableValue<String>> tripleValueCellValueFactory = (cellData) ->
+	private String emptyString = "empty"; // TODO - USE ResourceBundle
+	private Callback<CellDataFeatures<Triple, String>, ObservableValue<String>> tripleValueCellValueFactory = (cellData) ->
 	{
         if (cellData.getValue().isEmpty())
         {
@@ -92,7 +89,7 @@ public abstract class TripleHBox<T> extends HBox
 	private final TripleConverter<T> converter;
 	
 	// CONSTRUCTOR
-	public TripleHBox(
+	public TripleEditTable(
 			Predicate<String> validateValue,
 			String valueName,
 			TripleConverter<T> converter,
@@ -109,7 +106,6 @@ public abstract class TripleHBox<T> extends HBox
 		this.alertTexts = alertTexts;
 		this.nameOptions = nameOptions;
 		this.resources = (resources == null) ? defaultResources : resources;
-        loadFxml(getClass().getResource("TripleTable.fxml"), this, this.resources);
         
         tableList.addListener((ListChangeListener.Change<? extends Triple> change) ->
         {
@@ -118,16 +114,14 @@ public abstract class TripleHBox<T> extends HBox
             {
                 if (change.wasUpdated())
                 {
-                	// TODO - NEED TO VALIDATE CHANGE
                 	int to = change.getTo();
                 	int from = change.getFrom();
                 	for (int i=from; i<to; i++)
                 	{
                 		Triple t = change.getList().get(i);
-                		validateValue.test(t.getValue());
                 		T e = converter.toBeanElement(t);
 //                		T e = createBeanItemCallback.call(t);
-                		System.out.println("index:"+i + " " + e + " " + beanList);
+//                		System.out.println("index:"+i + " " + e + " " + beanList);
                 		if (i < beanList.size()-1)
                 		{
                 			beanList.set(i, e);
@@ -150,17 +144,31 @@ public abstract class TripleHBox<T> extends HBox
         });
 	}
 	
+	@Override
+	public Skin<?> createDefaultSkin()
+	{
+		return new DefaultTripleEditTableSkin<T>(this, resources); 
+	}
+
+	// TODO - NEEDS TO BE EXPLICATELY RUN - NO FXML HERE
 	public void initialize()
 	{
+		System.out.println("skin at initialize:" + getSkin());
         table.setItems(tableList);
+        table.setOnKeyPressed(k -> 
+        {
+    	    if (k.getCode().equals(KeyCode.DELETE)) {
+    	    	Triple selectedItem = table.getSelectionModel().getSelectedItem();
+    	        if (selectedItem.valueProperty() != null)
+    	            deleteItem(selectedItem);
+    	    }
+        });
+        deleteButton.setOnAction(event ->
+        {
+			Triple selectedItem = table.getSelectionModel().getSelectedItem();
+		    if (! selectedItem.isEmpty()) deleteItem(selectedItem);
+        });
 
-		// COLUMN WIDTH - need to add up to 1
-	    nameColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.425));
-	    dataColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.43));
-	    primaryColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.14));
-	    
-        setSpacing(10);
-        setAlignment(Pos.CENTER_LEFT);
         table.setEditable(true);
         
 	    ObservableList<String> nameList = FXCollections.observableArrayList(nameOptions);
@@ -172,7 +180,7 @@ public abstract class TripleHBox<T> extends HBox
 	    primaryColumn.setCellValueFactory(cellData -> cellData.getValue().primaryProperty());
 	    primaryColumn.setCellFactory(CheckBoxTableCell.forTableColumn(primaryColumn));
 	    
-        deleteButton.setOnAction((e) -> {
+        deleteButton.setOnAction(e -> {
         	Triple selectedItem = table.getSelectionModel().getSelectedItem();
             if (! selectedItem.isEmpty()) deleteItem(selectedItem);
         });
@@ -187,22 +195,36 @@ public abstract class TripleHBox<T> extends HBox
             }
           });
         dataColumn.setOnEditCommit(new TripleValueEventHandler(tableList));
+	}
+	
+	public void setup()
+	{
+		// COLUMN WIDTH - need to add up to 1
+	    nameColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.425));
+	    dataColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.43));
+	    primaryColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.14));
+	    nameColumn.setMaxWidth(1f * Integer.MAX_VALUE * 42.5);
+	    dataColumn.setMaxWidth(1f * Integer.MAX_VALUE * 43);
+	    primaryColumn.setMaxWidth(1f * Integer.MAX_VALUE * 14);	
+	    
+	    System.out.println("columns:" + nameColumn.getWidth() + " " + dataColumn.getWidth() + " " + primaryColumn.getWidth());
+	    System.out.println("pref columns:" + nameColumn.getPrefWidth() + " " + dataColumn.getPrefWidth() + " " + primaryColumn.getPrefWidth());
 
 	}
 	
-	// TODO - REMOVE EVENT HANDLERS FROM FXML - ONLY IN JAVA
-	@FXML private void handleDelete(ActionEvent event) {
-		Triple selectedItem = table.getSelectionModel().getSelectedItem();
-	    if (! selectedItem.isEmpty()) deleteItem(selectedItem);
-	}
+//	// TODO - REMOVE EVENT HANDLERS FROM FXML - ONLY IN JAVA
+//	@FXML private void handleDelete(ActionEvent event) {
+//		Triple selectedItem = table.getSelectionModel().getSelectedItem();
+//	    if (! selectedItem.isEmpty()) deleteItem(selectedItem);
+//	}
 
-	@FXML private void tableKeyPressed(KeyEvent k) { // DELETE KEY
-	    if (k.getCode().equals(KeyCode.DELETE)) {
-	    	Triple selectedItem = table.getSelectionModel().getSelectedItem();
-	        if (selectedItem.valueProperty() != null)
-	            deleteItem(selectedItem);
-	    }
-	}
+//	@FXML private void tableKeyPressed(KeyEvent k) { // DELETE KEY
+//	    if (k.getCode().equals(KeyCode.DELETE)) {
+//	    	Triple selectedItem = table.getSelectionModel().getSelectedItem();
+//	        if (selectedItem.valueProperty() != null)
+//	            deleteItem(selectedItem);
+//	    }
+//	}
 	
     private void deleteItem(Triple selectedItem)
     {
@@ -248,8 +270,9 @@ public abstract class TripleHBox<T> extends HBox
 //        	T n = createNewElementCallback.call(null);
 //        	T n = getNewInstance(myClass);  // new instance to get validate predicate and possibly to add empty row
 //        	Predicate<String> vaildate = n.getVaildate();
-			boolean ok = validateValue.test(t.getNewValue());
-          if (ok) {
+			boolean isValueOK = validateValue.test(t.getNewValue());
+          if (isValueOK)
+          {
               t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getNewValue());
 //              triggerProperty.set(! triggerProperty.getValue());  // flip trigger to fire change listener to write new data
               System.out.println("tableList:" + tableList);
@@ -277,19 +300,19 @@ public abstract class TripleHBox<T> extends HBox
         }
     }
 	
-    private static void loadFxml(URL fxmlFile, Object rootController, ResourceBundle resources)
-    {
-        FXMLLoader loader = new FXMLLoader(fxmlFile);
-        loader.setController(rootController);
-        loader.setRoot(rootController);
-        loader.setResources(resources);
-        try {
-            loader.load();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private static void loadFxml(URL fxmlFile, Object rootController, ResourceBundle resources)
+//    {
+//        FXMLLoader loader = new FXMLLoader(fxmlFile);
+//        loader.setController(rootController);
+//        loader.setRoot(rootController);
+//        loader.setResources(resources);
+//        try {
+//            loader.load();
+//        }
+//        catch(IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     
 //    public class Triple
 //    {

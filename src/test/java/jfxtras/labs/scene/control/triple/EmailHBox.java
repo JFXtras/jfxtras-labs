@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class EmailHBox extends TripleHBox<Email>
+public class EmailHBox extends TripleEditTable<Email>
 {
 	public void initialize()
 	{

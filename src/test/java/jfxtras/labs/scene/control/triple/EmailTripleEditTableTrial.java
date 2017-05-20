@@ -16,11 +16,12 @@ public class EmailTripleEditTableTrial extends Application
     @Override
     public void start(Stage primaryStage) {
         EmailHBox e = new EmailHBox();
+//        e.setup();
         List<Email> beanList = new ArrayList<Email>();
         beanList.add(new Email("Work", "me@work.com", true));
         e.setBeanList(beanList);
 
-        Scene scene = new Scene(e, 1366, 768);
+        Scene scene = new Scene(e, 800, 300);
         primaryStage.setScene(scene);
         primaryStage.show();        
     }
