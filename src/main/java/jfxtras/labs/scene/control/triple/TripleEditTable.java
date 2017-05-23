@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,10 +15,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
@@ -36,23 +33,13 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
+import jfxtras.labs.internal.scene.control.skin.triple.DefaultTripleEditTableSkin;
 
 // TODO - make control instead of HBox?
 public abstract class TripleEditTable<T> extends Control
 {
 	// initialize tableList with extractor so change listeners fire when properties change.
-	@FXML protected final ObservableList<Triple> tableList = FXCollections.observableArrayList(e -> new Observable[] {
-			e.labelProperty(),
-			e.valueProperty(),
-			e.primaryProperty()
-			});
-	@FXML protected TableView<Triple> table;
-	@FXML protected TableColumn<Triple, String> dataColumn;
-	@FXML protected TableColumn<Triple, String> nameColumn;
-	@FXML protected TableColumn<Triple, Boolean> primaryColumn;
-	@FXML private Button deleteButton;
-	
-	@FXML final protected ResourceBundle resources;
+		
 	static private String language = "en";
 	static private Locale myLocale = new Locale(language);
 	static private ResourceBundle defaultResources  = ResourceBundle.getBundle("jfxtras.labs.scene.control.triple.Bundle", myLocale);
@@ -66,6 +53,7 @@ public abstract class TripleEditTable<T> extends Control
 		List<Triple> tripleList = beanList.stream()
 			.map(e -> converter.fromBeanElement(e))
 			.collect(Collectors.toList());
+		ObservableList<Triple> tableList = ((DefaultTripleEditTableSkin) getSkin()).getTableList();
 		tableList.clear();
 		tableList.addAll(tripleList);
 	}
@@ -106,7 +94,7 @@ public abstract class TripleEditTable<T> extends Control
 		this.alertTexts = alertTexts;
 		this.nameOptions = nameOptions;
 		this.resources = (resources == null) ? defaultResources : resources;
-        
+		System.out.println("Construct");
         tableList.addListener((ListChangeListener.Change<? extends Triple> change) ->
         {
         	System.out.println("change:" + change);
@@ -147,7 +135,7 @@ public abstract class TripleEditTable<T> extends Control
 	@Override
 	public Skin<?> createDefaultSkin()
 	{
-		return new DefaultTripleEditTableSkin<T>(this, resources); 
+		return new DefaultTripleEditTableSkin<T>(this, resources);
 	}
 
 	// TODO - NEEDS TO BE EXPLICATELY RUN - NO FXML HERE

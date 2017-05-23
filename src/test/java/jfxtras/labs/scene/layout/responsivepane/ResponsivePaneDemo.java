@@ -3,18 +3,13 @@ package jfxtras.labs.scene.layout.responsivepane;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.scene.control.CalendarPicker;
@@ -24,7 +19,6 @@ import jfxtras.scene.layout.responsivepane.Device;
 import jfxtras.scene.layout.responsivepane.Diagonal;
 import jfxtras.scene.layout.responsivepane.Ref;
 import jfxtras.scene.layout.responsivepane.ResponsivePane;
-import jfxtras.scene.layout.responsivepane.ResponsivePaneTest;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 
@@ -47,9 +41,9 @@ public class ResponsivePaneDemo extends Application {
 		responsivePane.addLayout(Device.PHONE, createPhoneLayout());
 		responsivePane.addLayout(Diagonal.inch(12.0), createDesktopLayout());		
 		// css
-		responsivePane.addSceneStylesheet(Diagonal.inch(4.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
-		responsivePane.addSceneStylesheet(Diagonal.inch(6.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
-		responsivePane.addSceneStylesheet(Diagonal.inch(12.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
+//		responsivePane.addSceneStylesheet(Diagonal.inch(4.0), ResponsivePaneTest.class.getResource("phone.css").toExternalForm());
+//		responsivePane.addSceneStylesheet(Diagonal.inch(6.0), ResponsivePaneTest.class.getResource("tablet.css").toExternalForm());
+//		responsivePane.addSceneStylesheet(Diagonal.inch(12.0), ResponsivePaneTest.class.getResource("desktop.css").toExternalForm());
 
 		// show
 		primaryStage.setScene(new Scene(responsivePane, 1700, 1000));

@@ -1,8 +1,11 @@
-package jfxtras.labs.scene.control.triple;
+package jfxtras.labs.internal.scene.control.skin.triple;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -11,26 +14,38 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import jfxtras.labs.scene.control.triple.Triple;
+import jfxtras.labs.scene.control.triple.TripleEditTable;
 
 public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>>
 {
-	private ResourceBundle resources;
-	
-	@FXML protected TableView<Triple> table;
-	@FXML protected TableColumn<Triple, String> dataColumn;
-	@FXML protected TableColumn<Triple, String> nameColumn;
-	@FXML protected TableColumn<Triple, Boolean> primaryColumn;
+	@FXML private TableView<Triple> table;
+	@FXML private TableColumn<Triple, String> dataColumn;
+	@FXML private TableColumn<Triple, String> nameColumn;
+	@FXML private TableColumn<Triple, Boolean> primaryColumn;
 	@FXML private Button deleteButton;
+	@FXML final protected ResourceBundle resources;
+
+	private final ObservableList<Triple> tableList = FXCollections.observableArrayList(e -> new Observable[] {
+			e.labelProperty(),
+			e.valueProperty(),
+			e.primaryProperty()
+			});
+	public ObservableList<Triple> getTableList() {
+		return tableList;
+	}
 //	static private String language = "en";
 //	static private Locale myLocale = new Locale(language);
 //	static private ResourceBundle defaultResources  = ResourceBundle.getBundle("jfxtras.labs.scene.control.triple.Bundle", myLocale);
 
-	protected DefaultTripleEditTableSkin(TripleEditTable<T> control, ResourceBundle resources)
+
+
+	public DefaultTripleEditTableSkin(TripleEditTable<T> control, ResourceBundle resources)
 	{
 		super(control);
 		// setup component
 		this.resources = resources;
-
+System.out.println("create nodes");
 		createNodes();
 	}
 	
@@ -51,6 +66,7 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>>
             e.printStackTrace();
         }
 		getChildren().add(hbox);
+		table.setItems(tableList);
 		
 		// COLUMN WIDTH - need to add up to 1
 	    nameColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.425));
