@@ -137,6 +137,15 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 			tableList.add(new Triple(valueName));
         }
     };
+    
+    // toggles Delete button
+    private final ChangeListener<Triple> toggleDeleteButtonChangeListener = (observable, oldSelection, newSelection) ->
+    {
+        if (newSelection.isEmpty())
+            deleteButton.setDisable(true);
+        else
+            deleteButton.setDisable(false);
+    };
 
 	private void setupListeners(List<Triple> initialTripleList)
 	{
@@ -144,6 +153,7 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 		
 	    tableList.addListener(maintainEmptyRowTripleChangeLister);
 		tableList.addListener(synchBeanItemTripleChangeLister);
+		table.getSelectionModel().selectedItemProperty().addListener(toggleDeleteButtonChangeListener);
 		if (initialTripleList != null)
 		{
 			tableList.addAll(initialTripleList);
