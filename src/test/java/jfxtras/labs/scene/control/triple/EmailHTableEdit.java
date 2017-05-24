@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class EmailHBox extends TripleEditTable<Email>
+public class EmailHTableEdit extends TripleEditTable<Email>
 {
 	private final static Pattern EMAIL_REGEX = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
 	private static Predicate<String> validateValue = (Predicate<String>) (v) -> EMAIL_REGEX.matcher(v).matches();
@@ -14,7 +14,8 @@ public class EmailHBox extends TripleEditTable<Email>
 	private static String[] alertTexts = new String[] {
 			"Invalid Email Number",
 			"Can't save email address",
-			"Enter valid email address"
+			"Enter valid email address",
+			"OK"
 	};
 	private static String[] nameOptions = new String[] {
 			"Personal",
@@ -26,13 +27,12 @@ public class EmailHBox extends TripleEditTable<Email>
 	private static ResourceBundle customBundle = null;
 	
 	// CONSTRUCTOR
-	public EmailHBox()
+	public EmailHTableEdit()
 	{
 		super(
 			validateValue,
 			valueName,
 			converter,
-//			createBeanItemCallback,
 			alertTexts,
 			nameOptions,
 			customBundle

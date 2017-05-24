@@ -15,7 +15,7 @@ public class EmailTripleEditTableTrial extends Application
     
     @Override
     public void start(Stage primaryStage) {
-        EmailHBox e = new EmailHBox();
+        EmailHTableEdit e = new EmailHTableEdit();
         List<Email> beanList = new ArrayList<Email>();
         beanList.add(new Email("Work", "me@work.com", true));
         e.setBeanList(beanList);
@@ -23,5 +23,6 @@ public class EmailTripleEditTableTrial extends Application
         Scene scene = new Scene(e, 800, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest((ev) -> beanList.forEach(System.out::println));
     }
 }

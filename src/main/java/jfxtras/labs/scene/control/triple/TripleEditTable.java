@@ -56,7 +56,7 @@ public abstract class TripleEditTable<T> extends Control
 //	};
 	
 	private final Predicate<String> validateValue;
-	private  String valueName;
+//	private  String valueName;
 	private final String[] alertTexts;
 	private final String[] nameOptions;
 	private  TripleConverter<T> converter;
@@ -74,8 +74,10 @@ public abstract class TripleEditTable<T> extends Control
             	{
             		Triple t = change.getList().get(i);
             		T e = converter.toBeanElement(t);
-            		if (i < beanList.size()-1)
+            		System.out.println("i:" + i + " " + beanList.size());
+            		if (i <= beanList.size()-1)
             		{
+            			System.out.println("changed existing element");
             			beanList.set(i, e);
             		} else
             		{
@@ -85,14 +87,6 @@ public abstract class TripleEditTable<T> extends Control
             	}
             }
         }
-//        boolean isEmptyPresent = change.getList().stream()
-//        	.anyMatch(e -> e.getValue() == null);
-//        if (! isEmptyPresent)
-//        {
-//        	ObservableList<Triple> tableList = ((TripleEditTableSkin) getSkin()).getTableList();
-//        	System.out.println("add empty:" + tableList);
-//			tableList.add(new Triple(valueName));
-//        }
     };
 	
 	// CONSTRUCTOR
@@ -108,7 +102,7 @@ public abstract class TripleEditTable<T> extends Control
 	{
 		super();
 		this.validateValue = validateValue;
-		this.valueName = valueName;
+//		this.valueName = valueName;
 		this.converter = converter;
 		this.alertTexts = alertTexts;
 		this.nameOptions = nameOptions;

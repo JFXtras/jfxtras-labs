@@ -7,29 +7,17 @@ import javafx.beans.property.StringProperty;
 
 public class Triple
 {
-    private final StringProperty label = new SimpleStringProperty(this, "label");
-    public StringProperty labelProperty() { return label; }
-    public void setLabel(String label) { this.label.set(label); }
-    public String getName() { return label.getValue(); }
-    public Triple withLabel(String value) { setLabel(value); return this; }
+    private final StringProperty name = new SimpleStringProperty(this, "name");
+    public StringProperty labelProperty() { return name; }
+    public void setName(String label) { this.name.set(label); }
+    public String getName() { return name.getValue(); }
+    public Triple withName(String value) { setName(value); return this; }
 
     private final StringProperty value;
     public StringProperty valueProperty() { return value; }
     public String getValue() { return value.getValue(); }
     public void setValue(String value) {
-//        if (value != null) {
-//            boolean ok = validateValue.test(value);
-//            System.out.println("value ok:" + ok + " " + value);
-//            if (ok)
-//            {
-//                if (this.value == null)
-//                    this.value.set(value);
-//                else
                     this.value.set(value);
-//            }
-//            return ok;
-//        }
-//        return false;
     }
     public boolean isEmpty() { return value.getValue() == null; }
     public Triple withValue(String value) { setValue(value); return this; }
@@ -45,4 +33,9 @@ public class Triple
     {
         value = new SimpleStringProperty(this, valueName);
     }
+    
+	@Override
+	public String toString() {
+		return "Triple [label=" + getName() + ", value=" + getValue() + ", primary=" + isPrimary() + "]";
+	}
 }

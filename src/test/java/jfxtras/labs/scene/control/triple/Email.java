@@ -29,4 +29,8 @@ public class Email {
 		this.emailAddress = emailAddress;
 		this.primary = primary;
 	}
+	@Override
+	public String toString() {
+		return "Email [name=" + name + ", emailAddress=" + emailAddress + ", primary=" + primary + "]";
+	}
 }

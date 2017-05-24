@@ -131,20 +131,26 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 	private ListChangeListener<Triple> maintainEmptyRowTripleChangeLister = (ListChangeListener.Change<? extends Triple> change) ->
     {
         boolean isEmptyPresent = change.getList().stream()
-        	.anyMatch(e -> e.getValue() == null);
+        		.peek(e -> System.out.println("table values:" + e.getValue()))
+        	.anyMatch(e -> (e.getValue() == null) || (e.getValue().equals(emptyString)));
+        System.out.println("isEmptyPresent:" + isEmptyPresent);
         if (! isEmptyPresent)
         {
 			tableList.add(new Triple(valueName));
+	        System.out.println("tableList size:" + tableList.size());
         }
     };
     
     // toggles Delete button
     private final ChangeListener<Triple> toggleDeleteButtonChangeListener = (observable, oldSelection, newSelection) ->
     {
-        if (newSelection.isEmpty())
+        if (newSelection != null && newSelection.isEmpty())
+        {
             deleteButton.setDisable(true);
-        else
+        } else
+        {
             deleteButton.setDisable(false);
+        }
     };
 
 	private void setupListeners(List<Triple> initialTripleList)
@@ -236,32 +242,36 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
         @Override
         public void handle(CellEditEvent<Triple, String> t)
         {
-        	Triple n = new Triple(valueName);  // new instance to get validate predicate and possibly to add empty row
+//        	Triple n = new Triple(valueName);  // new instance to get validate predicate and possibly to add empty row
 			boolean isValueOK = validateValue.test(t.getNewValue());
+			System.out.println("is valid??? " + isValueOK);
           if (isValueOK)
           {
               t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getNewValue());
-              if (! tableList.get(tableList.size()-1).isEmpty())
-              {
-                  tableList.add(n); // create empty row
-              }
           } else {
               if (! alertOn) {  // prevent 2nd alert from duplicate triggers
                   alertOn = true;
+                  String oldValue = (t.getOldValue().equals(emptyString)) ? null : t.getOldValue();
+				System.out.println("tableList1:" + tableList.size() + " " + "old:" + oldValue);
+                  t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(oldValue);
+//                  boolean removed = tableList.remove(t.getRowValue());
+//                  System.out.println("tableList2:" + tableList.size() + removed);
                   Alert alert = new Alert(AlertType.WARNING);
                   alert.setTitle(alertTexts[0]);
                   alert.setHeaderText(alertTexts[1]);
                   alert.setContentText(alertTexts[2]);
+                  // TODO - not detecting invalid changes - pressing enter should cancel - doesn't
                   ButtonType buttonTypeOk = new ButtonType(alertTexts[3], ButtonData.CANCEL_CLOSE);
                   alert.getButtonTypes().setAll(buttonTypeOk);
                   alert.showAndWait();
-                  t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getOldValue());
+//                  t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getOldValue());
                   // workaround for refreshing rendered values
                   t.getTableView().getColumns().get(0).setVisible(false);
                   t.getTableView().getColumns().get(0).setVisible(true);
                   alertOn = false;
-              }
-          }
+              	}
+            }
+          System.out.println("done event handler");
         }
     }
 	
