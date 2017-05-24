@@ -5,9 +5,9 @@ public class EmailConverter implements TripleConverter<Email>
 	@Override
 	public Triple fromBeanElement(Email e) {
 		return new Triple("email")
-		.withLabel(e.getName())
-		.withValue(e.getEmailAddress())
-		.withPrimary(e.isPrimary());
+			.withName(e.getName())
+			.withValue(e.getEmailAddress())
+			.withPrimary(e.isPrimary());
 	}
 
 	@Override

@@ -35,25 +35,16 @@ public abstract class TripleEditTable<T> extends Control
 			.map(e -> converter.fromBeanElement(e))
 			.collect(Collectors.toList());
 		TripleEditTableSkin tripleEditTableSkin = (TripleEditTableSkin) getSkin();
+		System.out.println("tripleEditTableSkin:" + tripleEditTableSkin);
 		if (tripleEditTableSkin != null)
 		{
 			ObservableList<Triple> tableList = tripleEditTableSkin.getTableList();
 			tableList.clear();
+//			System.out.println("clear tableList:"+tableList.size());
 			tableList.addAll(tripleList);
+//			System.out.println("add tableList:"+tableList.size());
 		}
 	}
-	
-//	private String emptyString = "empty"; // TODO - USE ResourceBundle
-//	private Callback<CellDataFeatures<Triple, String>, ObservableValue<String>> tripleValueCellValueFactory = (cellData) ->
-//	{
-//        if (cellData.getValue().isEmpty())
-//        {
-//            return new SimpleStringProperty(emptyString);
-//        } else
-//        {
-//            return cellData.getValue().valueProperty();
-//        }
-//	};
 	
 	private final Predicate<String> validateValue;
 //	private  String valueName;
@@ -63,7 +54,6 @@ public abstract class TripleEditTable<T> extends Control
 	
 	private ListChangeListener<Triple> synchBeanItemTripleChangeLister = (ListChangeListener.Change<? extends Triple> change) ->
     {
-    	System.out.println("change:" + change);
         while (change.next())
         {
             if (change.wasUpdated())

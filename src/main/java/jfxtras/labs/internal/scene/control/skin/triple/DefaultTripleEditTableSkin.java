@@ -41,6 +41,7 @@ import jfxtras.labs.scene.control.triple.Triple;
 import jfxtras.labs.scene.control.triple.TripleConverter;
 import jfxtras.labs.scene.control.triple.TripleEditTable;
 
+// TODO - put logic in separate class
 public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> implements TripleEditTableSkin
 {
 	@FXML public TableView<Triple> table;
@@ -74,9 +75,10 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 	};
 
 	private final Predicate<String> validateValue;
-	private  String valueName;
+	private String valueName; // TODO - not assigned
 	private final String[] alertTexts;
 	private final String[] nameOptions;
+	
 	// CONSTRUCTOR
 	public DefaultTripleEditTableSkin(
 			Predicate<String> validateValue,
@@ -131,13 +133,13 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 	private ListChangeListener<Triple> maintainEmptyRowTripleChangeLister = (ListChangeListener.Change<? extends Triple> change) ->
     {
         boolean isEmptyPresent = change.getList().stream()
-        		.peek(e -> System.out.println("table values:" + e.getValue()))
+//        		.peek(e -> System.out.println("table values:" + e.getValue()))
         	.anyMatch(e -> (e.getValue() == null) || (e.getValue().equals(emptyString)));
         System.out.println("isEmptyPresent:" + isEmptyPresent);
         if (! isEmptyPresent)
         {
 			tableList.add(new Triple(valueName));
-	        System.out.println("tableList size:" + tableList.size());
+	        System.out.println("added empty, tableList size:" + tableList.size());
         }
     };
     
@@ -155,15 +157,20 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 
 	private void setupListeners(List<Triple> initialTripleList)
 	{
-		table.setItems(tableList);
-		
 	    tableList.addListener(maintainEmptyRowTripleChangeLister);
 		tableList.addListener(synchBeanItemTripleChangeLister);
-		table.getSelectionModel().selectedItemProperty().addListener(toggleDeleteButtonChangeListener);
 		if (initialTripleList != null)
 		{
 			tableList.addAll(initialTripleList);
+			if (initialTripleList.isEmpty())
+			{
+				tableList.add(new Triple(valueName));
+			}
 		}
+
+		table.setItems(tableList);
+		
+		table.getSelectionModel().selectedItemProperty().addListener(toggleDeleteButtonChangeListener);
 
         table.setOnKeyPressed(k -> 
         {

@@ -15,7 +15,7 @@ public class EmailTripleEditTableTrial extends Application
     
     @Override
     public void start(Stage primaryStage) {
-        EmailHTableEdit e = new EmailHTableEdit();
+        EmailEditTable e = new EmailEditTable();
         List<Email> beanList = new ArrayList<Email>();
         beanList.add(new Email("Work", "me@work.com", true));
         e.setBeanList(beanList);
