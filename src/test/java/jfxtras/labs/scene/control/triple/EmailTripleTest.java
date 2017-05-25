@@ -10,14 +10,16 @@ import org.junit.Test;
 import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
-import jfxtras.labs.internal.scene.control.skin.triple.TripleEditTableSkin;
+import jfxtras.labs.internal.scene.control.skin.edittable.triple.TripleEditTableSkin;
+import jfxtras.labs.scene.control.edittable.triple.Triple;
+import jfxtras.labs.scene.control.edittable.triple.TripleEditTable;
 import jfxtras.test.AssertNode;
 import jfxtras.test.JFXtrasGuiTest;
 import jfxtras.test.TestUtil;
 
 public class EmailTripleTest extends JFXtrasGuiTest
 {
-	private TripleEditTable<Email> control;
+	private TripleEditTable<Email,String,String,Boolean> control;
     @Override
     public Parent getRootNode()
     {
@@ -65,7 +67,7 @@ public class EmailTripleTest extends JFXtrasGuiTest
 
     	TestUtil.runThenWaitForPaintPulse( () -> 
 	    	tableList.add(0,
-	    			new Triple("email")
+	    			new Triple()
 	    				.withName("Personal")
 	    				.withValue("me@home.com")
 	    				.withPrimary(false)
