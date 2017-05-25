@@ -40,14 +40,17 @@ public abstract class TripleEditTable<T> extends Control
 		{
 			ObservableList<Triple> tableList = tripleEditTableSkin.getTableList();
 			tableList.clear();
-//			System.out.println("clear tableList:"+tableList.size());
+			System.out.println("clear tableList:"+tableList.size() + " " + tripleList);
 			tableList.addAll(tripleList);
-//			System.out.println("add tableList:"+tableList.size());
+			if (tableList.isEmpty())
+			{
+				tableList.add(new Triple(valueName));
+			}
 		}
 	}
 	
 	private final Predicate<String> validateValue;
-//	private  String valueName;
+	private  String valueName;
 	private final String[] alertTexts;
 	private final String[] nameOptions;
 	private  TripleConverter<T> converter;
@@ -63,16 +66,20 @@ public abstract class TripleEditTable<T> extends Control
             	for (int i=from; i<to; i++)
             	{
             		Triple t = change.getList().get(i);
-            		T e = converter.toBeanElement(t);
-            		System.out.println("i:" + i + " " + beanList.size());
-            		if (i <= beanList.size()-1)
+            		// Only save bean item if value isn't null
+            		if (t.getValue() != null)
             		{
-            			System.out.println("changed existing element");
-            			beanList.set(i, e);
-            		} else
-            		{
-            			beanList.add(e);
-            			System.out.println("new element added");
+	            		T e = converter.toBeanElement(t);
+	            		System.out.println("i:" + i + " " + beanList.size());
+	            		if (i <= beanList.size()-1)
+	            		{
+	            			System.out.println("changed existing element");
+	            			beanList.set(i, e);
+	            		} else
+	            		{
+	            			beanList.add(e);
+	            			System.out.println("new element added");
+	            		}
             		}
             	}
             }
@@ -92,7 +99,7 @@ public abstract class TripleEditTable<T> extends Control
 	{
 		super();
 		this.validateValue = validateValue;
-//		this.valueName = valueName;
+		this.valueName = valueName;
 		this.converter = converter;
 		this.alertTexts = alertTexts;
 		this.nameOptions = nameOptions;

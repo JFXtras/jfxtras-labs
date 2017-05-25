@@ -62,5 +62,28 @@ public class EmailTripleTest extends JFXtrasGuiTest
     	List<Email> beanList = new ArrayList<>();
     	TestUtil.runThenWaitForPaintPulse( () -> control.setBeanList(beanList));
     	assertEquals(1, tableList.size()); // 1 item is empty
+
+    	TestUtil.runThenWaitForPaintPulse( () -> 
+	    	tableList.add(0,
+	    			new Triple("email")
+	    				.withName("Personal")
+	    				.withValue("me@home.com")
+	    				.withPrimary(false)
+	    				));
+    	assertEquals(2, tableList.size());
+    	Triple t = tableList.get(0);
+		assertEquals("Personal", t.getName());
+    	assertEquals("me@home.com", t.getValue());
+    	assertEquals(false, t.isPrimary());
+    }
+    
+    @Test
+    public void canCatchInvalidValue()
+    {
+    }
+    
+    @Test
+    public void canCatchInvalidName()
+    {
     }
 }

@@ -62,7 +62,7 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 		return tableList;
 	}
 	
-	private String emptyString = "empty"; // TODO - USE ResourceBundle
+	private String emptyString;
 	private Callback<CellDataFeatures<Triple, String>, ObservableValue<String>> tripleValueCellValueFactory = (cellData) ->
 	{
         if (cellData.getValue().isEmpty())
@@ -93,6 +93,7 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 	{
 		super(control);
 		this.resources = resources;
+		emptyString = resources.getString("empty");
 		this.alertTexts = alertTexts;
 		this.validateValue = validateValue;
 		this.nameOptions = nameOptions;
@@ -212,6 +213,13 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
             }
           });
         dataColumn.setOnEditCommit(new TripleValueEventHandler());
+        nameColumn.setOnEditCommit(t ->
+    	{
+            t.getTableView()
+            	.getItems()
+            	.get(t.getTablePosition().getRow())
+            	.setName(t.getNewValue());
+    	});
 
 		// COLUMN WIDTH - need to add up to 1
 	    nameColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.425));
@@ -220,10 +228,6 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
 	    nameColumn.setMaxWidth(1f * Integer.MAX_VALUE * 42.5);
 	    dataColumn.setMaxWidth(1f * Integer.MAX_VALUE * 43);
 	    primaryColumn.setMaxWidth(1f * Integer.MAX_VALUE * 14);	
-	    
-	    System.out.println("columns:" + nameColumn.getWidth() + " " + dataColumn.getWidth() + " " + primaryColumn.getWidth());
-	    System.out.println("pref columns:" + nameColumn.getPrefWidth() + " " + dataColumn.getPrefWidth() + " " + primaryColumn.getPrefWidth());
-
 	}
 		
     private void deleteItem(Triple selectedItem)
@@ -236,9 +240,9 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
         ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonTypeOne) {
+        if (result.get() == buttonTypeOne)
+        {
             tableList.remove(selectedItem);
-//            writeNeeded.set(! writeNeeded.getValue()); // toggle writeNeeded property
         }
     }
 
@@ -249,36 +253,35 @@ public class DefaultTripleEditTableSkin<T> extends SkinBase<TripleEditTable<T>> 
         @Override
         public void handle(CellEditEvent<Triple, String> t)
         {
-//        	Triple n = new Triple(valueName);  // new instance to get validate predicate and possibly to add empty row
 			boolean isValueOK = validateValue.test(t.getNewValue());
-			System.out.println("is valid??? " + isValueOK);
           if (isValueOK)
           {
-              t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getNewValue());
+              t.getTableView()
+              		.getItems()
+              		.get(t.getTablePosition().getRow())
+              		.setValue(t.getNewValue());
           } else {
               if (! alertOn) {  // prevent 2nd alert from duplicate triggers
                   alertOn = true;
                   String oldValue = (t.getOldValue().equals(emptyString)) ? null : t.getOldValue();
-				System.out.println("tableList1:" + tableList.size() + " " + "old:" + oldValue);
-                  t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(oldValue);
-//                  boolean removed = tableList.remove(t.getRowValue());
-//                  System.out.println("tableList2:" + tableList.size() + removed);
+                  t.getTableView()
+                  		.getItems()
+                  		.get(t.getTablePosition().getRow())
+                  		.setValue(oldValue);
                   Alert alert = new Alert(AlertType.WARNING);
                   alert.setTitle(alertTexts[0]);
                   alert.setHeaderText(alertTexts[1]);
                   alert.setContentText(alertTexts[2]);
-                  // TODO - not detecting invalid changes - pressing enter should cancel - doesn't
                   ButtonType buttonTypeOk = new ButtonType(alertTexts[3], ButtonData.CANCEL_CLOSE);
                   alert.getButtonTypes().setAll(buttonTypeOk);
                   alert.showAndWait();
-//                  t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getOldValue());
+
                   // workaround for refreshing rendered values
                   t.getTableView().getColumns().get(0).setVisible(false);
                   t.getTableView().getColumns().get(0).setVisible(true);
                   alertOn = false;
               	}
             }
-          System.out.println("done event handler");
         }
     }
 	
