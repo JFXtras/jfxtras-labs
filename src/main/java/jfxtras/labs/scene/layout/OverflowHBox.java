@@ -1,8 +1,10 @@
 package jfxtras.labs.scene.layout;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -61,74 +63,40 @@ public class OverflowHBox extends StackPane {
 	// PROPERTIES
 	
 	public void add(Node node) {
-		getChildren().add(node);
-//		hbox.getChildren().add(node);
-	}
-	
-	public void add(Node node, HBox.C hboxC, VBox.C vboxC) {
-		getChildren().add(node);
-//		hbox.getChildren().add(node);
-//		hbox.setConstraint(node, hboxC);
-//		vbox.setConstraint(node, vboxC);
+//		children.add(node);
+		super.getChildren().add(node);
 	}
 	
 	// ==========================================================================================================================================================================================================================================
 	// NODE
 	
 	private void createNodes() {
-//		hbox = new HBox(hboxSpacing);
-//		vbox = new VBox(vboxSpacing){
-//			// As of 1.8.0_40 CSS files are added in the scope of a control, the popup does not fall under the control, so the stylesheet must be reapplied 
-//			// When JFxtras is based on 1.8.0_40+: @Override 
-//			public String getUserAgentStylesheet() {
-//				return OverflowHBox.this.getUserAgentStylesheet();
-//			}
-//		};
-//		vbox.getStyleClass().add(OverflowHBox.class.getSimpleName() + "Popup");
 		dropDown = new ToggleButton("V");
 		dropDown.onActionProperty().set(event -> {
 			showPopup();
 		});
-//
-//		borderPane = new MyBorderPane();
-//		getChildren().add(borderPane);
-//
-//		popup = new Popup();
-//        popup.setAutoFix(true);
-//        popup.setAutoHide(true);
-//        popup.setHideOnEscape(true);
-//        popup.getContent().add(vbox);
-//        popup.onHiddenProperty().addListener((observable) -> dropDown.setSelected(false) ); // TODO: not working
-//        popup.focusedProperty().addListener((observable) -> {
-//        	System.out.println("focus " + popup.isFocused());
-//        });
-//        
+		popup = new Popup();
+        popup.setAutoFix(true);
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
+        popup.getContent().add(lVbox);
+        popup.onHiddenProperty().addListener((observable) -> dropDown.setSelected(false) ); // TODO: not working
+        popup.focusedProperty().addListener((observable) -> {
+        	System.out.println("focus " + popup.isFocused());
+        });
+		super.getChildren().add(dropDown);
 	}
-//	private HBox hbox;
 	private ToggleButton dropDown;
-//	private MyBorderPane borderPane;
-//	private VBox vbox;
-//	private Popup popup;
-	
-	class MyBorderPane extends BorderPane {
-//		public MyBorderPane() {
-//			super(hbox);
-//			setRight(dropDown);
-//		}
-//
-//		@Override
-//		public void layoutChildren() {
-//			super.layoutChildren();
-//		}
-	};
+	private Popup popup;
 	
 	private void showPopup() {
-//		if (dropDown.isSelected()) {
-//			popup.show(dropDown, NodeUtil.screenX(dropDown), NodeUtil.screenY(dropDown) + dropDown.getHeight());
-//		}
-//		else {
-//			popup.hide();
-//		}
+		System.out.println("click");
+		if (dropDown.isSelected()) {
+			popup.show(dropDown, NodeUtil.screenX(dropDown), NodeUtil.screenY(dropDown) + dropDown.getHeight());
+		}
+		else {
+			popup.hide();
+		}
 	}
 
 	
@@ -138,79 +106,48 @@ public class OverflowHBox extends StackPane {
     @Override 
     protected void layoutChildren() {
     	double iconPrefWidth = dropDown.prefWidth(-1);
-    	getChildren().remove(dropDown);
 		double width = getWidth();
     	
-		boolean lThereAreHiddenNodes = false;
+//		lVbox.getChildren().clear();
+		ObservableList<Node> children = super.getChildren();
+		
+		boolean lVertical = false;
     	double x = 0.0;
-    	List<Node> lManagedChildren = getManagedChildren();
-    	int lMax = lManagedChildren.size();
+    	double y = 0.0;
+    	int lMax = children.size();
     	int lCnt = 0;
-		for (Node n : lManagedChildren) {
+		for (Node n : children) {
+    		if (n == dropDown) {
+    			continue;
+    		}
     		
     		double prefWidth = n.prefWidth(-1);
-			if (x + prefWidth > width - (lCnt < lMax - 1 ? iconPrefWidth : 0.0)) { 
-				n.setVisible(false);
-				lThereAreHiddenNodes = true;
+    		double prefHeight = n.prefHeight(-1);
+    		
+			if (!lVertical && x + prefWidth > width - (lCnt < lMax - 1 ? iconPrefWidth : 0.0)) {
+				System.out.println("place dropdown " + x + "," + y);
+				lVertical = true;
+				dropDown.relocate(x, y);
+				dropDown.resize(dropDown.prefWidth(-1), dropDown.prefHeight(-1));
+				y += dropDown.prefHeight(-1);
     		}
-    		else {
-				n.setVisible(true);
-				n.resize(prefWidth, n.prefHeight(-1));
-	    		n.relocate(x, 0);
-	    		x+= prefWidth;
+			
+    		if (!lVertical) {
+				n.resize(prefWidth, prefHeight);
+	    		n.relocate(x, y);
+	    		x += prefWidth;
 				lCnt++;
     		}
+    		if (lVertical) {
+				n.resize(prefWidth, prefHeight);
+	    		n.relocate(x + iconPrefWidth - prefWidth, y);
+	    		y += prefHeight;
+//	    		super.getChildren().remove(n);
+//    			lVbox.getChildren().add(n);
+    		}
     	}
-		System.out.println(x + "/" + (width - iconPrefWidth));
-		if (lThereAreHiddenNodes) {
-	    	getChildren().add(dropDown);
-			dropDown.relocate(width - iconPrefWidth, 0);
-			dropDown.resize(dropDown.prefWidth(-1), dropDown.prefHeight(-1));
-		}
-		
-//    	super.layoutChildren();
-//    	
-//    	// TODO: what happens with spacing?
-//    	// TODO: what happens with insets?
-//    	
-//    	// should we remove a node?
-//		while (hbox.getChildren().size() > 0) {
-//			double lActualWidth = getWidth();
-//			double lPreferredWidth = hbox.prefWidth(-1) + dropDown.prefWidth(-1);
-//	    	System.out.println("remove " + lActualWidth + " <= " + hbox.prefWidth(-1) + " + " + dropDown.prefWidth(-1) + " (" + lPreferredWidth + ")");
-//			if (lActualWidth <= lPreferredWidth) {
-//				ObservableList<Node> children = hbox.getChildren();
-//				Node removedNode = children.remove(children.size() - 1);
-//				System.out.println("removing " + removedNode.prefWidth(-1));
-//				vbox.getChildren().add(0, removedNode);
-//		    	super.layoutChildren();
-//			}
-//			else {
-//				break;
-//			}
-//		}
-//		
-//		// should we add a node?
-//		while (vbox.getChildren().size() > 0) {
-//			ObservableList<Node> children = vbox.getChildren();
-//			Node candidateToBeAddedNode = children.get(0);
-//			double candidatePrefWidth = Math.ceil(candidateToBeAddedNode.prefWidth(-1) + vbox.getSpacing()); // if a node is removed from the hbox, the hbox resizes with its ceiled integer. This may cause the node to be added again here immediately.
-//			double lActualWidth = getWidth();
-//			double lPreferredWidth = hbox.prefWidth(-1) + dropDown.prefWidth(-1) + candidatePrefWidth;
-//	    	System.out.println("add " + lActualWidth + " > " + hbox.prefWidth(-1) + " + " + dropDown.prefWidth(-1) + " + " + candidatePrefWidth + " (" + lPreferredWidth + ")");
-//			if (lActualWidth > lPreferredWidth) {
-//				System.out.println("adding");
-//				children.remove(candidateToBeAddedNode);
-//				hbox.getChildren().add(candidateToBeAddedNode);
-//		    	super.layoutChildren();
-//			}
-//			else {
-//				break;
-//			}
-//		}
-//		
-//		dropDown.setDisable(vbox.getChildren().size() == 0);
     }
+	final javafx.scene.layout.VBox lVbox = new javafx.scene.layout.VBox();
 
 
 	// ==========================================================================================================================================================================================================================================
