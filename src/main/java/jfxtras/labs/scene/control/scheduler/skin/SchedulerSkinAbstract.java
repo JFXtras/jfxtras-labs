@@ -110,7 +110,6 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
     };
     private ListChangeListener<Scheduler.Event> eventListChangeListener = (changes) -> {
         if (changes.next()) {
-            System.err.println("setup ");
             if (changes.wasRemoved()) {
                 System.err.println("setup deleted");
                 changes.getRemoved().forEach(c-> setupParticularEvents(c.getResourceId(), c.getResourceId()));
@@ -118,7 +117,6 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
             }
         }
         setupEvents();
-        System.err.println("setup events ");
     };
     private ListChangeListener<Scheduler.Event> eventNodeMapCleanUpListChangeListener = (changes) -> {
         while (changes.next()) {
