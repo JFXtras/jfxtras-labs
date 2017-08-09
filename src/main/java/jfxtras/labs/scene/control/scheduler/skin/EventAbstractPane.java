@@ -263,7 +263,6 @@ abstract class EventAbstractPane extends Pane {
     private double startY = 0;
     private LocalDateTime dragPickupDateTime;
     private boolean mouseActuallyHasDragged = false;
-    private final int roundToMinutes = 60;
     private Text startTimeText = null;
     private Text endTimeText = null;
     private Scheduler.Event eventForDrag = null;
@@ -287,11 +286,11 @@ abstract class EventAbstractPane extends Pane {
 
         // drag start
         boolean dragPickupInDayBody = dragInDayBody(dragPickupDateTime);
-        dragPickupDateTime = layoutHelp.roundTimeToNearestMinutes(dragPickupDateTime, roundToMinutes);
+        dragPickupDateTime = layoutHelp.roundTimeToNearestMinutes(dragPickupDateTime, (int)((SchedulerSkinAbstract<?>)layoutHelp.skin).getSnapToMinutes());
 
         // drag end
         boolean dragDropInDayBody = dragInDayBody(dragDropDateTime);
-        dragDropDateTime = layoutHelp.roundTimeToNearestMinutes(dragDropDateTime, roundToMinutes);
+        dragDropDateTime = layoutHelp.roundTimeToNearestMinutes(dragDropDateTime, (int)((SchedulerSkinAbstract<?>)layoutHelp.skin).getSnapToMinutes());
 
         // if dragged from day to day or header to header
         if ((dragPickupInDayBody && dragDropInDayBody)) {

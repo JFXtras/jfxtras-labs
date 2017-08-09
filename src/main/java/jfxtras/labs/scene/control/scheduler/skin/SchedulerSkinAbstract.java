@@ -292,7 +292,7 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
     // -------------------------
 
     private static class StyleableProperties {
-        private static final CssMetaData<Scheduler, Double> SNAPTOMINUTES_CSSMETADATA = new CssMetaDataForSkinProperty<Scheduler, SchedulerSkinAbstract<?>, Double>("-fxx-snap-to-minutes", DoubleConverter.getInstance(), 60.0) {
+        private static final CssMetaData<Scheduler, Double> SNAPTOMINUTES_CSSMETADATA = new CssMetaDataForSkinProperty<Scheduler, SchedulerSkinAbstract<?>, Double>("-fxx-snap-to-minutes", DoubleConverter.getInstance(), 0.0) {
             @Override
             protected ObjectProperty<Double> getProperty(SchedulerSkinAbstract<?> s) {
                 return s.snapToMinutesProperty;

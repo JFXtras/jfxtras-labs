@@ -3,7 +3,8 @@
 }
 
 .Scheduler { 
-	-fx-font-family: "Roboto Condensed Light"; 	
+	-fx-font-family: "Roboto Condensed Light";
+	-fxx-snap-to-minutes: 1440;
 }
 
 .Scheduler .Week {
