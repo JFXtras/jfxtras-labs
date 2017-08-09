@@ -8,7 +8,11 @@ import javafx.scene.text.Text;
 import jfxtras.labs.scene.control.scheduler.Scheduler;
 import jfxtras.util.NodeUtil;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Tom Eugelink
@@ -52,16 +56,41 @@ public class EventDurationDragger extends Rectangle {
             // we handle this event
             mouseEvent.consume();
 
+            double lX = eventPane.getLayoutX();
+            double lWidth = eventPane.getWidth();
+
+            //TODO #0543 redesign
+            // Calculating layoutX for event with earlier startDate than showed
+            LocalDate minDate = ((ResourceBodyPane)eventPane.getParent()).minDateObjectProperty.get();
+            boolean hasHiddenPart = event.getStartTime().toLocalDate().isBefore(minDate);
+            if (hasHiddenPart) {
+                // seconds passed from midnight to argument value
+                LocalDateTime midnight = event.getStartTime().truncatedTo(ChronoUnit.DAYS);
+                Duration duration = Duration.between(midnight, event.getStartTime());
+                long secondsPassed = duration.getSeconds();
+
+                int daysBetween = Period.between(event.getStartTime().toLocalDate(), minDate).getDays();
+                long todayOffset = (long) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                double ghostX = layoutHelp.dayWidthProperty.get() * daysBetween - todayOffset;
+
+                lWidth += ghostX;
+                lX += -ghostX;
+            }
+
             // place a rectangle at exactly the same location as the eventPane
             setCursor(Cursor.H_RESIZE);
-            resizeRectangle = new Rectangle(eventPane.getLayoutX(), eventPane.getLayoutY(), eventPane.getWidth(), eventPane.getHeight()); // the values are already snapped
+            resizeRectangle = new Rectangle(lX, eventPane.getLayoutY(), lWidth, eventPane.getHeight()); // the values are already snapped
             resizeRectangle.getStyleClass().add("GhostRectangle");
             ((Pane) eventPane.getParent()).getChildren().add(resizeRectangle);
 
             // place a text node at the bottom of the resize rectangle
             endTimeText = new Text(layoutHelp.timeDateTimeFormatter.format(event.getEndTime()));
             endTimeText.layoutYProperty().set(eventPane.getLayoutY());
-            endTimeText.layoutXProperty().bind(resizeRectangle.widthProperty().add(eventPane.getLayoutX()));
+            if (hasHiddenPart) {
+                endTimeText.layoutXProperty().bind(resizeRectangle.widthProperty().add(lX));
+            } else{
+                endTimeText.layoutXProperty().bind(resizeRectangle.widthProperty().add(eventPane.getLayoutX()));
+            }
             endTimeText.getStyleClass().add("GhostRectangleText");
             ((Pane) eventPane.getParent()).getChildren().add(endTimeText);
         });
@@ -80,6 +109,23 @@ public class EventDurationDragger extends Rectangle {
             double lNodeScreenX = NodeUtil.screenX(eventPane);
             double lMouseX = mouseEvent.getScreenX();
             double lWidth = lMouseX - lNodeScreenX;
+
+            //TODO #0543 redesign
+            // Add to lWidth, hidden part of event. For event with earlier startDate than showed on the screen
+            LocalDate minDate = ((ResourceBodyPane)eventPane.getParent()).minDateObjectProperty.get();
+            if (event.getStartTime().toLocalDate().isBefore(minDate)) {
+                // seconds passed from midnight to argument value
+                LocalDateTime midnight = event.getStartTime().truncatedTo(ChronoUnit.DAYS);
+                Duration duration = Duration.between(midnight, event.getStartTime());
+                long secondsPassed = duration.getSeconds();
+
+                int daysBetween = Period.between(event.getStartTime().toLocalDate(), minDate).getDays();
+                long todayOffset = (long) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                double ghostX = layoutHelp.dayWidthProperty.get() * daysBetween - todayOffset;
+
+                lWidth += ghostX;
+            }
+
             if (lWidth < minimumWidth) {
                 lWidth = minimumWidth; // prevent underflow
             }

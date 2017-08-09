@@ -5,7 +5,7 @@ import javafx.scene.shape.Rectangle;
 /**
  * @author Tom Eugelink
  */
-public class HistoricalVisualizer extends Rectangle {
+public class HistoricalVisualizer extends Rectangle{
 
     HistoricalVisualizer(EventAbstractPane pane) // TBEE: pane must implement something to show its begin and end datetime, so this class knowns how to render itself?
     {

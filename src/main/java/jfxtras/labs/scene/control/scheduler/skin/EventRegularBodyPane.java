@@ -11,7 +11,7 @@ import jfxtras.labs.scene.control.scheduler.Scheduler;
  * @author Tom Eugelink
  * @author Islam Khachmakhov
  */
-public class EventRegularBodyPane extends EventAbstractTrackedPane{
+public class EventRegularBodyPane extends EventAbstractTrackedPane {
     public EventRegularBodyPane(Scheduler.Event event, LayoutHelp layoutHelp) {
         super(event, layoutHelp);
 

@@ -15,7 +15,10 @@ import jfxtras.labs.scene.control.scheduler.Scheduler;
 import jfxtras.util.NodeUtil;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Tom Eugelink
@@ -60,7 +63,7 @@ abstract class EventAbstractPane extends Pane {
 
     final private ListChangeListener<Scheduler.Event> listChangeListener = new ListChangeListener<Scheduler.Event>() {
         @Override
-        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Scheduler.Event> changes) {
+        public void onChanged(Change<? extends Scheduler.Event> changes) {
             setOrRemoveSelected();
         }
     };
@@ -146,11 +149,32 @@ abstract class EventAbstractPane extends Pane {
             // we handle this event
             mouseEvent.consume();
 
+            double ghostX = 0;
+            double lWidth = getWidth();
+
+            //TODO #0543 redesign
+            // Add to lWidth hidden part of event. For event with earlier startDate than showed on the screen
+            LocalDate minDate = ((ResourceBodyPane) getParent()).minDateObjectProperty.get();
+            if (event.getStartTime().toLocalDate().isBefore(minDate)) {
+                // seconds passed from midnight to argument value
+                LocalDateTime midnight = event.getStartTime().truncatedTo(ChronoUnit.DAYS);
+                Duration duration = Duration.between(midnight, event.getStartTime());
+                long secondsPassed = duration.getSeconds();
+
+                int daysBetween = Period.between(event.getStartTime().toLocalDate(), minDate).getDays();
+                long todayOffset = (long) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                ghostX = layoutHelp.dayWidthProperty.get() * daysBetween - todayOffset;
+
+                lWidth += ghostX;
+            }
+
             // show the drag rectangle when we actually drag
             if (dragRectangle == null) {
                 setCursor(Cursor.MOVE);
+
+
                 // TODO: when dropping an event overlapping the day edge, the event is correctly(?) split in two. When dragging up such a splitted event the visualization does not match the actual time
-                dragRectangle = new Rectangle(0, 0, NodeUtil.snapWH(0, getWidth()), NodeUtil.snapWH(0, getHeight()));
+                dragRectangle = new Rectangle(0, 0, NodeUtil.snapWH(0, lWidth), NodeUtil.snapWH(0, getHeight()));
                 dragRectangle.getStyleClass().add("GhostRectangle");
                 layoutHelp.dragPane.getChildren().add(dragRectangle);
 
@@ -170,7 +194,7 @@ abstract class EventAbstractPane extends Pane {
             }
 
             // move the drag rectangle
-            double lX = NodeUtil.xInParent(this, layoutHelp.dragPane) + (mouseEvent.getX() - startX); // top-left of the original event pane + offset of drag
+            double lX = NodeUtil.xInParent(this, layoutHelp.dragPane) + (mouseEvent.getX() - startX - ghostX); // top-left of the original event pane + offset of drag
             double lY = NodeUtil.yInParent(this, layoutHelp.dragPane) + (mouseEvent.getY() - startY); // top-left of the original event pane + offset of drag
             dragRectangle.setX(NodeUtil.snapXY(lX));
             dragRectangle.setY(NodeUtil.snapXY(lY));
@@ -226,7 +250,6 @@ abstract class EventAbstractPane extends Pane {
             LocalDateTime dragDropDateTime = layoutHelp.skin.convertClickInSceneToDateTime(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             long newResourceId = layoutHelp.skin.convertClickInSceneToResourceId(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             if (dragDropDateTime != null) { // not dropped somewhere outside
-                System.err.println(" Drop resourceId " + newResourceId);
                 Long oldResourceId = Long.valueOf(event.getResourceId());
                 handleDrag(event, dragPickupDateTime, dragDropDateTime, newResourceId);
                 layoutHelp.skin.setupParticularEvents(oldResourceId, newResourceId);
@@ -240,7 +263,7 @@ abstract class EventAbstractPane extends Pane {
     private double startY = 0;
     private LocalDateTime dragPickupDateTime;
     private boolean mouseActuallyHasDragged = false;
-    private final int roundToMinutes = 5;
+    private final int roundToMinutes = 60;
     private Text startTimeText = null;
     private Text endTimeText = null;
     private Scheduler.Event eventForDrag = null;

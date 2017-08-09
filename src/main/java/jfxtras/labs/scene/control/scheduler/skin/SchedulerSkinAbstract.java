@@ -111,7 +111,6 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
     private ListChangeListener<Scheduler.Event> eventListChangeListener = (changes) -> {
         if (changes.next()) {
             if (changes.wasRemoved()) {
-                System.err.println("setup deleted");
                 changes.getRemoved().forEach(c-> setupParticularEvents(c.getResourceId(), c.getResourceId()));
                 return;
             }
@@ -218,19 +217,18 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
         for (ResourceBodyPane lResource : weekBodyPane.resourceBodyPanes) {
             lResource.setupEvents();
         }
+        System.err.println("Full rerender");
         calculateSizes(); // must be done after setting up the panes
         nowUpdateRunnable.run(); // set the history
     }
 
     /**
-     * Rerender only changed resources
+     * Re-render only changed resources
      *
      * @param oldResourceId
      * @param newResourceId
      */
     public void setupParticularEvents(long oldResourceId, long newResourceId) {
-        System.err.println("setupParticularEvents   oldResourceId:" + oldResourceId + " newResourceId " + newResourceId );
-
         List<ResourceBodyPane> resourceBodyPanes = weekBodyPane.resourceBodyPanes.stream()
                 .filter(c -> c.resource.getId().equals(oldResourceId) || c.resource.getId().equals(newResourceId))
                 .collect(Collectors.toList());
@@ -294,7 +292,7 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
     // -------------------------
 
     private static class StyleableProperties {
-        private static final CssMetaData<Scheduler, Double> SNAPTOMINUTES_CSSMETADATA = new CssMetaDataForSkinProperty<Scheduler, SchedulerSkinAbstract<?>, Double>("-fxx-snap-to-minutes", DoubleConverter.getInstance(), 5.0) {
+        private static final CssMetaData<Scheduler, Double> SNAPTOMINUTES_CSSMETADATA = new CssMetaDataForSkinProperty<Scheduler, SchedulerSkinAbstract<?>, Double>("-fxx-snap-to-minutes", DoubleConverter.getInstance(), 60.0) {
             @Override
             protected ObjectProperty<Double> getProperty(SchedulerSkinAbstract<?> s) {
                 return s.snapToMinutesProperty;

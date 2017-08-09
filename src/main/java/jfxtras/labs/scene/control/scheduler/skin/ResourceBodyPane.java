@@ -63,7 +63,7 @@ public class ResourceBodyPane extends Pane {
         setId("ResourceBodyPane" + resource.getId()); // for testing
 
         allEvents.addOnChangeListener(() -> {
-            setupEvents();
+//            setupEvents();
         });
         setupEvents();
 
@@ -146,12 +146,12 @@ public class ResourceBodyPane extends Pane {
 
             LocalDateTime lStartDateTime = convertClickInSceneToDateTime(mouseEvent.getX(), mouseEvent.getY());
             if (lStartDateTime != null) {
-                lStartDateTime = lStartDateTime.plusSeconds( (int)(resizeRectangle.getX() * layoutHelp.durationInMSPerPixelProperty.get() / 1000) );
-                lStartDateTime = layoutHelp.roundTimeToNearestMinutes(lStartDateTime, (int)((SchedulerSkinAbstract<?>)layoutHelp.skin).getSnapToMinutes());
+                lStartDateTime = lStartDateTime.plusSeconds((int) (resizeRectangle.getX() * layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                lStartDateTime = layoutHelp.roundTimeToNearestMinutes(lStartDateTime, (int) ((SchedulerSkinAbstract<?>) layoutHelp.skin).getSnapToMinutes());
 
                 // calculate the new end date for the appointment (recalculating the duration)
-                LocalDateTime lEndDateTime = lStartDateTime.plusSeconds( (int)(resizeRectangle.getWidth() * layoutHelp.durationInMSPerPixelProperty.get() / 1000) );
-                lEndDateTime = layoutHelp.roundTimeToNearestMinutes(lEndDateTime, (int)((SchedulerSkinAbstract<?>)layoutHelp.skin).getSnapToMinutes());
+                LocalDateTime lEndDateTime = lStartDateTime.plusSeconds((int) (resizeRectangle.getWidth() * layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                lEndDateTime = layoutHelp.roundTimeToNearestMinutes(lEndDateTime, (int) ((SchedulerSkinAbstract<?>) layoutHelp.skin).getSnapToMinutes());
 
                 // ask the control to create a new appointment (null may be returned)
                 Scheduler.Event lEvent = null;
@@ -187,14 +187,9 @@ public class ResourceBodyPane extends Pane {
     }
 
     private void relayout() {
-        // prepare
-//        int lWholedayCnt = wholedayAppointmentBodyPanes.size();
-//        double lAllFlagpolesWidth = layoutHelp.wholedayAppointmentFlagpoleWidthProperty.get() * lWholedayCnt;
-        double lDayWidth = layoutHelp.dayContentWidthProperty.get();
-//        double lRemainingWidthForAppointments = lDayWidth - lAllFlagpolesWidth;
+
         double lNumberOfPixelsPerMinute = layoutHelp.resourceWidthProperty.get() / (24 * 60 * displayedLocalDates.size());
 
-        // then add all tracked appointments (regular & task) to the day
         for (EventAbstractTrackedPane lEventAbstractTrackedPane : trackedEventBodyPanes) {
 
             // for this pane specifically
@@ -202,7 +197,7 @@ public class ResourceBodyPane extends Pane {
             double lTrackHeight = layoutHelp.resourceHeightProperty.get() / lNumberOfTracks;
             double lTrackIdx = (double) lEventAbstractTrackedPane.clusterTrackIdx;
 
-            // the X is determined by offsetting the wholeday appointments and then calculate the X of the track the appointment is placed in (available width / number of tracks)
+
             double lY = (lTrackHeight * lTrackIdx);
             lEventAbstractTrackedPane.setLayoutY(NodeUtil.snapXY(lY));
 
@@ -225,6 +220,13 @@ public class ResourceBodyPane extends Pane {
 
             long lWidthInMinutes = lEventAbstractTrackedPane.durationInMS / 1000 / 60;
             lW = lNumberOfPixelsPerMinute * lWidthInMinutes;
+
+            // if start date of event < that minimal displayed date, then subtract appropriate amount of width
+            if  (lEventAbstractTrackedPane.startDateTime.isBefore(minDateObjectProperty.get().atStartOfDay())) {
+                Duration duration = Duration.between(lEventAbstractTrackedPane.startDateTime, minDateObjectProperty.get().atStartOfDay());
+                long seconds = duration.getSeconds();
+                lW -= (seconds / 60) * lNumberOfPixelsPerMinute;
+            }
 
             // the width has a minimum size, in order to be able to render sensibly
             if (lW < 2 * layoutHelp.paddingProperty.get()) {
@@ -326,15 +328,27 @@ public class ResourceBodyPane extends Pane {
         return 0;
     }
 
+    /**
+     * Determine layoutX by LocalDateTime
+     *
+     * @param localDateTime
+     * @return
+     */
     double getPositionByLocalDateTime(LocalDateTime localDateTime) {
         // seconds passed from midnight to argument value
         LocalDateTime midnight = localDateTime.truncatedTo(ChronoUnit.DAYS);
         Duration duration = Duration.between(midnight, localDateTime);
         long secondsPassed = duration.getSeconds();
 
+/*        if (localDateTime.toLocalDate().isBefore(minDateObjectProperty.get())) {
+            int daysBetween = Period.between(localDateTime.toLocalDate(), minDateObjectProperty.get()).getDays();
+            long todayOffset = (long) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+            return -((layoutHelp.dayWidthProperty.get() * daysBetween - todayOffset) );
+        }*/
+
         for (int i = 0; i < displayedLocalDates.size(); i++) {
             if (displayedLocalDates.get(i).getDayOfYear() == localDateTime.getDayOfYear()) {
-                int todayOffset = (int) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
+                long todayOffset = (long) (secondsPassed / (layoutHelp.durationInMSPerPixelProperty.get() / 1000));
                 return (layoutHelp.dayWidthProperty.get() * i) + todayOffset;
             }
         }

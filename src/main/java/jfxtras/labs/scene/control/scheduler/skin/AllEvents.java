@@ -28,7 +28,7 @@ public class AllEvents {
     final private ObservableList<Event> events;
     final private ListChangeListener<Event> listChangeListener = new ListChangeListener<Event>() {
         @Override
-        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Event> changes) {
+        public void onChanged(Change<? extends Event> changes) {
             fireOnChangeListener();
         }
     };
@@ -53,20 +53,26 @@ public class AllEvents {
     }
 
     /**
-     * Find by resourceId and dates between displayed start/end dates
      * @param resourceId
      * @return
      */
     public List<Event> collectRegularForResourceAndDates(long resourceId, LocalDate minDate, LocalDate maxDate) {
-        List<Event> collectedEvents = events.parallelStream().filter(c ->
+        List<Event> collectedEvents =  events.parallelStream().filter(c ->
                 c.getResourceId().equals(resourceId)
-                        && (((c.getStartTime().toLocalDate().isAfter(minDate) || c.getStartTime().toLocalDate().isEqual(minDate))
-                        && (c.getStartTime().toLocalDate().isBefore(maxDate) || c.getStartTime().toLocalDate().isEqual(maxDate)))
+    &&(  ( (c.getStartTime().toLocalDate().isAfter(minDate) || c.getStartTime().toLocalDate().isEqual(minDate))
+                        && (c.getStartTime().toLocalDate().isBefore(maxDate) || c.getStartTime().toLocalDate().isEqual(maxDate))  )
 
-                        || ((c.getEndTime().toLocalDate().isBefore(maxDate) || c.getEndTime().toLocalDate().isEqual(maxDate))
-                        && (c.getEndTime().toLocalDate().isAfter(minDate) || c.getEndTime().toLocalDate().isEqual(minDate)))))
+    || ((c.getEndTime().toLocalDate().isBefore(maxDate) || c.getEndTime().toLocalDate().isEqual(maxDate))
+                        && (c.getEndTime().toLocalDate().isAfter(minDate) || c.getEndTime().toLocalDate().isEqual(minDate))))   )
                 .collect(Collectors.toList());
+/*
+        // scan all events and filter the ones for this resource
+        for (Event lEvent : events) {
+            if (lEvent.getResourceId().equals(resourceId)) {
+                collectedEvents.add(lEvent);
+            }
 
+        }*/
         return collectedEvents;
     }
 }
