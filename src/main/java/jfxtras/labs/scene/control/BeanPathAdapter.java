@@ -1966,13 +1966,13 @@ public class BeanPathAdapter<B> {
 									oc);
 						} else {
 							final boolean wasColEmpty = col.isEmpty();
-							if (collectionSelectionModel == null
-									&& (!wasColEmpty || isDirty)) {
+							if (collectionSelectionModel != null) {
+								collectionSelectionModel.clearSelection();
+							} else if (!wasColEmpty || isDirty) {
 								oc.clear();
 								changed = true;
-							} else if (collectionSelectionModel == null) {
-								changed = syncCollectionValuesFromObservable(
-										col, oc);
+							} else {
+								changed = syncCollectionValuesFromObservable(col, oc);
 							}
 							if (!wasColEmpty) {
 								syncObservableFromCollectionValues(col, oc);
@@ -1985,13 +1985,13 @@ public class BeanPathAdapter<B> {
 									oc);
 						} else {
 							final boolean wasColEmpty = map.isEmpty();
-							if (collectionSelectionModel == null
-									&& (!wasColEmpty || isDirty)) {
+							if (collectionSelectionModel != null) {
+								collectionSelectionModel.clearSelection();
+							} else if (!wasColEmpty || isDirty) {
 								oc.clear();
 								changed = true;
-							} else if (collectionSelectionModel == null) {
-								changed = syncCollectionValuesFromObservable(
-										map, oc);
+							} else {
+								changed = syncCollectionValuesFromObservable(map, oc);
 							}
 							if (!wasColEmpty) {
 								syncObservableFromCollectionValues(map, oc);
@@ -2008,13 +2008,13 @@ public class BeanPathAdapter<B> {
 									oc);
 						} else {
 							final boolean wasColEmpty = col.isEmpty();
-							if (collectionSelectionModel == null
-									&& (!wasColEmpty || isDirty)) {
+							if (collectionSelectionModel != null) {
+								collectionSelectionModel.clearSelection();
+							} else if (!wasColEmpty || isDirty) {
 								oc.clear();
 								changed = true;
-							} else if (collectionSelectionModel == null) {
-								changed = syncCollectionValuesFromObservable(
-										col, oc);
+							} else {
+								changed = syncCollectionValuesFromObservable(col, oc);
 							}
 							if (!wasColEmpty) {
 								syncObservableFromCollectionValues(col, oc);
@@ -2027,13 +2027,13 @@ public class BeanPathAdapter<B> {
 									oc);
 						} else {
 							final boolean wasColEmpty = map.isEmpty();
-							if (collectionSelectionModel == null
-									&& (!wasColEmpty || isDirty)) {
+							if (collectionSelectionModel != null) {
+								collectionSelectionModel.clearSelection();
+							} else if (!wasColEmpty || isDirty) {
 								oc.clear();
 								changed = true;
-							} else if (collectionSelectionModel == null) {
-								changed = syncCollectionValuesFromObservable(
-										map, oc);
+							} else {
+								changed = syncCollectionValuesFromObservable(map, oc);
 							}
 							if (!wasColEmpty) {
 								syncObservableFromCollectionValues(map, oc);
