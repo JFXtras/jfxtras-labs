@@ -1,5 +1,6 @@
 package jfxtras.labs.scene.control.scheduler.skin;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
@@ -28,7 +29,7 @@ public class AllEvents {
     final private ObservableList<Event> events;
     final private ListChangeListener<Event> listChangeListener = new ListChangeListener<Event>() {
         @Override
-        public void onChanged(Change<? extends Event> changes) {
+        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Event> changes) {
             fireOnChangeListener();
         }
     };
@@ -48,7 +49,8 @@ public class AllEvents {
 
     private void fireOnChangeListener() {
         for (Runnable runnable : runnables) {
-            runnable.run();
+//            runnable.run();
+            Platform.runLater(runnable);
         }
     }
 

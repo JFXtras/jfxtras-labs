@@ -71,7 +71,7 @@ public class SchedulerDemo extends Application {
                 Scheduler.EventImpl event4 = new Scheduler.EventImpl().withId(4L + i).withResourceId((long) i).withStartTime(now.with(DayOfWeek.THURSDAY).atStartOfDay()).withEndTime(now.with(DayOfWeek.THURSDAY).atStartOfDay().plusHours(24));
                 Scheduler.EventImpl event5 = new Scheduler.EventImpl().withId(5L + i).withResourceId((long) i).withStartTime(now.with(DayOfWeek.FRIDAY).atStartOfDay()).withEndTime(now.with(DayOfWeek.FRIDAY).atStartOfDay().plusHours(24));
                 Scheduler.EventImpl event6 = new Scheduler.EventImpl().withId(6L + i).withResourceId((long) i).withStartTime(now.with(DayOfWeek.SATURDAY).atStartOfDay()).withEndTime(now.with(DayOfWeek.SATURDAY).atStartOfDay().plusHours(24));
-                Scheduler.EventImpl event7 = new Scheduler.EventImpl().withId(7L + i).withResourceId((long) i).withStartTime(now.with(DayOfWeek.SUNDAY).atStartOfDay()).withEndTime(now.with(DayOfWeek.SUNDAY).atStartOfDay().plusHours(24));
+                Scheduler.EventImpl event7 = new Scheduler.EventImpl().withId(7L + i).withResourceId((long) i).withStartTime(now.with(DayOfWeek.SUNDAY).atStartOfDay().plusDays(1)).withEndTime(now.with(DayOfWeek.SUNDAY).atStartOfDay().plusDays(7));
 
 
                 events.addAll(Arrays.asList(event1, event2, event3, event4, event5, event6, event7));

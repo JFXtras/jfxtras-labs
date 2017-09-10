@@ -2,7 +2,7 @@
 	src: url("/roboto/RobotoCondensed-Light.ttf");
 }
 
-.Scheduler { 
+.Scheduler {
 	-fx-font-family: "Roboto Condensed Light";
 	-fxx-snap-to-minutes: 1440;
 }
@@ -30,6 +30,11 @@
 .Scheduler .DayHeader {
 	-fx-border-color:LIGHTGRAY;
 	-fx-border-width: 0px 0px 0px 1px;
+}
+
+.Scheduler .GroupedHeader {
+	-fx-border-color:LIGHTGRAY;
+	-fx-border-width: 0px 0px 1px 1px;
 }
 
 /*
@@ -104,23 +109,23 @@
 .group6 { -fx-background-color: #c62b00; }
 .group7 { -fx-background-color: #ff5700; } 
  */
- 
+
 .Scheduler .DurationDragger {
-	-fx-fill: #00000040;	
+	-fx-fill: #00000040;
 }
 
 .Scheduler .MenuIcon {
-	-fx-fill: #00000040;	
+	-fx-fill: #00000040;
 }
 
 .Scheduler .GhostRectangle {
 	-fx-fill: transparent;
 	-fx-stroke: #00000080;
-    -fx-stroke-width: 1;
-    -fx-stroke-dash-array: 4 4 4 4;
+	-fx-stroke-width: 1;
+	-fx-stroke-dash-array: 4 4 4 4;
 }
 
-.Scheduler .Selected { 
+.Scheduler .Selected {
 	-xfx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: -1.4, 0, 1, 2;
@@ -153,13 +158,13 @@
 }
 
 .SchedulerPopup .close-icon  {
-    -fx-image: url("AgendaWeekSkinPopupCloseWindowIcon.png");
+	-fx-image: url("AgendaWeekSkinPopupCloseWindowIcon.png");
 }
 
 .SchedulerPopup .delete-icon  {
-    -fx-image: url("AgendaWeekSkinDeleteIcon.png");
+	-fx-image: url("AgendaWeekSkinDeleteIcon.png");
 }
 
 .SchedulerPopup .action-icon  {
-    -fx-image: url("AgendaWeekSkinActionIcon.png");
+	-fx-image: url("AgendaWeekSkinActionIcon.png");
 }

@@ -37,8 +37,9 @@ public class LayoutHelp {
 
         // header
         titleDateTimeHeightProperty.bind(textHeightProperty.multiply(1.5));
-        appointmentHeaderPaneHeightProperty.bind(textHeightProperty.add(5)); // not sure why the 5 is needed
-        headerHeightProperty.bind(highestNumberOfWholedayAppointmentsProperty.multiply(appointmentHeaderPaneHeightProperty).add(titleDateTimeHeightProperty));
+        groupedDateHeaderPaneProperty.bind(textHeightProperty);
+//        appointmentHeaderPaneHeightProperty.bind(textHeightProperty.add(5)); // not sure why the 5 is needed
+        headerHeightProperty.bind(titleDateTimeHeightProperty.add(groupedDateHeaderPaneProperty));
 
         // day columns
         dayFirstColumnXProperty.bind(timeWidthProperty);
@@ -72,8 +73,9 @@ public class LayoutHelp {
     final DoubleProperty wholedayAppointmentFlagpoleWidthProperty = new SimpleDoubleProperty(5);
     final DoubleProperty textHeightProperty = new SimpleDoubleProperty(0);
     final DoubleProperty titleDateTimeHeightProperty = new SimpleDoubleProperty(0);
+    final DoubleProperty groupedDateHeaderPaneProperty = new SimpleDoubleProperty(0);
     final DoubleProperty headerHeightProperty = new SimpleDoubleProperty(0);
-    final DoubleProperty appointmentHeaderPaneHeightProperty = new SimpleDoubleProperty(0);
+//    final DoubleProperty appointmentHeaderPaneHeightProperty = new SimpleDoubleProperty(0);
     final DoubleProperty timeWidthProperty = new SimpleDoubleProperty(0);
     final DoubleProperty dayFirstColumnXProperty = new SimpleDoubleProperty(0);
     final DoubleProperty dayWidthProperty = new SimpleDoubleProperty(0);
@@ -131,7 +133,6 @@ public class LayoutHelp {
      * @return
      */
     LocalDateTime roundTimeToNearestMinutes(LocalDateTime localDateTime, int minutes) {
-        System.err.println(" localDateTime: " + localDateTime + " minutes: " + minutes );
         if (minutes >= 1440) {
             return roundTimeToNearestDays(localDateTime, minutes);
         }
