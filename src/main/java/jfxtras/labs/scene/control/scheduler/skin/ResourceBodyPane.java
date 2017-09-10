@@ -222,7 +222,7 @@ public class ResourceBodyPane extends Pane {
             lW = lNumberOfPixelsPerMinute * lWidthInMinutes;
 
             // if start date of event < that minimal displayed date, then subtract appropriate amount of width
-            if  (lEventAbstractTrackedPane.startDateTime.isBefore(minDateObjectProperty.get().atStartOfDay())) {
+            if (lEventAbstractTrackedPane.startDateTime.isBefore(minDateObjectProperty.get().atStartOfDay())) {
                 Duration duration = Duration.between(lEventAbstractTrackedPane.startDateTime, minDateObjectProperty.get().atStartOfDay());
                 long seconds = duration.getSeconds();
                 lW -= (seconds / 60) * lNumberOfPixelsPerMinute;
@@ -362,14 +362,14 @@ public class ResourceBodyPane extends Pane {
     }
 
     private double sceneY(Node node) {
-        return node.localToScene(node.getBoundsInLocal()).getMinY() + node.getScene().getY() - layoutHelp.headerHeightProperty.get();
+        return node.localToScene(node.getBoundsInLocal()).getMinY() ;
     }
 
     public String toString() {
         return "Resource[x=" + this.getLayoutX() + ", y=" + this.getLayoutY() + ", width=" + this.widthProperty().getValue() + ", height=" + this.heightProperty().getValue() + "]";
     }
 
-    public long convertClickInSceneToResourceId(double x, double y) {
+    long convertClickInSceneToResourceId(double x, double y) {
         Rectangle r = new Rectangle(sceneX(this), sceneY(this), this.getWidth(), this.getHeight());
         if (r.contains(x, y)) {
             return this.resource.getId();

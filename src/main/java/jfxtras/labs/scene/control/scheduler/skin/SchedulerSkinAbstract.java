@@ -1,5 +1,6 @@
 package jfxtras.labs.scene.control.scheduler.skin;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -217,7 +218,6 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
         for (ResourceBodyPane lResource : weekBodyPane.resourceBodyPanes) {
             lResource.setupEvents();
         }
-        System.err.println("Full rerender");
         calculateSizes(); // must be done after setting up the panes
         nowUpdateRunnable.run(); // set the history
     }
@@ -406,6 +406,12 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
         }
 
         private void construct() {
+            // Grouping month and year
+            GroupedHeaderPane groupedHeaderPane = new GroupedHeaderPane(determineDisplayedLocalDates(), layoutHelp);
+            groupedHeaderPane.prefHeightProperty().bind(layoutHelp.groupedDateHeaderPaneProperty);
+
+            getChildren().add(groupedHeaderPane);
+
             // one day header pane per day body pane
             for (DayBodyPane dayBodyPane : weekBodyPane.dayBodyPanes) {
                 // create pane
@@ -413,9 +419,9 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
 
                 // layout in relation to day panes
                 lDayHeader.layoutXProperty().bind(dayBodyPane.layoutXProperty()); // same x position as the body
-                lDayHeader.layoutYProperty().set(0);
+                lDayHeader.layoutYProperty().bind(heightProperty().divide(2));
                 lDayHeader.prefWidthProperty().bind(dayBodyPane.prefWidthProperty()); // same width as the body
-                lDayHeader.prefHeightProperty().bind(heightProperty()); // same height as the week pane
+                lDayHeader.prefHeightProperty().bind(heightProperty().divide(2)); // same height as the week pane
                 getChildren().add(lDayHeader);
 
                 // remember
@@ -596,12 +602,12 @@ public abstract class SchedulerSkinAbstract<T> extends SkinBase<Scheduler> imple
      */
     private void calculateSizes() {
         // header
-        int lMaxOfWholeDayAppointments = 0;
+/*        int lMaxOfWholeDayAppointments = 0;
         for (DayHeaderPane lDayHeaderPane : weekHeaderPane.dayHeaderPanes) {
             int lNumberOfWholeDayAppointments = lDayHeaderPane.getNumberOfWholeDayAppointments();
             lMaxOfWholeDayAppointments = Math.max(lMaxOfWholeDayAppointments, lNumberOfWholeDayAppointments);
-        }
-        layoutHelp.highestNumberOfWholedayAppointmentsProperty.set(lMaxOfWholeDayAppointments);
+        }*/
+//        layoutHelp.highestNumberOfWholedayAppointmentsProperty.set(lMaxOfWholeDayAppointments);
 
         // day columns
         if (weekScrollPane.viewportBoundsProperty().get() != null) {

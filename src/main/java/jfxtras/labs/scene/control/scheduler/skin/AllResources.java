@@ -1,5 +1,6 @@
 package jfxtras.labs.scene.control.scheduler.skin;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
@@ -43,7 +44,8 @@ public class AllResources {
 
     private void fireOnChangeListener() {
         for (Runnable runnable : runnables) {
-            runnable.run();
+//            runnable.run();
+            Platform.runLater(runnable);
         }
     }
 

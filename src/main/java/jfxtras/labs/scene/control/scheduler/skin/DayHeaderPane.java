@@ -31,7 +31,7 @@ public class DayHeaderPane extends Pane {
 
     private void construct() {
 
-        // for debugging setStyle("-fx-border-color:PINK;-fx-border-width:4px;");
+        // setStyle("-fx-border-color:PINK;-fx-border-width:4px;"); // for debugging
         getStyleClass().add("DayHeader");
 
         // set day label
@@ -52,21 +52,13 @@ public class DayHeaderPane extends Pane {
             setLabel();
         });
         setLabel();
-
-        // react to changes in the events
-        /*allEvents.addOnChangeListener(() -> {
-            setupAppointments();
-        });*/
-//        setupAppointments();
-
-        // setup the create event
-//        setupMouse();
     }
 
     private void setLabel() {
-        String lLabel = localDateObjectProperty.get().format(layoutHelp.dayOfWeekDateTimeFormatter)
-                + " "
-                + localDateObjectProperty.get().format(layoutHelp.dateDateTimeFormatter);
+        String lLabel =
+//                localDateObjectProperty.get().format(layoutHelp.dayOfWeekDateTimeFormatter)
+                 " "
+                 + localDateObjectProperty.get().getDayOfMonth();
         dayText.setText(lLabel);
 
         // for testing

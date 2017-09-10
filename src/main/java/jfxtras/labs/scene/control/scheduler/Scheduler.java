@@ -6,8 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
+import jfxtras.labs.scene.control.scheduler.skin.SchedulerMonthSkin;
 import jfxtras.labs.scene.control.scheduler.skin.SchedulerSkin;
-import jfxtras.labs.scene.control.scheduler.skin.SchedulerWeekSkin;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -46,7 +46,7 @@ public class Scheduler extends Control {
      */
     @Override
     public Skin<?> createDefaultSkin() {
-        return new SchedulerWeekSkin(this);
+        return new SchedulerMonthSkin(this);
     }
 
     private void constructEvents() {
@@ -351,6 +351,7 @@ public class Scheduler extends Control {
         Long getId();
 
         Long getResourceId();
+
         void setResourceId(long resourceId);
 
         Data getData();

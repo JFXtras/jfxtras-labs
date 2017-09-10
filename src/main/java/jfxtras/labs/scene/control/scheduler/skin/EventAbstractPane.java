@@ -63,7 +63,7 @@ abstract class EventAbstractPane extends Pane {
 
     final private ListChangeListener<Scheduler.Event> listChangeListener = new ListChangeListener<Scheduler.Event>() {
         @Override
-        public void onChanged(Change<? extends Scheduler.Event> changes) {
+        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Scheduler.Event> changes) {
             setOrRemoveSelected();
         }
     };

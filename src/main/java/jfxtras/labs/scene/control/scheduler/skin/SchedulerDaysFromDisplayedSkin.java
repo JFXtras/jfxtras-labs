@@ -99,8 +99,8 @@ public class SchedulerDaysFromDisplayedSkin extends SchedulerSkinAbstract<Schedu
     protected List<LocalDate> determineDisplayedLocalDates()
     {
         // get slider positions
-        int lStartOffset = (daysBeforeSlider == null ? daysBackDefault : (int)Math.round(daysBeforeSlider.valueProperty().get())); // Until JDK-8133008 is fixed we use the valueChangingProperty and Math.round:
-        int lEndOffset = (daysAfterSlider == null ? daysForwardDefault : (int)Math.round(daysAfterSlider.valueProperty().get())); // Until JDK-8133008 is fixed we use the valueChangingProperty and Math.round:
+        int lStartOffset = (daysBeforeSlider == null ? daysBackDefault : (int) Math.round(daysBeforeSlider.valueProperty().get())); // Until JDK-8133008 is fixed we use the valueChangingProperty and Math.round:
+        int lEndOffset = (daysAfterSlider == null ? daysForwardDefault : (int) Math.round(daysAfterSlider.valueProperty().get())); // Until JDK-8133008 is fixed we use the valueChangingProperty and Math.round:
         LocalDate lStartLocalDate = getSkinnable().getDisplayedLocalDateTime().toLocalDate();
 
         // determine displayed calendars
