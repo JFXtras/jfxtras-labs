@@ -169,7 +169,7 @@ public class EventDurationDragger extends Rectangle {
     private LocalDateTime calculateEndDateTime() {
 
         // calculate the new end datetime for the event (recalculating the duration)
-        int ms = (int)(resizeRectangle.getWidth() * layoutHelp.durationInMSPerPixelProperty.get());
+        long ms = (long)(resizeRectangle.getWidth() * layoutHelp.durationInMSPerPixelProperty.get());
         LocalDateTime endLocalDateTime = eventPane.startDateTime.plusSeconds(ms / 1000);
 
         // round to X minutes accuracy
