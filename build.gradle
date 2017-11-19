@@ -50,8 +50,8 @@ repositories {
 dependencies {
     compile "org.jfxtras:jfxtras-all:${project.version}"
     testCompile "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
-	testCompile "org.testfx:testfx-core:4.0.+"
-	testCompile "org.testfx:testfx-junit:4.0.+", {
+	testCompile "org.testfx:testfx-core:4.0.8-alpha"
+	testCompile "org.testfx:testfx-junit:4.0.8-alpha", {
 		exclude group: "junit", module: "junit"
 	}
     testCompile "org.jfxtras:jfxtras-test-support:${project.version}"
