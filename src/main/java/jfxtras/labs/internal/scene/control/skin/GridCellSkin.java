@@ -29,20 +29,19 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import jfxtras.labs.internal.scene.control.behavior.GridCellBehavior;
+import javafx.scene.control.skin.CellSkinBase;
 import jfxtras.labs.scene.control.grid.GridCell;
 
-import com.sun.javafx.scene.control.skin.CellSkinBase;
 
 /**
  * 
  * @author Hendrik Ebbers
  * 
  */
-public class GridCellSkin<T> extends CellSkinBase<GridCell<T>, GridCellBehavior<T>>{
+public class GridCellSkin<T> extends CellSkinBase<GridCell<T>> {
 
 	public GridCellSkin(GridCell<T> control) {
-		super(control, new GridCellBehavior<>(control));
+		super(control);
 	}
 	
 }

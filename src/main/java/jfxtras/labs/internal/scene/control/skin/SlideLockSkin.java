@@ -33,6 +33,7 @@ package jfxtras.labs.internal.scene.control.skin;
 import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
 import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
 import javafx.animation.AnimationTimer;
+import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -42,18 +43,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradientBuilder;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.RadialGradientBuilder;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
-import javafx.scene.transform.ScaleBuilder;
 import jfxtras.labs.scene.control.SlideLock;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This represents the actual drawing of the slide to unlock control. All mouse and touch event handlers are
@@ -134,15 +134,19 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 duration=duration+elapsedTime;
                 if (duration > 150) {
-                    RadialGradient lightColor = RadialGradientBuilder.create()
-                            .radius(spotlightRadius)
-                            .centerX(x)
-                            .centerY(text.getY())
-                            .proportional(false)
-                            .stops(new Stop(0, Color.WHITE),
+                    RadialGradient lightColor = new RadialGradient(
+                            0.0, // double focusAngle
+                            0.0, // double focusDistance
+                            x, // double centerX
+                            text.getY(), // double centerY
+                            spotlightRadius, // double radius
+                            false, // boolean proportional
+                            null, // CycleMethod cycleMethod
+                            Arrays.asList(new Stop(0, Color.WHITE),
                                     new Stop(.5, Color.WHITE),
-                                    new Stop(1, Color.web("#555555")))
-                            .build();
+                                    new Stop(1, Color.web("#555555")))// List<Stop> stops
+
+                    );
                     x=x+10;
                     if (x > text.getBoundsInParent().getMaxX() + spotlightRadius) {
                         x=-spotlightRadius;
@@ -234,47 +238,25 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
         final double HEIGHT         = CONTROL.getPrefHeight();
         final double SCALE_FACTOR_X = WIDTH / PREFERRED_WIDTH;
         final double SCALE_FACTOR_Y = HEIGHT / PREFERRED_HEIGHT;
-        final Scale SCALE           = ScaleBuilder.create()
-                .x(WIDTH / PREFERRED_WIDTH)
-                .y(HEIGHT / PREFERRED_HEIGHT)
-                .pivotX(0)
-                .pivotY(0)
-                .build();
+        final Scale SCALE           = new Scale(WIDTH / PREFERRED_WIDTH, HEIGHT / PREFERRED_HEIGHT);
 
-        Rectangle backgroundRect = RectangleBuilder.create()
-                .id("slide-background")
-                .width(WIDTH)
-                .height(HEIGHT)
-                .build();
+        Rectangle backgroundRect = new Rectangle(WIDTH, HEIGHT);
+        backgroundRect.setId("slide-background");
         backgroundRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
 
-        Rectangle slideArea = RectangleBuilder.create()
-                .id("slide-area")
-                .x(0.0612476117 * WIDTH)
-                .y(0.2463297872 * HEIGHT)
-                .width(0.8829200973 * WIDTH)
-                .height(0.5319148936 * HEIGHT)
-                .arcWidth(0.079787234 * HEIGHT)
-                .arcHeight(0.079787234 * HEIGHT)
-                .build();
+        Rectangle slideArea = new Rectangle(0.0612476117 * WIDTH, 0.2463297872 * HEIGHT,0.8829200973 * WIDTH,0.5319148936 * HEIGHT);
+        slideArea.setArcWidth(0.079787234 * HEIGHT);
+        slideArea.setArcHeight(0.079787234 * HEIGHT);
+        slideArea.setId("slide-area");
 
-        SVGPath glareRect = SVGPathBuilder.create()
-                .fill(LinearGradientBuilder.create()
-                        .proportional(true)
-                        .startX(0)
-                        .startY(0)
-                        .endX(0)
-                        .endY(1)
-                        .stops(new Stop(0, Color.web("f0f0f0", 1)),
-                                new Stop(1, Color.web("f0f0f0", 0))
-                        )
-                        .build()
-                )
-                .opacity(.274)
-                .transforms(SCALE)
-                .content("m 0,0 0,94 32,0 0,-27.218747 C 30.998808,55.222973 37.761737,45.9354 46.156457,45.93665 l 431.687503,0.06427 c 8.39472,0.0013 15.15487,9.290837 15.15315,20.814756 l -0.004,27.218754 30.28125,0 0,-94.0000031 L 0,0 z")
-                .id("glare-frame")
-                .build();
+        SVGPath glareRect = new SVGPath();
+        glareRect.setFill(new LinearGradient(0, 0, 0, 1, true, null, Arrays.asList(new Stop(0, Color.web("f0f0f0", 1)),
+                                new Stop(1, Color.web("f0f0f0", 0)))));
+        glareRect.setOpacity(.274);
+        glareRect.setScaleX(SCALE.getX());
+        glareRect.setScaleY(SCALE.getY());
+        glareRect.setContent("m 0,0 0,94 32,0 0,-27.218747 C 30.998808,55.222973 37.761737,45.9354 46.156457,45.93665 l 431.687503,0.06427 c 8.39472,0.0013 15.15487,9.290837 15.15315,20.814756 l -0.004,27.218754 30.28125,0 0,-94.0000031 L 0,0 z");
+        glareRect.setId("glare-frame");
         glareRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
 
         text.setText(CONTROL.getText());
@@ -290,13 +272,9 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
         text.setTranslateY(0.5744680851 * HEIGHT);
         text.opacityProperty().bind(CONTROL.textOpacityProperty());
 
-        Rectangle topGlareRect = RectangleBuilder.create()
-                .id("slide-top-glare")
-                .fill(Color.WHITE)
-                .width(WIDTH)
-                .height(0.5 * HEIGHT)
-                .opacity(0.0627451)
-                .build();
+        Rectangle topGlareRect = new Rectangle(WIDTH, 0.5 * HEIGHT, Color.WHITE);
+        topGlareRect.setId("slide-top-glare");
+        topGlareRect.setOpacity(0.0627451);
         topGlareRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
         getChildren().clear();
         getChildren().addAll(backgroundRect, slideArea, glareRect, text, button, topGlareRect);
@@ -316,54 +294,39 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
         button.getChildren().clear();
 
         // build gradientRect
-        Rectangle gradientRect = RectangleBuilder.create()
-                .x(0.0358943492 * WIDTH)
-                .y(0.0649521277 * HEIGHT)
-                .width(0.156464544 * WIDTH)
-                .height(0.3616446809 * HEIGHT)
-                .arcWidth(0.0929042553 * HEIGHT)
-                .arcHeight(0.0929042553 * HEIGHT)
-                        //.fill(Color.WHITE)
-                .fill(CONTROL.getButtonArrowBackgroundColor())
-                .id("button-gradient-rect")
-                .build();
+        Rectangle gradientRect = new Rectangle(0.0358943492 * WIDTH, 0.0649521277 * HEIGHT, 0.156464544 * WIDTH, 0.3616446809 * HEIGHT);
+        gradientRect.setArcWidth(0.0929042553 * HEIGHT);
+        gradientRect.setArcHeight(0.0929042553 * HEIGHT);
+        gradientRect.setFill(CONTROL.getButtonArrowBackgroundColor());
+        gradientRect.setId("button-gradient-rect");
         button.getChildren().add(gradientRect);
 
         // build arrowBlurShadow
-        SVGPath arrowBlurShadow = SVGPathBuilder.create()
-                .fill(Color.BLACK)
-                .effect(new GaussianBlur(5))
-                .transforms(scale)
-                .content("m 17.40912,2.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z")
-                .id("#button-arrow-blur-shadow")
-                .build();
+        SVGPath arrowBlurShadow = new SVGPath();
+        arrowBlurShadow.setFill(Color.BLACK);
+        arrowBlurShadow.setEffect(new GaussianBlur(5));
+        arrowBlurShadow.setScaleX(scale.getX());
+        arrowBlurShadow.setScaleY(scale.getY());
+        arrowBlurShadow.setContent("m 17.40912,2.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z");
+        arrowBlurShadow.setId("#button-arrow-blur-shadow");
         button.getChildren().add(arrowBlurShadow);
 
         // build arrowStencilCrisp
-        SVGPath arrowStencilCrisp = SVGPathBuilder.create()
-                .content("m 17.40912,0.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z")
-                .fill(CONTROL.getButtonColor())
-                .id("#button-arrow-stencil-crisp")
-                .transforms(scale)
-                .build();
+        SVGPath arrowStencilCrisp = new SVGPath();
+        arrowStencilCrisp.setContent("m 17.40912,0.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z");
+        arrowStencilCrisp.setFill(CONTROL.getButtonColor());
+        arrowStencilCrisp.setId("#button-arrow-stencil-crisp");
+        arrowStencilCrisp.setScaleX(scale.getX());
+        arrowStencilCrisp.setScaleY(scale.getY());
         button.getChildren().add(arrowStencilCrisp);
 
         // build glareRect
-        SVGPath glareRect = SVGPathBuilder.create()
-                .content("m 17.83252,1.67757 c -8.27303,0 -14.9375,7.21042 -14.9375,16.15746 l 0,28.31557 114.5,0 0,-28.31557 c 0,-8.94704 -6.66447,-16.15746 -14.9375,-16.15746 l -84.625,0 z")
-                .fill(LinearGradientBuilder.create()
-                        .proportional(true)
-                        .startX(0)
-                        .startY(1)
-                        .endX(0)
-                        .endY(0)
-                        .stops(new Stop(0, Color.web("f4f4f4", 0.60)),
-                                new Stop(1, Color.web("ffffff", 0.2063063)))
-                        .build()
-                )
-                .id("#button-arrow-glare-rect")
-                .transforms(scale)
-                .build();
+        SVGPath glareRect = new SVGPath();
+        glareRect.setContent("m 17.83252,1.67757 c -8.27303,0 -14.9375,7.21042 -14.9375,16.15746 l 0,28.31557 114.5,0 0,-28.31557 c 0,-8.94704 -6.66447,-16.15746 -14.9375,-16.15746 l -84.625,0 z");
+        glareRect.setFill(new LinearGradient(0, 1, 0, 0, true, null, Arrays.asList(new Stop(0, Color.web("f4f4f4", 0.60)),new Stop(1, Color.web("ffffff", 0.2063063)))));
+        glareRect.setId("#button-arrow-glare-rect");
+        glareRect.setScaleX(scale.getX());
+        glareRect.setScaleY(scale.getY());
         glareRect.visibleProperty().bind(CONTROL.buttonGlareVisibleProperty()); // red button
         button.getChildren().add(glareRect);
         button.setCache(true);

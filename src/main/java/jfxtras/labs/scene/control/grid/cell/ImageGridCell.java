@@ -33,7 +33,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.ImageViewBuilder;
 import jfxtras.labs.scene.control.grid.GridCell;
 
 /**
@@ -52,7 +51,7 @@ public class ImageGridCell extends GridCell<Image> {
 					Image arg1, Image arg2) {
 				getChildren().clear();
 				//TODO: Style ImageView by CSS
-				ImageView imageView = ImageViewBuilder.create().image(arg2).build();
+				ImageView imageView = new ImageView(arg2);
 				imageView.fitHeightProperty().bind(heightProperty());
 				imageView.fitWidthProperty().bind(widthProperty());
 				

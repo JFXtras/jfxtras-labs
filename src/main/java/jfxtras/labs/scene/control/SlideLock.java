@@ -44,10 +44,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradientBuilder;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
+
+import java.util.Arrays;
 
 /**
  * This class represents a slide to unlock control. This control's metaphor is to prevent a user from
@@ -128,25 +130,10 @@ public class SlideLock extends Control {
         });
 
         // default to a grey background for the button arrow region.
-        buttonArrowBackgroundColor.set(LinearGradientBuilder.create()
-                .proportional(true)
-                .startX(0)
-                .startY(1)
-                .endX(0)
-                .endY(0)
-                .stops(new javafx.scene.paint.Stop(0, javafx.scene.paint.Color.web("747474")),
-                        new javafx.scene.paint.Stop(1, javafx.scene.paint.Color.web("e8e8e8")))
-                .build());
+        buttonArrowBackgroundColor.set(new LinearGradient(0, 1, 0, 0, true, null, Arrays.asList(new javafx.scene.paint.Stop(0, javafx.scene.paint.Color.web("747474")))));
+
         // default main button color gradient light gray to dark gray
-        buttonColor.set(LinearGradientBuilder.create()
-                .proportional(true)
-                .startX(0)
-                .startY(1)
-                .endX(0)
-                .endY(0)
-                .stops(new Stop(0, Color.web("c5c5c5")),
-                       new Stop(1, Color.web("f0f0f0")))
-                .build());
+        buttonColor.set(new LinearGradient(0, 1, 0, 0, true, null, Arrays.asList(new Stop(0, Color.web("c5c5c5")), new Stop(1, Color.web("f0f0f0")))));
     }
 
     @Override

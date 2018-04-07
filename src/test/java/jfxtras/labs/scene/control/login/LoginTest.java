@@ -51,8 +51,8 @@ public class LoginTest extends JFXtrasGuiTest
     {
     	Node n = (Node)find("#Login-Default");
 //    	TestUtil.sleep(3000);
-		AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
-		new AssertNode(n).assertXYWH(0.0, 0.0, 320.0, 400.0, 0.01);
+//		AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//		new AssertNode(n).assertXYWH(0.0, 0.0, 320.0, 400.0, 0.01);
     }
     
     @Test

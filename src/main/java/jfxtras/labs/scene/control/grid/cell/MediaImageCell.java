@@ -33,9 +33,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayerBuilder;
 import javafx.scene.media.MediaView;
-import javafx.scene.media.MediaViewBuilder;
 import jfxtras.labs.scene.control.grid.GridCell;
 
 /**
@@ -58,8 +56,8 @@ public class MediaImageCell extends GridCell<Media> {
 				if(mediaPlayer != null) {
 					mediaPlayer.stop();
 				}
-				mediaPlayer = MediaPlayerBuilder.create().media(arg2).build();
-				MediaView mediaView = MediaViewBuilder.create().mediaPlayer(mediaPlayer).build();
+				mediaPlayer = new MediaPlayer(arg2);
+				MediaView mediaView = new MediaView(mediaPlayer);
 				mediaView.fitHeightProperty().bind(heightProperty());
 				mediaView.fitWidthProperty().bind(widthProperty());
 				setGraphic(mediaView);

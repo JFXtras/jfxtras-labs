@@ -34,7 +34,6 @@ import java.util.List;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
-import javafx.animation.FadeTransitionBuilder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -43,7 +42,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
-import javafx.scene.shape.PolylineBuilder;
 import javafx.util.Duration;
 
 public class RadialContainerMenuItem extends RadialMenuItem {
@@ -56,9 +54,7 @@ public class RadialContainerMenuItem extends RadialMenuItem {
     private FadeTransition fadeOut = null;
 
     protected List<RadialMenuItem> items = new ArrayList<RadialMenuItem>();
-    protected Polyline arrow = PolylineBuilder.create()
-	    .points(-5.0, -5.0, 5.0, 0.0, -5.0, 5.0, -5.0, -5.0)
-	    .fill(Color.GRAY).stroke(null).build();
+    protected Polyline arrow = new Polyline(-5.0, -5.0, 5.0, 0.0, -5.0, 5.0, -5.0, -5.0);
 
     public RadialContainerMenuItem(final double menuSize, final Node graphic) {
 	super(menuSize, graphic);
@@ -72,6 +68,8 @@ public class RadialContainerMenuItem extends RadialMenuItem {
     }
 
     private void initialize() {
+		arrow.setFill(Color.GRAY);
+		arrow.setStroke(null);
 	this.childAnimGroup.setVisible(false);
 	this.visibleProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -86,19 +84,20 @@ public class RadialContainerMenuItem extends RadialMenuItem {
 	    }
 	});
 	this.getChildren().add(this.childAnimGroup);
-	this.fadeIn = FadeTransitionBuilder.create().node(this.childAnimGroup)
-		.duration(Duration.millis(400)).fromValue(0.0).toValue(1.0)
-		.build();
-	this.fadeOut = FadeTransitionBuilder.create().node(this.childAnimGroup)
-		.duration(Duration.millis(400)).fromValue(1.0).toValue(0.0)
-		.onFinished(new EventHandler<ActionEvent>() {
+	this.fadeIn = new FadeTransition(Duration.millis(400), this.childAnimGroup);
+	fadeIn.setFromValue(0.0);
+	fadeIn.setToValue(1.0);
+	this.fadeOut = new FadeTransition(Duration.millis(400), this.childAnimGroup);
+	fadeOut.setFromValue(0.0);
+	fadeOut.setToValue(1.0);
+	fadeOut.setOnFinished(new EventHandler<ActionEvent>() {
 
 		    @Override
 		    public void handle(final ActionEvent arg0) {
 			RadialContainerMenuItem.this.childAnimGroup
 				.setVisible(false);
 		    }
-		}).build();
+		});
 	this.getChildren().add(this.arrow);
     }
 

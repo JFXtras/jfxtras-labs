@@ -33,6 +33,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -40,8 +41,6 @@ import javafx.scene.control.Pagination;
 import javafx.util.Callback;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
-
-import com.sun.javafx.collections.ObservableListWrapper;
 
 /**
  * 
@@ -91,7 +90,7 @@ public class GridPaginationHelper<T> {
 				GridView<T> gridView = null;
 				gridView = new GridView<>();
 				int startIndex = getCellStartIndexForPage(arg0);
-				ObservableList<T> currentItems = new ObservableListWrapper<>(
+				ObservableList<T> currentItems = FXCollections.observableArrayList(
 						items.subList(
 								startIndex,
 								Math.min(startIndex

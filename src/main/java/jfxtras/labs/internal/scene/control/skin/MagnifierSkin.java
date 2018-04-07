@@ -39,6 +39,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.SnapshotResult;
+import javafx.scene.control.SkinBase;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
@@ -51,17 +52,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
 import javafx.util.Callback;
-import jfxtras.labs.internal.scene.control.behavior.MagnifierBehavior;
 import jfxtras.labs.scene.control.Magnifier;
-
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 
 /**
  * Skin implementation for the {@link jfxtras.labs.scene.control.Magnifier} control.
  * 
  * @author SaiPradeepDandem
  */
-public class MagnifierSkin extends BehaviorSkinBase<Magnifier, MagnifierBehavior> {
+public class MagnifierSkin extends SkinBase<Magnifier> {
 
 	private Scene scene;
 	private WritableImage writeImg;
@@ -88,7 +86,7 @@ public class MagnifierSkin extends BehaviorSkinBase<Magnifier, MagnifierBehavior
 	 *            Instance of {@link jfxtras.labs.scene.control.Magnifier} control.
 	 */
 	public MagnifierSkin(Magnifier magnifier) {
-		super(magnifier, new MagnifierBehavior(magnifier));
+		super(magnifier);
 		initialize();
 	}
 

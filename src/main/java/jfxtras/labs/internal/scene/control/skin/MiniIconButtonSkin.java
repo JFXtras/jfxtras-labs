@@ -38,12 +38,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.skin.ButtonSkin;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import jfxtras.labs.scene.control.MiniIconButton;
-
-import com.sun.javafx.scene.control.skin.ButtonSkin;
 
 /**
  * Skin implementation for {@link MiniIconButton}.

@@ -39,7 +39,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -64,6 +63,11 @@ import jfxtras.labs.scene.control.gauge.GradientLookup;
  */
 public class Util {
 
+    private static final SnapshotParameters SNAPSHOT_PARAMETER = new SnapshotParameters();
+    static {
+        SNAPSHOT_PARAMETER.setFill(Color.TRANSPARENT);
+
+    }
     /**************************************************************************
      *                                                                        *
      * Color related utilities                                                *
@@ -245,7 +249,6 @@ public class Util {
      * Snapshot related utilities                                             *
      *                                                                        *
      *************************************************************************/
-    private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
     public static Image takeSnapshot(final Node NODE) {
         WritableImage img = new WritableImage((int) NODE.getLayoutBounds().getWidth(), (int) NODE.getLayoutBounds().getHeight());
         return NODE.snapshot(SNAPSHOT_PARAMETER, img);

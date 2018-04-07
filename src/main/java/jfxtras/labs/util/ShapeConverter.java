@@ -52,7 +52,6 @@ import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.VLineTo;
 import javafx.scene.text.Text;
@@ -99,7 +98,9 @@ public class ShapeConverter {
     }
 
     public static SVGPath shapeToSvgPath(final Shape SHAPE) {
-        return SVGPathBuilder.create().content(shapeToSvgString(SHAPE)).build();
+        SVGPath svgGPath = new SVGPath();
+        svgGPath.setContent(shapeToSvgString(SHAPE));
+        return svgGPath;
     }
 
     public static String convertLine(final Line LINE) {

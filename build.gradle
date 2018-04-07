@@ -13,7 +13,7 @@ buildscript {
     }
 }
 plugins {
-  id "com.github.johnrengelman.shadow" version "1.2.3"
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
 }
 
 apply plugin: 'java'
@@ -21,6 +21,11 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = rootProject.sourceCompatibility
+    targetCompatibility = rootProject.targetCompatibility
+}
 
 // Needed until Gradle supports class-scanning for Java 8
 tasks.withType(Test) {
@@ -48,14 +53,15 @@ repositories {
 dependencies {
     compile "org.jfxtras:jfxtras-all:${project.version}"
     testCompile "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
-	testCompile "org.testfx:testfx-core:4.0.8-alpha"
-	testCompile "org.testfx:testfx-junit:4.0.8-alpha", {
+	testCompile "org.testfx:testfx-core:4.0.13-alpha"
+	testCompile "org.testfx:testfx-junit:4.0.13-alpha", {
 		exclude group: "junit", module: "junit"
 	}
     testCompile "org.jfxtras:jfxtras-test-support:${project.version}"
     testCompile "org.jfxtras:jfxtras-controls:${project.version}"
 	testCompile 'com.miglayout:miglayout-javafx:5.1-SNAPSHOT'
-	asciidoclet 'org.asciidoctor:asciidoclet:1.5.2'
+    asciidoclet 'org.asciidoctor:asciidoclet:1.5.4'
+    asciidoclet 'org.asciidoctor:asciidoctorj:1.5.6'
 }
 
 javadoc {
@@ -69,7 +75,7 @@ apply {
 }
 
 artifacts {
-	archives file: file('build/libs/jfxtras-labs-' + version + '-all.jar')
+//	archives file: file('build/libs/jfxtras-labs-' + version + '-all.jar')
 }
 
 // configure shadowJar

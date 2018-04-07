@@ -36,6 +36,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.SkinBase;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -43,14 +44,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import jfxtras.labs.scene.control.BreadcrumbItem;
 
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.behavior.KeyBinding;
-
 /**
  *
  * @author Thierry Wasylczenko
  */
-public class BreadcrumbItemSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<BreadcrumbItem, BehaviorBase<BreadcrumbItem>> {
+public class BreadcrumbItemSkin extends SkinBase<BreadcrumbItem> {
 
     private class BreadcrumbItemMouseHandler implements EventHandler<MouseEvent> {
 
@@ -80,7 +78,7 @@ public class BreadcrumbItemSkin extends com.sun.javafx.scene.control.skin.Behavi
     }
     
     public BreadcrumbItemSkin(BreadcrumbItem c) {
-        super(c, new BehaviorBase<BreadcrumbItem>(c,new ArrayList<KeyBinding>()));
+        super(c);
 
         HBox box = new HBox();
         

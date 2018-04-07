@@ -33,7 +33,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.internal.scene.control.behavior.GridViewBehavior;
+import javafx.scene.control.SkinBase;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.cell.DefaultGridCell;
@@ -43,7 +43,7 @@ import jfxtras.labs.scene.control.grid.cell.DefaultGridCell;
  * @author Hendrik Ebbers
  * 
  */
-public class GridViewSkin<T> extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<GridView<T>, GridViewBehavior<T>> {
+public class GridViewSkin<T> extends SkinBase<GridView<T>> {
 
 	private ListChangeListener<T> itemsListener;
 
@@ -52,7 +52,7 @@ public class GridViewSkin<T> extends com.sun.javafx.scene.control.skin.BehaviorS
 	private ChangeListener<ObservableList<T>> itemListChangedListener;
 
 	public GridViewSkin(GridView<T> control) {
-		super(control, new GridViewBehavior<>(control));
+		super(control);
 
 		layoutListener = new ChangeListener<Number>() {
 
