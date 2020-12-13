@@ -228,40 +228,6 @@ public class RadialMenu extends Group implements EventHandler<MouseEvent>,
                       final Paint strokeMouseOnFill, final boolean clockwise,
                       final CenterVisibility centerVisibility, final Node centerGraphic) {
 
-        centerStrokeShape.setStroke(strokeFill);
-        centerStrokeShape.setFill(bgFill);
-
-        this.centerGroup.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(final MouseEvent event) {
-                RadialMenu.this.mouseOn = true;
-                RadialMenu.this.redraw();
-            }
-        });
-        this.centerGroup.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(final MouseEvent event) {
-                RadialMenu.this.mouseOn = false;
-                RadialMenu.this.redraw();
-            }
-        });
-        this.centerGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(final MouseEvent event) {
-                final boolean visible = RadialMenu.this.itemGroup
-                        .isVisible();
-                if (visible) {
-                    RadialMenu.this.hideRadialMenu();
-                } else {
-                    RadialMenu.this.showRadialMenu();
-                }
-
-                event.consume();
-            }
-        });
         this.itemGroup = new Group();
         this.getChildren().add(this.itemGroup);
 
@@ -301,6 +267,9 @@ public class RadialMenu extends Group implements EventHandler<MouseEvent>,
         this.centerStrokeShape = new Circle(innerRadius);
         this.centerStrokeShape.radiusProperty()
                 .bind(this.innerRadiusProperty());
+        this.centerStrokeShape.setStroke(strokeFill);
+        this.centerStrokeShape.setFill(bgFill);
+
         this.centerVisibility.addListener(this);
 
         this.strokeVisible.addListener(this);
@@ -309,6 +278,39 @@ public class RadialMenu extends Group implements EventHandler<MouseEvent>,
         this.centerGroup = new Group();
 
         this.centerGroup.getChildren().add(this.centerStrokeShape);
+
+        this.centerGroup.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(final MouseEvent event) {
+                RadialMenu.this.mouseOn = true;
+                RadialMenu.this.redraw();
+            }
+        });
+        this.centerGroup.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(final MouseEvent event) {
+                RadialMenu.this.mouseOn = false;
+                RadialMenu.this.redraw();
+            }
+        });
+        this.centerGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(final MouseEvent event) {
+                final boolean visible = RadialMenu.this.itemGroup
+                        .isVisible();
+                if (visible) {
+                    RadialMenu.this.hideRadialMenu();
+                } else {
+                    RadialMenu.this.showRadialMenu();
+                }
+
+                event.consume();
+            }
+        });
+
 
         this.getChildren().add(this.centerGroup);
         this.centerGraphic = new SimpleObjectProperty<Node>(centerGraphic);
