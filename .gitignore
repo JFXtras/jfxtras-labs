@@ -32,3 +32,4 @@ build.xml
 /gradlew_javadoc.cmd
 /gradlew_test.cmd
 /build.gradle~
+/target/
