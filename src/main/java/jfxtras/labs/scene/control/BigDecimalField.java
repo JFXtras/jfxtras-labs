@@ -273,7 +273,9 @@ public class BigDecimalField extends Control {
 
     @Override
     public String getUserAgentStylesheet() {
-        return getClass().getResource(
+String s = getClass().getSimpleName() + ".css";
+System.out.println("!!!!!!"  + s + "  ->  " + BigDecimalFieldSkin.class.getResource(s));
+        return BigDecimalFieldSkin.class.getResource(
                 "/jfxtras/labs/internal/scene/control/"
                         + getClass().getSimpleName() + ".css").toExternalForm();
     }

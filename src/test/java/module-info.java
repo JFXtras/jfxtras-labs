@@ -26,15 +26,25 @@
  */
 module jfxtras.labs {
     exports jfxtras.labs.animation;
+    exports jfxtras.labs.scene.control;
+//    exports jfxtras.labs.scene.control.edittable;
+//    exports jfxtras.labs.scene.control.gauge;
+//    exports jfxtras.labs.scene.control.grid;
+//    exports jfxtras.labs.scene.control.grid.cell;
+    exports jfxtras.labs.scene.control.login;
+    exports jfxtras.labs.scene.control.radialmenu;
+//    exports jfxtras.labs.scene.control.scheduler;
+//    exports jfxtras.labs.scene.control.window;
 
     requires transitive jfxtras.controls;
+    requires transitive jfxtras.common;
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.swing;
     requires javafx.media;
     requires java.desktop;
-    requires jfxtras.common;
 
     // for tests
     exports jfxtras.labs.scene.control.test to junit;
+    requires org.mockito;
 }
