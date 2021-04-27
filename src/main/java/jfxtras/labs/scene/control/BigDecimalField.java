@@ -40,6 +40,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.skin.BigDecimalFieldSkin;
+import jfxtras.scene.control.CalendarPicker;
 
 /**
  * Input field for BigDecimal values. This control has the following features:
@@ -271,12 +272,10 @@ public class BigDecimalField extends Control {
     public ObjectProperty<BigDecimal> minValueProperty() { return minValue; }
 
 
-    @Override
-    public String getUserAgentStylesheet() {
-String s = getClass().getSimpleName() + ".css";
-System.out.println("!!!!!!"  + s + "  ->  " + BigDecimalFieldSkin.class.getResource(s));
-        return BigDecimalFieldSkin.class.getResource(
-                "/jfxtras/labs/internal/scene/control/"
-                        + getClass().getSimpleName() + ".css").toExternalForm();
+    @Override public String getUserAgentStylesheet()
+    {
+//        String s = "/jfxtras/libs/internal/scene/control/" + BigDecimalField.class.getSimpleName() + ".css";
+//        System.out.println("!!!!!!"  + s + "  ->  " + BigDecimalField.class.getResource(s));
+        return BigDecimalField.class.getResource("/jfxtras/libs/internal/scene/control/" + BigDecimalField.class.getSimpleName() + ".css").toExternalForm();
     }
 }
