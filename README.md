@@ -1,12 +1,6 @@
 JFXtras-labs
 ============
-_A project for experimenting with new controls and other useful JavaFX extensions_
-
-Building with Gradle
---------------------
-* Set your environment variable JAVAFX_HOME to the directory that contains rt/lib/jfxrt.jar.
-* cd jfxtras-labs
-* gradlew build
+_A project for experimenting with new controls and other useful JavaFX extensions_ There are no guarentees on quality, longevity and support. Usage it at your own risk.
 
 ## License
 
