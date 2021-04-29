@@ -1,6 +1,6 @@
 JFXtras-labs
 ============
-_A project for experimenting with new controls and other useful JavaFX extensions_ There are no guarentees on quality, longevity and support. Usage it at your own risk.
+_A project for experimenting with new controls and other useful JavaFX extensions_ There are no guarentees on quality, longevity and support. Usage is at your own risk.
 
 ## License
 
