@@ -235,54 +235,30 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         private void initHandlers() {
 
             // try to parse when RETURN is hit...
-            setOnAction(new EventHandler<ActionEvent>() {
+            setOnAction(arg0 -> parseAndFormatInput());
 
-                @Override
-                public void handle(ActionEvent arg0) {
+            // ...or focus is lost
+            focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.booleanValue()) {
                     parseAndFormatInput();
                 }
             });
 
-            // ...or focus is lost
-            focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    if (!newValue.booleanValue()) {
-                        parseAndFormatInput();
-                    }
-                }
-            });
-
             // If number in controller changes update the TextField with the formatted number string
-            CONTROL.numberProperty().addListener(new InvalidationListener() {
-                @Override
-                public void invalidated(Observable arg0) {
-                    setText(CONTROL.getText());
-                }
-            });
+            CONTROL.numberProperty().addListener(arg0 -> setText(CONTROL.getText()));
 
             // If format in controller changes update the TextField with the formatted number string
-            CONTROL.formatProperty().addListener(new InvalidationListener() {
-                @Override
-                public void invalidated(Observable arg0) {
-                    setText(CONTROL.getText());
-                }
-            });
+            CONTROL.formatProperty().addListener(arg0 -> setText(CONTROL.getText()));
 
             // key up/down ==> inc/dec
-            addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-
-                @Override
-                public void handle(KeyEvent keyEvent) {
-                    if (keyEvent.getCode() == KeyCode.DOWN) {
-                        CONTROL.decrement();
-                        keyEvent.consume();
-                    }
-                    if (keyEvent.getCode() == KeyCode.UP) {
-                        CONTROL.increment();
-                        keyEvent.consume();
-                    }
+            addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+                if (keyEvent.getCode() == KeyCode.DOWN) {
+                    CONTROL.decrement();
+                    keyEvent.consume();
+                }
+                if (keyEvent.getCode() == KeyCode.UP) {
+                    CONTROL.increment();
+                    keyEvent.consume();
                 }
             });
 
