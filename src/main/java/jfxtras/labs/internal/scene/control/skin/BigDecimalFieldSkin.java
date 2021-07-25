@@ -262,6 +262,14 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
                 }
             });
 
+            // If format in controller changes update the TextField with the formatted number string
+            CONTROL.formatProperty().addListener(new InvalidationListener() {
+                @Override
+                public void invalidated(Observable arg0) {
+                    setText(CONTROL.getText());
+                }
+            });
+
             // key up/down ==> inc/dec
             addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 
